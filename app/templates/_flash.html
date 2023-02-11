@@ -1,0 +1,26 @@
+{#
+    categories:
+    - primary (bluish)
+    - secondary (grey)
+    - success (green)
+    - danger (pink-ish)
+    - warning (yellow)
+    - info (aquamarine)
+    - light (barely visible)
+    - dark (grey)
+#}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      {% if category == "message" %}
+        {% set category = "info" %}
+      {% endif %}
+      <div class="container mt-4">
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message|safe }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}

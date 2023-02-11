@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container">
+      <h1 class="mt-5">{{ user.username }}'s Whiskies</h1>
+      <hr />
+      <p>
+        <table id="bottles" class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Notes</th>
+                <th>Type</th>
+                <th>ABV</th>
+            </tr>
+        </thead>
+        <tbody>
+          {% for bottle in bottles %}
+            <tr>
+                <td><a href="{{ url_for("main.bottle_detail", username=user.username, bottle_id=bottle.id) }}">{{ bottle.name }}</a></td>
+                <td>{{ bottle.description }}</td>
+                <td>{{ bottle.notes }}</td>
+                <td>{{ bottle.type }}</td>
+                <td>{{ "%.2f"|format(bottle.abv) }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        </table>
+      </p>
+    </div>
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $("#bottles").DataTable();
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container">
+      <h1 class="mt-5">Whiskey and Stuff</h1>
+      <hr />
+      <p>
+        <img alt="" style="width:100px;" class="rounded border border-dark" src="https://my-whiskies.s3-us-west-1.amazonaws.com/bottle-pics/21aecbd2-50e4-42e2-9edc-3fd751007af0.png" />
+        Welcome Home, {{ user.username }}
+        <br />
+        Your distilleries: {{ distilleries|length }}
+        (<a href="{{ url_for('main.distillery') }}">add distillery</a>)
+        <br />
+        Your bottles: {{ bottles|length }}
+        {% if distilleries|length > 0 %}
+          (<a href="{{ url_for('main.bottle') }}">add bottle</a>)
+        {% endif %}
+      </p>
+    </div>
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript">
+  </script>
+{% endblock %}

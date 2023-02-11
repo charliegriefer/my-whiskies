@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container">
+      <h1 class="mt-5">{{ user.username }}'s Whiskies: {{ bottle.name }}</h1>
+      <hr />
+
+      <div class="container">
+        <div class="row">
+          <div class="col-md-1" style="font-weight:bold;">Name:</div>
+          <div class="col">{{ bottle.name }}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-1 font-weight-bold">ABV/Proof:</div>
+          <div class="col">{{ "%.2f"|format(bottle.abv) }}/{{ "%.2f"|format(bottle.abv * 2) }}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-1 font-weight-bold">Distillery:</div>
+          <div class="col">{{ bottle.distillery.name }}</div>
+        </div>
+        {% if bottle.description %}
+        <div class="row">
+          <div class="col-md-1 font-weight-bold">Description:</div>
+          <div class="col">{{ bottle.description }}</div>
+        </div>
+        {% endif %}
+        {% if bottle.notes %}
+        <div class="row">
+          <div class="col-md-1 font-weight-bold">Notes:</div>
+          <div class="col">{{ bottle.notes }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript">
+  </script>
+{% endblock %}

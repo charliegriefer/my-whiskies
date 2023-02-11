@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container">
+      <h1 class="mt-5">Add a Distillery</h1>
+      <hr />
+      <div class="row">
+        <div class="col-md-4">
+          <form method="post" novalidate>
+            {{ form.csrf_token }}
+            <div class="mb-3">
+              {{ form.name.label(class="form-label") }}
+              {{ form.name(class="form-control") }}
+            </div>
+            <div class="mb-3">
+              {{ form.description.label(class="form-label") }}
+              {{ form.description(class="form-control") }}
+            </div>
+            <div class="mb-3">
+              {{ form.region_1.label(class="form-label") }}
+              {{ form.region_1(class="form-control") }}
+            </div>
+            <div class="mb-3">
+              {{ form.region_2.label(class="form-label") }}
+              {{ form.region_2(class="form-control") }}
+            </div>
+            <div class="mb-3">
+              {{ form.url.label(class="form-label") }}
+              {{ form.url(class="form-control") }}
+              {% if form.url.errors %}
+                {% for error in form.url.errors %}
+                  <div class="error">{{ error }}</div>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="mb-3">
+              {{ form.submit(class="btn btn-primary") }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}

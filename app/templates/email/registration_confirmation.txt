@@ -1,0 +1,8 @@
+Dear {{ user.username }},
+
+To complete your registration, please click the following link.
+
+{{ url_for('auth.confirm_register', token=token, _external=True) }}
+
+Sincerely,
+Your Bartender

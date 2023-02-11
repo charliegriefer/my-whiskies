@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container">
+      <h1 class="mt-5">Add a Bottle</h1>
+      <hr />
+      <div class="row">
+        <div class="col-md-4">
+          <form method="post" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+
+            {% for field in form %}
+              {% if field.type != "SubmitField" and field.type != "CSRFTokenField" %}
+                <div class="form-group mb-3">
+                  {{ field.label(class="form-label") }}
+                  {% if field.flags.required %}<span class="text-danger">*</span>{% endif %}
+                  {{ field(class="form-control") }}
+                  {% if field.errors %}
+                    {% for error in field.errors %}
+                      <span class="error">{{ error }}</span>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+
+            <div class="mb-3">
+              {{ form.submit(class="btn btn-primary") }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
