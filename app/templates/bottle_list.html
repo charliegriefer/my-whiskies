@@ -11,7 +11,6 @@
             <tr>
                 <th>Name</th>
                 <th>Description</th>
-                <th>Notes</th>
                 <th>Type</th>
                 <th>ABV</th>
             </tr>
@@ -20,9 +19,8 @@
           {% for bottle in bottles %}
             <tr>
                 <td><a href="{{ url_for("main.bottle_detail", username=user.username, bottle_id=bottle.id) }}">{{ bottle.name }}</a></td>
-                <td>{{ bottle.description }}</td>
-                <td>{{ bottle.notes }}</td>
-                <td>{{ bottle.type }}</td>
+                <td>{% if bottle.description %}{{ bottle.description }}{% else %}&nbsp;{% endif %}</td>
+                <td>{{ bottle.type.value }}</td>
                 <td>{{ "%.2f"|format(bottle.abv) }}</td>
             </tr>
           {% endfor %}
