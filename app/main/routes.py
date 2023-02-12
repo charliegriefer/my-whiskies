@@ -40,7 +40,7 @@ def add_distilleries():
 
     db.session.execute(insert(Distillery), distilleries)
     db.session.commit()
-    
+
     flash(f"{len(distilleries)} have been added to your account.")
     return redirect("home")
 
@@ -71,7 +71,8 @@ def bottle():
     form.type.choices = [(t.name, t.value) for t in BottleTypes]
     form.type.choices.insert(0, ("", "Choose a Bottle Type"))
 
-    form.distillery.choices = [(x.id, x.name) for x in Distillery.query.all()]
+    distilleries = Distillery.query.filter_by(user_id=current_user.id).order_by("name").all()
+    form.distillery.choices = [(x.id, x.name) for x in distilleries]
     form.distillery.choices.insert(0, ("", "Choose a Distillery"))
 
     form.stars.choices = [(str(x * 0.5), str(x * 0.5)) for x in range(0, 11)]
