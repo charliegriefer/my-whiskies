@@ -39,7 +39,7 @@
       <tbody>
         {% for bottle in bottles %}
           <tr>
-            <td><a href="{{ url_for("main.bottle_detail", username=user.username, bottle_id=bottle.id) }}">{{ bottle.name }}</a></td>
+            <td><a href="{{ url_for("main.bottle_detail", username=user.username.lower(), bottle_id=bottle.id) }}">{{ bottle.name }}</a></td>
             <td>{% if bottle.description %}{{ bottle.description }}{% else %}&nbsp;{% endif %}</td>
             <td>{{ bottle.type.value }}</td>
             <td>{{ "%.2f"|format(bottle.abv) }}</td>
