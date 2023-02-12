@@ -6,9 +6,15 @@
       <h1 class="mt-5">Whiskey and Stuff</h1>
       <hr />
       <p>
-        <img alt="" style="width:100px;" class="rounded border border-dark" src="https://my-whiskies.s3-us-west-1.amazonaws.com/bottle-pics/21aecbd2-50e4-42e2-9edc-3fd751007af0.png" />
         Welcome Home, {{ user.username }}
         <br />
+        {% if distilleries|length == 0 %}
+          <br />
+          You have no distilleries.
+          If you'd like us to add some, <a href="{{ url_for('main.add_distilleries') }}">click here</a>.
+          <br /><br />
+        {% endif %}
+
         Your distilleries: {{ distilleries|length }}
         (<a href="{{ url_for('main.distillery') }}">add distillery</a>)
         <br />

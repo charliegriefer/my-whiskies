@@ -48,14 +48,17 @@ def register():
     form = RegistrationForm()
 
     if request.method == "POST" and form.validate_on_submit():
-        # TODO: Pycharm doesn't like this instantiation, but it is correct!
-        user = User(username=form.username.data,
-                    email=form.email.data,
-                    email_confirmed=False)
-        user.set_password(form.password.data)
-        db.session.add(user)
+        user_in = User()
+
+        user_in.username = form.username.data
+        user_in.email = form.email.data
+        user_in.email_confirmed = False
+
+        user_in.set_password(form.password.data)
+
+        db.session.add(user_in)
         db.session.commit()
-        send_registration_confirmation_email(user)
+        send_registration_confirmation_email(user_in)
         flash("Please check your e-mail for further instructions.", "info")
         return redirect(url_for("auth.login"))
     if form.errors:

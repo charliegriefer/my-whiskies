@@ -6,38 +6,38 @@
       <h1 class="mt-5">{{ user.username }}'s Whiskies: {{ bottle.name }}</h1>
       <hr />
 
-      <div class="container">
-        <div class="row">
-          <div class="col-md-1" style="font-weight:bold;">Name:</div>
-          <div class="col">{{ bottle.name }}</div>
+      <div class="row">
+        <div class="col-4" id="data">
+          <div class="row">
+            <div class="col-md-3 fw-bold">Name:</div>
+            <div class="col">{{ bottle.name }}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 fw-bold">ABV/Proof:</div>
+            <div class="col">{{ "%.2f"|format(bottle.abv) }}/{{ "%.2f"|format(bottle.abv * 2) }}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 fw-bold">Distillery:</div>
+            <div class="col">{{ bottle.distillery.name }}</div>
+          </div>
+          {% if bottle.description %}
+          <div class="row">
+            <div class="col-md-3 fw-bold">Description:</div>
+            <div class="col">{{ bottle.description }}</div>
+          </div>
+          {% endif %}
         </div>
-        <div class="row">
-          <div class="col-md-1 font-weight-bold">ABV/Proof:</div>
-          <div class="col">{{ "%.2f"|format(bottle.abv) }}/{{ "%.2f"|format(bottle.abv * 2) }}</div>
+        <div class="col-4 d-flex flex-row-reverse" id="photo">
+          {% if bottle.has_image %}
+            <img alt="{{ bottle.name }}" style="width:300px;" class="rounded border border-dark" src="https://my-whiskies.s3-us-west-1.amazonaws.com/bottle-pics/{{ bottle.id }}.png" />
+          {% endif %}
         </div>
-        <div class="row">
-          <div class="col-md-1 font-weight-bold">Distillery:</div>
-          <div class="col">{{ bottle.distillery.name }}</div>
-        </div>
-        {% if bottle.description %}
-        <div class="row">
-          <div class="col-md-1 font-weight-bold">Description:</div>
-          <div class="col">{{ bottle.description }}</div>
-        </div>
-        {% endif %}
-        {% if bottle.notes %}
-        <div class="row">
-          <div class="col-md-1 font-weight-bold">Notes:</div>
-          <div class="col">{{ bottle.notes }}</div>
-        </div>
-        {% endif %}
       </div>
+
     </div>
   </main>
 {% endblock %}
 
 {% block scripts %}
   {{ super() }}
-  <script type="text/javascript">
-  </script>
 {% endblock %}

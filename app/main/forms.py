@@ -10,6 +10,9 @@ def get_current_year() -> int:
     return datetime.date.today().year
 
 
+img_message = "Permitted file types: jpg/jpeg, png"
+
+
 class DistilleryForm(FlaskForm):
     name = StringField("Name:", validators=[InputRequired(), Length(1, 65)], render_kw={"placeholder": "Name"})
     description = TextAreaField("Description:",
@@ -21,7 +24,7 @@ class DistilleryForm(FlaskForm):
     region_2 = StringField("Region 2:",
                            validators=[InputRequired(), Length(max=36)],
                            render_kw={"placeholder": "Region 2"})
-    url = StringField("URL:", validators=[Length(max=64), URL()], render_kw={"placeholder": "URL"})
+    url = StringField("URL:", validators=[Length(max=64), URL(), Optional()], render_kw={"placeholder": "URL"})
     submit = SubmitField("Add Distillery")
 
 
@@ -41,11 +44,10 @@ class BottleForm(FlaskForm):
     cost = DecimalField("Cost:", places=2, validators=[Optional()], render_kw={"placeholder": "00.00"})
     distillery = SelectField("Distillery:", validators=[InputRequired()])
     description = TextAreaField("Description:", validators=[Length(0, 65000)])
-    notes = TextAreaField("Notes:", validators=[Length(0, 65000)])
     review = TextAreaField("Review:", validators=[Length(0, 65000)])
     stars = SelectField("Stars:", validators=[Optional()], validate_choice=False)
     url = StringField("URL:", validators=[Length(max=64), URL(), Optional()], render_kw={"placeholder": "URL"})
     date_purchased = DateField("Date Purchased:", validators=[Optional()])
     date_killed = DateField("Date Killed:", validators=[Optional()])
-    image = FileField("Image:", validators=[FileAllowed(["jpg", "jpeg", "png"], "Permitted file types: jpg/jpeg, png")])
+    bottle_image = FileField("Image:", validators=[FileAllowed(["jpg", "jpeg", "png"], img_message)])
     submit = SubmitField("Add Bottle")

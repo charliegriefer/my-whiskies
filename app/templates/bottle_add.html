@@ -16,6 +16,9 @@
                   {{ field.label(class="form-label") }}
                   {% if field.flags.required %}<span class="text-danger">*</span>{% endif %}
                   {{ field(class="form-control") }}
+{#                  {% if field.type == "FileField" %}#}
+{#                    <button type="button" class="btn btn-light" id="clear-file" onclick="clearField('{{ field.id }}')">Clear File</button>#}
+{#                  {% endif %}#}
                   {% if field.errors %}
                     {% for error in field.errors %}
                       <span class="error">{{ error }}</span>
@@ -33,4 +36,16 @@
       </div>
     </div>
   </main>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+
+  <script type="text/javascript">
+      function clearField(id_input) {
+        let fileInput = document.getElementById(id_input)
+        fileInput.value = ""
+        fileInput.dispatchEvent(new Event("change"));
+      }
+  </script>
 {% endblock %}

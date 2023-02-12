@@ -35,7 +35,6 @@ class Bottle(db.Model):
     abv = db.Column(db.Float)
     url = db.Column(db.String(64))
     description = db.Column(db.Text, nullable=True)
-    notes = db.Column(db.Text, nullable=True)
     review = db.Column(db.Text, nullable=True)
     stars = db.Column(db.Float, nullable=True)
     cost = db.Column(db.Float, nullable=True)

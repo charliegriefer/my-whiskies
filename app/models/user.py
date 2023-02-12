@@ -22,9 +22,6 @@ class User(UserMixin, db.Model):
     is_deleted = db.Column(db.Boolean(), nullable=False, default=False)
     deleted_date = db.Column(db.DateTime, nullable=True)
 
-    def __repr__(self) -> str:
-        return f"<User {self.username}>"
-
     def get_mail_confirm_token(self, expires_in: int = 600) -> str:
         payload = {"confirm_reg": self.id, "exp": time() + expires_in}
         return jwt.encode(payload, current_app.config["SECRET_KEY"], algorithm="HS256")
