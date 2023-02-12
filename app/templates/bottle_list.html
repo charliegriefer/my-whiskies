@@ -5,28 +5,49 @@
     <div class="container">
       <h1 class="mt-5">{{ user.username }}'s Whiskies</h1>
       <hr />
-      <p>
-        <table id="bottles" class="table table-striped" style="width:100%">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Type</th>
-                <th>ABV</th>
-            </tr>
-        </thead>
-        <tbody>
-          {% for bottle in bottles %}
-            <tr>
-                <td><a href="{{ url_for("main.bottle_detail", username=user.username, bottle_id=bottle.id) }}">{{ bottle.name }}</a></td>
-                <td>{% if bottle.description %}{{ bottle.description }}{% else %}&nbsp;{% endif %}</td>
-                <td>{{ bottle.type.value }}</td>
-                <td>{{ "%.2f"|format(bottle.abv) }}</td>
-            </tr>
+
+      <form method="post" id="type_filter">
+        <input type="hidden" name="bottle_length" id="bottle_length" />
+        <input type="checkbox" id="random_toggle" name="random_toggle" hidden />
+        <div class="d-flex flex-row mb-3">
+          {% for bottle_type in bottle_types %}
+            <div class="p-2 ms-0 ps-0 pe-4 text-nowrap">
+              <input class="bt" type="checkbox" id="{{ bottle_type.name }}" class="form-check-input" name="bottle_type" value="{{ bottle_type.name }}"{% if bottle_type.name in active_filters %} checked{% endif %}>
+              <label class="form-check-label" for="{{ bottle_type.name }}">{{ bottle_type.value }}</label>
+            </div>
           {% endfor %}
-        </tbody>
-        </table>
-      </p>
+          <div class="p-2 ms-0 ps-0 pe-4 text-nowrap">
+            <button type="submit" class="btn btn-primary btn-sm">Apply Filter(s)</button>
+          </div>
+
+          <div class="p-2 d-flex flex-fill justify-content-end">
+            <button type="button" class="btn btn-primary btn-sm" id="do_random">Random Bottle</button>
+          </div>
+
+        </div>
+      </form>
+
+      <table id="bottles" class="table table-striped" style="width:100%">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Type</th>
+          <th>ABV</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for bottle in bottles %}
+          <tr>
+            <td><a href="{{ url_for("main.bottle_detail", username=user.username, bottle_id=bottle.id) }}">{{ bottle.name }}</a></td>
+            <td>{% if bottle.description %}{{ bottle.description }}{% else %}&nbsp;{% endif %}</td>
+            <td>{{ bottle.type.value }}</td>
+            <td>{{ "%.2f"|format(bottle.abv) }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      </table>
+
     </div>
   </main>
 {% endblock %}
@@ -35,7 +56,19 @@
   {{ super() }}
   <script type="text/javascript">
     $(document).ready(function () {
-      $("#bottles").DataTable();
+      $("#bottles").DataTable({
+        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "pageLength": {{ selected_length }}
+      });
+
+      $("#do_random").on("click", function() {
+        $("#random_toggle").prop( "checked", true );
+        $("#type_filter").submit();
+      });
+
+      $("#type_filter").on("submit", function() {
+        $("#bottle_length").val($("select[name='bottles_length'] option").filter(":selected").val());
+      });
     });
   </script>
 {% endblock %}

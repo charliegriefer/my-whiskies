@@ -10,6 +10,7 @@ from app.main.forms import BottleForm, DistilleryForm
 from app.models import User
 from app.models.bottle import Bottle, BottleTypes, Distillery
 from sqlalchemy import insert
+from  sqlalchemy.sql.expression import func
 
 
 @main_blueprint.route("/")
@@ -151,11 +152,34 @@ def bottle():
     return render_template("bottle_add.html", form=form)
 
 
-@main_blueprint.route("/<username>")
+@main_blueprint.route("/<username>", methods=["GET", "POST"])
 def bottle_list(username: str):
     user = User.query.filter(User.username == username).first_or_404()
-    bottles = Bottle.query.filter(Bottle.user_id == user.id).all()
-    return render_template("bottle_list.html", user=user, bottles=bottles)
+    bottles = Bottle.query.filter(Bottle.user_id == user.id)
+    bottle_types = []
+
+    if request.method == "POST":
+        bottle_types = request.form.getlist("bottle_type")
+        if len(bottle_types):
+            bottles = bottles.filter(Bottle.type.in_(bottle_types))
+        if request.form.get("random_toggle"):
+            bottles = bottles.order_by(func.random())
+
+    if request.form.get("random_toggle"):
+        bottles = bottles.first()
+        if bottles:
+            bottles = [bottles]
+        else:
+            bottles = []
+    else:
+        bottles = bottles.all()
+
+    return render_template("bottle_list.html",
+                           user=user,
+                           bottles=bottles,
+                           selected_length=request.form.get("bottle_length", 50),
+                           bottle_types=BottleTypes,
+                           active_filters=bottle_types)
 
 
 @main_blueprint.route("/<username>/<bottle_id>")
