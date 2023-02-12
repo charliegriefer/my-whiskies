@@ -8,6 +8,7 @@ from app.extensions import db
 
 class BottleTypes(enum.Enum):
     scotch = "Scotch"
+    irish_whiskey = "Irish Whiskey"
     bourbon = "Bourbon"
     rye = "Rye"
     american_whiskey = "American Whiskey"
