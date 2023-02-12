@@ -51,11 +51,11 @@ def add_distilleries():
 def distillery():
     form = DistilleryForm()
     if request.method == "POST" and form.validate_on_submit():
-        distillery_in = Distillery(name=form.name.data,
-                                   description=form.description.data,
-                                   region_1=form.region_1.data,
-                                   region_2=form.region_2.data,
-                                   url=form.url.data,
+        distillery_in = Distillery(name=form.name.data.strip(),
+                                   description=form.description.data.strip(),
+                                   region_1=form.region_1.data.strip(),
+                                   region_2=form.region_2.data.strip(),
+                                   url=form.url.data.strip(),
                                    user_id=current_user.id)
         db.session.add(distillery_in)
         db.session.commit()
@@ -90,7 +90,7 @@ def bottle():
         form.stars.data = float(form.stars.data)
 
     if request.method == "POST" and form.validate_on_submit():
-        bottle_in = Bottle(name=form.name.data,
+        bottle_in = Bottle(name=form.name.data.strip(),
                            type=form.type.data,
                            abv=form.abv.data,
                            cost=form.cost.data,
@@ -98,15 +98,15 @@ def bottle():
                            user_id=current_user.id)
 
         if form.year.data and form.year.data != "":
-            bottle_in.year = form.year.data
+            bottle_in.year = form.year.data.strip()
         if form.stars.data and form.stars.data != "":
             bottle_in.stars = form.stars.data
         if form.url.data and form.url.data != "":
-            bottle_in.url = form.url.data
+            bottle_in.url = form.url.data.strip()
         if form.description.data and form.description.data != "":
-            bottle_in.description = form.description.data
+            bottle_in.description = form.description.data.strip()
         if form.review.data and form.review.data != "":
-            bottle_in.review = form.review.data
+            bottle_in.review = form.review.data.strip()
 
         if form.date_purchased.data and form.date_purchased.data != "":
             bottle_in.date_purchased = form.date_purchased.data

@@ -50,8 +50,8 @@ def register():
     if request.method == "POST" and form.validate_on_submit():
         user_in = User()
 
-        user_in.username = form.username.data
-        user_in.email = form.email.data
+        user_in.username = form.username.data.strip()
+        user_in.email = form.email.data.strip()
         user_in.email_confirmed = False
 
         user_in.set_password(form.password.data)
