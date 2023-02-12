@@ -3,37 +3,27 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1 class="mt-5">Add a Distillery</h1>
+      <h1 class="mt-5">{{ user.username }}'s Whiskies: Add Distillery</h1>
       <hr />
       <div class="row">
         <div class="col-md-4">
           <form method="post" novalidate>
             {{ form.csrf_token }}
-            <div class="mb-3">
-              {{ form.name.label(class="form-label") }}
-              {{ form.name(class="form-control") }}
-            </div>
-            <div class="mb-3">
-              {{ form.description.label(class="form-label") }}
-              {{ form.description(class="form-control") }}
-            </div>
-            <div class="mb-3">
-              {{ form.region_1.label(class="form-label") }}
-              {{ form.region_1(class="form-control") }}
-            </div>
-            <div class="mb-3">
-              {{ form.region_2.label(class="form-label") }}
-              {{ form.region_2(class="form-control") }}
-            </div>
-            <div class="mb-3">
-              {{ form.url.label(class="form-label") }}
-              {{ form.url(class="form-control") }}
-              {% if form.url.errors %}
-                {% for error in form.url.errors %}
-                  <div class="error">{{ error }}</div>
-                {% endfor %}
+
+            {% for field in form %}
+              {% if field.type != "SubmitField" and field.type != "CSRFTokenField" %}
+                <div class="mb-3">
+                  {{ field.label(class="form-label") }}
+                  {% if field.flags.required %}<span class="text-danger">*</span>{% endif %}
+                  {{ field(class="form-control") }}
+                  {% if field.errors %}
+                    {% for error in field.errors %}
+                      <span class="error">{{ error }}</span>
+                    {% endfor %}
+                  {% endif %}
+                </div>
               {% endif %}
-            </div>
+            {% endfor %}
             <div class="mb-3">
               {{ form.submit(class="btn btn-primary") }}
             </div>

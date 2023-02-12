@@ -1,30 +1,33 @@
-from flask import flash, redirect, render_template, request
-from flask_login import current_user, login_required
 import io
+
 import boto3
-from botocore.exceptions import ClientError
 from PIL import Image
+from botocore.exceptions import ClientError
+from flask import flash, redirect, render_template, request, url_for
+from flask_login import current_user, login_required
+from sqlalchemy import insert
+from sqlalchemy.sql.expression import func
+
 from app.extensions import db
 from app.main import main_blueprint
 from app.main.forms import BottleForm, DistilleryForm
 from app.models import User
 from app.models.bottle import Bottle, BottleTypes, Distillery
-from sqlalchemy import insert
-from  sqlalchemy.sql.expression import func
 
 
 @main_blueprint.route("/")
-@main_blueprint.route("/index")
-def index():
-    return render_template("index.html", title="Home")
-
-
 @main_blueprint.route("/home")
-@login_required
 def home():
-    bottles = Bottle.query.filter(Bottle.user_id == current_user.id).all()
-    distilleries = Distillery.query.filter(Distillery.user_id == current_user.id).all()
-    return render_template("home.html", user=current_user, bottles=bottles, distilleries=distilleries)
+    if current_user.is_authenticated:
+        my_bottles = Bottle.query.filter(Bottle.user_id == current_user.id).all()
+        my_distilleries = Distillery.query.filter(Distillery.user_id == current_user.id).all()
+        return render_template("home.html",
+                               title=f"{current_user.username}'s Whiskies | Home Page",
+                               user=current_user,
+                               bottles=my_bottles,
+                               distilleries=my_distilleries)
+    else:
+        return render_template("index.html", title="Home")
 
 
 @main_blueprint.route("/add_distilleries")
@@ -33,16 +36,19 @@ def add_distilleries():
     if request.referrer.split("/")[-1] != "home":
         return redirect("home")
 
-    distilleries = [d.__dict__ for d in Distillery.query.filter(Distillery.user_id == 0).all()]
-    for _distillery in distilleries:
+    if Distillery.query.filter(Distillery.user_id == current_user.id).count() > 0:
+        return redirect("home")
+
+    base_distilleries = [d.__dict__ for d in Distillery.query.filter(Distillery.user_id == 0).all()]
+    for _distillery in base_distilleries:
         del _distillery["id"]
         del _distillery["_sa_instance_state"]
         _distillery["user_id"] = current_user.id
 
-    db.session.execute(insert(Distillery), distilleries)
+    db.session.execute(insert(Distillery), base_distilleries)
     db.session.commit()
 
-    flash(f"{len(distilleries)} have been added to your account.")
+    flash(f"{len(base_distilleries)} distilleries have been added to your account.")
     return redirect("home")
 
 
@@ -61,7 +67,31 @@ def distillery():
         db.session.commit()
         flash(f"\"{distillery_in.name}\" has been successfully added.", "success")
         return redirect("home")
-    return render_template("distillery_add.html", form=form)
+    return render_template("distillery_add.html",
+                           title=f"{current_user.username}'s Whiskies | Add Distillery",
+                           user=current_user,
+                           form=form)
+
+
+@main_blueprint.route("/distillery_delete/<string:distillery_id>")
+@login_required
+def distillery_delete(distillery_id: str):
+    _distillery = Distillery.query.get(distillery_id)
+    distillery_bottles = Bottle.query.filter(Bottle.distillery_id == distillery_id).count()
+    if distillery_bottles > 0:
+        flash(f"You cannot delete \"{_distillery.name}\", because it has bottles associated to it.", "danger")
+        return redirect(url_for("main.distilleries"))
+    db.session.delete(_distillery)
+    db.session.commit()
+    flash(f"\"{_distillery.name}\" has been successfully deleted.", "success")
+    return redirect(url_for("main.distilleries"))
+
+
+@main_blueprint.route("/distilleries")
+@login_required
+def distilleries():
+    _distilleries = Distillery.query.filter(Distillery.user_id == current_user.id).all()
+    return render_template("distillery_list.html", user=current_user, distilleries=_distilleries)
 
 
 @main_blueprint.route("/bottle", methods=["GET", "POST"])
@@ -152,7 +182,7 @@ def bottle():
     return render_template("bottle_add.html", form=form)
 
 
-@main_blueprint.route("/<username>", methods=["GET", "POST"])
+@main_blueprint.route("/<username>", methods=["GET", "POST"], endpoint="list_bottles")
 def bottle_list(username: str):
     user = User.query.filter(User.username == username).first_or_404()
     bottles = Bottle.query.filter(Bottle.user_id == user.id)

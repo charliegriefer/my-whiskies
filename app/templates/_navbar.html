@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg bg-light">
   <div class="container">
     <img src="{{ url_for('static', filename='bottle.png') }}" style="height:64px;" />
-    <a class="navbar-brand" href="{{ url_for("main.index") }}">My Whiskies</a>
+    <a class="navbar-brand" href="{{ url_for("main.home") }}">My Whiskies</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -9,7 +9,7 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         {% if current_user.is_anonymous %}
           <li class="nav-item">
-            <a class="nav-link" id="nav_home" href="{{ url_for("main.index") }}">Home</a>
+            <a class="nav-link" id="nav_home" href="{{ url_for("main.home") }}">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" id="nav_login" href="{{ url_for('auth.login') }}">Login</a>

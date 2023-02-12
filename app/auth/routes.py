@@ -14,7 +14,7 @@ from app.models.user import User
 @auth_blueprint.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.home"))
     form = LoginForm()
     if request.method == "POST" and form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data, is_deleted=False).first()
@@ -38,13 +38,13 @@ def login():
 @auth_blueprint.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for("main.index"))
+    return redirect(url_for("main.home"))
 
 
 @auth_blueprint.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.home"))
     form = RegistrationForm()
 
     if request.method == "POST" and form.validate_on_submit():
@@ -69,7 +69,7 @@ def register():
 @auth_blueprint.route("/confirm_register/<token>", methods=["GET", "POST"])
 def confirm_register(token: str):
     if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.home"))
     user = User.verify_mail_confirm_token(token)
     if not user:
         link = f"<a href=\"{url_for('auth.resend_register')}\">click here</a>"
@@ -88,7 +88,7 @@ def confirm_register(token: str):
 @auth_blueprint.route("/reset_password_request", methods=["GET", "POST"])
 def reset_password_request():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.home"))
     form = ResetPasswordRequestForm()
     if request.method == "POST" and form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data, is_deleted=False).first()
