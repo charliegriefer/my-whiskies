@@ -77,8 +77,13 @@ def distillery():
 @login_required
 def bottle_delete(bottle_id: str):
     bottle_to_delete = Bottle.query.get_or_404(bottle_id)
+
     db.session.delete(bottle_to_delete)
+
+    s3_client = boto3.client("s3")
+    s3_client.delete_object(Bucket="my-whiskies", Key=f"bottle-pics/{bottle_to_delete.id}.png")
     db.session.commit()
+
     flash(f"\"{bottle_to_delete.name}\" has been successfully deleted.", "success")
     return redirect(url_for("main.list_bottles", username=current_user.username))
 
@@ -161,7 +166,6 @@ def bottle():
 
         if form.bottle_image.data:
             image_in = Image.open(form.bottle_image.data)
-            ext = image_in.format.lower()
 
             if image_in.width > 300:
                 # calculate new height and width
@@ -169,10 +173,10 @@ def bottle():
                 image_dims = (int(image_in.width/divisor), int(image_in.height/divisor))
                 image_in = image_in.resize(image_dims)
 
-            new_filename = f"{bottle_in.id}.{ext}"
+            new_filename = f"{bottle_in.id}.png"
 
             in_mem_file = io.BytesIO()
-            image_in.save(in_mem_file, format=ext)
+            image_in.save(in_mem_file, format="png")
             in_mem_file.seek(0)
 
             s3_client = boto3.client("s3")
