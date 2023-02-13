@@ -22,7 +22,7 @@ def home():
         my_bottles = Bottle.query.filter(Bottle.user_id == current_user.id).all()
         my_distilleries = Distillery.query.filter(Distillery.user_id == current_user.id).all()
         return render_template("home.html",
-                               title=f"{current_user.username}'s Whiskies | Home Page",
+                               title=f"{current_user.username}'s Whiskies| Home Page",
                                user=current_user,
                                bottles=my_bottles,
                                distilleries=my_distilleries)
@@ -71,6 +71,16 @@ def distillery():
                            title=f"{current_user.username}'s Whiskies | Add Distillery",
                            user=current_user,
                            form=form)
+
+
+@main_blueprint.route("/bottle_delete/<string:bottle_id>")
+@login_required
+def bottle_delete(bottle_id: str):
+    bottle_to_delete = Bottle.query.get_or_404(bottle_id)
+    db.session.delete(bottle_to_delete)
+    db.session.commit()
+    flash(f"\"{bottle_to_delete.name}\" has been successfully deleted.", "success")
+    return redirect(url_for("main.list_bottles", username=current_user.username))
 
 
 @main_blueprint.route("/distillery_delete/<string:distillery_id>")
@@ -205,6 +215,7 @@ def bottle_list(username: str):
         bottles = bottles.all()
 
     return render_template("bottle_list.html",
+                           title=f"{user.username}'s Whiskies| Bottles",
                            user=user,
                            bottles=bottles,
                            selected_length=request.form.get("bottle_length", 50),
