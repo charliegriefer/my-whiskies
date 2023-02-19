@@ -1,48 +1,44 @@
 import os
 from dotenv import load_dotenv
-load_dotenv()
+
+dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+
+
+load_dotenv(dotenv_path=dotenv_path, verbose=True)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class BaseConfig:
-    SECRET_KEY = "c81f01e4fda60483ceab507f089cb628ba69b7d30dee78c6ae1fa483e7f0738f"
-    SQLALCHEMY_DATABASE_URI = "mysql://root:password@localhost/my-whiskies"
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-
+    SECRET_KEY = os.environ["SECRET_KEY"]
+    DEBUG = os.environ["DEBUG"]
     BOTTLE_IMAGE_PATH = os.path.join(basedir, "app/static/bottles/")
 
+    # DATABASE
+    SQLALCHEMY_DATABASE_URI = os.environ["SQLALCHEMY_DATABASE_URI"]
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
     # MAIL
-    MAIL_SERVER = "mail.privateemail.com"
+    MAIL_SERVER = os.environ["MAIL_SERVER"]
     MAIL_PORT = 465
     MAIL_USE_SSL = True
-    MAIL_USERNAME = "bartender@my-whiskies.online"
-    MAIL_PASSWORD = "AEA9fvb4keg4tup!qud"
+    MAIL_USERNAME = os.environ["MAIL_USERNAME"]
+    MAIL_PASSWORD = os.environ["MAIL_PASSWORD"]
     MAIL_SUBJECT_PREFIX = "[my-whiskies.online]"
     MAIL_SENDER = "Bartender <bartender@my-whiskies.online>"
-    MAIL_ADMINS = ["bartener@my-whiskies.online"]
-    MAIL_SYNC = True
+    MAIL_ADMINS = ["bartender@my-whiskies.online"]
+    MAIL_SYNC = os.environ["MAIL_SYNC"]
 
     # LOGGING
-    LOG_LEVEL = 40
+    LOG_LEVEL = os.environ["LOG_LEVEL"]
 
     @staticmethod
     def init_app(app):
         pass
 
 
-class DevConfig(BaseConfig):
-    FLASK_ENV = "development"
-
-    # LOGGING
-    LOGFILE = "logs/partnerup.log"
-    LOG_BACKTRACE = True
-    LOG_LEVEL = 10
-
-
 class ProdConfig(BaseConfig):
     FLASK_ENV = "production"
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     MAIL_SYNC = False
 

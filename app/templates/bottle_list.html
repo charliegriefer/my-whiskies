@@ -43,7 +43,10 @@
             <td>
               <a href="#" data-bs-toggle="modal", data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.bottle_delete", bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
             </td>
-            <td><a href="{{ url_for("main.bottle_detail", username=user.username.lower(), bottle_id=bottle.id) }}">{{ bottle.name }}</a></td>
+            <td>
+              <a href="{{ url_for("main.bottle_detail", username=user.username.lower(), bottle_id=bottle.id) }}">{{ bottle.name }}</a>
+              {% if bottle.has_image %}<i class="bi bi-file-image ps-1"></i>{% endif %}
+            </td>
             <td>{% if bottle.description %}{{ bottle.description }}{% else %}&nbsp;{% endif %}</td>
             <td>{{ bottle.type.value }}</td>
             <td>{{ "%.2f"|format(bottle.abv) }}</td>
