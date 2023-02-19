@@ -1,4 +1,5 @@
 import os
+import logging
 from dotenv import load_dotenv
 
 dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
@@ -11,12 +12,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class BaseConfig:
     SECRET_KEY = os.environ["SECRET_KEY"]
-    DEBUG = os.environ["DEBUG"]
     BOTTLE_IMAGE_PATH = os.path.join(basedir, "app/static/bottles/")
 
     # DATABASE
     SQLALCHEMY_DATABASE_URI = os.environ["SQLALCHEMY_DATABASE_URI"]
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     # MAIL
     MAIL_SERVER = os.environ["MAIL_SERVER"]
@@ -27,23 +28,31 @@ class BaseConfig:
     MAIL_SUBJECT_PREFIX = "[my-whiskies.online]"
     MAIL_SENDER = "Bartender <bartender@my-whiskies.online>"
     MAIL_ADMINS = ["bartender@my-whiskies.online"]
-    MAIL_SYNC = os.environ["MAIL_SYNC"]
+    MAIL_DEBUG = 1
 
     # LOGGING
-    LOG_LEVEL = os.environ["LOG_LEVEL"]
+    LOG_LEVEL = logging.DEBUG
+    LOG_BACKTRACE = False
 
     @staticmethod
     def init_app(app):
         pass
 
 
-class ProdConfig(BaseConfig):
-    FLASK_ENV = "production"
+class DevConfig(BaseConfig):
+    DEBUG = os.environ["DEBUG"]
 
-    MAIL_SYNC = False
+
+class ProdConfig(BaseConfig):
+    # DATABASE
+    SQLALCHEMY_ECHO = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # MAIL
+    MAIL_DEBUG = 0
 
     # LOGGING
-    LOGFILE = "logs/partnerup.log"
+    LOG_LEVEL = logging.ERROR
     LOG_BACKTRACE = True
 
     @classmethod
