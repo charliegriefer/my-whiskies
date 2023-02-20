@@ -4,7 +4,7 @@ python3 -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt
 
-chown -R ec2-user:nginx /var/www
+chown -R ubuntu:nginx /var/www
 
 # Note: assuming port 8080 is open, you can test that the app will
 # run under uwsgi manually using the following
@@ -18,7 +18,7 @@ cp config/my-whiskies.service /etc/systemd/system/my-whiskies.service
 
 
 mkdir /var/log/uwsgi
-chown -R ec2-user:nginx /var/log/uwsgi
+chown -R ubuntu:nginx /var/log/uwsgi
 
 systemctl start my-whiskies.service
 systemctl enable my-whiskies.service

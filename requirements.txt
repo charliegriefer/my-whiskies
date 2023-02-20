@@ -20,6 +20,7 @@ jmespath==1.0.1
 Mako==1.2.4
 MarkupSafe==2.1.2
 mysqlclient==2.1.1
+Pillow==9.4.0
 PyJWT==2.6.0
 python-dateutil==2.8.2
 python-dotenv==0.21.1

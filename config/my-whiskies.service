@@ -3,8 +3,8 @@ Description=uWSGI Container Server for my-whiskies
 After=network.target
 
 [Service]
-User=ec2-user
-Group=nginx
+User=ubuntu
+Group=www-data
 WorkingDirectory=/var/www
 Environment="PATH=/var/www/venv/bin"
 ExecStart=/var/www/venv/bin/uwsgi --ini config/my-whiskies.ini
