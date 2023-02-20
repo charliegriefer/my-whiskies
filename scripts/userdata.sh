@@ -16,13 +16,13 @@ aws configure set region us-west-1
 
 mkdir -p /var/www
 
-git clone https://github.com/charliegriefer/my-whiskies.git /var/www
+git clone https://github.com/charliegriefer/my-whiskies /var/www
 
 cd /var/www
 
 git config core.fileMode false
 
-aws s3 cp s3://my-whiskies/.env /var/www/.env
+aws s3 cp s3://my-whiskies/.env .env
 
 chmod +x scripts/post_userdata.sh
 ./scripts/post_userdata.sh
