@@ -14,8 +14,8 @@ mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf-orig
 cp config/nginx.conf /etc/nginx/nginx.conf
 
 cp config/my-whiskies.conf /etc/nginx/conf.d/my-whiskies.conf
-
 cp config/my-whiskies.service /etc/systemd/system/my-whiskies.service
+
 
 mkdir /var/log/uwsgi
 chown -R ec2-user:nginx /var/log/uwsgi
@@ -25,8 +25,5 @@ systemctl enable my-whiskies.service
 
 systemctl restart nginx
 systemctl enable nginx
-
-export FLASK_APP=my-whiskies
-flask db upgrade
 
 echo "Install complete"
