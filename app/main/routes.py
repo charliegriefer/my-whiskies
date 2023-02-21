@@ -219,13 +219,16 @@ def bottle_list(username: str):
     else:
         bottles = bottles.all()
 
+    can_edit = current_user.is_authenticated and current_user.username == username
+
     return render_template("bottle_list.html",
                            title=f"{user.username}'s Whiskies| Bottles",
                            user=user,
                            bottles=bottles,
                            selected_length=request.form.get("bottle_length", 50),
                            bottle_types=BottleTypes,
-                           active_filters=bottle_types)
+                           active_filters=bottle_types,
+                           can_edit=can_edit)
 
 
 @main_blueprint.route("/<username>/<bottle_id>")
