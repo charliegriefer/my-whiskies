@@ -80,8 +80,9 @@ def bottle_delete(bottle_id: str):
 
     db.session.delete(bottle_to_delete)
 
-    s3_client = boto3.client("s3")
-    s3_client.delete_object(Bucket="my-whiskies", Key=f"bottle-pics/{bottle_to_delete.id}.png")
+    if bottle_to_delete.has_image:
+        s3_client = boto3.client("s3")
+        s3_client.delete_object(Bucket="my-whiskies-pics", Key=f"{bottle_to_delete.id}.png")
     db.session.commit()
 
     flash(f"\"{bottle_to_delete.name}\" has been successfully deleted.", "success")
@@ -181,7 +182,7 @@ def bottle():
 
             s3_client = boto3.client("s3")
             try:
-                s3_client.put_object(Body=in_mem_file, Bucket="my-whiskies", Key=f"bottle-pics/{new_filename}")
+                s3_client.put_object(Body=in_mem_file, Bucket="my-whiskies-pics", Key=f"{new_filename}")
                 bottle_in.has_image = True
                 db.session.commit()
             except ClientError:
