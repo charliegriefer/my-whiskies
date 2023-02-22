@@ -95,7 +95,7 @@
             targets: 0,
           },
         ],
-        order: [[1, "asc"]],
+        order: [[{% if can_edit %}1{% else %}0{% endif %}, "asc"]],
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "pageLength": {{ selected_length }}
       });
