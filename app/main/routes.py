@@ -27,7 +27,19 @@ def home():
                                bottles=my_bottles,
                                distilleries=my_distilleries)
     else:
-        return render_template("index.html", title="Home")
+        user_count = User.query.count() - 1             # subtract 1 for "admin" user
+        distillery_count = Distillery.query.with_entities(Distillery.name).order_by(Distillery.name).group_by(Distillery.name).count()
+        bottle_count = Bottle.query.count()
+
+        bottles_types = Bottle.query.with_entities(Bottle.type,
+                                                   func.count(Bottle.type)).order_by(Bottle.type).group_by(Bottle.type)
+
+        return render_template("index.html",
+                               title="My Whiskies Online| Home Page",
+                               user_count=user_count,
+                               distillery_count=distillery_count,
+                               bottle_count=bottle_count,
+                               bottle_types=bottles_types.all())
 
 
 @main_blueprint.route("/add_distilleries")
@@ -118,8 +130,8 @@ def bottle():
     form.type.choices = [(t.name, t.value) for t in BottleTypes]
     form.type.choices.insert(0, ("", "Choose a Bottle Type"))
 
-    distilleries = Distillery.query.filter_by(user_id=current_user.id).order_by("name").all()
-    form.distillery.choices = [(x.id, x.name) for x in distilleries]
+    _distilleries = Distillery.query.filter_by(user_id=current_user.id).order_by("name").all()
+    form.distillery.choices = [(x.id, x.name) for x in _distilleries]
     form.distillery.choices.insert(0, ("", "Choose a Distillery"))
 
     form.stars.choices = [(str(x * 0.5), str(x * 0.5)) for x in range(0, 11)]
