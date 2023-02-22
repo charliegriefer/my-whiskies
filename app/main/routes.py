@@ -156,7 +156,7 @@ def bottle():
                            user_id=current_user.id)
 
         if form.year.data and form.year.data != "":
-            bottle_in.year = form.year.data.strip()
+            bottle_in.year = form.year.data
         if form.stars.data and form.stars.data != "":
             bottle_in.stars = form.stars.data
         if form.url.data and form.url.data != "":
@@ -170,7 +170,7 @@ def bottle():
             bottle_in.date_purchased = form.date_purchased.data
         if form.date_killed.data and form.date_killed.data != "":
             bottle_in.date_killed = form.date_killed.data
-
+        print("BOTTLE IN: ", bottle_in)
         db.session.add(bottle_in)
         db.session.commit()
         db.session.flush()
