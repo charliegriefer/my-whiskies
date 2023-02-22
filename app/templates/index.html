@@ -3,24 +3,51 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1 class="mt-5">Whiskey and Stuff</h1>
+      <h1 class="mt-5">My Whiskies Online</h1>
       <hr />
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-        dolore magna aliqua. At quis risus sed vulputate odio ut. Iaculis eu non diam phasellus vestibulum lorem
-        sed risus ultricies. Fermentum dui faucibus in ornare quam. A diam sollicitudin tempor id eu nisl nunc mi.
-        Eget nullam non nisi est sit amet. Dolor sed viverra ipsum nunc. Sed odio morbi quis commodo odio aenean.
-        A condimentum vitae sapien pellentesque habitant. Facilisi morbi tempus iaculis urna id volutpat lacus
-        laoreet non. Risus pretium quam vulputate dignissim suspendisse in est ante in. Adipiscing elit duis
-        tristique sollicitudin nibh. Scelerisque eleifend donec pretium vulputate sapien nec sagittis aliquam malesuada.
-      </p>
-      <p>
-        Neque egestas congue quisque egestas diam in arcu cursus. Sed id semper risus in hendrerit gravida.
-        Nullam non nisi est sit amet facilisis magna. Eu lobortis elementum nibh tellus molestie nunc non blandit
-        massa. Sed nisi lacus sed viverra. Dictum varius duis at consectetur lorem donec massa. Risus at ultrices
-        mi tempus imperdiet nulla malesuada. Risus commodo viverra maecenas accumsan lacus vel facilisis.
-        Semper eget duis at tellus. Faucibus interdum posuere lorem ipsum. Posuere ac ut consequat semper viverra nam libero justo.
-      </p>
+
+      <div class="container">
+        <div class="row">
+          <div class="col ms-0 ps-0 pe-4">
+            <p>
+            My Whiskies Online is a venture started by a whiskey nerd who also happens to be a data nerd.
+            After accumulating more bottles than he could readily keep track of, it became evident that the
+            solution was a database.
+            </p>
+            <p>So the database was created. And then a web front-end. And things were good.</p>
+            <p>But this only ran locally on a laptop.</p>
+            <p>
+              <span class="fst-italic">The whiskey community is all about sharing.</span>
+              With that in mind, an effort was underway to build an application that could be used by anybody online.
+            </p>
+            <p>This is that application.</p>
+            <p>
+              My Whiskies Online is:
+              <ul>
+                <li><a href="https://www.python.org">Python</a></li>
+                <li><a href="https://flask.palletsprojects.com/en/2.2.x/">Flask</a></li>
+                <li><a href="https://www.mysql.com">MySQL</a></li>
+                <li><a href="https://aws.amazon.com">Amazon Web Services</a></li>
+              </ul>
+            </p>
+          </div>
+          <div class="col" style="border-left:1px solid gray;">
+            <p class="fw-bold">Data Nerd Stats:</p>
+            <p>
+              <ul>
+                <li>Number of Users: <span class="text-danger fw-bold">{{ user_count }}</span></li>
+                <li>Distilleries Tracked: <span class="text-danger fw-bold">{{ distillery_count }}</span></li>
+                <li>Bottles Tracked: <span class="text-danger fw-bold">{{ bottle_count }}</span></li>
+                <ul>
+                  {% for k, v in bottle_types %}
+                    <li>{{ k.value }}: <span class="text-primary fw-bold">{{ v }}</span></li>
+                  {% endfor %}
+                </ul>
+              </ul>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 {% endblock %}
