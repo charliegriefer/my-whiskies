@@ -5,7 +5,7 @@
     <div class="container">
       <h1>{{ user.username }}'s Whiskies
       {% if is_my_list %}
-        <button type="button" style="margin-top:0.8rem;" class="btn btn-primary btn-sm float-end" id="do_random">Random Bottle</button>
+        <button type="button" style="margin-top:0.4rem;" class="btn btn-primary float-end" id="do_random"><i class="bi bi-question-circle mr-2"></i> Random Bottle</button>
       {% endif %}
       </h1>
       <hr />
@@ -29,19 +29,19 @@
       <table id="bottles" class="table table-striped" style="width:100%">
       <thead>
         <tr>
-          {% if can_edit %}
+          {% if is_my_list %}
           <th>&nbsp;</th>
           {% endif %}
           <th>Name</th>
           <th>Description</th>
           <th>Type</th>
-          <th>ABV</th>
+          <th style="text-align:right">ABV/Proof</th>
         </tr>
       </thead>
       <tbody>
         {% for bottle in bottles %}
           <tr>
-            {% if can_edit %}
+            {% if is_my_list %}
             <td>
               <a href="#" data-bs-toggle="modal", data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.bottle_delete", bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
             </td>
@@ -52,7 +52,7 @@
             </td>
             <td>{% if bottle.description %}{{ bottle.description }}{% else %}&nbsp;{% endif %}</td>
             <td>{{ bottle.type.value }}</td>
-            <td>{{ "%.2f"|format(bottle.abv) }}</td>
+            <td style="text-align:right; padding-right:1.6em;">{{ "%.2f"|format(bottle.abv) }}/{{ "%.2f"|format(bottle.abv*2) }}</td>
           </tr>
         {% endfor %}
       </tbody>
