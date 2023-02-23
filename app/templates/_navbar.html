@@ -7,24 +7,23 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        {% if current_user.is_anonymous %}
-          <li class="nav-item">
-            <a class="nav-link" id="nav_home" href="{{ url_for("main.home") }}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="nav_login" href="{{ url_for('auth.login') }}">Login</a>
-          </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="nav-link" id="nav_home" href="{{ url_for("main.home") }}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.logout') }}">
-              Logout
-            </a>
-          </li>
-        {% endif %}
+        <li class="nav-item">
+          <a class="nav-link" id="nav_home" href="{{ url_for("main.home") }}">Home</a>
+        </li>
       </ul>
+      <span class="navbar-text">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% if current_user.is_anonymous %}
+            <li class="nav-item">
+              <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary" role="button" id="nav_login">Log In</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-secondary" role="button" id="nav_logout">Log Out</a>
+            </li>
+          {% endif %}
+        </ul>
+      </span>
     </div>
   </div>
 </nav>

@@ -16,7 +16,7 @@ class LoginForm(FlaskForm):
     username = StringField("Username:", validators=[DataRequired()], render_kw={"placeholder": "Username"})
     password = PasswordField("Password:", validators=[DataRequired()], render_kw={"placeholder": "Password"})
     remember_me = BooleanField("Remember Me")
-    submit = SubmitField("Sign In")
+    submit = SubmitField("Log In")
 
 
 class ResetPasswordRequestForm(FlaskForm):
@@ -27,8 +27,13 @@ class ResetPasswordRequestForm(FlaskForm):
 
 
 class ResetPWForm(FlaskForm):
-    password = PasswordField("Password", validators=[DataRequired()])
-    password2 = PasswordField("Repeat Password", validators=[DataRequired(), EqualTo("password")])
+    password = PasswordField("Password:",
+                             validators=[DataRequired(), Length(min=8, max=22)],
+                             render_kw={"placeholder": "Password"},
+                             description=pw_description)
+    password2 = PasswordField("Repeat Password:",
+                              validators=[DataRequired(), EqualTo("password", message="Passwords do not match.")],
+                              render_kw={"placeholder": "Repeat Password"})
     submit = SubmitField("Reset My Password ")
 
 

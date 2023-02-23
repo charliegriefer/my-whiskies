@@ -1,22 +1,21 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-  <main class="flex-shrink=0">
+  <main class="flex-shrink-0">
     <div class="container">
-      <h1>Reset Password</h1>
+      <h1>Re-Send Registration Confirmation E-Mail</h1>
       <hr />
 
       <div class="container ms-0 ps-0">
         <div class="row">
-          <p>Enter the e-mail address that you used to register with My Whiskies Online.</p>
           <div class="col-md-4 pt-4">
             <form method="post">
               {{ form.csrf_token }}
               <div class="mb-3">
-                {{ form.email.label(class="form-label") }}
+                {{ form.enmail.label(class="form-label") }}
                 {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
               </div>
-              <div class="mb-3 pt-3">
+              <div class="mb-3">
                 {{ form.submit(class="btn btn-primary") }}
               </div>
             </form>

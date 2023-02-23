@@ -3,12 +3,12 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1 class="mt-5">My Whiskies Online</h1>
+      <h1>My Whiskies Online</h1>
       <hr />
 
       <div class="container">
         <div class="row">
-          <div class="col ms-0 ps-0 pe-4">
+          <div class="col-8 ms-0 ps-0 pe-4">
             <p>
             My Whiskies Online is a venture started by a whiskey nerd who also happens to be a data nerd.
             After accumulating more bottles than he could readily keep track of, it became evident that the
@@ -24,15 +24,15 @@
             <p>
               My Whiskies Online is:
               <ul>
-                <li><a href="https://www.python.org">Python</a></li>
-                <li><a href="https://flask.palletsprojects.com/en/2.2.x/">Flask</a></li>
-                <li><a href="https://www.mysql.com">MySQL</a></li>
-                <li><a href="https://aws.amazon.com">Amazon Web Services</a></li>
+                <li><a href="https://www.python.org" target="_blank" rel="noopener noreferrer">Python <i class="bi bi-box-arrow-in-up-right"></i></a></li>
+                <li><a href="https://flask.palletsprojects.com/en/2.2.x/" target="_blank" rel="noopener noreferrer">Flask <i class="bi bi-box-arrow-in-up-right"></i></a></li>
+                <li><a href="https://www.mysql.com" target="_blank" rel="noopener noreferrer">MySQL <i class="bi bi-box-arrow-in-up-right"></i></a></li>
+                <li><a href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">Amazon Web Services <i class="bi bi-box-arrow-in-up-right"></i></a></li>
               </ul>
             </p>
           </div>
           <div class="col" style="border-left:1px solid gray;">
-            <p class="fw-bold">Data Nerd Stats:</p>
+            <p class="fw-bold">Data Nerd Stats: <i class="bi bi-bar-chart-line"></i></p>
             <p>
               <ul>
                 <li>Number of Users: <span class="text-danger fw-bold">{{ user_count }}</span></li>
@@ -44,6 +44,7 @@
                   {% endfor %}
                 </ul>
               </ul>
+              <div class="pt-3">Not a member yet? <a href="{{ url_for("auth.register") }}">Join us</a>!</div>
             </p>
           </div>
         </div>
@@ -54,6 +55,4 @@
 
 {% block scripts %}
   {{ super() }}
-  <script type="text/javascript">
-  </script>
 {% endblock %}
