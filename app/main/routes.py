@@ -238,7 +238,7 @@ def bottle_list(username: str):
         bottles = bottles.all()
 
     is_my_list = current_user.is_authenticated and current_user.username.lower() == username.lower()
-    
+
     return render_template("bottle_list.html",
                            title=f"{user.username}'s Whiskies| Bottles",
                            user=user,
