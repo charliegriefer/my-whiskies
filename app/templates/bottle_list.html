@@ -3,7 +3,11 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1 class="mt-5">{{ user.username }}'s Whiskies</h1>
+      <h1>{{ user.username }}'s Whiskies
+      {% if is_my_list %}
+        <button type="button" style="margin-top:0.8rem;" class="btn btn-primary btn-sm float-end" id="do_random">Random Bottle</button>
+      {% endif %}
+      </h1>
       <hr />
 
       <form method="post" id="type_filter">
@@ -19,11 +23,6 @@
           <div class="p-2 ms-0 ps-0 pe-4 text-nowrap">
             <button type="submit" class="btn btn-primary btn-sm">Apply Filter(s)</button>
           </div>
-
-          <div class="p-2 d-flex flex-fill justify-content-end">
-            <button type="button" class="btn btn-primary btn-sm" id="do_random">Random Bottle</button>
-          </div>
-
         </div>
       </form>
 
@@ -88,14 +87,16 @@
   <script type="text/javascript">
     $(document).ready(function () {
       $("#bottles").DataTable({
+        {% if is_my_list %}
         columnDefs: [
           {
             searchable: false,
             orderable: false,
-            targets: 0,
+            targets: 0
           },
         ],
-        order: [[{% if can_edit %}1{% else %}0{% endif %}, "asc"]],
+        {% endif %}
+        order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "pageLength": {{ selected_length }}
       });
