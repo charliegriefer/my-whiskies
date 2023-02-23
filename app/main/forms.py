@@ -48,6 +48,7 @@ class BottleForm(FlaskForm):
     stars = SelectField("Stars:", validators=[Optional()], validate_choice=False)
     url = StringField("URL:", validators=[Length(max=64), URL(), Optional()], render_kw={"placeholder": "URL"})
     date_purchased = DateField("Date Purchased:", validators=[Optional()])
+    date_opened = DateField("Date Opened:", validators=[Optional()])
     date_killed = DateField("Date Killed:", validators=[Optional()])
     bottle_image = FileField("Image:", validators=[FileAllowed(["jpg", "jpeg", "png"], img_message)])
     submit = SubmitField("Add Bottle")
