@@ -34,6 +34,7 @@
           {% endif %}
           <th>Name</th>
           <th>Description</th>
+          <th style="text-align:right">Rating</th>
           <th>Type</th>
           <th style="text-align:right">ABV/Proof</th>
         </tr>
@@ -48,9 +49,17 @@
             {% endif %}
             <td>
               <a href="{{ url_for("main.bottle_detail", username=user.username.lower(), bottle_id=bottle.id) }}">{{ bottle.name }}</a>
-              {% if bottle.has_image %}<i class="bi bi-file-image ps-1"></i>{% endif %}
+              {% if bottle.has_image %}<i class="bi bi-image ms-1" title="Has Image"></i>{% endif %}
             </td>
             <td>{% if bottle.description %}{{ bottle.description }}{% else %}&nbsp;{% endif %}</td>
+            <td style="text-align:right; padding-right:1.6em;">
+              {% if bottle.stars %}
+                {% set times_ten = bottle.stars * 10 %}
+                {% set times_ten = times_ten|int %}
+                {% set the_var = "stars/stars_" + times_ten|string + ".png" %}
+                <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1" />
+              {% endif %}
+            </td>
             <td>{{ bottle.type.value }}</td>
             <td style="text-align:right; padding-right:1.6em;">{{ "%.2f"|format(bottle.abv) }}/{{ "%.2f"|format(bottle.abv*2) }}</td>
           </tr>
