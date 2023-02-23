@@ -3,39 +3,41 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1 class="mt-5">Sign In</h1>
+      <h1>Log In</h1>
       <hr />
 
-      <div class="row">
-        <div class="col-md-4">
-          <form method="post">
-            {{ form.csrf_token }}
-            <div class="mb-3">
-              {{ form.username.label(class="form-label") }}
-              {{ form.username(class="form-control") }}
+      <div class="container ms-0 ps-0">
+        <div class="row">
+          <div class="col-md-4 pt-4">
 
-        {% if form.username.errors %}
-            <ul class="errors">
-                {% for error in form.username.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.password.label(class="form-label") }}
-              {{ form.password(class="form-control") }}
-            </div>
-            <div class="mb-3">
-              {{ form.remember_me(class="form-check-input", id="remember_me") }}
-              {{ form.remember_me.label(class="form-check-label", for="remember_me") }}
-            </div>
-            <div class="mb-3">
-              {{ form.submit(class="btn btn-primary") }}
-            </div>
-          </form>
+            <form method="post">
+              {{ form.csrf_token }}
+              <div class="mb-3">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control") }}
+
+          {% if form.username.errors %}
+              <ul class="errors">
+                  {% for error in form.username.errors %}
+                      <li>{{ error }}</li>
+                  {% endfor %}
+              </ul>
+          {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control") }}
+              </div>
+              <div class="mb-3">
+                {{ form.remember_me(class="form-check-input", id="remember_me") }}
+                {{ form.remember_me.label(class="form-check-label", for="remember_me") }}
+              </div>
+              <div class="mb-3 pt-3">
+                {{ form.submit(class="btn btn-primary") }}
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
 
       <br>
 
@@ -44,6 +46,7 @@
         Forgot Your Password?
         <a href="{{ url_for('auth.reset_password_request') }}">Click to Reset It</a>
       </p>
+      </div>
     </div>
   </main>
 {% endblock %}

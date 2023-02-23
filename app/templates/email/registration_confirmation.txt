@@ -1,8 +1,8 @@
-Dear {{ user.username }},
+Hey {{ user.username }}!
 
-To complete your registration, please click the following link.
+To complete your registration with my-whiskies.online, please click the following link:
 
 {{ url_for('auth.confirm_register', token=token, _external=True) }}
 
-Sincerely,
+All the best,
 Your Bartender

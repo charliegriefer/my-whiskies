@@ -16,7 +16,6 @@ from app.models.bottle import Bottle, BottleTypes, Distillery
 
 
 @main_blueprint.route("/")
-@main_blueprint.route("/home")
 def home():
     if current_user.is_authenticated:
         my_bottles = Bottle.query.filter(Bottle.user_id == current_user.id).all()
@@ -27,8 +26,9 @@ def home():
                                bottles=my_bottles,
                                distilleries=my_distilleries)
     else:
-        user_count = User.query.count() - 1             # subtract 1 for "admin" user
-        distillery_count = Distillery.query.with_entities(Distillery.name).order_by(Distillery.name).group_by(Distillery.name).count()
+        user_count = User.query.count() - 1  # subtract 1 for "admin" user
+        distillery_count = Distillery.query.with_entities(Distillery.name).order_by(Distillery.name)
+        distillery_count = distillery_count.group_by(Distillery.name).count()
         bottle_count = Bottle.query.count()
 
         bottles_types = Bottle.query.with_entities(Bottle.type,
@@ -42,14 +42,20 @@ def home():
                                bottle_types=bottles_types.all())
 
 
+@main_blueprint.route("/home")
+@main_blueprint.route("/index")
+def go_home():
+    return redirect(url_for("main.home"))
+
+
 @main_blueprint.route("/add_distilleries")
 @login_required
 def add_distilleries():
     if request.referrer.split("/")[-1] != "home":
-        return redirect("home")
+        return redirect(url_for("main.home"))
 
     if Distillery.query.filter(Distillery.user_id == current_user.id).count() > 0:
-        return redirect("home")
+        return redirect(url_for("main.home"))
 
     base_distilleries = [d.__dict__ for d in Distillery.query.filter(Distillery.user_id == 0).all()]
     for _distillery in base_distilleries:
@@ -61,7 +67,7 @@ def add_distilleries():
     db.session.commit()
 
     flash(f"{len(base_distilleries)} distilleries have been added to your account.")
-    return redirect("home")
+    return redirect(url_for("main.home"))
 
 
 @main_blueprint.route("/distillery", methods=["GET", "POST"])
@@ -78,7 +84,7 @@ def distillery():
         db.session.add(distillery_in)
         db.session.commit()
         flash(f"\"{distillery_in.name}\" has been successfully added.", "success")
-        return redirect("home")
+        return redirect(url_for("main.home"))
     return render_template("distillery_add.html",
                            title=f"{current_user.username}'s Whiskies | Add Distillery",
                            user=current_user,
@@ -170,7 +176,7 @@ def bottle():
             bottle_in.date_purchased = form.date_purchased.data
         if form.date_killed.data and form.date_killed.data != "":
             bottle_in.date_killed = form.date_killed.data
-        print("BOTTLE IN: ", bottle_in)
+
         db.session.add(bottle_in)
         db.session.commit()
         db.session.flush()
@@ -204,7 +210,7 @@ def bottle():
                 db.session.commit()
 
         flash(flash_message, flash_category)
-        return redirect("home")
+        return redirect(url_for("main.home"))
 
     return render_template("bottle_add.html", form=form)
 
