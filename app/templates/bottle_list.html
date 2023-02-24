@@ -4,27 +4,40 @@
   <main class="flex-shrink-0">
     <div class="container">
       <h1>{{ user.username }}'s Whiskies
+
       {% if is_my_list %}
         <button type="button" style="margin-top:0.4rem;" class="btn btn-primary float-end" id="do_random"><i class="bi bi-question-circle mr-2"></i> Random Bottle</button>
       {% endif %}
-      </h1>
-      <hr />
 
-      <form method="post" id="type_filter">
+      <button type="button" class="btn btn-primary dropdown-toggle float-end mb-2 me-2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" style="margin-top:0.4rem;">
+        <i class="bi bi-filter mr-2"></i> Filter List
+      </button>
+      <form method="post" id="type_filter" class="dropdown-menu p-4">
         <input type="hidden" name="bottle_length" id="bottle_length" />
         <input type="checkbox" id="random_toggle" name="random_toggle" hidden />
-        <div class="d-flex flex-row mb-3">
-          {% for bottle_type in bottle_types %}
-            <div class="p-2 ms-0 ps-0 pe-4 text-nowrap">
-              <input class="bt" type="checkbox" id="{{ bottle_type.name }}" class="form-check-input" name="bottle_type" value="{{ bottle_type.name }}"{% if bottle_type.name in active_filters %} checked{% endif %}>
-              <label class="form-check-label" for="{{ bottle_type.name }}">{{ bottle_type.value }}</label>
-            </div>
-          {% endfor %}
-          <div class="p-2 ms-0 ps-0 pe-4 text-nowrap">
-            <button type="submit" class="btn btn-primary btn-sm">Apply Filter(s)</button>
+        {% for bottle_type in bottle_types %}
+        <div class="mb-3">
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="{{ bottle_type.name }}"
+              value="{{ bottle_type.name }}"
+              name="bottle_type"
+              {% if bottle_type.name in active_filters %} checked{% endif %}
+            />
+            <label class="form-check-label mt-1" for="{{ bottle_type.name }}">
+              {{ bottle_type.value }}
+            </label>
           </div>
         </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Apply Filter(s)</button>
+        <button type="button" class="btn btn-primary" id="selectAll">Select All</button>
       </form>
+
+      </h1>
+      <hr />
 
       <table id="bottles" class="table table-striped" style="width:100%">
       <thead>
@@ -36,7 +49,8 @@
           <th>Description</th>
           <th style="text-align:right">Rating</th>
           <th>Type</th>
-          <th style="text-align:right">ABV/Proof</th>
+          <th style="text-align:right">ABV</th>
+          <th style="text-align:right">Proof</th>
         </tr>
       </thead>
       <tbody>
@@ -61,7 +75,8 @@
               {% endif %}
             </td>
             <td>{{ bottle.type.value }}</td>
-            <td style="text-align:right; padding-right:1.6em;">{{ "%.2f"|format(bottle.abv) }}/{{ "%.2f"|format(bottle.abv*2) }}</td>
+            <td style="text-align:right; padding-right:1.6em;">{{ "%.2f"|format(bottle.abv) }}</td>
+            <td style="text-align:right; padding-right:1.6em;">{{ "%.2f"|format(bottle.abv*2) }}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -117,6 +132,25 @@
 
       $("#type_filter").on("submit", function() {
         $("#bottle_length").val($("select[name='bottles_length'] option").filter(":selected").val());
+      });
+
+      let filterCheckboxes = $("input.form-check-input");
+      handleSelectAll();
+
+      function handleSelectAll() {
+        let totalCheckboxes = filterCheckboxes.length;
+        let numberOfChecked = $("input.form-check-input:checked").length;
+
+        $("#selectAll").prop("disabled", numberOfChecked===totalCheckboxes);
+      };
+
+      filterCheckboxes.on("click", function() {
+        handleSelectAll();
+      });
+
+      $("#selectAll").on("click", function(){
+        filterCheckboxes.prop("checked", true);
+        $(this).prop("disabled", true);
       });
 
       const myModal = document.getElementById("confirmDelete");
