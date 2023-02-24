@@ -3,33 +3,110 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1 class="mt-5">{{ user.username }}'s Whiskies: {{ bottle.name }}</h1>
+      <h1>
+        {{ user.username }}'s Whiskies:<br />{{ bottle.name }}
+        <div class="float-end mb-2 me-2" style="margin-top:0.4rem;">
+          <a class="btn btn-primary float-end" href="{{ url_for('main.list_bottles', username=user.username|lower) }}" role="button"><i class="bi bi-list-ul"></i> {{ current_user.username }}'s List</a>
+        </div>
+      </h1>
       <hr />
 
       <div class="row">
         <div class="col-4" id="data">
           <div class="row">
-            <div class="col-md-3 fw-bold">Name:</div>
-            <div class="col">{{ bottle.name }}</div>
+            <div class="col-md-4 fw-bold">Name:</div>
+            <div class="col">
+              {% if bottle.url %}
+                <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.name }} <i class="bi bi-box-arrow-in-up-right"></i></a>
+              {% else %}
+                {{ bottle.name }}
+              {% endif %}
+            </div>
           </div>
           <div class="row">
-            <div class="col-md-3 fw-bold">ABV/Proof:</div>
-            <div class="col">{{ "%.2f"|format(bottle.abv) }}/{{ "%.2f"|format(bottle.abv * 2) }}</div>
+            <div class="col-md-4 fw-bold">Distillery:</div>
+            <div class="col">
+              {% if bottle.distillery.url %}
+                <a href="{{ bottle.distillery.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.distillery.name }} <i class="bi bi-box-arrow-in-up-right"></i></a>
+              {% else %}
+                {{ bottle.distillery.name }}
+              {% endif %}
+            </div>
           </div>
           <div class="row">
-            <div class="col-md-3 fw-bold">Distillery:</div>
-            <div class="col">{{ bottle.distillery.name }}</div>
+            <div class="col-md-4 fw-bold">Star Rating:</div>
+            <div class="col">
+              {% if bottle.stars %}
+                {% set times_ten = bottle.stars * 10 %}
+                {% set times_ten = times_ten|int %}
+                {% set the_var = "stars/stars_" + times_ten|string + ".png" %}
+                <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1" />
+              {% endif %}
+            </div>
           </div>
-          {% if bottle.description %}
           <div class="row">
-            <div class="col-md-3 fw-bold">Description:</div>
-            <div class="col">{{ bottle.description }}</div>
+            <div class="col-md-4 fw-bold">Year:</div>
+            <div class="col">{% if bottle.year %}{{ bottle.year }}{% endif %}</div>
           </div>
-          {% endif %}
+          <div class="row">
+            <div class="col-md-4 fw-bold">ABV:</div>
+            <div class="col">{{ "%.2f"|format(bottle.abv) }}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 fw-bold">Proof:</div>
+            <div class="col">{{ "%.2f"|format(bottle.abv * 2) }}</div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 fw-bold">Description:</div>
+            <div class="col">{% if bottle.description %}{{ bottle.description }}{% endif %}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 fw-bold">Review:</div>
+            <div class="col">{% if bottle.review %}{{ bottle.review }}{% endif %}</div>
+          </div>
+
+          <div class="row">
+            <hr class="mt-2 mb-2" />
+          </div>
+
+          {% set dtfmt = "%d %B %Y" %}
+          <div class="row">
+            <div class="col-md-4 fw-bold">Date Created:</div>
+            <div class="col">
+              {% if bottle.date_created %}
+                {{ bottle.date_created.strftime(dtfmt) }}
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 fw-bold">Date Purchased:</div>
+            <div class="col">
+              {% if bottle.date_purchased %}
+                {{ bottle.date_purchased }}
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 fw-bold">Date Opened:</div>
+            <div class="col">
+              {% if bottle.date_opened %}
+                {{ bottle.date_opened }}
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 fw-bold">Date Killed:</div>
+            <div class="col">
+              {% if bottle.date_killed %}
+                {{ bottle.date_killed }}
+              {% endif %}
+            </div>
+          </div>
         </div>
         <div class="col-4 d-flex flex-row-reverse" id="photo">
           {% if bottle.has_image %}
-            <img alt="{{ bottle.name }}" style="width:300px;" class="rounded border border-dark" src="https://my-whiskies-pics.s3-us-west-1.amazonaws.com/{{ bottle.id }}.png" />
+            <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img rounded border border-2 border-dark" src="https://my-whiskies-pics.s3-us-west-1.amazonaws.com/{{ bottle.id }}.png" />
           {% endif %}
         </div>
       </div>

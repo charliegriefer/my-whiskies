@@ -32,3 +32,9 @@ a:focus, a:hover {
 .navbar {
   border-bottom: 1px solid #D3D3D3;
 }
+
+.bottle-img {
+  max-height: 100%;
+  max-width: 100%;
+  margin: auto;
+}
