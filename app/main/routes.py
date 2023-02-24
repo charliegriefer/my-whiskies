@@ -219,14 +219,17 @@ def bottle():
 def bottle_list(username: str):
     user = User.query.filter(User.username == username).first_or_404()
     bottles = Bottle.query.filter(Bottle.user_id == user.id)
-    bottle_types = []
 
     if request.method == "POST":
-        bottle_types = request.form.getlist("bottle_type")
-        if len(bottle_types):
-            bottles = bottles.filter(Bottle.type.in_(bottle_types))
+        active_bottle_types = request.form.getlist("bottle_type")
+        if len(active_bottle_types):
+            bottles = bottles.filter(Bottle.type.in_(active_bottle_types))
+        else:
+            bottles = []
         if request.form.get("random_toggle"):
             bottles = bottles.order_by(func.random())
+    else:
+        active_bottle_types = [bt.name for bt in BottleTypes]
 
     if request.form.get("random_toggle"):
         bottles = bottles.first()
@@ -245,7 +248,7 @@ def bottle_list(username: str):
                            bottles=bottles,
                            selected_length=request.form.get("bottle_length", 50),
                            bottle_types=BottleTypes,
-                           active_filters=bottle_types,
+                           active_filters=active_bottle_types,
                            is_my_list=is_my_list)
 
 
