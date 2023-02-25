@@ -93,7 +93,7 @@
               <div class="col-md-4 fw-bold">Date Purchased:</div>
               <div class="col">
                 {% if bottle.date_purchased %}
-                  {{ bottle.date_purchased }}
+                  {{ bottle.date_purchased.strftime(dtfmt) }}
                 {% endif %}
               </div>
             </div>
@@ -101,7 +101,7 @@
               <div class="col-md-4 fw-bold">Date Opened:</div>
               <div class="col">
                 {% if bottle.date_opened %}
-                  {{ bottle.date_opened }}
+                  {{ bottle.date_opened.strftime(dtfmt) }}
                 {% endif %}
               </div>
             </div>
@@ -109,7 +109,7 @@
               <div class="col-md-4 fw-bold">Date Killed:</div>
               <div class="col">
                 {% if bottle.date_killed %}
-                  {{ bottle.date_killed }}
+                  {{ bottle.date_killed.strftime(dtfmt) }}
                 {% endif %}
               </div>
             </div>
