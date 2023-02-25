@@ -126,10 +126,10 @@
           {% if bottle.image_count %}
             <div class="col-4 mb-0 pb-0 me-0 pe-0">
               {% if bottle.image_count > 1 %}
-                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+                <div id="bottleCarousel" class="carousel slide carousel-fade" data-bs-ride="false" data-bs-interval="false">
                   <div class="carousel-indicators">
                     {% for n in range(1, bottle.image_count + 1) %}
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ n-1 }}"{% if n == 1 %} class="active" aria-current="true"{% endif %} aria-label="Slide {{ n }}"></button>
+                    <button type="button" data-bs-target="#bottleCarousel" data-bs-slide-to="{{ n-1 }}"{% if n == 1 %} class="active" aria-current="true"{% endif %} aria-label="Slide {{ n }}"></button>
                     {% endfor %}
                   </div>
                   <div class="carousel-inner">
