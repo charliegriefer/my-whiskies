@@ -1,4 +1,5 @@
 from datetime import datetime
+from textwrap import dedent
 
 from flask import flash, redirect, render_template, request, url_for, Markup
 from flask_login import current_user, login_user, logout_user
@@ -59,7 +60,13 @@ def register():
         db.session.add(user_in)
         db.session.commit()
         send_registration_confirmation_email(user_in)
-        flash("Please check your e-mail for further instructions.", "info")
+        flash(Markup(dedent("""\
+            <p>Check your e-mail for further instructions.</p>
+            <p>If you don't receive an e-mail within an hour:</p>
+            <ul>
+                <li>Check your spam folder</li>
+                <li>Consider whitelisting the domain my-whiskies.online</li>
+            </ul>""")), "info")
         return redirect(url_for("auth.login"))
     if form.errors:
         flash(get_flash_msg(form), "danger")
@@ -113,11 +120,17 @@ def reset_password_request():
         user = User.query.filter_by(email=form.email.data, is_deleted=False).first()
         if user:
             send_password_reset_email(user)
-        flash("Check your email for instructions on how to reset your password.", "info")
+        flash(Markup(dedent("""\
+                    <p>Check your email for instructions on how to reset your password.</p>
+                    <p>If you don't receive an e-mail within an hour:</p>
+                    <ul>
+                        <li>Check your spam folder</li>
+                        <li>Consider whitelisting the domain my-whiskies.online</li>
+                    </ul>""")), "info")
         return redirect(url_for("auth.login"))
 
     if form.errors:
-        flash("oops", "danger")
+        flash("Please enter a valid email address.", "danger")
     return render_template("auth/reset_password_request.html", title="My Whiskies Online| Forgot Password?", form=form)
 
 
