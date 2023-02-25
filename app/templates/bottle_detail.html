@@ -89,14 +89,6 @@
           {# bottle date data #}
           <div class="col{% if bottle.image_count %}-4{% endif %} mb-0 pb-0 me-0 pe-0">
             <div class="row">
-              <div class="col-md-4 fw-bold">Date Created:</div>
-              <div class="col">
-                {% if bottle.date_created %}
-                  {{ bottle.date_created.strftime(dtfmt) }}
-                {% endif %}
-              </div>
-            </div>
-            <div class="row">
               <div class="col-md-4 fw-bold">Date Purchased:</div>
               <div class="col">
                 {% if bottle.date_purchased %}
