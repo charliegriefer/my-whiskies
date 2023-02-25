@@ -163,9 +163,12 @@
                   </ul>
                 {% endif %}
               </div>
-              <div class="mt-2 pt-2 mb-2 pb-2">
+              <div class="mt-2 pt-2">
                 <hr />
               </div>
+
+              <div class="mb-2 pb-2">Upload up to 3 images. Portrait-oriented images are preferred. <i class="bi bi-file-image"></i></div>
+
               <div class="mb-3">
                 {{ form.bottle_image_1.label(class="form-label") }}
                 {% if form.bottle_image_1.flags.required %}<span class="text-danger">*</span>{% endif %}

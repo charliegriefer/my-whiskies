@@ -63,7 +63,13 @@
             {% endif %}
             <td>
               <a href="{{ url_for("main.bottle_detail", username=user.username.lower(), bottle_id=bottle.id) }}">{{ bottle.name }}</a>
-              {% if bottle.image_count %}<i class="bi bi-image ms-1" title="Has Image"></i>{% endif %}
+              {% if bottle.image_count %}
+                {% if bottle.image_count == 1 %}
+                  <i class="bi bi-image ms-1" title="Has Image"></i>
+                {% else %}
+                  <i class="bi bi-images ms-1" title="Has Images"></i>
+                {% endif %}
+              {% endif %}
             </td>
             <td>{% if bottle.description %}{{ bottle.description }}{% else %}&nbsp;{% endif %}</td>
             <td style="text-align:right; padding-right:1.6em;" data-order="{% if bottle.stars %}{{ bottle.stars }}{% else %}0{% endif %}">
