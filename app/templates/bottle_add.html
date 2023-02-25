@@ -1,38 +1,212 @@
 {% extends "base.html" %}
 
 {% block app_content %}
+
   <main class="flex-shrink-0">
     <div class="container">
-      <h1 class="mt-5">Add a Bottle</h1>
+      <h1>Add a Bottle</h1>
       <hr />
-      <div class="row">
-        <div class="col-md-4">
-          <form method="post" enctype="multipart/form-data">
-            {{ form.csrf_token }}
 
-            {% for field in form %}
-              {% if field.type != "SubmitField" and field.type != "CSRFTokenField" %}
-                <div class="form-group mb-3">
-                  {{ field.label(class="form-label") }}
-                  {% if field.flags.required %}<span class="text-danger">*</span>{% endif %}
-                  {{ field(class="form-control") }}
-{#                  {% if field.type == "FileField" %}#}
-{#                    <button type="button" class="btn btn-light" id="clear-file" onclick="clearField('{{ field.id }}')">Clear File</button>#}
-{#                  {% endif %}#}
-                  {% if field.errors %}
-                    {% for error in field.errors %}
-                      <span class="error">{{ error }}</span>
+      <div class="container">
+        <form method="post" enctype="multipart/form-data">
+          {{ form.csrf_token }}
+          <div class="row">
+            <div class="col ms-0 ps-0 me-4 pe-4">
+              <div class="mb-3">
+                {{ form.name.label(class="form-label") }}
+                {% if form.name.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.name(class="form-control") }}
+                {% if form.name.errors %}
+                  <ul class="errors">
+                    {% for error in form.name.errors %}
+                      <li>{{ error }}</li>
                     {% endfor %}
-                  {% endif %}
-                </div>
-              {% endif %}
-            {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.url.label(class="form-label") }}
+                {% if form.url.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.url(class="form-control") }}
+                {% if form.url.errors %}
+                  <ul class="errors">
+                    {% for error in form.url.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.distillery.label(class="form-label") }}
+                {% if form.distillery.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.distillery(class="form-select") }}
+                {% if form.distillery.errors %}
+                  <ul class="errors">
+                    {% for error in form.distillery.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.type.label(class="form-label") }}
+                {% if form.type.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.type(class="form-select") }}
+                {% if form.type.errors %}
+                  <ul class="errors">
+                    {% for error in form.type.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.year.label(class="form-label") }}
+                {% if form.year.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.year(class="form-control") }}
+                {% if form.year.errors %}
+                  <ul class="errors">
+                    {% for error in form.year.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.abv.label(class="form-label") }}
+                {% if form.abv.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.abv(class="form-control") }}
+                {% if form.abv.errors %}
+                  <ul class="errors">
+                    {% for error in form.abv.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.description.label(class="form-label") }}
+                {% if form.description.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.description(class="form-control") }}
+                {% if form.description.errors %}
+                  <ul class="errors">
+                    {% for error in form.description.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.stars.label(class="form-label") }}
+                {% if form.stars.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.stars(class="form-select") }}
+                {% if form.stars.errors %}
+                  <ul class="errors">
+                    {% for error in form.stars.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.review.label(class="form-label") }}
+                {% if form.review.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.review(class="form-control") }}
+                {% if form.review.errors %}
+                  <ul class="errors">
+                    {% for error in form.review.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
 
-            <div class="mb-3">
-              {{ form.submit(class="btn btn-primary") }}
+              <div class="mt-3 pt-3">
+                {{ form.submit(class="btn btn-primary") }}
+              </div>
             </div>
-          </form>
-        </div>
+
+            <div class="col">
+              <div class="mb-3">
+                {{ form.date_purchased.label(class="form-label") }}
+                {% if form.date_purchased.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.date_purchased(class="form-control") }}
+                {% if form.date_purchased.errors %}
+                  <ul class="errors">
+                    {% for error in form.date_purchased.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.date_opened.label(class="form-label") }}
+                {% if form.date_opened.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.date_opened(class="form-control") }}
+                {% if form.date_opened.errors %}
+                  <ul class="errors">
+                    {% for error in form.date_opened.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.date_killed.label(class="form-label") }}
+                {% if form.date_killed.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.date_killed(class="form-control") }}
+                {% if form.date_killed.errors %}
+                  <ul class="errors">
+                    {% for error in form.date_killed.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mt-2 pt-2 mb-2 pb-2">
+                <hr />
+              </div>
+              <div class="mb-3">
+                {{ form.bottle_image_1.label(class="form-label") }}
+                {% if form.bottle_image_1.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.bottle_image_1(class="form-control") }}
+                {% if form.bottle_image_1.errors %}
+                  <ul class="errors">
+                    {% for error in form.bottle_image_1.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="row mb-3">
+                <div class="col">
+                {{ form.bottle_image_2.label(class="form-label") }}
+                {% if form.bottle_image_2.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.bottle_image_2(class="form-control") }}
+                {% if form.bottle_image_2.errors %}
+                  <ul class="errors">
+                    {% for error in form.bottle_image_2.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+                </div>
+              </div>
+              <div class="mb-3">
+                {{ form.bottle_image_3.label(class="form-label") }}
+                {% if form.bottle_image_3.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.bottle_image_3(class="form-control") }}
+                {% if form.bottle_image_3.errors %}
+                  <ul class="errors">
+                    {% for error in form.bottle_image_3.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </main>
