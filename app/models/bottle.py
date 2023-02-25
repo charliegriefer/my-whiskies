@@ -42,6 +42,6 @@ class Bottle(db.Model):
     date_purchased = db.Column(db.DateTime, nullable=True)
     date_opened = db.Column(db.DateTime, nullable=True)
     date_killed = db.Column(db.DateTime, nullable=True)
-    has_image = db.Column(db.Boolean, default=False)
+    image_count = db.Column(db.Integer, default=0)
     distillery_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False)
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"), nullable=False)
