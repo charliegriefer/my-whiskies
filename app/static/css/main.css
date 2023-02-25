@@ -9,6 +9,10 @@ a:focus, a:hover {
   text-decoration: underline;
 }
 
+.form-label {
+  font-weight: bold;
+}
+
 .error {
   color: crimson;
 }
@@ -64,3 +68,23 @@ a:focus, a:hover {
   background-color: #FEF5E4;
   border-color: #F2D9AE;
 }
+
+
+.carousel.slide {
+    width: 100%;
+    max-width: 400px; !important
+}
+
+
+.carousel-indicators {
+  bottom: -50px;
+}
+
+.carousel .carousel-indicators button {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+}
+
+.carousel .carousel-indicators button {background-color: #808080;}
+.carousel .carousel-indicators button.active {background-color: #696969;}
