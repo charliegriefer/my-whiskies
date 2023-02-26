@@ -167,7 +167,11 @@
                 <hr />
               </div>
 
-              <div class="mb-2 pb-2">Upload up to 3 images. Portrait-oriented images are preferred. <i class="bi bi-file-image"></i></div>
+              <div class="mb-2 pb-2">
+                Upload up to 3 images. Portrait-oriented images are preferred. <i class="bi bi-file-image"></i>
+                <br />
+                By uploading images I agree to the <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal">Image Terms and Conditions.</a>
+              </div>
 
               <div class="mb-3">
                 {{ form.bottle_image_1.label(class="form-label") }}
@@ -213,6 +217,36 @@
       </div>
     </div>
   </main>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Image Terms and Conditions</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>The following rules will be strictly enforced in regard to uploaded images.</p>
+          <ul>
+            <li>You may only upload your own personal images. No copyrighted images are permitted.</li>
+            <li>
+              Only photos of whiskey bottles and/or whiskey glasses are permitted. Photos must <em>not</em> include any of the following:
+              <ul>
+                <li>Any individuals</li>
+                <li>Any physical addresses or phone numbers</li>
+                <li>Any text, such as links to other websites or any personal information</li>
+              </ul>
+            </li>
+          </ul>
+          <p>Any account found to violate these rules with any images will be terminated immediately.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close Window</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 
 {% block scripts %}

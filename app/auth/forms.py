@@ -1,5 +1,6 @@
 import re
 
+from flask import Markup
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
@@ -49,6 +50,8 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField("Repeat Password:",
                               validators=[DataRequired(), EqualTo("password", message="Passwords do not match.")],
                               render_kw={"placeholder": "Repeat Password"})
+    agree_terms = BooleanField("",
+                               validators=[DataRequired()])
     submit = SubmitField("Register")
 
     def validate_username(self, username: StringField) -> None:
