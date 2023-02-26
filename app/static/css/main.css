@@ -9,8 +9,18 @@ a:focus, a:hover {
   text-decoration: underline;
 }
 
+.form-label {
+  font-weight: bold;
+}
+
 .error {
   color: crimson;
+}
+
+/* nav bar */
+/* ---------------------------------------------------------------------------------------- */
+.navbar {
+  border-bottom: 1px solid #D3D3D3;
 }
 
 #nav_login, #nav_logout {
@@ -29,6 +39,52 @@ a:focus, a:hover {
   margin-bottom: 0 !important;
 }
 
-.navbar {
-  border-bottom: 1px solid #D3D3D3;
+
+/* bottle image on bottle detail page */
+.bottle-img {
+  max-height: 100%;
+  max-width: 100%;
+  margin: auto;
 }
+
+/* alerts */
+/* ---------------------------------------------------------------------------------------- */
+.alert ul { margin-bottom: 0px; }
+
+/* colors taken from https://dribbble.com/shots/15137093--Notifications-New-Countly-UI */
+.alert-info {
+  background-color: #DFEBF9;
+  border-color: #AAC6E7;
+}
+.alert-danger {
+  background-color: #FAE8E4;
+  border-color: #EDC5BD;
+}
+.alert-success {
+  background-color: #E5F5E9;
+  border-color: #BEDFC6;
+}
+.alert-warning {
+  background-color: #FEF5E4;
+  border-color: #F2D9AE;
+}
+
+
+.carousel.slide {
+    width: 100%;
+    max-width: 400px; !important
+}
+
+
+.carousel-indicators {
+  bottom: -50px;
+}
+
+.carousel .carousel-indicators button {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+}
+
+.carousel .carousel-indicators button {background-color: #808080;}
+.carousel .carousel-indicators button.active {background-color: #696969;}

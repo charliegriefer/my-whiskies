@@ -98,9 +98,10 @@ def bottle_delete(bottle_id: str):
 
     db.session.delete(bottle_to_delete)
 
-    if bottle_to_delete.has_image:
+    if bottle_to_delete.image_count:
         s3_client = boto3.client("s3")
-        s3_client.delete_object(Bucket="my-whiskies-pics", Key=f"{bottle_to_delete.id}.png")
+        for i in range(1, bottle_to_delete.image_count + 1):
+            s3_client.delete_object(Bucket="my-whiskies-pics", Key=f"{bottle_to_delete.id}_{i}.png")
     db.session.commit()
 
     flash(f"\"{bottle_to_delete.name}\" has been successfully deleted.", "success")
@@ -154,6 +155,7 @@ def bottle():
         form.stars.data = float(form.stars.data)
 
     if request.method == "POST" and form.validate_on_submit():
+        bottle_images = 0
         bottle_in = Bottle(name=form.name.data.strip(),
                            type=form.type.data,
                            abv=form.abv.data,
@@ -183,31 +185,35 @@ def bottle():
         flash_message = f"\"{bottle_in.name}\" has been successfully added."
         flash_category = "success"
 
-        if form.bottle_image.data:
-            image_in = Image.open(form.bottle_image.data)
+        # check images
+        for i in range(1, 4):
+            image_field = form[f"bottle_image_{i}"]
 
-            if image_in.width > 300:
-                # calculate new height and width
-                divisor = image_in.width/300
-                image_dims = (int(image_in.width/divisor), int(image_in.height/divisor))
-                image_in = image_in.resize(image_dims)
+            if image_field.data:
+                image_in = Image.open(image_field.data)
+                if image_in.width > 400:
+                    divisor = image_in.width/400
+                    image_dims = (int(image_in.width/divisor), int(image_in.height/divisor))
+                    image_in = image_in.resize(image_dims)
 
-            new_filename = f"{bottle_in.id}.png"
+                new_filename = f"{bottle_in.id}_{i}"
 
-            in_mem_file = io.BytesIO()
-            image_in.save(in_mem_file, format="png")
-            in_mem_file.seek(0)
+                in_mem_file = io.BytesIO()
+                image_in.save(in_mem_file, format="png")
+                in_mem_file.seek(0)
 
-            s3_client = boto3.client("s3")
-            try:
-                s3_client.put_object(Body=in_mem_file, Bucket="my-whiskies-pics", Key=f"{new_filename}")
-                bottle_in.has_image = True
-                db.session.commit()
-            except ClientError:
-                flash_message = f"An error occurred while creating \"{bottle_in.name}\"."
-                flash_category = "danger"
-                Bottle.query.filter_by(id=bottle_in.id).delete()
-                db.session.commit()
+                s3_client = boto3.client("s3")
+                try:
+                    s3_client.put_object(Body=in_mem_file, Bucket="my-whiskies-pics", Key=f"{new_filename}.png")
+                    bottle_images = bottle_images + 1
+                except ClientError:
+                    flash_message = f"An error occurred while creating \"{bottle_in.name}\"."
+                    flash_category = "danger"
+                    Bottle.query.filter_by(id=bottle_in.id).delete()
+                    db.session.commit()
+
+        bottle_in.image_count = bottle_images
+        db.session.commit()
 
         flash(flash_message, flash_category)
         return redirect(url_for("main.home"))
@@ -219,14 +225,17 @@ def bottle():
 def bottle_list(username: str):
     user = User.query.filter(User.username == username).first_or_404()
     bottles = Bottle.query.filter(Bottle.user_id == user.id)
-    bottle_types = []
 
     if request.method == "POST":
-        bottle_types = request.form.getlist("bottle_type")
-        if len(bottle_types):
-            bottles = bottles.filter(Bottle.type.in_(bottle_types))
+        active_bottle_types = request.form.getlist("bottle_type")
+        if len(active_bottle_types):
+            bottles = bottles.filter(Bottle.type.in_(active_bottle_types))
+        else:
+            bottles = []
         if request.form.get("random_toggle"):
             bottles = bottles.order_by(func.random())
+    else:
+        active_bottle_types = [bt.name for bt in BottleTypes]
 
     if request.form.get("random_toggle"):
         bottles = bottles.first()
@@ -245,7 +254,7 @@ def bottle_list(username: str):
                            bottles=bottles,
                            selected_length=request.form.get("bottle_length", 50),
                            bottle_types=BottleTypes,
-                           active_filters=bottle_types,
+                           active_filters=active_bottle_types,
                            is_my_list=is_my_list)
 
 
