@@ -29,6 +29,10 @@
                 {{ form.password2.label(class="form-label") }}
                 {{ form.password2(class="form-control" + (" is-invalid" if form.password2.errors else "")) }}
               </div>
+              <div class="mb-3">
+                {{ form.agree_terms(class="form-check-input" + (" is-invalid" if form.password2.errors else "")) }}
+                {{ form.agree_terms.label(class="form-check-label") }}
+              </div>
               <div class="mb-3 pt-3">
                 {{ form.submit(class="btn btn-primary") }}
               </div>

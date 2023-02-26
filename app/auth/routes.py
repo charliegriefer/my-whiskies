@@ -4,11 +4,12 @@ from textwrap import dedent
 from flask import flash, redirect, render_template, request, url_for, Markup
 from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
+from wtforms.fields.core import Label
 
-from app.extensions import db
 from app.auth import auth_blueprint
 from app.auth.email import send_password_reset_email, send_registration_confirmation_email
 from app.auth.forms import LoginForm, RegistrationForm, ResendRegEmailForm, ResetPWForm, ResetPasswordRequestForm
+from app.extensions import db
 from app.models.user import User
 
 
@@ -47,7 +48,8 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
     form = RegistrationForm()
-
+    terms_label = Markup(f"I agree to the terms of <a href=\"{url_for('main.terms')}\">Terms of Service</a>.")
+    form.agree_terms.label = Label("agree_terms", terms_label)
     if request.method == "POST" and form.validate_on_submit():
         user_in = User()
 
