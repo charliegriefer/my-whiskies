@@ -1,9 +1,10 @@
 import io
+import time
 
 import boto3
 from PIL import Image
 from botocore.exceptions import ClientError
-from flask import flash, redirect, render_template, request, url_for
+from flask import flash, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import insert
 from sqlalchemy.sql.expression import func
@@ -17,14 +18,18 @@ from app.models.bottle import Bottle, BottleTypes, Distillery
 
 @main_blueprint.route("/")
 def home():
+    cookie_exists = request.cookies.get("my-whiskies-user", None)
+
     if current_user.is_authenticated:
         my_bottles = Bottle.query.filter(Bottle.user_id == current_user.id).all()
         my_distilleries = Distillery.query.filter(Distillery.user_id == current_user.id).all()
-        return render_template("home.html",
-                               title=f"{current_user.username}'s Whiskies| Home Page",
-                               user=current_user,
-                               bottles=my_bottles,
-                               distilleries=my_distilleries)
+
+        resp = make_response(render_template("home.html",
+                                             title=f"{current_user.username}'s Whiskies| Home Page",
+                                             user=current_user,
+                                             bottles=my_bottles,
+                                             distilleries=my_distilleries,
+                                             cookie_exists=cookie_exists))
     else:
         user_count = User.query.count() - 1  # subtract 1 for "admin" user
         distillery_count = Distillery.query.with_entities(Distillery.name).order_by(Distillery.name)
@@ -34,12 +39,17 @@ def home():
         bottles_types = Bottle.query.with_entities(Bottle.type,
                                                    func.count(Bottle.type)).order_by(Bottle.type).group_by(Bottle.type)
 
-        return render_template("index.html",
-                               title="My Whiskies Online| Home Page",
-                               user_count=user_count,
-                               distillery_count=distillery_count,
-                               bottle_count=bottle_count,
-                               bottle_types=bottles_types.all())
+        resp = make_response(render_template("index.html",
+                                             title="My Whiskies Online| Home Page",
+                                             user_count=user_count,
+                                             distillery_count=distillery_count,
+                                             bottle_count=bottle_count,
+                                             bottle_types=bottles_types.all(),
+                                             cookie_exists=cookie_exists))
+
+    if not cookie_exists:
+        resp.set_cookie("my-whiskies-user", str(time.time()))
+    return resp
 
 
 @main_blueprint.route("/home")
@@ -263,3 +273,18 @@ def bottle_detail(username: str, bottle_id: str):
     user = User.query.filter(User.username == username).first_or_404()
     _bottle = Bottle.query.get_or_404(bottle_id)
     return render_template("bottle_detail.html", user=user, bottle=_bottle)
+
+
+@main_blueprint.route("/terms")
+def terms():
+    return render_template("tos.html")
+
+
+@main_blueprint.route("/privacy")
+def privacy():
+    return render_template("tos_privacy.html")
+
+
+@main_blueprint.route("/cookies")
+def cookies():
+    return render_template("tos_cookies.html")
