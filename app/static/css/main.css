@@ -88,3 +88,7 @@ a:focus, a:hover {
 
 .carousel .carousel-indicators button {background-color: #808080;}
 .carousel .carousel-indicators button.active {background-color: #696969;}
+
+ul.terms li {
+  margin-left: 24px;
+}
