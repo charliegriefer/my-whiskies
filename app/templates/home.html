@@ -37,8 +37,33 @@
 
     </div>
   </main>
+
+  {% if not cookie_exists %}
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="cookieToast">
+        <div class="toast-header">
+          <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
+          <strong class="me-auto">Hey! This is Important!</strong>
+          <small></small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          We use cookies to improve your online experience.
+          By using this site, you consent to this use as described in our <a href="{{ url_for('main.cookies') }}">Cookie Policy</a>.
+        </div>
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}
 
 {% block scripts %}
   {{ super() }}
+  <script type="text/javascript">
+    $(document).ready(function(){
+        $("#cookieToast").toast({
+          autohide: false
+      });
+      $("#cookieToast").toast("show");
+    });
+  </script>
 {% endblock %}
