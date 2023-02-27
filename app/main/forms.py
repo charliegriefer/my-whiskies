@@ -26,7 +26,9 @@ class DistilleryForm(FlaskForm):
     region_2 = StringField("Region 2:",
                            validators=[InputRequired(), Length(max=36)],
                            render_kw={"placeholder": "Region 2"})
-    url = StringField("URL:", validators=[Length(max=64), URL(), Optional()], render_kw={"placeholder": "URL"})
+    url = StringField("URL:",
+                      validators=[Length(max=64), URL(message="Invalid URL"), Optional()],
+                      render_kw={"placeholder": "URL"})
     submit = SubmitField("Add Distillery")
 
 
@@ -68,3 +70,7 @@ class BottleEditForm(BottleForm):
     remove_image_2 = HiddenField()
     remove_image_3 = HiddenField()
     submit = SubmitField("Edit Bottle")
+
+
+class DistilleryEditForm(DistilleryForm):
+    submit = SubmitField("Edit Distillery")
