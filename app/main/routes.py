@@ -11,7 +11,7 @@ from sqlalchemy.sql.expression import func
 
 from app.extensions import db
 from app.main import main_blueprint
-from app.main.forms import BottleForm, DistilleryForm
+from app.main.forms import BottleForm, BottleEditForm, DistilleryForm
 from app.models import User
 from app.models.bottle import Bottle, BottleTypes, Distillery
 
@@ -116,6 +116,121 @@ def bottle_delete(bottle_id: str):
 
     flash(f"\"{bottle_to_delete.name}\" has been successfully deleted.", "success")
     return redirect(url_for("main.list_bottles", username=current_user.username))
+
+
+@main_blueprint.route("/bottle_edit/<string:bottle_id>", methods=["GET", "POST"])
+@login_required
+def bottle_edit(bottle_id: str):
+    if request.method == "GET":
+        _bottle = Bottle.query.get_or_404(bottle_id)
+        form = BottleEditForm(obj=_bottle)
+    else:
+        form = BottleEditForm()
+
+    form.type.choices = [(t.name, t.value) for t in BottleTypes]
+    form.type.choices.insert(0, ("", "Choose a Bottle Type"))
+    _distilleries = Distillery.query.filter_by(user_id=current_user.id).order_by("name").all()
+    form.distillery.choices = [(x.id, x.name) for x in _distilleries]
+    form.distillery.choices.insert(0, ("", "Choose a Distillery"))
+
+    form.stars.choices = [(str(x * 0.5), str(x * 0.5)) for x in range(0, 11)]
+    form.stars.choices.insert(0, ("", "Enter a Star Rating (Optional)"))
+
+    if form.year.data:
+        form.year.data = int(form.year.data)
+    if request.method == "POST" and form.validate_on_submit():
+        removed_1 = False
+        removed_2 = False
+        removed_3 = False
+
+        _bottle = Bottle.query.get(bottle_id)
+        s3_client = boto3.client("s3")
+        if form.remove_image_1.data:
+            s3_client.delete_object(Bucket="my-whiskies-pics", Key=f"{bottle_id}_1.png")
+            _bottle.image_count = _bottle.image_count - 1
+            removed_1 = True
+        if form.remove_image_2.data:
+            s3_client.delete_object(Bucket="my-whiskies-pics", Key=f"{bottle_id}_2.png")
+            _bottle.image_count = _bottle.image_count - 1
+            removed_2 = True
+        if form.remove_image_3.data:
+            s3_client.delete_object(Bucket="my-whiskies-pics", Key=f"{bottle_id}_3.png")
+            _bottle.image_count = _bottle.image_count - 1
+
+        if removed_1 or removed_2:
+            bottle_response = s3_client.list_objects_v2(Bucket="my-whiskies-pics", Prefix=f"{bottle_id}_")
+            bottle_response_contents = bottle_response.get("Contents")
+            bottle_images = [bottle_content.get("Key") for bottle_content in bottle_response_contents]
+
+            for i, bottle_image in enumerate(bottle_images):
+                if i + 1 != int(bottle_image.split("_")[-1].split(".")[0]):
+                    s3_client.copy_object(Bucket="my-whiskies-pics",
+                                          CopySource=f"my-whiskies-pics/{bottle_image}",
+                                          Key=f"{bottle_id}_{i + 1}.png")
+                    s3_client.delete_object(Bucket="my-whiskies-pics", Key=f"{bottle_image}")
+
+        _bottle.name = form.name.data
+        _bottle.type = form.type.data
+        if form.year.data:
+            _bottle.year = int(form.year.data)
+        else:
+            _bottle.year = None
+        _bottle.abv = float(form.abv.data)
+        _bottle.url = form.url.data
+        _bottle.description = form.description.data
+        _bottle.review = form.review.data
+        if form.stars.data:
+            _bottle.stars = float(form.stars.data)
+        else:
+            _bottle.stars = None
+        if form.cost.data:
+            _bottle.cost = float(form.cost.data)
+        _bottle.date_purchased = form.date_purchased.data
+        _bottle.date_opened = form.date_opened.data
+        _bottle.date_killed = form.date_killed.data
+        _bottle.distillery_id = form.distillery.data
+
+        flash_message = f"\"{_bottle.name}\" has been successfully updated."
+        flash_category = "success"
+
+        # check images
+        for i in range(1, 4):
+            image_field = form[f"bottle_image_{i}"]
+
+            if image_field.data:
+                image_in = Image.open(image_field.data)
+                if image_in.width > 400:
+                    divisor = image_in.width/400
+                    image_dims = (int(image_in.width/divisor), int(image_in.height/divisor))
+                    image_in = image_in.resize(image_dims)
+
+                new_filename = f"{_bottle.id}_{i}"
+
+                in_mem_file = io.BytesIO()
+                image_in.save(in_mem_file, format="png")
+                in_mem_file.seek(0)
+
+                s3_client = boto3.client("s3")
+                try:
+                    s3_client.put_object(Body=in_mem_file, Bucket="my-whiskies-pics", Key=f"{new_filename}.png")
+                    _bottle.image_count = _bottle.image_count + 1
+                except ClientError:
+                    flash_message = f"An error occurred while creating \"{_bottle.name}\"."
+                    flash_category = "danger"
+
+        db.session.add(_bottle)
+        db.session.commit()
+
+        flash(flash_message, flash_category)
+        return redirect(url_for("main.list_bottles", username=current_user.username))
+
+
+    else:
+        _bottle = Bottle.query.get(bottle_id)
+        form.distillery.data = _bottle.distillery_id
+        form.type.data = _bottle.type.name
+        form.stars.data = str(_bottle.stars)
+        return render_template("bottle_edit.html", bottle=_bottle, user=current_user, form=form)
 
 
 @main_blueprint.route("/distillery_delete/<string:distillery_id>")
