@@ -138,10 +138,10 @@ def bottle_edit(bottle_id: str):
 
     if form.year.data:
         form.year.data = int(form.year.data)
+
     if request.method == "POST" and form.validate_on_submit():
         removed_1 = False
         removed_2 = False
-        removed_3 = False
 
         _bottle = Bottle.query.get(bottle_id)
         s3_client = boto3.client("s3")
@@ -223,8 +223,6 @@ def bottle_edit(bottle_id: str):
 
         flash(flash_message, flash_category)
         return redirect(url_for("main.list_bottles", username=current_user.username))
-
-
     else:
         _bottle = Bottle.query.get(bottle_id)
         form.distillery.data = _bottle.distillery_id

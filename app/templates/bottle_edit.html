@@ -176,21 +176,29 @@
                 By uploading images I agree to the <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal">Image Terms and Conditions.</a>
               </div>
 
-              <div class="mb-2 pb-2">
-                <div class="container text-center">
-                  <div class="row">
-                    {% for n in range(1, bottle.image_count + 1) %}
-                      <div class="col-4 ps-0 ms-0 bottle-images" id="bottle-image-{{ n }}">
-                        <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="w-100" src="https://my-whiskies-pics.s3-us-west-1.amazonaws.com/{{ bottle.id }}_{{ n }}.png" />
-                        <br />
-                        <button type="button" class="btn btn-danger btn-sm mt-2 remove-image" value="{{ n }}">Remove Image</button>
-                      </div>
-                    {% endfor %}
+              {% if bottle.image_count %}
+                {% set num_images = bottle.image_count %}
+              {% else %}
+                {% set num_images = 0 %}
+              {% endif %}
+
+              {% if num_images %}
+                <div class="mb-2 pb-2">
+                  <div class="container text-center">
+                    <div class="row">
+                      {% for n in range(1, bottle.image_count + 1) %}
+                        <div class="col-4 ps-0 ms-0 bottle-images" id="bottle-image-{{ n }}">
+                          <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="w-100" src="https://my-whiskies-pics.s3-us-west-1.amazonaws.com/{{ bottle.id }}_{{ n }}.png" />
+                          <br />
+                          <button type="button" class="btn btn-danger btn-sm mt-2 remove-image" value="{{ n }}">Remove Image</button>
+                        </div>
+                      {% endfor %}
+                    </div>
                   </div>
                 </div>
-              </div>
+              {% endif %}
 
-              <div class="mb-3 {% if bottle.image_count >= 1 %} d-none{% endif %}" id="upload-image-1">
+              <div class="mb-3 {% if num_images >= 1 %} d-none{% endif %}" id="upload-image-1">
                 {{ form.bottle_image_1.label(class="form-label") }}
                 {% if form.bottle_image_1.flags.required %}<span class="text-danger">*</span>{% endif %}
                 {{ form.bottle_image_1(class="form-control") }}
@@ -202,7 +210,7 @@
                   </ul>
                 {% endif %}
               </div>
-              <div class="mb-3 {% if bottle.image_count >= 2 %} d-none{% endif %}" id="upload-image-2">
+              <div class="mb-3 {% if num_images >= 2 %} d-none{% endif %}" id="upload-image-2">
                 <div class="col">
                 {{ form.bottle_image_2.label(class="form-label") }}
                 {% if form.bottle_image_2.flags.required %}<span class="text-danger">*</span>{% endif %}
@@ -216,7 +224,7 @@
                 {% endif %}
                 </div>
               </div>
-              <div class="mb-3 {% if bottle.image_count >= 3 %} d-none{% endif %}" id="upload-image-3">
+              <div class="mb-3 {% if num_images >= 3 %} d-none{% endif %}" id="upload-image-3">
                 {{ form.bottle_image_3.label(class="form-label") }}
                 {% if form.bottle_image_3.flags.required %}<span class="text-danger">*</span>{% endif %}
                 {{ form.bottle_image_3(class="form-control") }}
