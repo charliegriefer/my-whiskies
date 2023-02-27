@@ -3,12 +3,13 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1 class="mt-5">{{ user.username }}'s Whiskies: Distilleries</h1>
+      <h1>{{ user.username }}'s Whiskies: Distilleries</h1>
       <hr />
 
       <table id="distilleries" class="table table-striped" style="width:100%">
       <thead>
         <tr>
+          <th class="me-0 pe-0">&nbsp;</th>
           <th>&nbsp;</th>
           <th>Name</th>
           <th>Description</th>
@@ -20,11 +21,14 @@
       <tbody>
         {% for distillery in distilleries %}
           <tr>
+            <td class="me-0 pe-0">
+              <a href="{{ url_for("main.distillery_edit", distillery_id=distillery.id) }}"><i class="bi bi-pencil"></i></a>
+            </td>
             <td>
               <a href="#" data-bs-toggle="modal", data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.distillery_delete", distillery_id=distillery.id) }}"><i class="bi bi-trash"></i></a>
             </td>
             <td>{{ distillery.name }}</td>
-            <td>{% if distillery.description %}{{ distllery.description }}{% else %}&nbsp;{% endif %}</td>
+            <td>{% if distillery.description %}{{ distillery.description }}{% else %}&nbsp;{% endif %}</td>
             <td>{{ distillery.region_1 }}</td>
             <td>{{ distillery.region_2 }}</td>
             <td>{{ distillery.url }}</td>
@@ -65,10 +69,10 @@
           {
             searchable: false,
             orderable: false,
-            targets: 0,
+            targets: [0, 1]
           },
         ],
-        order: [[1, "asc"]],
+        order: [[2, "asc"]],
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
       });
     });

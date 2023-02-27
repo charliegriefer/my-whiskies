@@ -11,7 +11,7 @@ from sqlalchemy.sql.expression import func
 
 from app.extensions import db
 from app.main import main_blueprint
-from app.main.forms import BottleForm, BottleEditForm, DistilleryForm
+from app.main.forms import BottleForm, BottleEditForm, DistilleryForm, DistilleryEditForm
 from app.models import User
 from app.models.bottle import Bottle, BottleTypes, Distillery
 
@@ -229,6 +229,29 @@ def bottle_edit(bottle_id: str):
         form.type.data = _bottle.type.name
         form.stars.data = str(_bottle.stars)
         return render_template("bottle_edit.html", bottle=_bottle, user=current_user, form=form)
+
+
+@main_blueprint.route("/distillery_edit/<string:distillery_id>", methods=["GET", "POST"])
+@login_required
+def distillery_edit(distillery_id: str):
+    form = DistilleryEditForm()
+    if request.method == "POST" and form.validate_on_submit():
+        _distillery = Distillery.query.get(distillery_id)
+
+        _distillery.name = form.name.data.strip()
+        _distillery.description = form.description.data.strip()
+        _distillery.region_1 = form.region_1.data.strip()
+        _distillery.region_2 = form.region_2.data.strip()
+        _distillery.url = form.url.data.strip()
+
+        db.session.add(_distillery)
+        db.session.commit()
+        flash(f"\"{_distillery.name}\" has been successfully added.", "success")
+        return redirect(url_for("main.distilleries"))
+    else:
+        _distillery = Distillery.query.get_or_404(distillery_id)
+        form = DistilleryEditForm(obj=_distillery)
+        return render_template("distillery_edit.html", distillery=_distillery, user=current_user, form=form)
 
 
 @main_blueprint.route("/distillery_delete/<string:distillery_id>")
