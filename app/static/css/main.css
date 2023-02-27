@@ -69,12 +69,14 @@ a:focus, a:hover {
   border-color: #F2D9AE;
 }
 
+#bottleCarousel {
+  margin-bottom: 40px;
+}
 
 .carousel.slide {
     width: 100%;
     max-width: 400px; !important
 }
-
 
 .carousel-indicators {
   bottom: -50px;

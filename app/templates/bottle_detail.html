@@ -130,6 +130,14 @@
                         <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img rounded border border-2 border-dark d-block w-100" src="https://my-whiskies-pics.s3-us-west-1.amazonaws.com/{{ bottle.id }}_{{ n }}.png" />
                       </div>
                     {% endfor %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#bottleCarousel" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#bottleCarousel" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
                   </div>
                 </div>
               {% else %}
@@ -140,7 +148,6 @@
         </div>
       </div>
     </div>
-
   </main>
 {% endblock %}
 
