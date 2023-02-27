@@ -2,7 +2,9 @@ import datetime
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import DateField, DecimalField, SelectField, StringField, SubmitField, TextAreaField
+from wtforms import (
+    DateField, DecimalField, FieldList, HiddenField, SelectField, StringField, SubmitField, TextAreaField
+)
 from wtforms.validators import InputRequired, Length, NumberRange, Optional, URL
 
 
@@ -59,3 +61,10 @@ class BottleForm(FlaskForm):
     bottle_image_3 = FileField("Image 3:", validators=[FileAllowed(["jpg", "jpeg", "png"], img_message)])
 
     submit = SubmitField("Add Bottle")
+
+
+class BottleEditForm(BottleForm):
+    remove_image_1 = HiddenField()
+    remove_image_2 = HiddenField()
+    remove_image_3 = HiddenField()
+    submit = SubmitField("Edit Bottle")
