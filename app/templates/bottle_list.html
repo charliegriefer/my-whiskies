@@ -43,7 +43,8 @@
       <thead>
         <tr>
           {% if is_my_list %}
-          <th>&nbsp;</th>
+            <th class="me-0 pe-0">&nbsp;</th>
+            <th>&nbsp;</th>
           {% endif %}
           <th>Name</th>
           <th>Description</th>
@@ -57,9 +58,12 @@
         {% for bottle in bottles %}
           <tr>
             {% if is_my_list %}
-            <td>
-              <a href="#" data-bs-toggle="modal", data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.bottle_delete", bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
-            </td>
+              <td class="me-0 pe-0">
+                <a href="{{ url_for("main.bottle_edit", bottle_id=bottle.id) }}"><i class="bi bi-pencil"></i></a>
+              </td>
+              <td>
+                <a href="#" data-bs-toggle="modal", data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.bottle_delete", bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
+              </td>
             {% endif %}
             <td>
               <a href="{{ url_for("main.bottle_detail", username=user.username.lower(), bottle_id=bottle.id) }}">{{ bottle.name }}</a>
@@ -122,11 +126,11 @@
           {
             searchable: false,
             orderable: false,
-            targets: 0
+            targets: [0, 1]
           },
         ],
         {% endif %}
-        order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
+        order: [[{% if is_my_list %}2{% else %}0{% endif %}, "asc"]],
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "pageLength": {{ selected_length }}
       });
