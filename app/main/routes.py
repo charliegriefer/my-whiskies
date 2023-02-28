@@ -61,9 +61,6 @@ def go_home():
 @main_blueprint.route("/add_distilleries")
 @login_required
 def add_distilleries():
-    if request.referrer.split("/")[-1] != "home":
-        return redirect(url_for("main.home"))
-
     if Distillery.query.filter(Distillery.user_id == current_user.id).count() > 0:
         return redirect(url_for("main.home"))
 
