@@ -12,7 +12,7 @@
             <form method="post">
               {{ form.csrf_token }}
               <div class="mb-3">
-                {{ form.enmail.label(class="form-label") }}
+                {{ form.email.label(class="form-label") }}
                 {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
               </div>
               <div class="mb-3">
