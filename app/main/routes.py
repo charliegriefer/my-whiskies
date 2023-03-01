@@ -405,7 +405,8 @@ def bottle_list(username: str):
 def bottle_detail(username: str, bottle_id: str):
     user = User.query.filter(User.username == username).first_or_404()
     _bottle = Bottle.query.get_or_404(bottle_id)
-    return render_template("bottle_detail.html", user=user, bottle=_bottle)
+    is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
+    return render_template("bottle_detail.html", user=user, bottle=_bottle, is_my_bottle=is_my_bottle)
 
 
 @main_blueprint.route("/terms")
