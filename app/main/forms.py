@@ -2,9 +2,7 @@ import datetime
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import (
-    DateField, DecimalField, FieldList, HiddenField, SelectField, StringField, SubmitField, TextAreaField
-)
+from wtforms import DateField, DecimalField, HiddenField, SelectField, StringField, SubmitField, TextAreaField
 from wtforms.validators import InputRequired, Length, NumberRange, Optional, URL
 
 
@@ -45,7 +43,7 @@ class BottleForm(FlaskForm):
                        render_kw={"placeholder": "Year"})
     abv = DecimalField("ABV:",
                        places=2,
-                       validators=[InputRequired(), NumberRange(min=30, max=90, message="Invalid value for ABV")],
+                       validators=[Optional(), NumberRange(min=30, max=90, message="Invalid value for ABV")],
                        render_kw={"placeholder": "00.00"})
 
     cost = DecimalField("Cost:", places=2, validators=[Optional()], render_kw={"placeholder": "00.00"})
