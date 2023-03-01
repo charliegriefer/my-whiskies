@@ -21,20 +21,20 @@
       </h1>
       <hr />
 
-      <!-- outermost container... holds 2 columns (data and image) -->
+      {# outermost container... holds 2 columns (data and image) #}
       <div class="container">
         <div class="row">
 
-          <!-- left column... holding 2 columns of bottle data -->
-          <div class="col-7">
+          {# left column... holding 2 columns of bottle data #}
+          <div class="col-8">
 
             <div class="row">
 
-              <!-- left column -->
-              <div class="col-sm ps-0 ms-0 pe-2 me-2">
+              {# left column #}
+              <div class="col-md ps-0 ms-0 pe-2 me-2">
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold">Name:</div>
-                  <div class="col-8">
+                  <div class="col-9">
                     {% if bottle.url %}
                       <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.name }} <i class="bi bi-box-arrow-in-up-right"></i></a>
                     {% else %}
@@ -44,13 +44,13 @@
                 </div>
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold">Type:</div>
-                  <div class="col-8">
+                  <div class="col-9">
                     {{ bottle.type.value }}
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold">Distillery:</div>
-                  <div class="col-8">
+                  <div class="col-9">
                     {% if bottle.distillery.url %}
                       <a href="{{ bottle.distillery.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.distillery.name }} <i class="bi bi-box-arrow-in-up-right"></i></a>
                     {% else %}
@@ -60,19 +60,19 @@
                 </div>
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold">Year:</div>
-                  <div class="col-8">{% if bottle.year %}{{ bottle.year }}{% endif %}</div>
+                  <div class="col-9">{% if bottle.year %}{{ bottle.year }}{% endif %}</div>
                 </div>
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold">ABV:</div>
-                  <div class="col-8">{% if bottle.abv %}{{ "%.2f"|format(bottle.abv) }}{% else %}N/A{% endif %}</div>
+                  <div class="col-9">{% if bottle.abv %}{{ "%.2f"|format(bottle.abv) }}{% else %}N/A{% endif %}</div>
                 </div>
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold">Proof:</div>
-                  <div class="col-8">{% if bottle.abv %}{{ "%.2f"|format(bottle.abv * 2) }}{% else %}N/A{% endif %}</div>
+                  <div class="col-9">{% if bottle.abv %}{{ "%.2f"|format(bottle.abv * 2) }}{% else %}N/A{% endif %}</div>
                 </div>
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold">Cost:</div>
-                  <div class="col-8">
+                  <div class="col-9">
                     {% if bottle.cost %}
                       {{ "$%.2f"|format(bottle.cost) }}
                     {% endif %}
@@ -80,15 +80,15 @@
                 </div>
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold">Description:</div>
-                  <div class="col-8">{% if bottle.description %}{{ bottle.description }}{% endif %}</div>
+                  <div class="col-9">{% if bottle.description %}{{ bottle.description }}{% endif %}</div>
                 </div>
               </div>
 
-              <!-- right column -->
-              <div class="col-sm ps-0 ms-0 pe-2 me-2">
+              {# right column #}
+              <div class="col-md ps-0 ms-0 pe-2 me-2">
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold">Star Rating:</div>
-                  <div class="col-8">
+                  <div class="col-9">
                     {% if bottle.stars %}
                       {% set times_ten = bottle.stars * 10 %}
                       {% set times_ten = times_ten|int %}
@@ -99,14 +99,14 @@
                 </div>
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold">Review:</div>
-                  <div class="col-8">{% if bottle.review %}{{ bottle.review }}{% endif %}</div>
+                  <div class="col-9">{% if bottle.review %}{{ bottle.review }}{% endif %}</div>
                 </div>
 
                 <div><hr /></div>
 
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold"><i class="bi bi-calendar2-event me-1"></i> Purchased:</div>
-                  <div class="col-8">
+                  <div class="col-9">
                     {% if bottle.date_purchased %}
                       {{ bottle.date_purchased.strftime(dtfmt) }}
                     {% endif %}
@@ -114,7 +114,7 @@
                 </div>
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold"><i class="bi bi-calendar2-event me-1"></i> Opened:</div>
-                  <div class="col-8">
+                  <div class="col-9">
                     {% if bottle.date_opened %}
                       {{ bottle.date_opened.strftime(dtfmt) }}
                     {% endif %}
@@ -122,7 +122,7 @@
                 </div>
                 <div class="row">
                   <div class="col-sm text-nowrap fw-bold"><i class="bi bi-calendar2-event me-1"></i> Killed:</div>
-                  <div class="col-8">
+                  <div class="col-9">
                     {% if bottle.date_killed %}
                       {{ bottle.date_killed.strftime(dtfmt) }}
                     {% endif %}
@@ -131,10 +131,10 @@
               </div>
             </div>
           </div>
-          <!-- end left column -->
+          {# end left column #}
 
-          <!-- start right column -->
-          <div class="col-5 pe-0 me-0">
+          {# start right column #}
+          <div class="col-4 pe-0 me-0">
             {% if bottle.image_count %}
             {% if bottle.image_count > 1 %}
               <div id="bottleCarousel" class="carousel slide carousel-fade float-end" data-bs-ride="false" data-bs-interval="false">
