@@ -43,15 +43,15 @@
       <thead>
         <tr>
           {% if is_my_list %}
-            <th class="me-0 pe-0">&nbsp;</th>
-            <th>&nbsp;</th>
+            <th class="me-0 pe-0" style="width:2%;">&nbsp;</th>
+            <th style="width:2%;">&nbsp;</th>
           {% endif %}
-          <th>Name</th>
-          <th>Description</th>
+          <th style="width:30%;">Name</th>
+          <th style="width:30%;">Description</th>
           <th style="text-align:right">Rating</th>
-          <th>Type</th>
-          <th style="text-align:right">ABV</th>
-          <th style="text-align:right">Proof</th>
+          <th style="width:12%;">Type</th>
+          <th style="text-align:right; width:5%;">ABV</th>
+          <th style="text-align:right; width:5%;">Proof</th>
         </tr>
       </thead>
       <tbody>
@@ -139,7 +139,7 @@
             searchable: false,
             orderable: false,
             targets: [0, 1]
-          },
+          }
         ],
         {% endif %}
         order: [[{% if is_my_list %}2{% else %}0{% endif %}, "asc"]],
