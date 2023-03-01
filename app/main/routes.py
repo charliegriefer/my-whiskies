@@ -31,7 +31,7 @@ def home():
                                              distilleries=my_distilleries,
                                              cookie_exists=cookie_exists))
     else:
-        user_count = User.query.count() - 1  # subtract 1 for "admin" user
+        user_count = User.query.filter(User.email_confirmed == 1).count() - 1  # subtract 1 for "admin" user
         distillery_count = Distillery.query.with_entities(Distillery.name).order_by(Distillery.name)
         distillery_count = distillery_count.group_by(Distillery.name).count()
         bottle_count = Bottle.query.count()
