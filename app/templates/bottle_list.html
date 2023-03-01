@@ -85,8 +85,20 @@
               {% endif %}
             </td>
             <td>{{ bottle.type.value }}</td>
-            <td style="text-align:right; padding-right:1.6em;">{{ "%.2f"|format(bottle.abv) }}</td>
-            <td style="text-align:right; padding-right:1.6em;">{{ "%.2f"|format(bottle.abv*2) }}</td>
+            <td style="text-align:right; padding-right:1.6em;">
+              {% if bottle.abv %}
+                {{ "%.2f"|format(bottle.abv) }}
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
+            <td style="text-align:right; padding-right:1.6em;">
+              {% if bottle.abv %}
+                {{ "%.2f"|format(bottle.abv*2) }}
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
       </tbody>
