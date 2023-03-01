@@ -50,11 +50,11 @@
             </div>
             <div class="row">
               <div class="col-md-4 fw-bold">ABV:</div>
-              <div class="col">{{ "%.2f"|format(bottle.abv) }}</div>
+              <div class="col">{% if bottle.abv %}{{ "%.2f"|format(bottle.abv) }}{% else %}N/A{% endif %}</div>
             </div>
             <div class="row">
               <div class="col-md-4 fw-bold">Proof:</div>
-              <div class="col">{{ "%.2f"|format(bottle.abv * 2) }}</div>
+              <div class="col">{% if bottle.abv %}{{ "%.2f"|format(bottle.abv * 2) }}{% else %}N/A{% endif %}</div>
             </div>
             <div class="row">
               <div class="col-md-4 fw-bold">Cost:</div>
