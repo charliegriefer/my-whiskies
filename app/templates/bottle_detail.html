@@ -7,8 +7,16 @@
     <div class="container">
       <h1>
         {{ user.username }}'s Whiskies:<br />{{ bottle.name }}
+
         <div class="float-end mb-2 me-2" style="margin-top:0.4rem;">
-          <a class="btn btn-primary float-end" href="{{ url_for('main.list_bottles', username=user.username|lower) }}" role="button"><i class="bi bi-list-ul"></i> {{ user.username }}'s List</a>
+          {% set btn_label = user.username ~ "'s List" %}
+          {% if is_my_bottle %}
+            {% set btn_label = "My List" %}
+          {% endif %}
+          <a class="btn btn-primary float-end" href="{{ url_for('main.list_bottles', username=user.username|lower) }}" role="button"><i class="bi bi-list-ul"></i> {{ btn_label }}</a>
+          {% if is_my_bottle %}
+            <a class="btn btn-primary float-end me-2" href="{{ url_for("main.bottle_edit", bottle_id=bottle.id) }}" role="button"><i class="bi bi-pencil"></i> Edit Bottle</a>
+          {% endif %}
         </div>
       </h1>
       <hr />
