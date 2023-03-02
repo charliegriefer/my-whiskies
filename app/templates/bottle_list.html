@@ -135,6 +135,9 @@
   <script type="text/javascript">
     $(document).ready(function () {
       $("#bottles").DataTable({
+        "language": {
+            "emptyTable": "There's nothing to see here."
+        },
         {% if is_my_list %}
         columnDefs: [
           {
