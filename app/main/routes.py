@@ -65,7 +65,7 @@ def add_distilleries():
     if Distillery.query.filter(Distillery.user_id == current_user.id).count() > 0:
         return redirect(url_for("main.home"))
 
-    base_distilleries = [d.__dict__ for d in Distillery.query.filter(Distillery.user_id == 0).all()]
+    base_distilleries = [d.__dict__ for d in Distillery.query.filter(Distillery.user_id == '0').all()]
     for _distillery in base_distilleries:
         del _distillery["id"]
         del _distillery["_sa_instance_state"]
