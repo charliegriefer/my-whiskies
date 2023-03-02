@@ -1,4 +1,5 @@
 import io
+import random
 import time
 
 import boto3
@@ -367,27 +368,20 @@ def bottle():
 @main_blueprint.route("/<username>", methods=["GET", "POST"], endpoint="list_bottles")
 def bottle_list(username: str):
     user = User.query.filter(User.username == username).first_or_404()
-    bottles = Bottle.query.filter(Bottle.user_id == user.id)
+    all_bottles = Bottle.query.filter(Bottle.user_id == user.id)
 
     if request.method == "POST":
         active_bottle_types = request.form.getlist("bottle_type")
         if len(active_bottle_types):
-            bottles = bottles.filter(Bottle.type.in_(active_bottle_types))
+            bottles = all_bottles.filter(Bottle.type.in_(active_bottle_types)).all()
+            if request.form.get("random_toggle"):
+                bottles = [random.choice(bottles)]
         else:
             bottles = []
-        if request.form.get("random_toggle"):
-            bottles = bottles.order_by(func.random())
+
     else:
         active_bottle_types = [bt.name for bt in BottleTypes]
-
-    if request.form.get("random_toggle"):
-        bottles = bottles.first()
-        if bottles:
-            bottles = [bottles]
-        else:
-            bottles = []
-    else:
-        bottles = bottles.all()
+        bottles = all_bottles.all()
 
     is_my_list = current_user.is_authenticated and current_user.username.lower() == username.lower()
 
