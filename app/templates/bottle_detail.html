@@ -94,6 +94,8 @@
                       {% set times_ten = times_ten|int %}
                       {% set the_var = "stars/stars_" + times_ten|string + ".png" %}
                       <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1" />
+                    {% else %}
+                      <img src="{{ url_for('static', filename='stars_blank.png') }}" alt="" title="" class="mb-1" />
                     {% endif %}
                   </div>
                 </div>
