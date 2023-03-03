@@ -158,14 +158,15 @@ def bottle_edit(bottle_id: str):
         if removed_1 or removed_2:
             bottle_response = s3_client.list_objects_v2(Bucket="my-whiskies-pics", Prefix=f"{bottle_id}_")
             bottle_response_contents = bottle_response.get("Contents")
-            bottle_images = [bottle_content.get("Key") for bottle_content in bottle_response_contents]
+            if bottle_response_contents:
+                bottle_images = [bottle_content.get("Key") for bottle_content in bottle_response_contents if bottle_response_contents is not None]
 
-            for i, bottle_image in enumerate(bottle_images):
-                if i + 1 != int(bottle_image.split("_")[-1].split(".")[0]):
-                    s3_client.copy_object(Bucket="my-whiskies-pics",
-                                          CopySource=f"my-whiskies-pics/{bottle_image}",
-                                          Key=f"{bottle_id}_{i + 1}.png")
-                    s3_client.delete_object(Bucket="my-whiskies-pics", Key=f"{bottle_image}")
+                for i, bottle_image in enumerate(bottle_images):
+                    if i + 1 != int(bottle_image.split("_")[-1].split(".")[0]):
+                        s3_client.copy_object(Bucket="my-whiskies-pics",
+                                              CopySource=f"my-whiskies-pics/{bottle_image}",
+                                              Key=f"{bottle_id}_{i + 1}.png")
+                        s3_client.delete_object(Bucket="my-whiskies-pics", Key=f"{bottle_image}")
 
         _bottle.name = form.name.data
         _bottle.type = form.type.data
