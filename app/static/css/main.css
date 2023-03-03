@@ -91,6 +91,29 @@ a:focus, a:hover {
 .carousel .carousel-indicators button {background-color: #808080;}
 .carousel .carousel-indicators button.active {background-color: #696969;}
 
+.carousel .carousel-control-next, .carousel .carousel-control-prev {
+  background: #FAF9F6;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  top: 45%;
+}
+.carousel .carousel-control-next {
+  right: 14px;
+}
+.carousel .carousel-control-prev {
+  left: 14px;
+}
+.carousel .carousel-control-next-icon {
+  height: 20px;
+  width: 20px;
+  margin-right: -4px;
+}
+.carousel .carousel-control-prev-icon {
+  height: 20px;
+  width: 20px;
+  margin-left: -4px;
+}
 ul.terms li {
   margin-left: 24px;
 }
