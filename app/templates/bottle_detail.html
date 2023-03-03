@@ -109,7 +109,7 @@
 
                 <div class="row flex-nowrap">
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0"><i class="bi bi-calendar2-event me-1"></i> Purchased:</div>
-                  <div class="col-9 ps-4 ps-sm-2">
+                  <div class="col-9 ps-5 ps-sm-2">
                     {% if bottle.date_purchased %}
                       {{ bottle.date_purchased.strftime(dtfmt) }}
                     {% endif %}
@@ -117,7 +117,7 @@
                 </div>
                 <div class="row flex-nowrap">
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0"><i class="bi bi-calendar2-event me-1"></i> Opened:</div>
-                  <div class="col-9 ps-4 ps-sm-2">
+                  <div class="col-9 ps-5 ps-sm-2">
                     {% if bottle.date_opened %}
                       {{ bottle.date_opened.strftime(dtfmt) }}
                     {% endif %}
@@ -125,7 +125,7 @@
                 </div>
                 <div class="row flex-nowrap">
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0"><i class="bi bi-calendar2-event me-1"></i> Killed:</div>
-                  <div class="col-9 ps-4 ps-sm-2">
+                  <div class="col-9 ps-5 ps-sm-2">
                     {% if bottle.date_killed %}
                       {{ bottle.date_killed.strftime(dtfmt) }}
                     {% endif %}
