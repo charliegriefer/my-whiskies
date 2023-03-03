@@ -280,6 +280,9 @@ def bottle():
     form = BottleForm()
 
     form.type.choices = [(t.name, t.value) for t in BottleTypes]
+    # sort the list and move "Other" to the bottom
+    form.type.choices.sort()
+    form.type.choices.append(form.type.choices.pop(form.type.choices.index(('other', 'Other'))))
     form.type.choices.insert(0, ("", "Choose a Bottle Type"))
 
     _distilleries = Distillery.query.filter_by(user_id=current_user.id).order_by("name").all()
