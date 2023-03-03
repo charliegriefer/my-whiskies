@@ -8,7 +8,7 @@
       <h1>
         {{ user.username }}'s Whiskies:<br />{{ bottle.name }}
 
-        <div class="float-lg-end">
+        <div class="float-lg-end mt-lg-0 mt-3">
           {% set btn_label = user.username ~ "'s List" %}
           {% if is_my_bottle %}
             {% set btn_label = "My List" %}
@@ -34,8 +34,8 @@
               {# left column #}
               <div class="col-md ps-0 ms-0 pe-2 me-2">
                 <div class="row flex-nowrap">
-                  <div class="col-3 text-nowrap fw-bold">Name:</div>
-                  <div class="col-9 ps-4">
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Name:</div>
+                  <div class="col-9 ps-4 ps-sm-2">
                     {% if bottle.url %}
                       <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.name }} <i class="bi bi-box-arrow-in-up-right"></i></a>
                     {% else %}
@@ -44,14 +44,14 @@
                   </div>
                 </div>
                 <div class="row flex-nowrap">
-                  <div class="col-3 text-nowrap fw-bold">Type:</div>
-                  <div class="col-9 ps-4">
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Type:</div>
+                  <div class="col-9 ps-4 ps-sm-2">
                     {{ bottle.type.value }}
                   </div>
                 </div>
                 <div class="row flex-nowrap">
-                  <div class="col-3 text-nowrap fw-bold">Distillery:</div>
-                  <div class="col-9 ps-4">
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Distillery:</div>
+                  <div class="col-9 ps-4 ps-sm-2">
                     {% if bottle.distillery.url %}
                       <a href="{{ bottle.distillery.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.distillery.name }} <i class="bi bi-box-arrow-in-up-right"></i></a>
                     {% else %}
@@ -60,36 +60,36 @@
                   </div>
                 </div>
                 <div class="row flex-nowrap">
-                  <div class="col-3 text-nowrap fw-bold">Year:</div>
-                  <div class="col-9 ps-4">{% if bottle.year %}{{ bottle.year }}{% endif %}</div>
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Year:</div>
+                  <div class="col-9 ps-4 ps-sm-2">{% if bottle.year %}{{ bottle.year }}{% endif %}</div>
                 </div>
                 <div class="row flex-nowrap">
-                  <div class="col-3 text-nowrap fw-bold">ABV:</div>
-                  <div class="col-9 ps-4">{% if bottle.abv %}{{ "%.2f"|format(bottle.abv) }}{% else %}N/A{% endif %}</div>
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">ABV:</div>
+                  <div class="col-9 ps-4 ps-sm-2">{% if bottle.abv %}{{ "%.2f"|format(bottle.abv) }}{% else %}N/A{% endif %}</div>
                 </div>
                 <div class="row flex-nowrap">
-                  <div class="col-3 text-nowrap fw-bold">Proof:</div>
-                  <div class="col-9 ps-4">{% if bottle.abv %}{{ "%.2f"|format(bottle.abv * 2) }}{% else %}N/A{% endif %}</div>
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Proof:</div>
+                  <div class="col-9 ps-4 ps-sm-2">{% if bottle.abv %}{{ "%.2f"|format(bottle.abv * 2) }}{% else %}N/A{% endif %}</div>
                 </div>
                 <div class="row flex-nowrap">
-                  <div class="col-3 text-nowrap fw-bold">Cost:</div>
-                  <div class="col-9 ps-4">
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Cost:</div>
+                  <div class="col-9 ps-4 ps-sm-2">
                     {% if bottle.cost %}
                       {{ "$%.2f"|format(bottle.cost) }}
                     {% endif %}
                   </div>
                 </div>
                 <div class="row flex-nowrap mb-3">
-                  <div class="col-3 text-nowrap fw-bold">Description:</div>
-                  <div class="col-9 ps-4">{% if bottle.description %}{{ bottle.description }}{% endif %}</div>
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Description:</div>
+                  <div class="col-9 ps-4 ps-sm-2">{% if bottle.description %}{{ bottle.description }}{% endif %}</div>
                 </div>
               </div>
 
               {# right column #}
               <div class="col-xl ps-0 ms-0 pe-2 me-2 mb-5">
                 <div class="row flex-nowrap">
-                  <div class="col-3 text-nowrap fw-bold">Star Rating:</div>
-                  <div class="col-9 ps-4">
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Star Rating:</div>
+                  <div class="col-9 ps-4 ps-sm-2">
                     {% if bottle.stars %}
                       {% set times_ten = bottle.stars * 10 %}
                       {% set times_ten = times_ten|int %}
@@ -101,31 +101,31 @@
                   </div>
                 </div>
                 <div class="row flex-nowrap">
-                  <div class="col-3 text-nowrap fw-bold">Review:</div>
-                  <div class="col-9 ps-4">{% if bottle.review %}{{ bottle.review }}{% endif %}</div>
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Review:</div>
+                  <div class="col-9 ps-4 ps-sm-2">{% if bottle.review %}{{ bottle.review }}{% endif %}</div>
                 </div>
 
                 <div><hr /></div>
 
                 <div class="row flex-nowrap">
-                  <div class="col-3 text-nowrap fw-bold"><i class="bi bi-calendar2-event me-1"></i> Purchased:</div>
-                  <div class="col-9 ps-4">
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0"><i class="bi bi-calendar2-event me-1"></i> Purchased:</div>
+                  <div class="col-9 ps-4 ps-sm-2">
                     {% if bottle.date_purchased %}
                       {{ bottle.date_purchased.strftime(dtfmt) }}
                     {% endif %}
                   </div>
                 </div>
                 <div class="row flex-nowrap">
-                  <div class="col-3 text-nowrap fw-bold"><i class="bi bi-calendar2-event me-1"></i> Opened:</div>
-                  <div class="col-9 ps-4">
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0"><i class="bi bi-calendar2-event me-1"></i> Opened:</div>
+                  <div class="col-9 ps-4 ps-sm-2">
                     {% if bottle.date_opened %}
                       {{ bottle.date_opened.strftime(dtfmt) }}
                     {% endif %}
                   </div>
                 </div>
                 <div class="row flex-nowrap">
-                  <div class="col-3 text-nowrap fw-bold"><i class="bi bi-calendar2-event me-1"></i> Killed:</div>
-                  <div class="col-9 ps-4">
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0"><i class="bi bi-calendar2-event me-1"></i> Killed:</div>
+                  <div class="col-9 ps-4 ps-sm-2">
                     {% if bottle.date_killed %}
                       {{ bottle.date_killed.strftime(dtfmt) }}
                     {% endif %}
