@@ -1,5 +1,6 @@
 import os
 
+import flask
 from dotenv import load_dotenv
 from flask import Flask
 
@@ -11,6 +12,12 @@ load_dotenv(dotenv_path=dotenv_path, verbose=True)
 
 def create_app():
     application = Flask(__name__)
+
+    @application.before_request
+    def before_request():
+        flask.session.permanent = True
+        application.permanent_session_lifetime = application.permanent_session_lifetime
+        flask.session.modified = True
 
     config_type = os.environ["CONFIG_TYPE"]
     application.config.from_object(config_type)
@@ -34,7 +41,5 @@ def create_app():
     application.register_blueprint(auth_blueprint, url_prefix="/auth")
     application.register_blueprint(errors_blueprint)
     application.register_blueprint(main_blueprint)
-
-    from app.models import bottle, user
 
     return application
