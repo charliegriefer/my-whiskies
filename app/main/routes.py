@@ -241,6 +241,7 @@ def bottles(username: str):
 
     response = make_response(render_template("bottle_list.html",
                                              title=f"{user.username}'s Whiskies",
+                                             user=user,
                                              bottles=bottles_to_list,
                                              bottle_types=BottleTypes,
                                              active_filters=active_bottle_types,
