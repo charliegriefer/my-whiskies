@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField, PasswordField, StringField, SubmitField
 from wtforms.validators import Email, EqualTo, InputRequired, Length, ValidationError
 
-from app.models.user import User
+from app.models import User
 
 pw_description = "Password requirements:<ul>"
 pw_description += "<li>Must be between 8 and 22 characters.</li>"
