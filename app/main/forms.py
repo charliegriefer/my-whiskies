@@ -2,7 +2,9 @@ import datetime
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import DateField, DecimalField, HiddenField, SelectField, StringField, SubmitField, TextAreaField
+from wtforms import (
+    DateField, DecimalField, HiddenField, IntegerField, SelectField, StringField, SubmitField, TextAreaField
+)
 from wtforms.validators import InputRequired, Length, NumberRange, Optional, URL
 
 
@@ -34,13 +36,13 @@ class BottleForm(FlaskForm):
     name = StringField("Name:", validators=[InputRequired(), Length(max=100)], render_kw={"placeholder": "Name"})
     url = StringField("URL:", validators=[Length(max=100), URL(), Optional()], render_kw={"placeholder": "URL"})
     type = SelectField("Bottle Type:", validators=[InputRequired()])
-    distillery = SelectField("Distillery:", validators=[InputRequired()])
-    year = StringField("Year:",
-                       validators=[Optional(),
-                                   NumberRange(min=1900,
-                                               max=get_current_year(),
-                                               message=f"Year must be between 1900 and {get_current_year()}.")],
-                       render_kw={"placeholder": "Year"})
+    distillery_id = SelectField("Distillery:", validators=[InputRequired()])
+    year = IntegerField("Year:",
+                        validators=[Optional(),
+                                    NumberRange(min=1900,
+                                                max=get_current_year(),
+                                                message=f"Year must be between 1900 and {get_current_year()}.")],
+                        render_kw={"placeholder": "Year"})
     abv = DecimalField("ABV:",
                        places=2,
                        validators=[Optional(), NumberRange(min=30, max=90, message="Invalid value for ABV")],
