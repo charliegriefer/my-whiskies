@@ -23,65 +23,42 @@
               With that in mind, an effort was underway to build an application that could be used by anybody online.
             </p>
             <p>This is that application.</p>
-            <p>
-              <span class="fw-bold">My Whiskies Online</span> is made with:
-              <ul>
-                <li><a href="https://www.python.org" target="_blank" rel="noopener noreferrer">Python <i class="bi bi-box-arrow-in-up-right"></i></a></li>
-                <li><a href="https://flask.palletsprojects.com/en/2.2.x/" target="_blank" rel="noopener noreferrer">Flask <i class="bi bi-box-arrow-in-up-right"></i></a></li>
-                <li><a href="https://www.mysql.com" target="_blank" rel="noopener noreferrer">MySQL <i class="bi bi-box-arrow-in-up-right"></i></a></li>
-                <li><a href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">Amazon Web Services <i class="bi bi-box-arrow-in-up-right"></i></a></li>
-                <li><a href="https://getbootstrap.com" target="_blank" rel="noopener noreferrer">Bootstrap <i class="bi bi-box-arrow-in-up-right"></i></a></a></li>
-                <li><i class="bi bi-heart" style="color:red;"></i></li>
-              </ul>
-            </p>
+
+            <span class="fw-bold">My Whiskies Online</span> is made with:
+            <ul class="mt-2">
+              <li><a href="https://www.python.org" target="_blank" rel="noopener noreferrer">Python <i class="bi bi-box-arrow-up-right"></i></a></li>
+              <li><a href="https://flask.palletsprojects.com/en/2.2.x/" target="_blank" rel="noopener noreferrer">Flask <i class="bi bi-box-arrow-up-right"></i></a></li>
+              <li><a href="https://www.mysql.com" target="_blank" rel="noopener noreferrer">MySQL <i class="bi bi-box-arrow-up-right"></i></a></li>
+              <li><a href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">Amazon Web Services <i class="bi bi-box-arrow-up-right"></i></a></li>
+              <li><a href="https://getbootstrap.com" target="_blank" rel="noopener noreferrer">Bootstrap <i class="bi bi-box-arrow-up-right"></i></a></li>
+              <li><i class="bi bi-heart text-danger"></i></li>
+            </ul>
+
           </div>
           <div class="col" style="border-left:1px solid gray;">
             <p class="fw-bold">Data Nerd Stats: <i class="bi bi-bar-chart-line"></i></p>
-            <p>
-              <ul>
-                <li>Number of Users: <span class="text-danger fw-bold">{{ user_count }}</span></li>
-                <li>Distilleries Tracked: <span class="text-danger fw-bold">{{ distillery_count }}</span></li>
-                <li>Bottles Tracked: <span class="text-danger fw-bold">{{ bottle_count }}</span></li>
+            <ul>
+              <li>Number of Users: <span class="text-danger fw-bold">{{ user_count }}</span></li>
+              <li>Distilleries Tracked: <span class="text-danger fw-bold">{{ distillery_count }}</span></li>
+              <li>Photos Uploaded: <span class="text-danger fw-bold">{{ pic_count }}</span></li>
+              <li>Bottles Tracked: <span class="text-danger fw-bold">{{ bottle_count }}</span>
                 <ul>
-                  {% for k, v in bottle_types %}
-                    <li>{{ k.value }}: <span class="text-primary fw-bold">{{ v }}</span></li>
+                  {% for k, v in bottle_type_counts.items() %}
+                    <li>{{ k }}: <span class="text-primary fw-bold">{{ v }}</span></li>
                   {% endfor %}
                 </ul>
-              </ul>
-              <div class="pt-3">Not a member yet? <a href="{{ url_for("auth.register") }}">Join us</a>!</div>
+              </li>
+            </ul>
+            <p class="pt-3 ms-2">
+              Not a member yet? <a href="{{ url_for('auth.register') }}" class="btn btn-primary ms-1 text-decoration-none" role="button">Join Us!</a>
             </p>
           </div>
         </div>
       </div>
     </div>
   </main>
-
-  {% if not cookie_exists %}
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-      <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="cookieToast">
-        <div class="toast-header">
-          <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
-          <strong class="me-auto">Hey! This is Important!</strong>
-          <small></small>
-          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-          We use cookies to improve your online experience.
-          By using this site, you consent to this use as described in our <a href="{{ url_for('main.cookies') }}">Cookie Policy</a>.
-        </div>
-      </div>
-    </div>
-  {% endif %}
 {% endblock %}
 
 {% block scripts %}
   {{ super() }}
-  <script type="text/javascript">
-    $(document).ready(function(){
-        $("#cookieToast").toast({
-          autohide: false
-      });
-      $("#cookieToast").toast("show");
-    });
-  </script>
 {% endblock %}

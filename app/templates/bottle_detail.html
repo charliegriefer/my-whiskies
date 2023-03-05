@@ -6,17 +6,17 @@
   <main class="flex-shrink-0">
     <div class="container">
       <h1>
-        {{ user.username }}'s Whiskies:<br />{{ bottle.name }}
+        {{ current_user.username }}'s Whiskies:<br />{{ bottle.name }}
 
         <div class="float-lg-end mt-lg-0 mt-3">
-          {% set btn_label = user.username ~ "'s List" %}
+          {% set btn_label = current_user.username ~ "'s List" %}
           {% if is_my_bottle %}
             {% set btn_label = "My List" %}
           {% endif %}
-          <a class="btn btn-primary" href="{{ url_for('main.list_bottles', username=user.username|lower) }}" role="button"><i class="bi bi-list-ul"></i> {{ btn_label }}</a>
           {% if is_my_bottle %}
-            <a class="btn btn-primary me-2" href="{{ url_for("main.bottle_edit", bottle_id=bottle.id) }}" role="button"><i class="bi bi-pencil"></i> Edit Bottle</a>
+            <a class="btn btn-primary" href="{{ url_for("main.bottle_edit", bottle_id=bottle.id) }}" role="button"><i class="bi bi-pencil"></i> Edit Bottle</a>
           {% endif %}
+          <a class="btn btn-primary" href="{{ url_for('main.list_bottles', username=current_user.username|lower) }}" role="button"><i class="bi bi-list-ul"></i> {{ btn_label }}</a>
         </div>
       </h1>
 

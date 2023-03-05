@@ -37,12 +37,12 @@
                 {% endif %}
               </div>
               <div class="mb-3">
-                {{ form.distillery.label(class="form-label") }}
-                {% if form.distillery.flags.required %}<span class="text-danger">*</span>{% endif %}
-                {{ form.distillery(class="form-select") }}
-                {% if form.distillery.errors %}
+                {{ form.distillery_id.label(class="form-label") }}
+                {% if form.distillery_id.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.distillery_id(class="form-select") }}
+                {% if form.distillery_id.errors %}
                   <ul class="errors">
-                    {% for error in form.distillery.errors %}
+                    {% for error in form.distillery_id.errors %}
                       <li>{{ error }}</li>
                     {% endfor %}
                   </ul>

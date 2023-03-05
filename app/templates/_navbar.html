@@ -15,7 +15,7 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           {% if current_user.is_anonymous %}
             <li class="nav-item">
-              <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary" role="button" id="nav_login">Log In</a>
+              <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white" role="button" id="nav_login">Log In</a>
             </li>
           {% else %}
             <li class="nav-item">
