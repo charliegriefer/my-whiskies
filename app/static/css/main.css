@@ -118,4 +118,14 @@ ul.terms li {
   margin-left: 24px;
 }
 
-/* test comment */
+
+/* tidying up the data tables */
+
+#bottles_wrapper > div:first-child, #distilleries_wrapper > div:first-child {
+  padding-top:8px;
+  margin-bottom:12px;
+}
+#bottles_wrapper > div:last-child, #distilleries_wrapper > div:last-child {
+  margin-top:12px;
+  padding-bottom:24px;
+}
