@@ -129,12 +129,12 @@ def bulk_distillery_add():
 @login_required
 def list_distilleries():
     """ Don't need a big docstring here. This endpoint lists a user's distilleries. """
-    dt_list_length = request.cookies.get("dt-list-length", 50)
+    # dt_list_length = request.cookies.get("dt-list-length", 50)
 
     response = make_response(render_template("distillery_list.html",
                                              title=f"{current_user.username}'s Distilleries",
                                              dt_list_length=dt_list_length))
-    response.set_cookie("dt-list-length", value=dt_list_length, expires=datetime.now() + relativedelta(years=1))
+    # response.set_cookie("dt-list-length", value=dt_list_length, expires=datetime.now() + relativedelta(years=1))
     return response
 
 
