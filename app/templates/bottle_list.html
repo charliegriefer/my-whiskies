@@ -4,7 +4,7 @@
   <main class="flex-shrink-0">
     <div class="container">
       <h1>
-        {{ user.username }}'s Whiskies
+        {{ current_user.username }}'s Whiskies
 
         {% if is_my_list %}
           <button type="button" style="margin-top:0.4rem;" class="btn btn-primary float-end" id="do_random"><i class="bi bi-question-circle mr-2"></i> Random Bottle</button>
@@ -15,7 +15,7 @@
         </button>
         <form method="post" id="type_filter" class="dropdown-menu p-4">
           <input type="hidden" name="bottle_length" id="bottle_length" />
-          <input type="checkbox" id="random_toggle" name="random_toggle" hidden />
+          <input type="hidden" name="random_toggle" id="random_toggle" value="0" />
           {% for bottle_type in bottle_types %}
           <div class="mb-3">
             <div class="form-check">
@@ -39,12 +39,11 @@
       </h1>
       <hr />
 
-      <table id="bottles" class="table table-striped" style="width:100%">
+      <table id="bottles" class="table table-striped" style="width:100%;">
       <thead>
         <tr>
           {% if is_my_list %}
-            <th class="me-0 pe-0" style="width:2%;">&nbsp;</th>
-            <th style="width:2%;">&nbsp;</th>
+            <th class="me-0 pe-0" style="width:4%;">&nbsp;</th>
           {% endif %}
           <th style="width:30%;">Name</th>
           <th style="width:30%;">Description</th>
@@ -60,13 +59,11 @@
             {% if is_my_list %}
               <td class="me-0 pe-0">
                 <a href="{{ url_for("main.bottle_edit", bottle_id=bottle.id) }}"><i class="bi bi-pencil"></i></a>
-              </td>
-              <td>
-                <a href="#" data-bs-toggle="modal", data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.bottle_delete", bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.bottle_delete", bottle_id=bottle.id) }}"><i class="bi bi-trash ps-1"></i></a>
               </td>
             {% endif %}
-            <td>
-              <a href="{{ url_for("main.bottle_detail", username=user.username.lower(), bottle_id=bottle.id) }}">{{ bottle.name }}</a>
+            <td class="pb-0 me-0">
+              <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}">{{ bottle.name }}</a>
               {% if bottle.image_count %}
                 {% if bottle.image_count == 1 %}
                   <i class="bi bi-image ms-1" title="Has Image"></i>
@@ -133,7 +130,7 @@
 {% block scripts %}
   {{ super() }}
   <script type="text/javascript">
-    $(document).ready(function () {
+    $(function () {
       $("#bottles").DataTable({
         "language": {
             "emptyTable": "There's nothing to see here."
@@ -143,24 +140,28 @@
           {
             searchable: false,
             orderable: false,
-            targets: [0, 1]
+            targets: [0]
           }
         ],
         {% endif %}
-        order: [[{% if is_my_list %}2{% else %}0{% endif %}, "asc"]],
+        order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        "pageLength": {{ selected_length }}
+        "pageLength": {{ dt_list_length }}
       });
 
+      /* submit form on click of random button */
       $("#do_random").on("click", function() {
-        $("#random_toggle").prop( "checked", true );
+        $("#random_toggle").val("1");
         $("#type_filter").submit();
       });
 
-      $("#type_filter").on("submit", function() {
-        $("#bottle_length").val($("select[name='bottles_length'] option").filter(":selected").val());
+      /* set cookie when length dropdown is changed */
+      $("select[name='bottles_length']").on("change", function() {
+        let next_year = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+        document.cookie = "dt-list-length=" + this.value + "; expires=" + next_year + "; path=/";
       });
 
+      let selectAll = $("#selectAll")
       let filterCheckboxes = $("input.form-check-input");
       handleSelectAll();
 
@@ -168,18 +169,19 @@
         let totalCheckboxes = filterCheckboxes.length;
         let numberOfChecked = $("input.form-check-input:checked").length;
 
-        $("#selectAll").prop("disabled", numberOfChecked===totalCheckboxes);
-      };
+        selectAll.prop("disabled", numberOfChecked===totalCheckboxes);
+      }
 
       filterCheckboxes.on("click", function() {
         handleSelectAll();
       });
 
-      $("#selectAll").on("click", function(){
+      selectAll.on("click", function(){
         filterCheckboxes.prop("checked", true);
         $(this).prop("disabled", true);
       });
 
+      /* confirm delete modal window */
       const myModal = document.getElementById("confirmDelete");
       myModal.addEventListener("shown.bs.modal", (e) => {
         let btn = $(e.target).find(".btn-ok");

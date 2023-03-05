@@ -3,67 +3,66 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1>{{ user.username }}'s Whiskies</h1>
+      <h1>{{ current_user.username }}'s Whiskies</h1>
       <hr />
 
       <div class="container">
         <div class="row">
           <div class="col ms-0 ps-0" id="distilleries">
-            <h3>Distilleries ({{ distilleries|length }})</h3>
+            <h3>Distilleries ({{ current_user.distilleries|length }})</h3>
             <div>
-              {% if distilleries|length == 0 %}
+              {% if current_user.distilleries|length == 0 %}
                 <p>
-                <i class="bi bi-exclamation-circle pe-1"></i> You have no distilleries. If you'd like us to add some, <a href="{{ url_for('main.add_distilleries') }}">click here</a>.
+                <i class="bi bi-exclamation-circle pe-1"></i> You have no distilleries. If you'd like us to add some, <a href="{{ url_for('main.bulk_distillery_add') }}">click here</a>.
                 </p>
               {% endif %}
               <p>
-                <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('main.distillery') }}">Add a distillery</a>
+                <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('main.distillery_add') }}">Add a distillery</a>
                 <br />
-                {% if distilleries|length > 0 %}<i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.distilleries') }}">List distilleries</a>{% endif %}
+                {% if current_user.distilleries|length > 0 %}<i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.list_distilleries') }}">List distilleries</a>{% endif %}
               </p>
             </div>
           </div>
 
           <div class="col ms-0 ps-0" id="bottles">
-            <h3>Bottles ({{ bottles|length }})</h3>
+            <h3>Bottles ({{ current_user.bottles|length }})</h3>
             <p>
-              {% if distilleries|length > 0 %}<i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('main.bottle') }}">Add a bottle</a>{% endif %}
+              {% if current_user.distilleries|length > 0 %}<i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('main.bottle_add') }}">Add a bottle</a>{% endif %}
               <br />
-              {% if bottles|length > 0 %}<i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.list_bottles', username=user.username|lower) }}">List bottles</a>{% endif %}
+              {% if current_user.bottles|length > 0 %}<i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.list_bottles', username=current_user.username|lower) }}">List bottles</a>{% endif %}
             </div>
           </div>
         </div>
       </div>
+    </main>
 
-    </div>
-  </main>
-
-  {% if not cookie_exists %}
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-      <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="cookieToast">
-        <div class="toast-header">
-          <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
-          <strong class="me-auto">Hey! This is Important!</strong>
-          <small></small>
-          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-          We use cookies to improve your online experience.
-          By using this site, you consent to this use as described in our <a href="{{ url_for('main.cookies') }}">Cookie Policy</a>.
+    {% if not cookie_exists %}
+      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="cookieToast">
+          <div class="toast-header text-bg-danger">
+            <i class="bi bi-exclamation-triangle pe-2"></i>
+            <strong class="me-auto">Hey! This is Important!</strong>
+            <small></small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body">
+            We use cookies to improve your online experience.
+            By using this site, you consent to this use as described in our <a href="{{ url_for('main.cookies') }}">Cookie Policy</a>.
+          </div>
         </div>
       </div>
-    </div>
-  {% endif %}
+    {% endif %}
 {% endblock %}
 
 {% block scripts %}
   {{ super() }}
   <script type="text/javascript">
-    $(document).ready(function(){
-        $("#cookieToast").toast({
+    $(function() {
+        let elem = $("#cookieToast")
+        elem.toast({
           autohide: false
       });
-      $("#cookieToast").toast("show");
+      elem.toast("show");
     });
   </script>
 {% endblock %}
