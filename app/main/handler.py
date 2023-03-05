@@ -72,7 +72,7 @@ def bottle_edit_images(form: BottleEditForm, bottle: Bottle):
     images.sort(key=lambda obj: obj.get("Key"))
 
     for idx, img in enumerate(images, 1):
-        img_num = img.get("Key").split("_")[-1].split(".")[0]
+        img_num = int(img.get("Key").split("_")[-1].split(".")[0])
 
         if idx != img_num:
             s3_client.copy_object(Bucket="my-whiskies-pics",
