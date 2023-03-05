@@ -37,7 +37,7 @@ def index():
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
 
-    user_count = User.query.filter(User.email_confirmed == 1).count() - 1
+    user_count = User.query.filter(User.email_confirmed == 1).count()
 
     distillery_count = Distillery.query.with_entities(Distillery.name).order_by(Distillery.name)
     distillery_count = distillery_count.group_by(Distillery.name).count()
