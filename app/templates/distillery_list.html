@@ -3,14 +3,19 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1>{{ user.username }}'s Whiskies: Distilleries</h1>
+      <h1>
+        {{ current_user.username }}'s Whiskies: Distilleries
+
+        <div class="float-lg-end mt-lg-0 mt-3">
+          <a class="btn btn-primary" href="{{ url_for('main.distillery_add') }}" role="button"><i class="bi bi-plus-circle pe-1"></i> Add Distillery</a>
+        </div>
+      </h1>
       <hr />
 
       <table id="distilleries" class="table table-striped" style="width:100%">
       <thead>
         <tr>
-          <th class="me-0 pe-0">&nbsp;</th>
-          <th>&nbsp;</th>
+          <th class="me-0 pe-0" style="width:4%;">&nbsp;</th>
           <th>Name</th>
           <th>Description</th>
           <th>Region 1</th>
@@ -19,19 +24,23 @@
         </tr>
       </thead>
       <tbody>
-        {% for distillery in distilleries %}
+        {% for distillery in current_user.distilleries %}
           <tr>
             <td class="me-0 pe-0">
               <a href="{{ url_for("main.distillery_edit", distillery_id=distillery.id) }}"><i class="bi bi-pencil"></i></a>
-            </td>
-            <td>
-              <a href="#" data-bs-toggle="modal", data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.distillery_delete", distillery_id=distillery.id) }}"><i class="bi bi-trash"></i></a>
+              <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.distillery_delete", distillery_id=distillery.id) }}"><i class="bi bi-trash"></i></a>
             </td>
             <td>{{ distillery.name }}</td>
             <td>{% if distillery.description %}{{ distillery.description }}{% else %}&nbsp;{% endif %}</td>
             <td>{{ distillery.region_1 }}</td>
             <td>{{ distillery.region_2 }}</td>
-            <td>{{ distillery.url }}</td>
+            <td>
+              {% if distillery.url %}
+                <a href="{{ distillery.url }}" target="_blank" rel="noopener noreferrer">{{ distillery.url }} <i class="bi bi-box-arrow-up-right ps-1"></i></a>
+              {% else %}
+                &nbsp;
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
       </tbody>
@@ -63,19 +72,27 @@
 {% block scripts %}
   {{ super() }}
   <script type="text/javascript">
-    $(document).ready(function () {
+    $(function () {
       $("#distilleries").DataTable({
         columnDefs: [
           {
             searchable: false,
             orderable: false,
-            targets: [0, 1]
+            targets: [0]
           },
         ],
-        order: [[2, "asc"]],
-        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
+        order: [[1, "asc"]],
+        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "pageLength": {{ dt_list_length }}
+      });
+
+      /* set cookie when length dropdown is changed */
+      $("select[name='distilleries_length']").on("change", function() {
+        let next_year = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+        document.cookie = "dt-list-length=" + this.value + "; expires=" + next_year + "; path=/";
       });
     });
+
     const myModal = document.getElementById("confirmDelete");
     myModal.addEventListener("shown.bs.modal", (e) => {
       let btn = $(e.target).find(".btn-ok");
