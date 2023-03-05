@@ -129,7 +129,7 @@ def bulk_distillery_add():
 @login_required
 def list_distilleries():
     """ Don't need a big docstring here. This endpoint lists a user's distilleries. """
-    dt_list_length = request.cookies.get("dt-list-length", 50)
+    dt_list_length = request.cookies.get("dt-list-length", "50")
 
     response = make_response(render_template("distillery_list.html",
                                              title=f"{current_user.username}'s Distilleries",
@@ -215,7 +215,7 @@ def bottles(username: str):
             - bottle.type (american whiskey, bourbon, rye, etc)
             - random_toggle: If true, returns a random record from the existing bottle list
     """
-    dt_list_length = request.cookies.get("dt-list-length", 50)
+    dt_list_length = request.cookies.get("dt-list-length", "50")
     user = User.query.filter(User.username == username).first_or_404()
 
     all_bottles = Bottle.query.filter(Bottle.user_id == user.id)
