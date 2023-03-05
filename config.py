@@ -12,6 +12,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class BaseConfig:
     SECRET_KEY = os.environ["SECRET_KEY"]
+    PERMANENT_SESSION_LIFETIME = 86400  # 24 hours
     BOTTLE_IMAGE_PATH = os.path.join(basedir, "app/static/bottles/")
 
     # DATABASE
