@@ -10,7 +10,7 @@ from app.auth import auth_blueprint
 from app.auth.email import send_password_reset_email, send_registration_confirmation_email
 from app.auth.forms import LoginForm, RegistrationForm, ResendRegEmailForm, ResetPWForm, ResetPasswordRequestForm
 from app.extensions import db
-from app.models.user import User
+from app.models import User
 
 
 @auth_blueprint.route("/login", methods=["GET", "POST"])
