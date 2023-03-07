@@ -1,14 +1,22 @@
 <nav class="navbar navbar-expand-lg bg-light">
   <div class="container">
     <img src="{{ url_for('static', filename='cheers.png') }}" style="width:7%;" class="me-3 mb-4" />
-    <a class="navbar-brand" href="{{ url_for("main.home") }}">My Whiskies Online</a>
+    {% if current_user.is_anonymous %}
+      <a class="navbar-brand" href="{{ url_for("main.index") }}">My Whiskies Online</a>
+    {% else %}
+      <a class="navbar-brand" href="{{ url_for("main.home") }}">My Whiskies Online</a>
+    {% endif %}
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" id="nav_home" href="{{ url_for("main.home") }}">Home</a>
+          {% if current_user.is_anonymous %}
+            <a class="nav-link" id="nav_home" href="{{ url_for("main.index") }}">Home</a>
+          {% else %}
+            <a class="nav-link" id="nav_home" href="{{ url_for("main.home") }}">Home</a>
+          {% endif %}
         </li>
       </ul>
       <span class="navbar-text">
