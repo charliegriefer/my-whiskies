@@ -53,5 +53,5 @@ class ProdConfig(BaseConfig):
     MAIL_DEBUG = 0
 
     # LOGGING
-    LOG_LEVEL = logging.ERROR
+    LOG_LEVEL = logging.INFO
     LOG_BACKTRACE = True
