@@ -28,7 +28,7 @@ class BaseConfig:
     MAIL_PASSWORD = os.environ["MAIL_PASSWORD"]
     MAIL_SUBJECT_PREFIX = "[my-whiskies.online]"
     MAIL_SENDER = "Bartender <bartender@my-whiskies.online>"
-    MAIL_ADMINS = ["bartender@my-whiskies.online"]
+    MAIL_ADMINS = ["bartender@my-whiskies.online", "charlie@griefer.com"]
     MAIL_DEBUG = 1
 
     # LOGGING
@@ -53,27 +53,5 @@ class ProdConfig(BaseConfig):
     MAIL_DEBUG = 0
 
     # LOGGING
-    LOG_LEVEL = logging.ERROR
+    LOG_LEVEL = logging.INFO
     LOG_BACKTRACE = True
-
-    @classmethod
-    def init_app(cls, app):
-        BaseConfig.init_app(app)
-
-        # email errors to the administrators
-        import logging
-        from logging.handlers import SMTPHandler
-        credentials = None
-        secure = None
-        if getattr(cls, "MAIL_USERNAME", None) is not None:
-            credentials = (cls.MAIL_USERNAME, cls.MAIL_PASSWORD)
-            if getattr(cls, "MAIL_USE_TLS", None):
-                secure = ()
-        mail_handler = SMTPHandler(mailhost=(cls.MAIL_SERVER, cls.MAIL_PORT),
-                                   fromaddr=cls.MAIL_SENDER,
-                                   toaddrs=cls.MAIL_ADMINS,
-                                   subject=cls.MAIL_SUBJECT_PREFIX + " Application Error",
-                                   credentials=credentials,
-                                   secure=secure)
-        mail_handler.setLevel(logging.ERROR)
-        app.logger.addHandler(mail_handler)

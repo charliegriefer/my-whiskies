@@ -33,7 +33,6 @@ def index():
             200:
                 description: Nothing to see here.
     """
-
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
 
