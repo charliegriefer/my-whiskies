@@ -13,6 +13,8 @@ a:focus, a:hover {
   font-weight: bold;
 }
 
+.popover-body ul { padding-left: 18px; }
+
 .error {
   color: crimson;
 }
