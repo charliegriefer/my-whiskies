@@ -41,6 +41,7 @@ class Bottle(db.Model):
     distillery_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False)
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"), nullable=False)
     distillery = db.relationship("Distillery")
+    user = db.relationship("User")
 
 
 class Distillery(db.Model):
@@ -52,6 +53,7 @@ class Distillery(db.Model):
     url = db.Column(db.String(64))
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"))
     bottles = db.relationship("Bottle")
+    user = db.relationship("User")
 
 
 class User(UserMixin, db.Model):

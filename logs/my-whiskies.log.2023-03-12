@@ -1,0 +1,426 @@
+[2023-03-12 10:29:17,093] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:29:17,093] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:29:17,513] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:29:17,513] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:29:17,514] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:29:17,514] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:29:17,515] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:29:17,515] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:29:17,516] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:29:17,518] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:29:17,519] INFO     [base.py:1901] [generated in 0.00021s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:29:17,551] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:29:17,553] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:29:17] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:29:17,584] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:29:17] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 10:29:17,584] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:29:17] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:30:56,152] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:30:56,152] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:30:56,439] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:30:56,439] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:30:56,440] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:30:56,440] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:30:56,440] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:30:56,440] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:30:56,441] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:30:56,444] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:30:56,444] INFO     [base.py:1901] [generated in 0.00024s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:30:56,476] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:30:56,477] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:30:56] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:30:56,491] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:30:56] "[36mGET /static/cheers.png HTTP/1.1[0m" 304 -
+[2023-03-12 10:30:56,491] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:30:56] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+[2023-03-12 10:42:03,074] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:42:03,075] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:42:03,075] INFO     [base.py:1901] [cached since 666.6s ago] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:42:03,084] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:42:03,085] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:42:03] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:42:03,112] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:42:03] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 10:42:03,114] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:42:03] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:46:03,147] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:46:03,157] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:46:03,158] INFO     [base.py:1901] [cached since 906.7s ago] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:46:03,163] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:46:03,163] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:46:03] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:46:03,184] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:46:03] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 10:46:03,185] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:46:03] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:46:37,628] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:46:37,629] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:46:38,586] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:46:38,586] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:46:38,587] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:46:38,587] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:46:38,588] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:46:38,588] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:46:38,589] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:46:38,592] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:46:38,592] INFO     [base.py:1901] [generated in 0.00029s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:46:38,623] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:46:38,634] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:46:38] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:46:38,659] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:46:38] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:46:38,659] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:46:38] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 10:46:48,804] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:46:48,804] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:46:49,686] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:46:49,686] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:46:49,687] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:46:49,687] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:46:49,689] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:46:49,689] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:46:49,689] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:46:49,692] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:46:49,692] INFO     [base.py:1901] [generated in 0.00024s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:46:49,725] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:46:49,726] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:46:49] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:46:49,746] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:46:49] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 10:46:49,749] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:46:49] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:47:01,243] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:47:01,243] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:47:01,438] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:47:01,438] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:47:01,439] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:47:01,439] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:47:01,439] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:47:01,439] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:47:01,441] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:47:01,444] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:47:01,444] INFO     [base.py:1901] [generated in 0.00029s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:47:01,476] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:47:01,477] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:47:01] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:47:01,504] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:47:01] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 10:47:01,505] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:47:01] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:47:08,585] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:47:08,585] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:47:08,781] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:47:08,782] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:47:08,783] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:47:08,783] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:47:08,783] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:47:08,784] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:47:08,785] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:47:08,787] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:47:08,787] INFO     [base.py:1901] [generated in 0.00021s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:47:08,820] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:47:08,832] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:47:08] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:47:08,858] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:47:08] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:47:08,858] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:47:08] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 10:47:23,693] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:47:23,694] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:47:24,415] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:47:24,415] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:47:24,416] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:47:24,416] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:47:24,418] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:47:24,418] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:47:24,419] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:47:24,421] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:47:24,421] INFO     [base.py:1901] [generated in 0.00022s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:47:24,461] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:47:24,463] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:47:24] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:47:24,487] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:47:24] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 10:47:24,488] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:47:24] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:49:02,442] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:49:02,442] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:49:04,543] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:49:04,543] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:49:04,544] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:49:04,544] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:49:04,544] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:49:04,544] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:49:04,545] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:49:04,548] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:49:04,548] INFO     [base.py:1901] [generated in 0.00027s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:49:04,581] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:49:04,582] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:49:04] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:49:04,607] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:49:04] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 10:49:04,608] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:49:04] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:49:34,437] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:49:34,437] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:49:34,952] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:49:34,953] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:49:34,953] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:49:34,953] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:49:34,954] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:49:34,954] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:49:34,954] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:49:34,957] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:49:34,957] INFO     [base.py:1901] [generated in 0.00026s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:49:34,989] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:49:34,990] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:49:34] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:49:35,002] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:49:35] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+[2023-03-12 10:49:35,005] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:49:35] "[36mGET /static/cheers.png HTTP/1.1[0m" 304 -
+[2023-03-12 10:51:28,160] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:51:28,160] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:51:30,268] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:51:30,268] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:51:30,268] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:51:30,268] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:51:30,269] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:51:30,269] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:51:30,270] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:51:30,272] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:51:30,273] INFO     [base.py:1901] [generated in 0.00023s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:51:30,305] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:51:30,306] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:51:30] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:51:30,333] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:51:30] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 10:51:30,336] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:51:30] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:52:04,500] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:52:04,500] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:52:05,546] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:52:05,546] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:52:05,546] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:52:05,547] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:52:05,547] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:52:05,547] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:52:05,548] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:52:05,550] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:52:05,550] INFO     [base.py:1901] [generated in 0.00019s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:52:05,583] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:52:05,585] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:52:05] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:52:05,612] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:52:05] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 10:52:05,613] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:52:05] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:54:36,321] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:54:36,321] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:54:46,243] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:54:46,243] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:54:47,512] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:54:47,512] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:54:47,513] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:54:47,513] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:54:47,513] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:54:47,513] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:54:47,514] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:54:47,517] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:54:47,517] INFO     [base.py:1901] [generated in 0.00026s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:54:47,550] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:54:47,552] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:54:47] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:54:47,582] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:54:47] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 10:54:47,583] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:54:47] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:55:11,845] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 10:55:11,845] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 10:55:13,397] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 10:55:13,397] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:55:13,398] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 10:55:13,398] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:55:13,398] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 10:55:13,399] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 10:55:13,399] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 10:55:13,402] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 10:55:13,402] INFO     [base.py:1901] [generated in 0.00030s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 10:55:13,430] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 10:55:13,431] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:55:13] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 10:55:13,454] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:55:13] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 10:55:13,454] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 10:55:13] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 11:12:46,808] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 11:12:46,809] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 11:12:55,667] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 11:12:55,667] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 11:12:55,668] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 11:12:55,668] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 11:12:55,669] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 11:12:55,669] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 11:12:55,670] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 11:12:55,673] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 11:12:55,673] INFO     [base.py:1901] [generated in 0.00022s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 11:12:55,706] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 11:12:55,707] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:12:55] "GET /distillery_add HTTP/1.1" 200 -
+[2023-03-12 11:12:55,735] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:12:55] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 11:12:55,736] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:12:55] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 11:12:58,152] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 11:12:58,152] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 11:12:58,152] INFO     [base.py:1901] [cached since 2.479s ago] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 11:12:58,163] INFO     [base.py:1896] SELECT distillery.id AS distillery_id, distillery.name AS distillery_name, distillery.description AS distillery_description, distillery.region_1 AS distillery_region_1, distillery.region_2 AS distillery_region_2, distillery.url AS distillery_url, distillery.user_id AS distillery_user_id 
+FROM distillery 
+WHERE %s = distillery.user_id
+[2023-03-12 11:12:58,163] INFO     [base.py:1901] [generated in 0.00027s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 11:12:58,185] INFO     [base.py:1896] SELECT bottle.id AS bottle_id, bottle.date_created AS bottle_date_created, bottle.name AS bottle_name, bottle.type AS bottle_type, bottle.year AS bottle_year, bottle.abv AS bottle_abv, bottle.url AS bottle_url, bottle.description AS bottle_description, bottle.review AS bottle_review, bottle.stars AS bottle_stars, bottle.cost AS bottle_cost, bottle.date_purchased AS bottle_date_purchased, bottle.date_opened AS bottle_date_opened, bottle.date_killed AS bottle_date_killed, bottle.image_count AS bottle_image_count, bottle.distillery_id AS bottle_distillery_id, bottle.user_id AS bottle_user_id 
+FROM bottle 
+WHERE %s = bottle.user_id
+[2023-03-12 11:12:58,185] INFO     [base.py:1901] [generated in 0.00045s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 11:12:58,192] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 11:12:58,193] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:12:58] "GET /home HTTP/1.1" 200 -
+[2023-03-12 11:12:58,213] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:12:58] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 11:12:58,215] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:12:58] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 11:12:59,384] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 11:12:59,385] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 11:12:59,385] INFO     [base.py:1901] [cached since 3.712s ago] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 11:12:59,394] INFO     [base.py:1896] SELECT distillery.id AS distillery_id, distillery.name AS distillery_name, distillery.description AS distillery_description, distillery.region_1 AS distillery_region_1, distillery.region_2 AS distillery_region_2, distillery.url AS distillery_url, distillery.user_id AS distillery_user_id 
+FROM distillery 
+WHERE %s = distillery.user_id
+[2023-03-12 11:12:59,394] INFO     [base.py:1901] [cached since 1.231s ago] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 11:12:59,402] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 11:12:59,403] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:12:59] "GET /distilleries HTTP/1.1" 200 -
+[2023-03-12 11:12:59,420] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:12:59] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 11:12:59,420] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:12:59] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 11:13:01,103] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 11:13:01,103] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 11:13:01,103] INFO     [base.py:1901] [cached since 5.431s ago] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 11:13:01,105] INFO     [base.py:1896] SELECT distillery.id AS distillery_id, distillery.name AS distillery_name, distillery.description AS distillery_description, distillery.region_1 AS distillery_region_1, distillery.region_2 AS distillery_region_2, distillery.url AS distillery_url, distillery.user_id AS distillery_user_id 
+FROM distillery 
+WHERE distillery.id = %s
+[2023-03-12 11:13:01,105] INFO     [base.py:1901] [generated in 0.00023s] ('1bd8d618-1a3a-43c4-9ea3-9252a12d9efc',)
+[2023-03-12 11:13:01,115] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 11:13:01,116] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:13:01] "GET /distillery_edit/1bd8d618-1a3a-43c4-9ea3-9252a12d9efc HTTP/1.1" 200 -
+[2023-03-12 11:13:01,132] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:13:01] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 11:13:01,133] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:13:01] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 11:13:40,281] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 11:13:40,282] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 11:13:41,702] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 11:13:41,702] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 11:13:41,704] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 11:13:41,704] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 11:13:41,704] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 11:13:41,705] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 11:13:41,705] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 11:13:41,708] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 11:13:41,708] INFO     [base.py:1901] [generated in 0.00023s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 11:13:41,711] INFO     [base.py:1896] SELECT distillery.id AS distillery_id, distillery.name AS distillery_name, distillery.description AS distillery_description, distillery.region_1 AS distillery_region_1, distillery.region_2 AS distillery_region_2, distillery.url AS distillery_url, distillery.user_id AS distillery_user_id 
+FROM distillery 
+WHERE distillery.id = %s
+[2023-03-12 11:13:41,711] INFO     [base.py:1901] [generated in 0.00022s] ('1bd8d618-1a3a-43c4-9ea3-9252a12d9efc',)
+[2023-03-12 11:13:41,746] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 11:13:41,747] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:13:41] "GET /distillery_edit/1bd8d618-1a3a-43c4-9ea3-9252a12d9efc HTTP/1.1" 200 -
+[2023-03-12 11:13:41,768] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:13:41] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 11:13:41,769] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:13:41] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 11:14:29,547] INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+[2023-03-12 11:14:29,548] INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+[2023-03-12 11:14:29,967] INFO     [base.py:1896] SELECT DATABASE()
+[2023-03-12 11:14:29,967] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 11:14:29,968] INFO     [base.py:1896] SELECT @@sql_mode
+[2023-03-12 11:14:29,968] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 11:14:29,969] INFO     [base.py:1896] SELECT @@lower_case_table_names
+[2023-03-12 11:14:29,969] INFO     [base.py:1901] [raw sql] ()
+[2023-03-12 11:14:29,971] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 11:14:29,973] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 11:14:29,974] INFO     [base.py:1901] [generated in 0.00031s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 11:14:29,977] INFO     [base.py:1896] SELECT distillery.id AS distillery_id, distillery.name AS distillery_name, distillery.description AS distillery_description, distillery.region_1 AS distillery_region_1, distillery.region_2 AS distillery_region_2, distillery.url AS distillery_url, distillery.user_id AS distillery_user_id 
+FROM distillery 
+WHERE distillery.id = %s
+[2023-03-12 11:14:29,977] INFO     [base.py:1901] [generated in 0.00027s] ('1bd8d618-1a3a-43c4-9ea3-9252a12d9efc',)
+[2023-03-12 11:14:30,014] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 11:14:30,015] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:14:30] "GET /distillery_edit/1bd8d618-1a3a-43c4-9ea3-9252a12d9efc HTTP/1.1" 200 -
+[2023-03-12 11:14:30,042] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:14:30] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 11:14:30,043] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 11:14:30] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 15:28:39,727] INFO     [base.py:847] Connection <_mysql.connection open to 'localhost' at 0x7fe66b05fe10> exceeded timeout; recycling
+[2023-03-12 15:28:39,770] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 15:28:39,772] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 15:28:39,772] INFO     [base.py:1901] [cached since 7050s ago] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 15:28:39,777] INFO     [base.py:1896] SELECT distillery.id AS distillery_id, distillery.name AS distillery_name, distillery.description AS distillery_description, distillery.region_1 AS distillery_region_1, distillery.region_2 AS distillery_region_2, distillery.url AS distillery_url, distillery.user_id AS distillery_user_id 
+FROM distillery 
+WHERE distillery.id = %s
+[2023-03-12 15:28:39,778] INFO     [base.py:1901] [cached since 7050s ago] ('1bd8d618-1a3a-43c4-9ea3-9252a12d9efc',)
+[2023-03-12 15:28:39,788] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 15:28:39,789] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 15:28:39] "GET /distillery_edit/1bd8d618-1a3a-43c4-9ea3-9252a12d9efc HTTP/1.1" 200 -
+[2023-03-12 15:28:39,822] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 15:28:39] "GET /static/css/main.css HTTP/1.1" 200 -
+[2023-03-12 15:28:39,822] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 15:28:39] "GET /static/cheers.png HTTP/1.1" 200 -
+[2023-03-12 15:28:39,912] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 15:28:39,915] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.username = %s 
+ LIMIT %s
+[2023-03-12 15:28:39,915] INFO     [base.py:1901] [generated in 0.00024s] ('apple-touch-icon-precomposed.png', 1)
+[2023-03-12 15:28:39,928] DEBUG    [handlers.py:11] 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. | /apple-touch-icon-precomposed.png
+[2023-03-12 15:28:39,934] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 15:28:39,934] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 15:28:39] "[33mGET /apple-touch-icon-precomposed.png HTTP/1.1[0m" 404 -
+[2023-03-12 15:28:39,937] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 15:28:39,938] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.username = %s 
+ LIMIT %s
+[2023-03-12 15:28:39,938] INFO     [base.py:1901] [cached since 0.02253s ago] ('apple-touch-icon.png', 1)
+[2023-03-12 15:28:39,949] DEBUG    [handlers.py:11] 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. | /apple-touch-icon.png
+[2023-03-12 15:28:39,950] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 15:28:39,951] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 15:28:39] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
+[2023-03-12 15:28:42,669] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 15:28:42,669] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 15:28:42,669] INFO     [base.py:1901] [cached since 7053s ago] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 15:28:42,682] INFO     [base.py:1896] SELECT distillery.id AS distillery_id, distillery.name AS distillery_name, distillery.description AS distillery_description, distillery.region_1 AS distillery_region_1, distillery.region_2 AS distillery_region_2, distillery.url AS distillery_url, distillery.user_id AS distillery_user_id 
+FROM distillery 
+WHERE %s = distillery.user_id
+[2023-03-12 15:28:42,683] INFO     [base.py:1901] [generated in 0.00024s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 15:28:42,692] INFO     [base.py:1896] SELECT bottle.id AS bottle_id, bottle.date_created AS bottle_date_created, bottle.name AS bottle_name, bottle.type AS bottle_type, bottle.year AS bottle_year, bottle.abv AS bottle_abv, bottle.url AS bottle_url, bottle.description AS bottle_description, bottle.review AS bottle_review, bottle.stars AS bottle_stars, bottle.cost AS bottle_cost, bottle.date_purchased AS bottle_date_purchased, bottle.date_opened AS bottle_date_opened, bottle.date_killed AS bottle_date_killed, bottle.image_count AS bottle_image_count, bottle.distillery_id AS bottle_distillery_id, bottle.user_id AS bottle_user_id 
+FROM bottle 
+WHERE %s = bottle.user_id
+[2023-03-12 15:28:42,693] INFO     [base.py:1901] [generated in 0.00026s] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 15:28:42,696] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 15:28:42,696] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 15:28:42] "GET /home HTTP/1.1" 200 -
+[2023-03-12 15:28:42,702] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 15:28:42] "[36mGET /static/cheers.png HTTP/1.1[0m" 304 -
+[2023-03-12 15:28:42,703] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 15:28:42] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+[2023-03-12 15:28:45,084] INFO     [base.py:1088] BEGIN (implicit)
+[2023-03-12 15:28:45,084] INFO     [base.py:1896] SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.date_registered AS user_date_registered, user.email_confirmed AS user_email_confirmed, user.email_confirm_date AS user_email_confirm_date, user.is_deleted AS user_is_deleted, user.deleted_date AS user_deleted_date 
+FROM user 
+WHERE user.id = %s
+[2023-03-12 15:28:45,084] INFO     [base.py:1901] [cached since 7055s ago] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 15:28:45,087] INFO     [base.py:1896] SELECT distillery.id AS distillery_id, distillery.name AS distillery_name, distillery.description AS distillery_description, distillery.region_1 AS distillery_region_1, distillery.region_2 AS distillery_region_2, distillery.url AS distillery_url, distillery.user_id AS distillery_user_id 
+FROM distillery 
+WHERE %s = distillery.user_id
+[2023-03-12 15:28:45,087] INFO     [base.py:1901] [cached since 2.405s ago] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 15:28:45,089] INFO     [base.py:1896] SELECT bottle.id AS bottle_id, bottle.date_created AS bottle_date_created, bottle.name AS bottle_name, bottle.type AS bottle_type, bottle.year AS bottle_year, bottle.abv AS bottle_abv, bottle.url AS bottle_url, bottle.description AS bottle_description, bottle.review AS bottle_review, bottle.stars AS bottle_stars, bottle.cost AS bottle_cost, bottle.date_purchased AS bottle_date_purchased, bottle.date_opened AS bottle_date_opened, bottle.date_killed AS bottle_date_killed, bottle.image_count AS bottle_image_count, bottle.distillery_id AS bottle_distillery_id, bottle.user_id AS bottle_user_id 
+FROM bottle 
+WHERE %s = bottle.user_id
+[2023-03-12 15:28:45,089] INFO     [base.py:1901] [cached since 2.397s ago] ('5adf9c67-136d-4f85-af17-7e85eedaebda',)
+[2023-03-12 15:28:45,092] INFO     [base.py:1114] ROLLBACK
+[2023-03-12 15:28:45,092] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 15:28:45] "GET /home HTTP/1.1" 200 -
+[2023-03-12 15:28:45,097] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 15:28:45] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+[2023-03-12 15:28:45,098] INFO     [_internal.py:224] 127.0.0.1 - - [12/Mar/2023 15:28:45] "[36mGET /static/cheers.png HTTP/1.1[0m" 304 -
