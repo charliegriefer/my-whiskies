@@ -52,6 +52,7 @@ class Distillery(db.Model):
     region_2 = db.Column(db.String(36), nullable=False)
     url = db.Column(db.String(64))
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"))
+    user = db.relationship("User", back_populates="distilleries")
     bottles = db.relationship("Bottle", back_populates="distillery")
 
 
@@ -65,7 +66,7 @@ class User(UserMixin, db.Model):
     email_confirm_date = db.Column(db.DateTime, nullable=True)
     is_deleted = db.Column(db.Boolean(), nullable=False, default=False)
     deleted_date = db.Column(db.DateTime, nullable=True)
-    distilleries = db.relationship("Distillery")
+    distilleries = db.relationship("Distillery", back_populates="user")
     bottles = db.relationship("Bottle", back_populates="user")
 
     def get_mail_confirm_token(self, expires_in: int = 600) -> str:
