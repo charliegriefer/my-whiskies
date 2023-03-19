@@ -40,7 +40,7 @@ class Bottle(db.Model):
     image_count = db.Column(db.Integer, default=0)
     distillery_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False)
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"), nullable=False)
-    distillery = db.relationship("Distillery")
+    distillery = db.relationship("Distillery", backref="distilleries")
     user = db.relationship("User")
 
 
@@ -52,7 +52,7 @@ class Distillery(db.Model):
     region_2 = db.Column(db.String(36), nullable=False)
     url = db.Column(db.String(64))
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"))
-    bottles = db.relationship("Bottle")
+    bottles = db.relationship("Bottle", backref="bottles")
     user = db.relationship("User")
 
 
