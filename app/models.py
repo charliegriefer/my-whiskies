@@ -40,8 +40,8 @@ class Bottle(db.Model):
     image_count = db.Column(db.Integer, default=0)
     distillery_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False)
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"), nullable=False)
-    user = db.relationship("User", back_populates="bottles")
     distillery = db.relationship("Distillery", back_populates="bottles")
+    user = db.relationship("User", back_populates="bottles")
 
 
 class Distillery(db.Model):
