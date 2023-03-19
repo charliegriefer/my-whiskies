@@ -14,8 +14,7 @@ load_dotenv(dotenv_path=dotenv_path, verbose=True)
 def create_app():
 
     application = Flask(__name__)
-    config_type = os.environ["CONFIG_TYPE"]
-    application.config.from_object(config_type)
+    application.config.from_object(os.environ["CONFIG_TYPE"])
 
     dictConfig(
         {
