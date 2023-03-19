@@ -19,6 +19,11 @@ class BaseConfig:
     SQLALCHEMY_DATABASE_URI = os.environ["SQLALCHEMY_DATABASE_URI"]
     SQLALCHEMY_ECHO = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_POOL_RECYCLE = 3600
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_size": 1,
+        "max_overflow": 0,
+    }
 
     # MAIL
     MAIL_SERVER = os.environ["MAIL_SERVER"]
