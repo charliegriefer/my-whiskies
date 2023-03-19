@@ -40,7 +40,8 @@ class Bottle(db.Model):
     image_count = db.Column(db.Integer, default=0)
     distillery_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False)
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"), nullable=False)
-    user = db.relationship("User", back_populates="user")
+    user = db.relationship("User", back_populates="bottles")
+    distillery = db.relationship("Distillery", back_populates="bottles")
 
 
 class Distillery(db.Model):
@@ -51,6 +52,7 @@ class Distillery(db.Model):
     region_2 = db.Column(db.String(36), nullable=False)
     url = db.Column(db.String(64))
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"))
+    bottles = db.relationship("Bottle", back_populates="distillery")
 
 
 class User(UserMixin, db.Model):
@@ -63,8 +65,8 @@ class User(UserMixin, db.Model):
     email_confirm_date = db.Column(db.DateTime, nullable=True)
     is_deleted = db.Column(db.Boolean(), nullable=False, default=False)
     deleted_date = db.Column(db.DateTime, nullable=True)
-    distilleries = db.relationship("Distillery", back_populates="distilleries")
-    bottles = db.relationship("Bottle", back_populates="bottles")
+    distilleries = db.relationship("Distillery")
+    bottles = db.relationship("Bottle", back_populates="user")
 
     def get_mail_confirm_token(self, expires_in: int = 600) -> str:
         payload = {"confirm_reg": self.id, "exp": time() + expires_in}
