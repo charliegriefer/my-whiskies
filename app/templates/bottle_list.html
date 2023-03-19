@@ -63,7 +63,7 @@
               </td>
             {% endif %}
             <td class="pb-0 me-0">
-              <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}">{{ bottle.name }}</a>
+              <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}">{{ bottle.name | replace(":", ":<br />") | safe }}</a>
               {% if bottle.image_count %}
                 {% if bottle.image_count == 1 %}
                   <i class="bi bi-image ms-1" title="Has Image"></i>
@@ -72,7 +72,7 @@
                 {% endif %}
               {% endif %}
             </td>
-            <td>{% if bottle.description %}{{ bottle.description }}{% else %}&nbsp;{% endif %}</td>
+            <td>{% if bottle.description %}{{ bottle.description | replace("\n", "<br />") | safe }}{% else %}&nbsp;{% endif %}</td>
             <td style="text-align:right; padding-right:1.6em;" data-order="{% if bottle.stars %}{{ bottle.stars }}{% else %}0{% endif %}">
               {% if bottle.stars %}
                 {% set times_ten = bottle.stars * 10 %}
