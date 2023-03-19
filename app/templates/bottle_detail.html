@@ -6,10 +6,10 @@
   <main class="flex-shrink-0">
     <div class="container">
       <h1>
-        {{ current_user.username }}'s Whiskies:<br />{{ bottle.name }}
+        {{ bottle.user.username }}'s Whiskies:<br />{{ bottle.name }}
 
         <div class="float-lg-end mt-lg-0 mt-3">
-          {% set btn_label = current_user.username ~ "'s List" %}
+          {% set btn_label = bottle.user.username ~ "'s List" %}
           {% if is_my_bottle %}
             {% set btn_label = "My List" %}
           {% endif %}

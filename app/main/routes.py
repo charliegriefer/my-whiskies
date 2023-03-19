@@ -254,6 +254,7 @@ def bottles(username: str):
 @main_blueprint.route("/bottle/<bottle_id>")
 def bottle_detail(bottle_id: str):
     _bottle = Bottle.query.get_or_404(bottle_id)
+
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
     return render_template("bottle_detail.html", bottle=_bottle, is_my_bottle=is_my_bottle)
 
