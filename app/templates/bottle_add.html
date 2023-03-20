@@ -128,6 +128,18 @@
 
             <div class="col">
               <div class="mb-3">
+                {{ form.cost.label(class="form-label") }}
+                {% if form.cost.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.cost(class="form-control") }}
+                {% if form.cost.errors %}
+                  <ul class="errors">
+                    {% for error in form.cost.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mb-3">
                 {{ form.date_purchased.label(class="form-label") }}
                 {% if form.date_purchased.flags.required %}<span class="text-danger">*</span>{% endif %}
                 {{ form.date_purchased(class="form-control") }}
