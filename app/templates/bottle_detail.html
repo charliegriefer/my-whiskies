@@ -81,7 +81,7 @@
                 </div>
                 <div class="row flex-nowrap mb-3">
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Description:</div>
-                  <div class="col-9 ps-4 ps-sm-2">{% if bottle.description %}{{ bottle.description }}{% endif %}</div>
+                  <div class="col-9 ps-4 ps-sm-2">{% if bottle.description %}{{ bottle.description | replace("\n", "<br />") | safe }}{% endif %}</div>
                 </div>
               </div>
 
