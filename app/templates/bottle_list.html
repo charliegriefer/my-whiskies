@@ -63,7 +63,7 @@
               </td>
             {% endif %}
             <td class="pb-0 me-0">
-              <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}">{{ bottle.name }}</a>
+              <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}">{{ bottle.name | replace("\n", "<br />") | safe }}</a>
               {% if bottle.image_count %}
                 {% if bottle.image_count == 1 %}
                   <i class="bi bi-image ms-1" title="Has Image"></i>

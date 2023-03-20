@@ -33,7 +33,7 @@ class DistilleryForm(FlaskForm):
 
 
 class BottleForm(FlaskForm):
-    name = StringField("Name:", validators=[InputRequired(), Length(max=100)], render_kw={"placeholder": "Name"})
+    name = TextAreaField("Name:", validators=[InputRequired(), Length(max=100)], render_kw={"placeholder": "Name"})
     url = StringField("URL:", validators=[Length(max=100), URL(), Optional()], render_kw={"placeholder": "URL"})
     type = SelectField("Bottle Type:", validators=[InputRequired()])
     distillery_id = SelectField("Distillery:", validators=[InputRequired()])
