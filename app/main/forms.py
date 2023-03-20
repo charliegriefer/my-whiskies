@@ -48,7 +48,7 @@ class BottleForm(FlaskForm):
                        validators=[Optional(), NumberRange(min=30, max=90, message="Invalid value for ABV")],
                        render_kw={"placeholder": "00.00"})
 
-    cost = DecimalField("Cost:", places=2, validators=[Optional()], render_kw={"placeholder": "00.00"})
+    cost = DecimalField("Cost:", places=2, validators=[Optional(), NumberRange(min=0)], render_kw={"placeholder": "00.00"})
     stars = SelectField("Stars:", validators=[Optional()], validate_choice=False)
 
     description = TextAreaField("Description:", validators=[Length(0, 65000)])

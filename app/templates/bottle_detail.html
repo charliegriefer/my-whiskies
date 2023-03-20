@@ -74,7 +74,7 @@
                 <div class="row flex-nowrap">
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Cost:</div>
                   <div class="col-9 ps-4 ps-sm-2">
-                    {% if bottle.cost %}
+                    {% if bottle.cost is not none %}
                       {{ "$%.2f"|format(bottle.cost) }}
                     {% endif %}
                   </div>
