@@ -3,40 +3,53 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1>
-        {{ user.username }}'s Whiskies
 
-        {% if is_my_list %}
-          <button type="button" style="margin-top:0.4rem;" class="btn btn-primary float-end" id="do_random"><i class="bi bi-question-circle mr-2"></i> Random Bottle</button>
-        {% endif %}
+      <div class="row mt-4">
+        <div class="col">
+          <h1>
+            {{ user.username }}'s Whiskies
+          </h1>
+        </div>
 
-        <button type="button" class="btn btn-primary dropdown-toggle float-end mb-2 me-2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" style="margin-top:0.4rem;">
-          <i class="bi bi-filter mr-2"></i> Filter List
-        </button>
-        <form method="post" id="type_filter" class="dropdown-menu p-4">
-          <input type="hidden" name="bottle_length" id="bottle_length" />
-          <input type="hidden" name="random_toggle" id="random_toggle" value="0" />
-          {% for bottle_type in bottle_types %}
-          <div class="mb-3">
-            <div class="form-check">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id="{{ bottle_type.name }}"
-                value="{{ bottle_type.name }}"
-                name="bottle_type"
-                {% if bottle_type.name in active_filters %} checked{% endif %}
-              />
-              <label class="form-check-label mt-1" for="{{ bottle_type.name }}">
-                {{ bottle_type.value }}
-              </label>
-            </div>
+        <div class="col">
+          {% if is_my_list %}
+            <button type="button" class="btn btn-primary mt-4 float-end" id="do_random"><i class="bi bi-question-circle mr-2"></i> Random Bottle</button>
+          {% endif %}
+
+          <button type="button" class="btn btn-primary dropdown-toggle mt-4 me-2 float-end" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" style="margin-top:0.4rem;">
+            <i class="bi bi-filter mr-2"></i> Filter List
+          </button>
+          <form method="post" id="type_filter" class="dropdown-menu p-4">
+            <input type="hidden" name="bottle_length" id="bottle_length" />
+            <input type="hidden" name="random_toggle" id="random_toggle" value="0" />
+            {% for bottle_type in bottle_types %}
+              <div class="mb-1 my-0 py-0">
+                <div class="form-check my-0 py-0">
+                  <input
+                    type="checkbox"
+                    class="form-check-input type-filter"
+                    id="{{ bottle_type.name }}"
+                    value="{{ bottle_type.name }}"
+                    name="bottle_type"
+                    {% if bottle_type.name in active_filters %} checked{% endif %}
+                  />
+                  <label class="form-check-label" for="{{ bottle_type.name }}">
+                    {{ bottle_type.value }}
+                  </label>
+                </div>
+              </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary mt-4">Apply Filter(s)</button>
+            <button type="button" class="btn btn-primary mt-4" id="selectAll">Select All</button>
+          </form>
+
+          <div class="form-check form-switch float-end me-4 pe-4 mt-3 pt-4 mb-0 pb-0">
+            <input class="form-check-input" type="checkbox" role="switch" id="show_killed">
+            <label class="form-check-label" for="show_killed">Show Killed Bottles</label>
           </div>
-          {% endfor %}
-          <button type="submit" class="btn btn-primary">Apply Filter(s)</button>
-          <button type="button" class="btn btn-primary" id="selectAll">Select All</button>
-        </form>
-      </h1>
+        </div>
+      </div> <!-- end row -->
+
       <hr />
 
       <table id="bottles" class="table table-striped" style="width:100%;">
@@ -51,6 +64,7 @@
           <th style="width:12%;">Type</th>
           <th style="text-align:right; width:5%;">ABV</th>
           <th style="text-align:right; width:5%;">Proof</th>
+          <th style="text-align:right; width:5%;">DK</th>
         </tr>
       </thead>
       <tbody>
@@ -63,41 +77,46 @@
               </td>
             {% endif %}
             <td class="pb-0 me-0">
-              <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}">{{ bottle.name | replace("\n", "<br />") | safe }}</a>
+              <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}"{% if bottle.date_killed %} class="opacity-50"{% endif %}>{{ bottle.name | replace("\n", "<br />") | safe }}</a>
               {% if bottle.image_count %}
                 {% if bottle.image_count == 1 %}
-                  <i class="bi bi-image ms-1" title="Has Image"></i>
+                  <i class="bi bi-image ms-1{% if bottle.date_killed %} opacity-50{% endif %}" title="Has Image"></i>
                 {% else %}
-                  <i class="bi bi-images ms-1" title="Has Images"></i>
+                  <i class="bi bi-images ms-1{% if bottle.date_killed %} opacity-50{% endif %}" title="Has Images"></i>
                 {% endif %}
               {% endif %}
             </td>
-            <td>{% if bottle.description %}{{ bottle.description | replace("\n", "<br />") | safe }}{% else %}&nbsp;{% endif %}</td>
+            <td><span{% if bottle.date_killed %} class="opacity-50"{% endif %}>{% if bottle.description %}{{ bottle.description | replace("\n", "<br />") | safe }}{% else %}&nbsp;{% endif %}</span></td>
             <td style="text-align:right; padding-right:1.6em;" data-order="{% if bottle.stars %}{{ bottle.stars }}{% else %}0{% endif %}">
               {% if bottle.stars %}
                 {% set times_ten = bottle.stars * 10 %}
                 {% set times_ten = times_ten|int %}
                 {% set the_var = "stars/stars_" + times_ten|string + ".png" %}
-                <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1" />
+                <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1{% if bottle.date_killed %} opacity-50{% endif %}" />
               {% else %}
                 <img src="{{ url_for('static', filename='stars/stars_blank.png') }}" alt="" title="" class="mb-1" />
               {% endif %}
             </td>
-            <td>{{ bottle.type.value }}</td>
+            <td><span{% if bottle.date_killed %} class="opacity-50"{% endif %}>{{ bottle.type.value }}</span></td>
             <td style="text-align:right; padding-right:1.6em;">
+              <span{% if bottle.date_killed %} class="opacity-50"{% endif %}>
               {% if bottle.abv %}
                 {{ "%.2f"|format(bottle.abv) }}
               {% else %}
                 N/A
               {% endif %}
+              </span>
             </td>
             <td style="text-align:right; padding-right:1.6em;">
+              <span{% if bottle.date_killed %} class="opacity-50"{% endif %}>
               {% if bottle.abv %}
                 {{ "%.2f"|format(bottle.abv*2) }}
               {% else %}
                 N/A
               {% endif %}
+              </span>
             </td>
+            <td>{{ bottle.date_killed }}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -131,22 +150,46 @@
   {{ super() }}
   <script type="text/javascript">
     $(function () {
-      $("#bottles").DataTable({
+      var table = $("#bottles").DataTable({
         "language": {
             "emptyTable": "There's nothing to see here."
         },
         {% if is_my_list %}
         columnDefs: [
           {
+            target: 0,
             searchable: false,
             orderable: false,
-            targets: [0]
+          },
+          {
+            target: 7,
+            orderable: false,
+            visible: false,
           }
         ],
         {% endif %}
         order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "pageLength": {{ dt_list_length }}
+      });
+
+      table
+        .columns(7)
+        .search('None', true, false)
+        .draw();
+
+      $("#show_killed").on("click", function() {
+        if (this.checked) {
+          table
+            .columns()
+            .search('')
+            .draw();
+        } else {
+          table
+            .columns(7)
+            .search('None', true, false)
+            .draw();
+        }
       });
 
       /* submit form on click of random button */
@@ -162,12 +205,12 @@
       });
 
       let selectAll = $("#selectAll")
-      let filterCheckboxes = $("input.form-check-input");
+      let filterCheckboxes = $("input.type-filter");
       handleSelectAll();
 
       function handleSelectAll() {
         let totalCheckboxes = filterCheckboxes.length;
-        let numberOfChecked = $("input.form-check-input:checked").length;
+        let numberOfChecked = $("input.type-filter:checked").length;
 
         selectAll.prop("disabled", numberOfChecked===totalCheckboxes);
       }
