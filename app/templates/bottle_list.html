@@ -43,10 +43,12 @@
             <button type="button" class="btn btn-primary mt-4" id="selectAll">Select All</button>
           </form>
 
-          <div class="form-check form-switch float-end me-4 pe-4 mt-3 pt-4 mb-0 pb-0">
-            <input class="form-check-input" type="checkbox" role="switch" id="show_killed">
-            <label class="form-check-label" for="show_killed">Show Killed Bottles</label>
-          </div>
+          {% if has_killed_bottles %}
+            <div class="form-check form-switch float-end me-4 pe-4 mt-3 pt-4 mb-0 pb-0">
+              <input class="form-check-input" type="checkbox" role="switch" id="show_killed">
+              <label class="form-check-label" for="show_killed">Show Killed Bottles</label>
+            </div>
+          {% endif %}
         </div>
       </div> <!-- end row -->
 
