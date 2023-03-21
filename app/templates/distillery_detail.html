@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container">
+
+      <div class="row mt-4">
+        <div class="col">
+          <h1>
+            {{ distillery.user.username }}'s Whiskies: Distilleries
+          </h1>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="container">
+        <div class="row">
+          <div class="col-8">
+            <div class="row">
+              <div class="col-md ps-0 ms-0 pe-2 me-2">
+                <div class="row flex-nowrap">
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Name:</div>
+                  <div class="col-9 ps-4 ps-sm-2">
+                    {% if distillery.url %}
+                      <a href="{{ distillery.url }}" target="_blank" rel="noopener noreferrer">{{ distillery.name }} <i class="bi bi-box-arrow-in-up-right"></i></a>
+                    {% else %}
+                      {{ distillery.name }}
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="row flex-nowrap">
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Region:</div>
+                  <div class="col-9 ps-4 ps-sm-2">{{ distillery.region_1 }}, {{ distillery.region_2 }}</div>
+                </div>
+
+                <div class="row flex-nowrap">
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Description:</div>
+                  <div class="col-9 ps-4 ps-sm-2">
+                    {% if distillery.description %}
+                      {{ distillery.description | replace("\n", "<br />") | safe }}
+                    {% else %}
+                      &nbsp;
+                    {% endif %}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="container">
+        <table border="1">
+        {% for bottle in distillery.bottles %}
+          <tr>
+            <td>{{ bottle.name }}</td>
+            <td>{{ bottle.description }}</td>
+          </tr>
+        {% endfor %}
+        </table>
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+{% endblock %}
