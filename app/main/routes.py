@@ -217,24 +217,22 @@ def bottles(username: str):
     dt_list_length = request.cookies.get("dt-list-length", "50")
     user = User.query.filter(User.username == username).first_or_404()
 
-    all_bottles = Bottle.query.filter(Bottle.user_id == user.id)
+    all_bottles = user.bottles
 
     if request.method == "POST":
         active_bottle_types = request.form.getlist("bottle_type")  # checked bottle types to show
 
         if len(active_bottle_types):
-            bottles_to_list = all_bottles.filter(Bottle.type.in_(active_bottle_types)).all()
+            bottles_to_list = [b for b in all_bottles if b.type.name in active_bottle_types]
             if bool(int(request.form.get("random_toggle"))):
-                if len(bottles_to_list) == 0:
-                    bottles_to_list = []
-                else:
+                if len(bottles_to_list) > 0:
                     bottles_to_list = [random.choice(bottles_to_list)]
         else:
             bottles_to_list = []
 
     else:
         active_bottle_types = [bt.name for bt in BottleTypes]
-        bottles_to_list = all_bottles.all()
+        bottles_to_list = all_bottles
 
     is_my_list = current_user.is_authenticated and current_user.username.lower() == username.lower()
 
