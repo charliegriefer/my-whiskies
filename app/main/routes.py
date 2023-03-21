@@ -218,6 +218,7 @@ def bottles(username: str):
     user = User.query.filter(User.username == username).first_or_404()
 
     all_bottles = user.bottles
+    killed_bottles = [b for b in all_bottles if b.date_killed]
 
     if request.method == "POST":
         active_bottle_types = request.form.getlist("bottle_type")  # checked bottle types to show
@@ -240,6 +241,7 @@ def bottles(username: str):
                                              title=f"{user.username}'s Whiskies",
                                              user=user,
                                              bottles=bottles_to_list,
+                                             has_killed_bottles=bool(len(killed_bottles)),
                                              bottle_types=BottleTypes,
                                              active_filters=active_bottle_types,
                                              dt_list_length=dt_list_length,
