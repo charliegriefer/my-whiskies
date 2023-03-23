@@ -60,7 +60,7 @@
                     <th scope="col" class="mt-0 pt-0">Type</th>
                     <th scope="col" class="mt-0 pt-0 text-end">ABV</th>
                     <th scope="col" class="mt-0 pt-0 text-end">Proof</th>
-                    <th scope="col" class="mt-0 pt-0 text-end">Date Killed</th>
+                    <th scope="col" class="mt-0 pt-0 text-end"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -120,15 +120,7 @@
                         {% endif %}
                       </span>
                     </td>
-                    <td class="text-end pe-4">
-                      <span class="{{ opacity }}">
-                        {% if bottle.date_killed %}
-                          {{ bottle.date_killed.strftime("%Y-%m-%d") }}
-                        {% else %}
-                          -
-                        {% endif %}
-                      </span>
-                    </td>
+                    <td>{{ bottle.date_killed }}</td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -152,6 +144,13 @@
         language: {
           "emptyTable": "{{ distillery.user.username }} has no bottles from {{ distillery.name }}. Yet."
         },
+        columnDefs: [
+          {
+            target: 6,
+            orderable: false,
+            visible: false
+          }
+        ],
         order: [[0, "asc"]]
       });
     });
