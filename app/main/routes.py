@@ -179,6 +179,7 @@ def distillery_edit(distillery_id: str):
 def distillery_detail(distillery_id: str):
     _distillery = Distillery.query.get_or_404(distillery_id)
     return render_template("distillery_detail.html",
+                           title=f"{_distillery.user.username}'s Whiskies: {_distillery.name}",
                            distillery=_distillery)
 
 
