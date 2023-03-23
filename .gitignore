@@ -187,3 +187,4 @@ fabric.properties
 .idea
 
 /logs/
+/logs/*
