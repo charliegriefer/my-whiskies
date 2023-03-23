@@ -58,19 +58,24 @@
       <thead>
         <tr>
           {% if is_my_list %}
-            <th class="me-0 pe-0" style="width:4%;">&nbsp;</th>
+            <th scope="col" class="me-0 pe-0" style="width:4%;">&nbsp;</th>
           {% endif %}
-          <th style="width:30%;">Name</th>
-          <th style="width:30%;">Description</th>
-          <th style="text-align:right">Rating</th>
-          <th style="width:12%;">Type</th>
-          <th style="text-align:right; width:5%;">ABV</th>
-          <th style="text-align:right; width:5%;">Proof</th>
-          <th style="text-align:right; width:5%;">DK</th>
+          <th scope="col" style="width:30%;">Name</th>
+          <th scope="col" style="width:30%;">Description</th>
+          <th scope="col" style="text-align:right">Rating</th>
+          <th scope="col" style="width:12%;">Type</th>
+          <th scope="col" style="text-align:right; width:5%;">ABV</th>
+          <th scope="col" style="text-align:right; width:5%;">Proof</th>
+          <th scope="col" style="text-align:right; width:5%;"></th>
         </tr>
       </thead>
       <tbody>
         {% for bottle in bottles %}
+          {% set opacity = "opacity-100" %}
+          {% if bottle.date_killed %}
+            {% set opacity = "opacity-50" %}
+          {% endif %}
+
           <tr>
             {% if is_my_list %}
               <td class="me-0 pe-0">
@@ -79,43 +84,53 @@
               </td>
             {% endif %}
             <td class="pb-0 me-0">
-              <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}"{% if bottle.date_killed %} class="opacity-50"{% endif %}>{{ bottle.name | replace("\n", "<br />") | safe }}</a>
+              <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}" class="{{ opacity }}">{{ bottle.name |replace("\n", "<br />") |safe }}</a>
               {% if bottle.image_count %}
                 {% if bottle.image_count == 1 %}
-                  <i class="bi bi-image ms-1{% if bottle.date_killed %} opacity-50{% endif %}" title="Has Image"></i>
+                  <i class="bi bi-image ms-1 {{ opacity }}" title="Has Image"></i>
                 {% else %}
-                  <i class="bi bi-images ms-1{% if bottle.date_killed %} opacity-50{% endif %}" title="Has Images"></i>
+                  <i class="bi bi-images ms-1 {{ opacity }}" title="Has Images"></i>
                 {% endif %}
               {% endif %}
             </td>
-            <td><span{% if bottle.date_killed %} class="opacity-50"{% endif %}>{% if bottle.description %}{{ bottle.description | replace("\n", "<br />") | safe }}{% else %}&nbsp;{% endif %}</span></td>
+            <td>
+              <span class="{{ opacity }}">
+                {% if bottle.description %}
+                  {{ bottle.description |replace("\n", "<br />") |safe }}
+                {% else %}
+                  &nbsp;
+                {% endif %}
+              </span>
+            </td>
             <td style="text-align:right; padding-right:1.6em;" data-order="{% if bottle.stars %}{{ bottle.stars }}{% else %}0{% endif %}">
               {% if bottle.stars %}
                 {% set times_ten = bottle.stars * 10 %}
                 {% set times_ten = times_ten|int %}
                 {% set the_var = "stars/stars_" + times_ten|string + ".png" %}
-                <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1{% if bottle.date_killed %} opacity-50{% endif %}" />
+                <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1 {{ opacity }}" />
               {% else %}
-                <img src="{{ url_for('static', filename='stars/stars_blank.png') }}" alt="" title="" class="mb-1" />
+                <img src="{{ url_for('static', filename='stars/stars_blank.png') }}" alt="{{ bottle.user.username }} Hasn't Rated This Bottle Yet" title="{{ bottle.user.username }} Hasn't Rated This Bottle Yet" class="mb-1 {{ opacity }}" />
               {% endif %}
             </td>
-            <td><span{% if bottle.date_killed %} class="opacity-50"{% endif %}>{{ bottle.type.value }}</span></td>
-            <td style="text-align:right; padding-right:1.6em;">
-              <span{% if bottle.date_killed %} class="opacity-50"{% endif %}>
-              {% if bottle.abv %}
-                {{ "%.2f"|format(bottle.abv) }}
-              {% else %}
-                N/A
-              {% endif %}
+            <td>
+              <span class="{{ opacity }}">{{ bottle.type.value }}</span>
+            </td>
+            <td class="text-end pe-4">
+              <span class="{{ opacity }}">
+                {% if bottle.abv %}
+                  {{ "%.2f" |format(bottle.abv) }}
+                {% else %}
+                  -
+                {% endif %}
               </span>
             </td>
-            <td style="text-align:right; padding-right:1.6em;">
-              <span{% if bottle.date_killed %} class="opacity-50"{% endif %}>
-              {% if bottle.abv %}
-                {{ "%.2f"|format(bottle.abv*2) }}
-              {% else %}
-                N/A
-              {% endif %}
+            <td class="text-end pe-4">
+              <span class="{{ opacity }}">
+                {% if bottle.abv %}
+                  {{ "%.2f" |format(bottle.abv*2) }}
+                {% else %}
+                  -
+                {% endif %}
               </span>
             </td>
             <td>{{ bottle.date_killed }}</td>
@@ -152,44 +167,46 @@
   {{ super() }}
   <script type="text/javascript">
     $(function () {
-      var table = $("#bottles").DataTable({
-        "language": {
+      let dk_column = {% if is_my_list %}7{% else %}6{% endif %};
+
+      let table = $("#bottles").DataTable({
+        language: {
             "emptyTable": "There's nothing to see here."
         },
-        {% if is_my_list %}
         columnDefs: [
+          {% if is_my_list %}
           {
             target: 0,
             searchable: false,
             orderable: false,
           },
+          {% endif %}
           {
-            target: 7,
+            target: dk_column,
             orderable: false,
             visible: false,
           }
         ],
-        {% endif %}
         order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "pageLength": {{ dt_list_length }}
       });
 
       table
-        .columns(7)
-        .search('None', true, false)
+        .columns(dk_column)
+        .search("None", true, false)
         .draw();
 
       $("#show_killed").on("click", function() {
         if (this.checked) {
           table
             .columns()
-            .search('')
+            .search("")
             .draw();
         } else {
           table
-            .columns(7)
-            .search('None', true, false)
+            .columns(dk_column)
+            .search("None", true, false)
             .draw();
         }
       });

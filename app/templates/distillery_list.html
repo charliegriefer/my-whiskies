@@ -30,8 +30,14 @@
               <a href="{{ url_for("main.distillery_edit", distillery_id=distillery.id) }}"><i class="bi bi-pencil"></i></a>
               <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.distillery_delete", distillery_id=distillery.id) }}"><i class="bi bi-trash"></i></a>
             </td>
-            <td>{{ distillery.name }}</td>
-            <td>{% if distillery.description %}{{ distillery.description }}{% else %}&nbsp;{% endif %}</td>
+            <td><a href="{{ url_for("main.distillery_detail", distillery_id=distillery.id) }}">{{ distillery.name }}</a></td>
+            <td>
+              {% if distillery.description %}
+                {{ distillery.description |replace("\n", "<br />") |safe }}
+              {% else %}
+                &nbsp;
+              {% endif %}
+            </td>
             <td>{{ distillery.region_1 }}</td>
             <td>{{ distillery.region_2 }}</td>
             <td>

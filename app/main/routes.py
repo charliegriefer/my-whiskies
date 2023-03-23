@@ -175,6 +175,14 @@ def distillery_edit(distillery_id: str):
                                form=form)
 
 
+@main_blueprint.route("/distillery/<string:distillery_id>")
+def distillery_detail(distillery_id: str):
+    _distillery = Distillery.query.get_or_404(distillery_id)
+    return render_template("distillery_detail.html",
+                           title=f"{_distillery.user.username}'s Whiskies: {_distillery.name}",
+                           distillery=_distillery)
+
+
 @main_blueprint.route("/distillery_delete/<string:distillery_id>")
 @login_required
 def distillery_delete(distillery_id: str):
