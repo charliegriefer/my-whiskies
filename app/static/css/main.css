@@ -1,5 +1,9 @@
 html { font-size: 14px; }
 
+body {
+  overflow-y: scroll;
+}
+
 a {
   color: #337ab7;
   text-decoration: none;
@@ -41,7 +45,6 @@ a:focus, a:hover {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
 }
-
 
 /* bottle image on bottle detail page */
 .bottle-img {
@@ -124,11 +127,19 @@ ul.terms li {
 
 /* tidying up the data tables */
 
-#bottles_wrapper > div:first-child, #distilleries_wrapper > div:first-child {
+#bottles_wrapper div.row:first-child,
+#distilleries_wrapper div.row:first-child {
   padding-top:8px;
   margin-bottom:12px;
 }
-#bottles_wrapper > div:last-child, #distilleries_wrapper > div:last-child {
+#bottles_wrapper div.row:last-child,
+#distilleries_wrapper div.row:last-child {
   margin-top:12px;
   padding-bottom:24px;
+}
+
+/* the distillery page datatable *//* dataTable on distillery page */
+#distillery-bottles_wrapper div.row:first-child,
+#distillery-bottles_wrapper div.row:last-child {
+  display:none;
 }
