@@ -41,7 +41,7 @@
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Name:</div>
                   <div class="col-9 ps-4 ps-sm-2">
                     {% if bottle.url %}
-                      <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.name | replace("\n", "<br />") | safe }} <i class="bi bi-box-arrow-in-up-right"></i></a>
+                      <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.name | replace("\n", "<br />") | safe }} <i class="bi bi-box-arrow-up-right"></i></a>
                     {% else %}
                       {{ bottle.name | replace("\n", "<br />") | safe }}
                     {% endif %}
@@ -57,7 +57,7 @@
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Distillery:</div>
                   <div class="col-9 ps-4 ps-sm-2">
                     {% if bottle.distillery.url %}
-                      <a href="{{ bottle.distillery.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.distillery.name }} <i class="bi bi-box-arrow-in-up-right"></i></a>
+                      <a href="{{ bottle.distillery.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.distillery.name }} <i class="bi bi-box-arrow-up-right"></i></a>
                     {% else %}
                       {{ bottle.distillery.name }}
                     {% endif %}
