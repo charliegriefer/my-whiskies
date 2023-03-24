@@ -34,7 +34,7 @@ def login():
         if not next_page or url_parse(next_page).netloc != "":
             next_page = url_for("main.index")
         return redirect(next_page)
-    return render_template("auth/login.html", title="My Whiskies Online| Log In", form=form)
+    return render_template("auth/login.html", title="My Whiskies Online: Log In", form=form)
 
 
 @auth_blueprint.route("/logout")
@@ -72,7 +72,7 @@ def register():
         return redirect(url_for("auth.login"))
     if form.errors:
         flash(get_flash_msg(form), "danger")
-    return render_template("auth/register.html", title="My Whiskies Online| Register", form=form)
+    return render_template("auth/register.html", title="My Whiskies Online: Register", form=form)
 
 
 @auth_blueprint.route("/confirm_register/<token>", methods=["GET", "POST"])
@@ -109,7 +109,7 @@ def resend_register():
             flash(f"{form.email.data} is not a valid e-mail with My Whiskies Online.", "danger")
             return redirect(url_for("auth.resend_register"))
     return render_template("auth/resend_register.html",
-                           title="My Whiskies Online| Re-Send Registration Confirmation",
+                           title="My Whiskies Online: Re-Send Registration Confirmation",
                            form=form)
 
 
@@ -133,7 +133,9 @@ def reset_password_request():
 
     if form.errors:
         flash("Please enter a valid email address.", "danger")
-    return render_template("auth/reset_password_request.html", title="My Whiskies Online| Forgot Password?", form=form)
+    return render_template("auth/reset_password_request.html",
+                           title="My Whiskies Online: Forgot Password",
+                           form=form)
 
 
 @auth_blueprint.route("/reset_password/<token>", methods=["GET", "POST"])
@@ -149,7 +151,7 @@ def reset_password(token: str):
         db.session.commit()
         flash("Your password has been reset.")
         return redirect(url_for("auth.login"))
-    return render_template("auth/reset_password.html", title="My Whiskies Online| Reset Password", form=form)
+    return render_template("auth/reset_password.html", title="My Whiskies Online: Reset Password", form=form)
 
 
 def get_flash_msg(form) -> str:

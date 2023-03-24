@@ -131,7 +131,7 @@ def list_distilleries():
     dt_list_length = request.cookies.get("dt-list-length", "50")
 
     response = make_response(render_template("distillery_list.html",
-                                             title=f"{current_user.username}'s Distilleries",
+                                             title=f"{current_user.username}'s Whiskies: Distilleries",
                                              dt_list_length=dt_list_length))
     response.set_cookie("dt-list-length", value=dt_list_length, expires=datetime.now() + relativedelta(years=1))
     return response
@@ -149,7 +149,7 @@ def distillery_add():
         flash(f"\"{distillery_in.name}\" has been successfully added.", "success")
         return redirect(url_for("main.home"))
     return render_template("distillery_add.html",
-                           title=f"{current_user.username}'s Whiskies | Add Distillery",
+                           title=f"{current_user.username}'s Whiskies: Add Distillery",
                            user=current_user,
                            form=form)
 
@@ -170,7 +170,7 @@ def distillery_edit(distillery_id: str):
     else:
         form = DistilleryEditForm(obj=_distillery)
         return render_template("distillery_edit.html",
-                               title=f"Edit Distillery {_distillery.name}",
+                               title=f"{current_user.username}'s Whiskies: Edit Distillery",
                                distillery=_distillery,
                                form=form)
 
@@ -246,7 +246,7 @@ def bottles(username: str):
     is_my_list = current_user.is_authenticated and current_user.username.lower() == username.lower()
 
     response = make_response(render_template("bottle_list.html",
-                                             title=f"{user.username}'s Whiskies",
+                                             title=f"{user.username}'s Whiskies: Bottles",
                                              user=user,
                                              bottles=bottles_to_list,
                                              has_killed_bottles=bool(len(killed_bottles)),
@@ -263,7 +263,10 @@ def bottles(username: str):
 def bottle_detail(bottle_id: str):
     _bottle = Bottle.query.get_or_404(bottle_id)
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
-    return render_template("bottle_detail.html", bottle=_bottle, is_my_bottle=is_my_bottle)
+    return render_template("bottle_detail.html",
+                           title=f"{_bottle.user.username}'s Whiskies: {_bottle.name}",
+                           bottle=_bottle,
+                           is_my_bottle=is_my_bottle)
 
 
 @main_blueprint.route("/bottle_add", methods=["GET", "POST"])
@@ -297,7 +300,9 @@ def bottle_add():
         flash(flash_message, flash_category)
         return redirect(url_for("main.home"))
 
-    return render_template("bottle_add.html", form=form)
+    return render_template("bottle_add.html",
+                           title=f"{current_user.username}'s Whiskies: Add Bottle",
+                           form=form)
 
 
 @main_blueprint.route("/bottle_edit/<string:bottle_id>", methods=["GET", "POST"])
@@ -329,7 +334,7 @@ def bottle_edit(bottle_id: str):
     else:
         form.type.data = _bottle.type.name
         return render_template("bottle_edit.html",
-                               title=f"Edit {_bottle.name}",
+                               title=f"{current_user.username}'s Whiskies: Edit Bottle",
                                bottle=_bottle, form=form)
 
 
