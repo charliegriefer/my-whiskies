@@ -6,17 +6,22 @@
 
       <div class="row mt-4">
         <div class="col">
-          <h1>
-            {{ user.username }}'s Whiskies
-          </h1>
+          <h1>{{ user.username }}'s Whiskies</h1>
         </div>
 
-        <div class="col">
-          {% if is_my_list %}
-            <button type="button" class="btn btn-primary mt-4 float-end" id="do_random"><i class="bi bi-question-circle mr-2"></i> Random Bottle</button>
+        <div class="col d-flex align-items-end justify-content-end pb-2">
+          {% if has_killed_bottles %}
+            <div class="form-check form-switch pe-5">
+              <input class="form-check-input" type="checkbox" role="switch" id="show_killed">
+              <label class="form-check-label" for="show_killed">Show Killed Bottles</label>
+            </div>
           {% endif %}
 
-          <button type="button" class="btn btn-primary dropdown-toggle mt-4 me-2 float-end" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" style="margin-top:0.4rem;">
+          {% if is_my_list %}
+            <button type="button" class="btn btn-primary me-2" id="do_random"><i class="bi bi-question-circle mr-2"></i> Random Bottle</button>
+          {% endif %}
+
+          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" style="margin-top:0.4rem;">
             <i class="bi bi-filter mr-2"></i> Filter List
           </button>
           <form method="post" id="type_filter" class="dropdown-menu p-4">
@@ -42,13 +47,6 @@
             <button type="submit" class="btn btn-primary mt-4">Apply Filter(s)</button>
             <button type="button" class="btn btn-primary mt-4" id="selectAll">Select All</button>
           </form>
-
-          {% if has_killed_bottles %}
-            <div class="form-check form-switch float-end me-4 pe-4 mt-3 pt-4 mb-0 pb-0">
-              <input class="form-check-input" type="checkbox" role="switch" id="show_killed">
-              <label class="form-check-label" for="show_killed">Show Killed Bottles</label>
-            </div>
-          {% endif %}
         </div>
       </div> <!-- end row -->
 

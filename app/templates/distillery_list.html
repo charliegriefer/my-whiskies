@@ -3,53 +3,59 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1>
-        {{ current_user.username }}'s Whiskies: Distilleries
 
-        <div class="float-lg-end mt-lg-0 mt-3">
+      <div class="row mt-4">
+        <div class="col">
+          <h1>{{ current_user.username }}'s Whiskies: Distilleries</h1>
+        </div>
+
+        <div class="col d-flex align-items-end justify-content-end pb-2">
           <a class="btn btn-primary" href="{{ url_for('main.distillery_add') }}" role="button"><i class="bi bi-plus-circle pe-1"></i> Add Distillery</a>
         </div>
-      </h1>
+      </div>
+
       <hr />
 
-      <table id="distilleries" class="table table-striped" style="width:100%">
-      <thead>
-        <tr>
-          <th class="me-0 pe-0" style="width:4%;">&nbsp;</th>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Region 1</th>
-          <th>Region 2</th>
-          <th>URL</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for distillery in current_user.distilleries %}
+      <table id="distilleries" class="table table-striped">
+        <thead style="border-bottom:1px solid #696969;">
           <tr>
-            <td class="me-0 pe-0">
-              <a href="{{ url_for("main.distillery_edit", distillery_id=distillery.id) }}"><i class="bi bi-pencil"></i></a>
-              <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.distillery_delete", distillery_id=distillery.id) }}"><i class="bi bi-trash"></i></a>
-            </td>
-            <td><a href="{{ url_for("main.distillery_detail", distillery_id=distillery.id) }}">{{ distillery.name }}</a></td>
-            <td>
-              {% if distillery.description %}
-                {{ distillery.description |replace("\n", "<br />") |safe }}
-              {% else %}
-                &nbsp;
-              {% endif %}
-            </td>
-            <td>{{ distillery.region_1 }}</td>
-            <td>{{ distillery.region_2 }}</td>
-            <td>
-              {% if distillery.url %}
-                <a href="{{ distillery.url }}" target="_blank" rel="noopener noreferrer">{{ distillery.url }} <i class="bi bi-box-arrow-up-right ps-1"></i></a>
-              {% else %}
-                &nbsp;
-              {% endif %}
-            </td>
+            <th scope="col" class="me-0 pe-0" style="width:4%;">&nbsp;</th>
+            <th scope="col">Name</th>
+            <th scope="col" class="text-end"># Bottles</th>
+            <th scope="col">Description</th>
+            <th scope="col">Location</th>
+            <th scope="col">URL</th>
           </tr>
-        {% endfor %}
-      </tbody>
+        </thead>
+        <tbody>
+          {% for distillery in current_user.distilleries %}
+            <tr>
+              <td class="me-0 pe-0">
+                <a href="{{ url_for("main.distillery_edit", distillery_id=distillery.id) }}"><i class="bi bi-pencil"></i></a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.distillery_delete", distillery_id=distillery.id) }}"><i class="bi bi-trash"></i></a>
+              </td>
+              <td><a href="{{ url_for("main.distillery_detail", distillery_id=distillery.id) }}">{{ distillery.name }}</a></td>
+              <td class="text-end">
+                <span class="pe-4">{{ distillery.bottles|length }}</span>
+              </td>
+              <td>
+                {% if distillery.description %}
+                  {{ distillery.description |replace("\n", "<br />") |safe }}
+                {% else %}
+                  &nbsp;
+                {% endif %}
+              </td>
+              <td>{{ distillery.region_1 }}, {{ distillery.region_2 }}</td>
+              <td>
+                {% if distillery.url %}
+                  <a href="{{ distillery.url }}" target="_blank" rel="noopener noreferrer">{{ distillery.url }} <i class="bi bi-box-arrow-up-right ps-1"></i></a>
+                {% else %}
+                  &nbsp;
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
       </table>
     </div>
   </main>

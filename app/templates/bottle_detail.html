@@ -1,24 +1,28 @@
 {% extends "base.html" %}
 
-{% block app_content %}
+{% set dtfmt = "%d %B %Y" %}
+{% set btn_label = bottle.user.username ~ "'s List" %}
+{% if is_my_bottle %}
+  {% set btn_label = "My List" %}
+{% endif %}
 
-  {% set dtfmt = "%d %B %Y" %}
+{% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1>
-        {{ bottle.user.username }}'s Whiskies:<br />{{ bottle.name }}
 
-        <div class="float-lg-end mt-lg-0 mt-3">
-          {% set btn_label = bottle.user.username ~ "'s List" %}
+      <div class="row mt-4">
+        <div class="col">
+          <h3 class="mb-0" style="color:#696969;">{{ bottle.user.username }}'s Whiskies</h3>
+          <h1>{{ bottle.name }}</h1>
+        </div>
+
+        <div class="col d-flex align-items-end justify-content-end pb-2">
           {% if is_my_bottle %}
-            {% set btn_label = "My List" %}
-          {% endif %}
-          {% if is_my_bottle %}
-            <a class="btn btn-primary" href="{{ url_for("main.bottle_edit", bottle_id=bottle.id) }}" role="button"><i class="bi bi-pencil"></i> Edit Bottle</a>
+            <a class="btn btn-primary me-2" href="{{ url_for("main.bottle_edit", bottle_id=bottle.id) }}" role="button"><i class="bi bi-pencil"></i> Edit Bottle</a>
           {% endif %}
           <a class="btn btn-primary" href="{{ url_for('main.list_bottles', username=bottle.user.username|lower) }}" role="button"><i class="bi bi-list-ul"></i> {{ btn_label }}</a>
         </div>
-      </h1>
+      </div>
 
       <hr />
 

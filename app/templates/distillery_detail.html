@@ -6,8 +6,8 @@
 
       <div class="row mt-4">
         <div class="col">
-          <h1>{{ distillery.user.username }}'s Whiskies: Distilleries</h1>
-          <h3>{{ distillery.name }}</h3>
+          <h3 class="mb-0" style="color:#696969;">{{ distillery.user.username }}'s Whiskies: Distilleries</h3>
+          <h1>{{ distillery.name }}</h1>
         </div>
       </div>
 
@@ -38,7 +38,7 @@
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Description:</div>
                   <div class="col-9 ps-4 ps-sm-2">
                     {% if distillery.description %}
-                      {{ distillery.description | replace("\n", "<br />") | safe }}
+                      {{ distillery.description|replace("\n", "<br />")|safe }}
                     {% else %}
                       &nbsp;
                     {% endif %}
@@ -71,7 +71,7 @@
                     {% endif %}
                     <tr>
                       <td>
-                        <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}" class="{{ opacity }}">{{ bottle.name | replace("\n", "<br />") | safe }}</a>
+                        <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}" class="{{ opacity }}">{{ bottle.name|replace("\n", "<br />")|safe }}</a>
                         {% if bottle.image_count %}
                           {% if bottle.image_count == 1 %}
                             <i class="bi bi-image ms-1 {{ opacity }}" title="Has Image"></i>
@@ -83,20 +83,20 @@
                       <td>
                         <span class="{{ opacity }}">
                         {% if bottle.description %}
-                          {{ bottle.description |replace("\n", "<br />") |safe }}
+                          {{ bottle.description|replace("\n", "<br />")|safe }}
                         {% else %}
                           &nbsp;
                         {% endif %}
                       </span>
                     </td>
-                    <td class="text-end pe-4" data-order="{% if bottle.stars %}{{ bottle.stars }}{% else %}0{% endif %}">
+                    <td class="text-end" data-order="{% if bottle.stars %}{{ bottle.stars }}{% else %}0{% endif %}">
                       {% if bottle.stars %}
                         {% set times_ten = bottle.stars * 10 %}
                         {% set times_ten = times_ten|int %}
                         {% set the_var = "stars/stars_" + times_ten|string + ".png" %}
-                        <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1 {{ opacity }}" />
+                        <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1 pe-3 {{ opacity }}" />
                       {% else %}
-                        <img src="{{ url_for('static', filename='stars/stars_blank.png') }}" alt="{{ distillery.user.username }} Hasn't Rated This Bottle Yet" title="{{ distillery.user.username }} Hasn't Rated This Bottle Yet" class="mb-1 {{ opacity }}" />
+                        <img src="{{ url_for('static', filename='stars/stars_blank.png') }}" alt="{{ distillery.user.username }} Hasn't Rated This Bottle Yet" title="{{ distillery.user.username }} Hasn't Rated This Bottle Yet" class="mb-1 pe-3 {{ opacity }}" />
                       {% endif %}
                     </td>
                     <td>
