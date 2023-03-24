@@ -37,13 +37,8 @@ a:focus, a:hover {
   text-decoration: none;
 }
 
-.container > hr {
-  margin-top: 0 !important;
-}
-.container h1 {
-  margin-top: 1.5rem !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
+.container hr {
+  margin-top: 0;
 }
 
 /* bottle image on bottle detail page */
