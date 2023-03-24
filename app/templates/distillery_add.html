@@ -2,9 +2,17 @@
 
 {% block app_content %}
   <main class="flex-shrink-0">
-    <div class="container">
-      <h1 class="mt-5">{{ user.username }}'s Whiskies: Add Distillery</h1>
+    <div class="container ps-0">
+
+      <div class="row mt-4">
+        <div class="col">
+          <h3 class="mb-0" style="color:#696969;">{{ user.username }}'s Whiskies: Distilleries</h3>
+          <h1>Add Distillery</h1>
+        </div>
+      </div>
+
       <hr />
+
       <div class="row">
         <div class="col-md-4">
           <form method="post" novalidate>

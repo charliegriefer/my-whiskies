@@ -20,12 +20,12 @@ class DistilleryForm(FlaskForm):
     description = TextAreaField("Description:",
                                 validators=[Length(max=65000)],
                                 render_kw={"placeholder": "Description"})
-    region_1 = StringField("Region 1:",
+    region_1 = StringField("Location 1:",
                            validators=[InputRequired(), Length(max=36)],
-                           render_kw={"placeholder": "Region 1"})
-    region_2 = StringField("Region 2:",
+                           render_kw={"placeholder": "Location 1"})
+    region_2 = StringField("Location 2:",
                            validators=[InputRequired(), Length(max=36)],
-                           render_kw={"placeholder": "Region 2"})
+                           render_kw={"placeholder": "Location 2"})
     url = StringField("URL:",
                       validators=[Length(max=64), URL(message="Invalid URL"), Optional()],
                       render_kw={"placeholder": "URL"})
