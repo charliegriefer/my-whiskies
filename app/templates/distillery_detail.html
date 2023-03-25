@@ -114,7 +114,7 @@
                     <td class="text-end pe-4">
                       <span class="{{ opacity }}">
                         {% if bottle.abv %}
-                          {{ "%.2f"|format(bottle.abv) }}
+                          {{ "%.2f"|format(bottle.abv*2) }}
                         {% else %}
                           -
                         {% endif %}
