@@ -124,9 +124,9 @@ def bulk_distillery_add():
     return redirect(url_for("main.home"))
 
 
-@main_blueprint.route("/distilleries", endpoint="list_distilleries")
+@main_blueprint.route("/distilleries", endpoint="distilleries_list")
 @login_required
-def list_distilleries():
+def distilleries_list():
     """ Don't need a big docstring here. This endpoint lists a user's distilleries. """
     dt_list_length = request.cookies.get("dt-list-length", "50")
 
@@ -166,7 +166,7 @@ def distillery_edit(distillery_id: str):
         db.session.add(_distillery)
         db.session.commit()
         flash(f"\"{_distillery.name}\" has been successfully updated.", "success")
-        return redirect(url_for("main.list_distilleries"))
+        return redirect(url_for("main.distilleries_list"))
     else:
         form = DistilleryEditForm(obj=_distillery)
         return render_template("distillery_edit.html",
@@ -190,11 +190,11 @@ def distillery_delete(distillery_id: str):
 
     if len(_distillery.bottles) > 0:
         flash(f"You cannot delete \"{_distillery.name}\", because it has bottles associated to it.", "danger")
-        return redirect(url_for("main.distilleries"))
+        return redirect(url_for("main.distilleries_list"))
     db.session.delete(_distillery)
     db.session.commit()
     flash(f"\"{_distillery.name}\" has been successfully deleted.", "success")
-    return redirect(url_for("main.list_distilleries"))
+    return redirect(url_for("main.distilleries_list"))
 
 
 # BOTTLES

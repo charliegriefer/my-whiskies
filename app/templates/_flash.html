@@ -15,7 +15,7 @@
       {% if category == "message" %}
         {% set category = "info" %}
       {% endif %}
-      <div class="container mt-4">
+      <div class="container mt-4 ps-0">
         <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
           {{ message|safe }}
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
