@@ -6,7 +6,7 @@
 
       <div class="row mt-4">
         <div class="col">
-          <h1>{{ current_user.username }}'s Whiskies</h1>
+          <h1>{% if is_my_home %}My{% else %}{{ user.username }}'s{% endif %} Whiskies</h1>
         </div>
       </div>
 
@@ -15,29 +15,41 @@
       <div class="container">
         <div class="row">
           <div class="col ms-0 ps-0" id="distilleries">
-            <h3>Distilleries ({{ current_user.distilleries|length }})</h3>
+            <h3>Distilleries</h3>
             <div>
-              {% if current_user.distilleries|length == 0 %}
-                <p>
+              {% if is_my_home and user.distilleries|length == 0 %}
                 <i class="bi bi-exclamation-circle pe-1"></i> You have no distilleries. If you'd like us to add some, <a href="{{ url_for('main.bulk_distillery_add') }}">click here</a>.
-                </p>
+                <br />
               {% endif %}
-              <p>
+              {% if is_my_home %}
                 <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('main.distillery_add') }}">Add a distillery</a>
                 <br />
-                {% if current_user.distilleries|length > 0 %}<i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.distilleries_list') }}">List distilleries</a>{% endif %}
-              </p>
+              {% endif %}
+              {% if user.distilleries|length > 0 %}
+                <i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.distilleries_list', username=user.username|lower) }}">List distilleries</a> ({{ user.distilleries|length }})
+                <br />
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="spacer py-1">&nbsp;</div>
+
+        <div class="row">
+          <div class="col ms-0 ps-0" id="bottles">
+            <h3>Bottles</h3>
+            <div>
+              {% if is_my_home and user.distilleries|length > 0 %}
+                <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('main.bottle_add') }}">Add a bottle</a>
+                <br />
+              {% endif %}
+              {% if user.bottles|length > 0 %}
+                <i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.list_bottles', username=user.username|lower) }}">List bottles</a> ({{ user.bottles|length }})
+                <br />
+              {% endif %}
             </div>
           </div>
 
-          <div class="col ms-0 ps-0" id="bottles">
-            <h3>Bottles ({{ current_user.bottles|length }})</h3>
-            <p>
-              {% if current_user.distilleries|length > 0 %}<i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('main.bottle_add') }}">Add a bottle</a>{% endif %}
-              <br />
-              {% if current_user.bottles|length > 0 %}<i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.list_bottles', username=current_user.username|lower) }}">List bottles</a>{% endif %}
-            </div>
-          </div>
         </div>
       </div>
     </main>

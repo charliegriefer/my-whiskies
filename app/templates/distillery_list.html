@@ -6,13 +6,15 @@
 
       <div class="row mt-4">
         <div class="col">
-          <h3 class="mb-0" style="color:#696969;">{{ current_user.username }}'s Whiskies</h3>
+          <h3 class="mb-0" style="color:#696969;">{{ user.username }}'s Whiskies</h3>
           <h1>Distilleries</h1>
         </div>
 
-        <div class="col d-flex align-items-end justify-content-end pb-2">
-          <a class="btn btn-primary" href="{{ url_for('main.distillery_add') }}" role="button"><i class="bi bi-plus-circle pe-1"></i> Add Distillery</a>
-        </div>
+        {% if is_my_list %}
+          <div class="col d-flex align-items-end justify-content-end pb-2">
+            <a class="btn btn-primary" href="{{ url_for('main.distillery_add') }}" role="button"><i class="bi bi-plus-circle pe-1"></i> Add Distillery</a>
+          </div>
+        {% endif %}
       </div>
 
       <hr />
@@ -20,7 +22,9 @@
       <table id="distilleries" class="table table-striped">
         <thead style="border-bottom:1px solid #696969;">
           <tr>
-            <th scope="col" class="me-0 pe-0" style="width:4%;">&nbsp;</th>
+            {% if is_my_list %}
+              <th scope="col" class="me-0 pe-0" style="width:4%;">&nbsp;</th>
+            {% endif %}
             <th scope="col">Name</th>
             <th scope="col" class="text-end">Bottles</th>
             <th scope="col" style="width:30%;">Description</th>
@@ -29,23 +33,25 @@
           </tr>
         </thead>
         <tbody>
-          {% for distillery in current_user.distilleries %}
+          {% for distillery in user.distilleries %}
             <tr>
-              <td class="me-0 pe-0">
-                <a href="{{ url_for("main.distillery_edit", distillery_id=distillery.id) }}"><i class="bi bi-pencil"></i></a>
-                {% if distillery.bottles|length %}
-                  <a href="#" data-bs-toggle="modal" data-bs-target="#cannotDelete"><i class="bi bi-trash"></i></a>
-                {% else %}
-                  <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.distillery_delete", distillery_id=distillery.id) }}"><i class="bi bi-trash"></i></a>
-                {% endif %}
-              </td>
+              {% if is_my_list %}
+                <td class="me-0 pe-0">
+                  <a href="{{ url_for("main.distillery_edit", distillery_id=distillery.id) }}"><i class="bi bi-pencil"></i></a>
+                  {% if distillery.bottles|length %}
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#cannotDelete"><i class="bi bi-trash"></i></a>
+                  {% else %}
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.distillery_delete", distillery_id=distillery.id) }}"><i class="bi bi-trash"></i></a>
+                  {% endif %}
+                </td>
+              {% endif %}
               <td><a href="{{ url_for("main.distillery_detail", distillery_id=distillery.id) }}">{{ distillery.name }}</a></td>
               <td class="text-end">
                 <span class="pe-4">{{ distillery.bottles|length }}</span>
               </td>
               <td>
                 {% if distillery.description %}
-                  {{ distillery.description |replace("\n", "<br />") |safe }}
+                  {{ distillery.description|replace("\n", "<br />")|safe|truncate(200, false, " ...") }}
                 {% else %}
                   &nbsp;
                 {% endif %}
@@ -113,14 +119,16 @@
   <script type="text/javascript">
     $(function () {
       $("#distilleries").DataTable({
+        {% if is_my_list %}
         columnDefs: [
           {
             searchable: false,
             orderable: false,
             targets: [0]
-          },
+          }
         ],
-        order: [[1, "asc"]],
+        {% endif %}
+        order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "pageLength": {{ dt_list_length }}
       });
