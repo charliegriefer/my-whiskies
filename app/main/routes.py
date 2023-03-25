@@ -33,8 +33,8 @@ def index():
             200:
                 description: Nothing to see here.
     """
-    if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+    # if current_user.is_authenticated:
+    #     return redirect(url_for("main.home", username=current_user.username.lower()))
 
     user_count = User.query.filter(User.email_confirmed == 1).count()
 
@@ -58,9 +58,8 @@ def index():
                            bottle_type_counts=bottle_type_counts)
 
 
-@main_blueprint.route("/home", endpoint="home")
-@login_required
-def home():
+@main_blueprint.route("/<string:username>", endpoint="home")
+def home(username: str):
     """
     Authenticated home page.
     ---
@@ -75,8 +74,17 @@ def home():
     """
     cookie_exists = request.cookies.get("my-whiskies-user", None)
 
+    if current_user.is_authenticated:
+        user = current_user
+        is_my_home = current_user.username.lower() == username.lower()
+    else:
+        user = User.query.filter(User.username == username).first_or_404()
+        is_my_home = False
+
     response = make_response(render_template("home.html",
-                                             title=f"{current_user.username}'s Whiskies",
+                                             title=f"{user.username}'s Whiskies",
+                                             user=user,
+                                             is_my_home=is_my_home,
                                              cookie_exists=cookie_exists))
     if not cookie_exists:
         response.set_cookie("my-whiskies-user", str(time.time()))
@@ -105,10 +113,10 @@ def bulk_distillery_add():
                 description: Distilleries are added, user is redirected to home page.
     """
     if len(current_user.distilleries) > 0:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home", username=current_user.username.lower()))
 
     if not request.referrer:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home", username=current_user.username.lower()))
 
     json_file = os.path.join(current_app.static_folder, "data", "base_distilleries.json")
     with open(json_file, "r") as f:
@@ -121,17 +129,20 @@ def bulk_distillery_add():
         db.session.commit()
 
     flash(f"{len(base_distilleries)} distilleries have been added to your account.")
-    return redirect(url_for("main.home"))
+    return redirect(url_for("main.home", username=current_user.username.lower()))
 
 
-@main_blueprint.route("/distilleries", endpoint="distilleries_list")
-@login_required
-def distilleries_list():
+@main_blueprint.route("/<username>/distilleries", endpoint="distilleries_list")
+def distilleries_list(username: str):
     """ Don't need a big docstring here. This endpoint lists a user's distilleries. """
     dt_list_length = request.cookies.get("dt-list-length", "50")
+    is_my_list = current_user.is_authenticated and current_user.username.lower() == username.lower()
+    user = User.query.filter(User.username == username).first_or_404()
 
     response = make_response(render_template("distillery_list.html",
-                                             title=f"{current_user.username}'s Whiskies: Distilleries",
+                                             title=f"{user.username}'s Whiskies: Distilleries",
+                                             is_my_list=is_my_list,
+                                             user=user,
                                              dt_list_length=dt_list_length))
     response.set_cookie("dt-list-length", value=dt_list_length, expires=datetime.now() + relativedelta(years=1))
     return response
@@ -147,7 +158,7 @@ def distillery_add():
         db.session.add(distillery_in)
         db.session.commit()
         flash(f"\"{distillery_in.name}\" has been successfully added.", "success")
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home", username=current_user.username.lower()))
     return render_template("distillery_add.html",
                            title=f"{current_user.username}'s Whiskies: Add Distillery",
                            user=current_user,
@@ -166,7 +177,7 @@ def distillery_edit(distillery_id: str):
         db.session.add(_distillery)
         db.session.commit()
         flash(f"\"{_distillery.name}\" has been successfully updated.", "success")
-        return redirect(url_for("main.distilleries_list"))
+        return redirect(url_for("main.distilleries_list", username=current_user.username.lower()))
     else:
         form = DistilleryEditForm(obj=_distillery)
         return render_template("distillery_edit.html",
@@ -180,6 +191,7 @@ def distillery_detail(distillery_id: str):
     _distillery = Distillery.query.get_or_404(distillery_id)
     return render_template("distillery_detail.html",
                            title=f"{_distillery.user.username}'s Whiskies: {_distillery.name}",
+                           user=_distillery.user,
                            distillery=_distillery)
 
 
@@ -190,18 +202,18 @@ def distillery_delete(distillery_id: str):
 
     if len(_distillery.bottles) > 0:
         flash(f"You cannot delete \"{_distillery.name}\", because it has bottles associated to it.", "danger")
-        return redirect(url_for("main.distilleries_list"))
+        return redirect(url_for("main.distilleries_list", username=current_user.username.lower()))
     db.session.delete(_distillery)
     db.session.commit()
     flash(f"\"{_distillery.name}\" has been successfully deleted.", "success")
-    return redirect(url_for("main.distilleries_list"))
+    return redirect(url_for("main.distilleries_list", username=current_user.username.lower()))
 
 
 # BOTTLES
 # ######################################################################################################################
 
 
-@main_blueprint.route("/<username>", methods=["GET", "POST"], endpoint="list_bottles")
+@main_blueprint.route("/<username>/bottles", methods=["GET", "POST"], endpoint="list_bottles")
 def bottles(username: str):
     """
     List a User's Bottles.
@@ -266,6 +278,7 @@ def bottle_detail(bottle_id: str):
     return render_template("bottle_detail.html",
                            title=f"{_bottle.user.username}'s Whiskies: {_bottle.name}",
                            bottle=_bottle,
+                           user=_bottle.user,
                            is_my_bottle=is_my_bottle)
 
 
@@ -298,7 +311,7 @@ def bottle_add():
         db.session.commit()
 
         flash(flash_message, flash_category)
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home", username=current_user.username.lower()))
 
     return render_template("bottle_add.html",
                            title=f"{current_user.username}'s Whiskies: Add Bottle",
@@ -329,7 +342,7 @@ def bottle_edit(bottle_id: str):
             flash_category = "danger"
 
         flash(flash_message, flash_category)
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home", username=current_user.username.lower()))
 
     else:
         form.type.data = _bottle.type.name
@@ -352,7 +365,7 @@ def bottle_delete(bottle_id: str):
     db.session.commit()
 
     flash(f"\"{bottle_to_delete.name}\" has been successfully deleted.", "success")
-    return redirect(url_for("main.list_bottles", username=current_user.username))
+    return redirect(url_for("main.list_bottles", username=current_user.username.lower()))
 
 
 @main_blueprint.route("/terms")
