@@ -16,7 +16,7 @@ from app.models import User
 @auth_blueprint.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home", username=current_user.username))
     form = LoginForm()
     if request.method == "POST" and form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data, is_deleted=False).first()
@@ -32,7 +32,7 @@ def login():
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get("next")
         if not next_page or url_parse(next_page).netloc != "":
-            next_page = url_for("main.index")
+            next_page = url_for("main.home", username=user.username.lower())
         return redirect(next_page)
     return render_template("auth/login.html", title="My Whiskies Online: Log In", form=form)
 
@@ -46,7 +46,7 @@ def logout():
 @auth_blueprint.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home", username=current_user.username))
     form = RegistrationForm()
     terms_label = Markup(f"I agree to the terms of <a href=\"{url_for('main.terms')}\">Terms of Service</a>.")
     form.agree_terms.label = Label("agree_terms", terms_label)
@@ -78,7 +78,7 @@ def register():
 @auth_blueprint.route("/confirm_register/<token>", methods=["GET", "POST"])
 def confirm_register(token: str):
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home", username=current_user.username))
     user = User.verify_mail_confirm_token(token)
     if not user:
         link = f"<a href=\"{url_for('auth.resend_register')}\">click here</a>"
@@ -97,7 +97,7 @@ def confirm_register(token: str):
 @auth_blueprint.route("/resend_register/", methods=["GET", "POST"])
 def resend_register():
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home", username=current_user.username))
     form = ResendRegEmailForm()
     if request.method == "POST" and form.validate_on_submit():
         user = db.session.query(User).filter(User.email == form.email.data).one_or_none()
@@ -116,7 +116,7 @@ def resend_register():
 @auth_blueprint.route("/reset_password_request", methods=["GET", "POST"])
 def reset_password_request():
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home", username=current_user.username))
     form = ResetPasswordRequestForm()
     if request.method == "POST" and form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data, is_deleted=False).first()
@@ -141,7 +141,7 @@ def reset_password_request():
 @auth_blueprint.route("/reset_password/<token>", methods=["GET", "POST"])
 def reset_password(token: str):
     if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home", username=current_user.username))
     user = User.verify_reset_password_token(token)
     if not user:
         return redirect(url_for("main.index"))
