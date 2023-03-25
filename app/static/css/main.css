@@ -49,26 +49,35 @@ a:focus, a:hover {
 }
 
 /* alerts */
+/* https://vikramlearning.com/dotnet/article/blazor-bootstrap-alert-component-examples/88/157 */
 /* ---------------------------------------------------------------------------------------- */
 .alert ul { margin-bottom: 0px; }
 
-/* colors taken from https://dribbble.com/shots/15137093--Notifications-New-Countly-UI */
-.alert-info {
-  background-color: #DFEBF9;
-  border-color: #AAC6E7;
-}
-.alert-danger {
-  background-color: #FAE8E4;
-  border-color: #EDC5BD;
-}
-.alert-success {
-  background-color: #E5F5E9;
-  border-color: #BEDFC6;
-}
-.alert-warning {
-  background-color: #FEF5E4;
-  border-color: #F2D9AE;
-}
+.bg-primary { background-color: #cce5ff !important; }
+.text-primary { color: #26509b !important; }
+
+.bg-secondary { background-color: #e2e3e5 !important; }
+.text-secondary { color: #474b4f !important; }
+
+.bg-success { background-color: #d4edda !important; }
+.text-success { color: #474b4f !important; }
+
+.bg-danger { background-color: #f8d7da !important; }
+.text-danger { color: #985458 !important; }
+
+.bg-warning { background-color: #fff3cd !important;}
+.text-warning { color: #8e7c45 !important; }
+
+.bg-info { background-color: #d1ecf1 !important; }
+.text-info { color: #985458 !important; }
+
+.bg-light { background-color: #fefefe !important; }
+.text-light { color: #6b6d7f !important; }
+
+.bg-dark { background-color: #d3d3d4 !important; }
+.text-dark { color: #d6d8d9 !important; }
+
+
 
 #bottleCarousel {
   margin-bottom: 40px;
