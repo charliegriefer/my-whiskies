@@ -26,7 +26,7 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         {% if request.endpoint == "main.index" and current_user.is_authenticated %}
           <li class="nav-item">
-          <a class="nav-link" id="nav_home" href="{{ url_for("main.home", username=current_user.username) }}">Home</a>
+          <a class="nav-link" id="nav_home" href="{{ url_for("main.home", username=username) }}">Home</a>
           </li>
         {% endif %}
       </ul>
