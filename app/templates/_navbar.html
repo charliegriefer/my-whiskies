@@ -1,23 +1,38 @@
 <nav class="navbar navbar-expand-lg bg-light">
   <div class="container">
     <img src="{{ url_for('static', filename='cheers.png') }}" style="width:7%;" class="me-3 mb-4" />
-    {% if current_user.is_anonymous %}
-      <a class="navbar-brand" href="{{ url_for("main.index") }}">My Whiskies Online</a>
+    {% if current_user.is_authenticated %}
+      {% set username = current_user.username.lower() %}
     {% else %}
-      <a class="navbar-brand" href="{{ url_for("main.home") }}">My Whiskies Online</a>
+      {% if user %}
+        {% set username = user.username.lower() %}
+      {% endif %}
+      {% if bottle %}
+        {% set username = bottle.user.username.lower() %}
+      {% endif %}
+      {% if distillery %}
+        {% set username = distillery.user.username.lower() %}
+      {% endif %}
+    {% endif %}
+    {% if request.endpoint == "main.index" %}
+      <div class="navbar-brand">My Whiskies Online</div>
+    {% else %}
+        <a class="navbar-brand" href="{{ url_for("main.index") }}">My Whiskies Online</a>
     {% endif %}
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          {% if current_user.is_anonymous %}
-            <a class="nav-link" id="nav_home" href="{{ url_for("main.index") }}">Home</a>
-          {% else %}
-            <a class="nav-link" id="nav_home" href="{{ url_for("main.home") }}">Home</a>
-          {% endif %}
-        </li>
+        {% if request.endpoint != "main.index" %}
+          <li class="nav-item">
+            {% if current_user.is_anonymous %}
+              <a class="nav-link" id="nav_home" href="{{ url_for("main.home", username=username) }}">Home</a>
+            {% else %}
+              <a class="nav-link" id="nav_home" href="{{ url_for("main.home", username=username) }}">Home</a>
+            {% endif %}
+          </li>
+        {% endif %}
       </ul>
       <span class="navbar-text">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -27,7 +42,7 @@
             </li>
           {% else %}
             <li class="nav-item">
-              <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-secondary" role="button" id="nav_logout">Log Out</a>
+              <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-secondary" role="button" id="nav_logout">Log Out {{ current_user.username }}</a>
             </li>
           {% endif %}
         </ul>
