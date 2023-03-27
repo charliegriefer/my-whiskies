@@ -6,6 +6,7 @@ import time
 from datetime import datetime
 
 import boto3
+import pandas as pd
 from dateutil.relativedelta import relativedelta
 from flask import current_app, flash, make_response, redirect, render_template, request, send_file, url_for
 from flask_login import current_user, login_required
@@ -373,25 +374,28 @@ def bottle_delete(bottle_id: str):
 @login_required
 def export_data(user_id: str):
     user = User.query.get_or_404(user_id)
+
+    fieldnames = ["Bottle Name", "Bottle Type", "Distillery", "Year", "ABV", "Description",
+                  "Review", "Stars", "Cost", "Date Purchased", "Date Opened", "Date Killed"]
+
     _bottles = []
-    with open(f"/tmp/{user_id}.csv", "w", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(["Name", "Type", "Distillery", "Year", "ABV", "Description", "Review", "Stars", "Cost",
-                         "Date Purchased", "Date Opened", "Date Killed"])
-        writer = csv.writer(file)
-        for _bottle in user.bottles:
-            writer.writerow([_bottle.name,
-                             _bottle.type.value,
-                             _bottle.distillery.name,
-                             _bottle.year,
-                             _bottle.abv,
-                             _bottle.description,
-                             _bottle.review,
-                             _bottle.stars,
-                             _bottle.cost,
-                             _bottle.date_purchased,
-                             _bottle.date_opened,
-                             _bottle.date_killed])
+    for _bottle in user.bottles:
+        _bottles.append([_bottle.name,
+                         _bottle.type.value,
+                         _bottle.distillery.name,
+                         _bottle.year,
+                         _bottle.abv,
+                         _bottle.description,
+                         _bottle.review,
+                         _bottle.stars,
+                         _bottle.cost,
+                         _bottle.date_purchased,
+                         _bottle.date_opened,
+                         _bottle.date_killed])
+
+    df = pd.DataFrame(_bottles, columns=fieldnames)
+    df = df.sort_values(by=["Bottle Name"])
+    df.to_csv(f"/tmp/{user_id}.csv", index=False)
 
     return send_file(f"/tmp/{user_id}.csv",
                      as_attachment=True,
