@@ -1,3 +1,4 @@
+import csv
 import json
 import os
 import random
@@ -6,7 +7,7 @@ from datetime import datetime
 
 import boto3
 from dateutil.relativedelta import relativedelta
-from flask import current_app, flash, make_response, redirect, render_template, request, url_for
+from flask import current_app, flash, make_response, redirect, render_template, request, send_file, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import insert
 from sqlalchemy.sql.expression import func
@@ -366,6 +367,36 @@ def bottle_delete(bottle_id: str):
 
     flash(f"\"{bottle_to_delete.name}\" has been successfully deleted.", "success")
     return redirect(url_for("main.list_bottles", username=current_user.username.lower()))
+
+
+@main_blueprint.route("/export_data/<string:user_id>")
+@login_required
+def export_data(user_id: str):
+    user = User.query.get_or_404(user_id)
+    _bottles = []
+    with open(f"/tmp/{user_id}.csv", "w", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(["Name", "Type", "Distillery", "Year", "ABV", "Description", "Review", "Stars", "Cost",
+                         "Date Purchased", "Date Opened", "Date Killed"])
+        writer = csv.writer(file)
+        for _bottle in user.bottles:
+            writer.writerow([_bottle.name,
+                             _bottle.type.value,
+                             _bottle.distillery.name,
+                             _bottle.year,
+                             _bottle.abv,
+                             _bottle.description,
+                             _bottle.review,
+                             _bottle.stars,
+                             _bottle.cost,
+                             _bottle.date_purchased,
+                             _bottle.date_opened,
+                             _bottle.date_killed])
+
+    return send_file(f"/tmp/{user_id}.csv",
+                     as_attachment=True,
+                     mimetype="text/csv",
+                     download_name=f"my_whiskies_{user.username.lower()}.csv")
 
 
 @main_blueprint.route("/terms")
