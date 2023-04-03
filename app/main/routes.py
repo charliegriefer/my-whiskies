@@ -1,4 +1,3 @@
-import csv
 import json
 import os
 import random
@@ -83,9 +82,12 @@ def home(username: str):
         user = User.query.filter(User.username == username).first_or_404()
         is_my_home = False
 
+    live_bottles = [bottle for bottle in user.bottles if bottle.date_killed is None]
+
     response = make_response(render_template("home.html",
                                              title=f"{user.username}'s Whiskies",
                                              user=user,
+                                             live_bottles=live_bottles,
                                              is_my_home=is_my_home,
                                              cookie_exists=cookie_exists))
     if not cookie_exists:

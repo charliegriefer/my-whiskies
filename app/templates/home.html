@@ -46,7 +46,7 @@
                 <br />
               {% endif %}
               {% if user.bottles|length > 0 %}
-                <i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.list_bottles', username=username) }}">List bottles</a> ({{ user.bottles|length }})
+                <i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.list_bottles', username=username) }}">List bottles</a> ({{ live_bottles|length }})
                 <br />
               {% endif %}
             </div>
