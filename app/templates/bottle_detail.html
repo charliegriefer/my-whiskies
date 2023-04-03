@@ -102,7 +102,7 @@
                 </div>
                 <div class="row flex-nowrap">
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Review:</div>
-                  <div class="col-9 ps-4 ps-sm-2">{% if bottle.review %}{{ bottle.review }}{% endif %}</div>
+                  <div class="col-9 ps-4 ps-sm-2">{% if bottle.review %}{{ bottle.review }}{% endif %} HERE: {{ from_timestamp }}</div>
                 </div>
 
                 <div><hr /></div>
@@ -163,7 +163,7 @@
                 </div>
               </div>
             {% else %}
-              <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="float-end bottle-img rounded border border-2 border-dark me-0 pe-0" src="https://my-whiskies-pics.s3-us-west-1.amazonaws.com/{{ bottle.id }}_1.png" />
+              <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="float-end bottle-img rounded border border-2 border-dark me-0 pe-0" src="https://my-whiskies-pics.s3-us-west-1.amazonaws.com/{{ bottle.id }}_1.png?r={{ ts }}" />
             {% endif %}
             {% endif %}
           </div>
