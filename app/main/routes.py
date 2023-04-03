@@ -279,10 +279,12 @@ def bottles(username: str):
 def bottle_detail(bottle_id: str):
     _bottle = Bottle.query.get_or_404(bottle_id)
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
+
     return render_template("bottle_detail.html",
                            title=f"{_bottle.user.username}'s Whiskies: {_bottle.name}",
                            bottle=_bottle,
                            user=_bottle.user,
+                           ts=time.time(),
                            is_my_bottle=is_my_bottle)
 
 
@@ -352,7 +354,9 @@ def bottle_edit(bottle_id: str):
         form.type.data = _bottle.type.name
         return render_template("bottle_edit.html",
                                title=f"{current_user.username}'s Whiskies: Edit Bottle",
-                               bottle=_bottle, form=form)
+                               ts=time.time(),
+                               bottle=_bottle,
+                               form=form)
 
 
 @main_blueprint.route("/bottle_delete/<string:bottle_id>")
