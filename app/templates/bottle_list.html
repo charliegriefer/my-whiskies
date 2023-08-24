@@ -66,7 +66,7 @@
           <th scope="col" style="text-align:right">Rating</th>
           <th scope="col" style="width:12%;">Type</th>
           <th scope="col" style="text-align:right; width:5%;">ABV</th>
-          <th scope="col" style="text-align:right; width:5%;">Proof</th>
+
           <th scope="col" style="text-align:right; width:5%;"></th>
         </tr>
       </thead>
@@ -119,21 +119,13 @@
             <td class="text-end pe-4">
               <span class="{{ opacity }}">
                 {% if bottle.abv %}
-                  {{ "%.2f" |format(bottle.abv) }}
+                    <span style="cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="<b>{{ '%.2f' |format(bottle.abv*2) ~ 'º' }}</b>">{{ "%.2f" |format(bottle.abv) }}</span>
                 {% else %}
                   -
                 {% endif %}
               </span>
             </td>
-            <td class="text-end pe-4">
-              <span class="{{ opacity }}">
-                {% if bottle.abv %}
-                  {{ "%.2f" |format(bottle.abv*2) }}
-                {% else %}
-                  -
-                {% endif %}
-              </span>
-            </td>
+
             <td>{{ bottle.date_killed }}</td>
           </tr>
         {% endfor %}
@@ -168,7 +160,10 @@
   {{ super() }}
   <script type="text/javascript">
     $(function () {
-      let dk_column = {% if is_my_list %}7{% else %}6{% endif %};
+
+      $('[data-bs-toggle="tooltip"]').tooltip();
+
+      let dk_column = {% if is_my_list %}6{% else %}5{% endif %};
 
       let table = $("#bottles").DataTable({
         language: {
