@@ -85,7 +85,7 @@ a:focus, a:hover {
 
 .carousel.slide {
     width: 100%;
-    max-width: 400px; !important
+    max-width: 400px !important;
 }
 
 .carousel-indicators {
@@ -147,3 +147,14 @@ ul.terms li {
 #distillery-bottles_wrapper div.row:last-child {
   display:none;
 }
+
+.tooltip-arrow:before {
+    /* border-top-color: #0d6efd !important; */
+    border-left-color: #337ab7 !important;
+}
+
+.tooltip-inner {
+    background: #337ab7;
+    padding: 10px;
+    opacity: 1.0;
+  }
