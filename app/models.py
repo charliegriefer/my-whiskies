@@ -53,7 +53,7 @@ class Distillery(db.Model):
     url = db.Column(db.String(64))
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"))
     user = db.relationship("User", back_populates="distilleries")
-    bottles_distillery = db.relationship("Bottle", back_populates="distillery")
+    bottles = db.relationship("Bottle", back_populates="distillery")
 
 
 class User(UserMixin, db.Model):
