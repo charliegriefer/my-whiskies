@@ -39,10 +39,12 @@ class Bottle(db.Model):
     date_killed = db.Column(db.DateTime, nullable=True)
     image_count = db.Column(db.Integer, default=0)
     distillery_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False)
+    bottler_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False)
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"), nullable=False)
-    distillery = db.relationship("Distillery", back_populates="bottles")
+    distillery = db.relationship("Distillery", foreign_keys=[distillery_id])
+    bottler = db.relationship("Distillery", foreign_keys=[bottler_id])
     user = db.relationship("User", back_populates="bottles")
-    bottler_id = db.Column(db.String(36))
+
 
 class Distillery(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=uuid.uuid4)
@@ -53,7 +55,6 @@ class Distillery(db.Model):
     url = db.Column(db.String(64))
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"))
     user = db.relationship("User", back_populates="distilleries")
-    bottles_distillery = db.relationship("Bottle", back_populates="distillery")
 
 
 class User(UserMixin, db.Model):
