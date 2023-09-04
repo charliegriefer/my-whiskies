@@ -193,10 +193,12 @@ def distillery_edit(distillery_id: str):
 @main_blueprint.route("/distillery/<string:distillery_id>")
 def distillery_detail(distillery_id: str):
     _distillery = Distillery.query.get_or_404(distillery_id)
+    _bottles = Bottle.query.filter_by(distillery_id = distillery_id, user_id = current_user.id)
     return render_template("distillery_detail.html",
                            title=f"{_distillery.user.username}'s Whiskies: {_distillery.name}",
                            user=_distillery.user,
-                           distillery=_distillery)
+                           distillery=_distillery,
+                           bottles=_bottles)
 
 
 @main_blueprint.route("/distillery_delete/<string:distillery_id>")
