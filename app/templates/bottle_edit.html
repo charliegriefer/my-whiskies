@@ -57,6 +57,18 @@
               {% endif %}
             </div>
             <div class="mb-3">
+              {{ form.bottler_id.label(class="form-label") }}
+              {% if form.bottler_id.flags.required %}<span class="text-danger">*</span>{% endif %}
+              {{ form.bottler_id(class="form-select") }}
+              {% if form.bottler_id.errors %}
+                <ul class="errors">
+                  {% for error in form.bottler_id.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+            <div class="mb-3">
               {{ form.type.label(class="form-label") }}
               {% if form.type.flags.required %}<span class="text-danger">*</span>{% endif %}
               {{ form.type(class="form-select") }}
