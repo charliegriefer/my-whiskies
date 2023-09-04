@@ -64,7 +64,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% for bottle in distillery.bottles %}
+                  {% for bottle in bottles %}
                     {% set opacity = "opacity-100" %}
                     {% if bottle.date_killed %}
                       {% set opacity = "opacity-50" %}
