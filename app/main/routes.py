@@ -190,15 +190,33 @@ def distillery_edit(distillery_id: str):
                                form=form)
 
 
-@main_blueprint.route("/distillery/<string:distillery_id>")
+@main_blueprint.route("/distillery/<string:distillery_id>", methods=["GET", "POST"])
 def distillery_detail(distillery_id: str):
     _distillery = Distillery.query.get_or_404(distillery_id)
-    _bottles = Bottle.query.filter_by(distillery_id = distillery_id, user_id = current_user.id)
+    _bottles = Bottle.query.filter_by(distillery_id = distillery_id, user_id = current_user.get_id())
+    is_random = False
+
+    if request.method == "POST":
+        if bool(int(request.form.get("random_toggle"))):
+            if _bottles.count() > 0:
+                has_killed_bottles = False
+                bottles_to_list = [Bottle.query.filter(Bottle.date_killed.is_(None))
+                                               .filter(Bottle.distillery_id == distillery_id)
+                                               .filter(Bottle.user_id == current_user.get_id())
+                                               .order_by(func.rand()).first()]
+    else:
+        bottles_to_list = _bottles
+        has_killed_bottles = len([b for b in _bottles if b.date_killed]) > 0
+
+    is_my_list = current_user.is_authenticated and current_user.username.lower() == _distillery.user.username.lower()
     return render_template("distillery_detail.html",
                            title=f"{_distillery.user.username}'s Whiskies: {_distillery.name}",
                            user=_distillery.user,
+                           is_my_list=is_my_list,
                            distillery=_distillery,
-                           bottles=_bottles)
+                           bottles=bottles_to_list,
+                           has_killed_bottles=has_killed_bottles,
+                           is_random=is_random)
 
 
 @main_blueprint.route("/distillery_delete/<string:distillery_id>")
