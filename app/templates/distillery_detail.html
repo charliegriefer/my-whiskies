@@ -135,7 +135,7 @@
             },
             {% endif %}
             {
-              target: dk_column ,
+              target: dk_column,
               orderable: false,
               visible: false
             }
@@ -168,6 +168,12 @@
       $("#do_random").on("click", function() {
         $("#random_toggle").val("1");
         $("#type_filter").submit();
+      });
+
+      /* set cookie when length dropdown is changed */
+      $("select[name='bottles_length']").on("change", function() {
+        let next_year = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+        document.cookie = "dt-list-length=" + this.value + "; expires=" + next_year + "; path=/";
       });
 
     });
