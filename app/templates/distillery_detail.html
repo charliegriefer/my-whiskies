@@ -11,124 +11,104 @@
         </div>
       </div>
 
-      <hr />
-
-      <div class="container">
-        <div class="row"> <!-- outermost row, containing 2 cos -->
-          <div class="col-4" style="border-right:1px dotted #A7C7E7;">
-            <div class="row">
-              <div class="col-md ps-0 ms-0 pe-2 me-2 mt-2">
-                <div class="row flex-nowrap mb-1">
-                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Name:</div>
-                  <div class="col-9 ps-4 ps-sm-2">
-                    {% if distillery.url %}
-                      <a href="{{ distillery.url }}" target="_blank" rel="noopener noreferrer">{{ distillery.name }} <i class="bi bi-box-arrow-up-right"></i></a>
-                    {% else %}
-                      {{ distillery.name }}
-                    {% endif %}
-                  </div>
-                </div>
-
-                <div class="row flex-nowrap mb-1">
-                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Location:</div>
-                  <div class="col-9 ps-4 ps-sm-2">{{ distillery.region_1 }}, {{ distillery.region_2 }}</div>
-                </div>
-
-                <div class="row flex-nowrap mb-1">
-                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Description:</div>
-                  <div class="col-9 ps-4 ps-sm-2">
-                    {% if distillery.description %}
-                      {{ distillery.description|replace("\n", "<br />")|safe }}
-                    {% else %}
-                      &nbsp;
-                    {% endif %}
-                  </div>
-                </div>
-
-              </div>
-            </div>
+      <div class="col d-flex align-items-end justify-content-end pb-2">
+        {% if has_killed_bottles %}
+          <div class="form-check form-switch pe-5">
+            <input class="form-check-input" type="checkbox" role="switch" id="show_killed">
+            <label class="form-check-label" for="show_killed">Show Killed Bottles</label>
           </div>
+        {% endif %}
 
-          <div class="col-8 me-0 pe-0">
-            <div class="container me-0 pe-0">
-              <table id="distillery-bottles" class="table table-striped">
-                <thead class="mt-0 pt-0" style="border-bottom:1px solid #696969;">
-                  <tr>
-                    <th scope="col" class="mt-0 pt-0">Name</th>
-                    <th scope="col" class="mt-0 pt-0">Description</th>
-                    <th scope="col" class="mt-0 pt-0 text-end">Rating</th>
-                    <th scope="col" class="mt-0 pt-0">Type</th>
-                    <th scope="col" class="mt-0 pt-0 text-end">ABV</th>
-                    <th scope="col" class="mt-0 pt-0 text-end">Proof</th>
-                    <th scope="col" class="mt-0 pt-0 text-end"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for bottle in bottles %}
-                    {% set opacity = "opacity-100" %}
-                    {% if bottle.date_killed %}
-                      {% set opacity = "opacity-50" %}
-                    {% endif %}
-                    <tr>
-                      <td>
-                        <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}" class="{{ opacity }}">{{ bottle.name|replace("\n", "<br />")|safe }}</a>
-                        {% if bottle.image_count %}
-                          {% if bottle.image_count == 1 %}
-                            <i class="bi bi-image ms-1 {{ opacity }}" title="Has Image"></i>
-                          {% else %}
-                            <i class="bi bi-images ms-1 {{ opacity }}" title="Has Images"></i>
-                          {% endif %}
-                        {% endif %}
-                      </td>
-                      <td>
-                        <span class="{{ opacity }}">
-                        {% if bottle.description %}
-                          {{ bottle.description|replace("\n", "<br />")|safe }}
-                        {% else %}
-                          &nbsp;
-                        {% endif %}
-                      </span>
-                    </td>
-                    <td class="text-end" data-order="{% if bottle.stars %}{{ bottle.stars }}{% else %}0{% endif %}">
-                      {% if bottle.stars %}
-                        {% set times_ten = bottle.stars * 10 %}
-                        {% set times_ten = times_ten|int %}
-                        {% set the_var = "stars/stars_" + times_ten|string + ".png" %}
-                        <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1 pe-3 {{ opacity }}" />
-                      {% else %}
-                        <img src="{{ url_for('static', filename='stars/stars_blank.png') }}" alt="{{ distillery.user.username }} Hasn't Rated This Bottle Yet" title="{{ distillery.user.username }} Hasn't Rated This Bottle Yet" class="mb-1 pe-3 {{ opacity }}" />
-                      {% endif %}
-                    </td>
-                    <td>
-                      <span class="{{ opacity }}">{{ bottle.type.value }}</span>
-                    </td>
-                    <td class="text-end pe-4">
-                      <span class="{{ opacity }}">
-                        {% if bottle.abv %}
-                          {{ "%.2f"|format(bottle.abv) }}
-                        {% else %}
-                          -
-                        {% endif %}
-                      </span>
-                    </td>
-                    <td class="text-end pe-4">
-                      <span class="{{ opacity }}">
-                        {% if bottle.abv %}
-                          {{ "%.2f"|format(bottle.abv*2) }}
-                        {% else %}
-                          -
-                        {% endif %}
-                      </span>
-                    </td>
-                    <td>{{ bottle.date_killed }}</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
+        <div class="d-grid gap-1 d-md-block">
+          {% if is_my_list %}
+            <button type="button" class="btn btn-primary text-nowrap" id="do_random"><i class="bi bi-question-circle mr-2"></i> Random Bottle</button>
+          {% endif %}
         </div>
       </div>
+
+      <form method="post" id="type_filter">
+        <input type="hidden" name="random_toggle" id="random_toggle" value="0" />
+      </form>
+
+      <hr />
+
+        <table id="distillery-bottles" class="table table-striped" style="width:100%;">
+        <thead>
+            <tr>
+              {% if is_my_list %}
+                <th scope="col" class="me-0 pe-0" style="width:4%;">&nbsp;</th>
+              {% endif %}
+              <th scope="col" style="width:30%;">Name</th>
+              <th scope="col" style="width:30%;">Description</th>
+              <th scope="col" style="text-align:right;">Rating</th>
+              <th scope="col" style="width:12%;">Type</th>
+              <th scope="col" style="text-align:right; width:5%;">ABV</th>
+
+              <th scope="col" class="mt-0 pt-0 text-end"></th>
+            </tr>
+        </thead>
+        <tbody>
+          {% for bottle in bottles %}
+            {% set opacity = "opacity-100" %}
+            {% if bottle.date_killed %}
+              {% set opacity = "opacity-50" %}
+            {% endif %}
+
+            <tr>
+              {% if is_my_list %}
+                <td class="me-0 pe-0">
+                  <a href="{{ url_for("main.bottle_edit", bottle_id=bottle.id) }}"><i class="bi bi-pencil"></i></a>
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for("main.bottle_delete", bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
+                </td>
+              {% endif %}
+                <td>
+                <a href="{{ url_for("main.bottle_detail", bottle_id=bottle.id) }}" class="{{ opacity }}">{{ bottle.name|replace("\n", "<br />")|safe }}</a>
+                {% if bottle.image_count %}
+                    {% if bottle.image_count == 1 %}
+                    <i class="bi bi-image ms-1 {{ opacity }}" title="Has Image"></i>
+                    {% else %}
+                    <i class="bi bi-images ms-1 {{ opacity }}" title="Has Images"></i>
+                    {% endif %}
+                {% endif %}
+                </td>
+                <td>
+                <span class="{{ opacity }}">
+                {% if bottle.description %}
+                    {{ bottle.description|replace("\n", "<br />")|safe }}
+                {% else %}
+                    &nbsp;
+                {% endif %}
+                </span>
+            </td>
+            <td class="text-end" data-order="{% if bottle.stars %}{{ bottle.stars }}{% else %}0{% endif %}">
+                {% if bottle.stars %}
+                {% set times_ten = bottle.stars * 10 %}
+                {% set times_ten = times_ten|int %}
+                {% set the_var = "stars/stars_" + times_ten|string + ".png" %}
+                <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1 pe-3 {{ opacity }}" />
+                {% else %}
+                <img src="{{ url_for('static', filename='stars/stars_blank.png') }}" alt="{{ distillery.user.username }} Hasn't Rated This Bottle Yet" title="{{ distillery.user.username }} Hasn't Rated This Bottle Yet" class="mb-1 pe-3 {{ opacity }}" />
+                {% endif %}
+            </td>
+            <td>
+                <span class="{{ opacity }}">{{ bottle.type.value }}</span>
+            </td>
+            <td class="text-end pe-4" data-order="{{bottle.abv}}">
+              <span class="{{ opacity }}">
+                {% if bottle.abv %}
+                  <span style="cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="<b>{{ '%.2f' |format(bottle.abv*2) ~ 'º' }}</b>">{{ "%.2f" |format(bottle.abv) }}</span>
+                {% else %}
+                  -
+                {% endif %}
+              </span>
+            </td>
+
+            <td>{{ bottle.date_killed }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+
     </div>
   </main>
 {% endblock %}
@@ -137,22 +117,57 @@
   {{ super() }}
     <script type="text/javascript">
     $(function () {
-      $("#distillery-bottles").DataTable({
-        bPaginate: false,
-        bFilter: false,
-        bInfo: false,
-        language: {
-          "emptyTable": "{{ distillery.user.username }} has no bottles from {{ distillery.name }}. Yet."
-        },
-        columnDefs: [
-          {
-            target: 6,
-            orderable: false,
-            visible: false
-          }
-        ],
-        order: [[0, "asc"]]
+
+      $('[data-bs-toggle="tooltip"]').tooltip();
+
+      let dk_column = {% if is_my_list %}6{% else %}5{% endif %};
+
+      let table = $("#distillery-bottles").DataTable({
+          language: {
+              "emptyTable": "{{ distillery.user.username }} has no bottles from {{ distillery.name }}. Yet."
+          },
+          columnDefs: [
+            {% if is_my_list %}
+            {
+              target: 0,
+              searchable: false,
+              orderable: false,
+            },
+            {% endif %}
+            {
+              target: dk_column ,
+              orderable: false,
+              visible: false
+            }
+          ],
+          order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
       });
+
+      table
+        .columns(dk_column)
+        .search("None", true, false)
+        .draw();
+
+      $("#show_killed").on("click", function() {
+        if (this.checked) {
+          table
+            .columns()
+            .search("")
+            .draw();
+        } else {
+          table
+            .columns(dk_column)
+            .search("None", true, false)
+            .draw();
+        }
+      });
+
+      /* submit form on click of random button */
+      $("#do_random").on("click", function() {
+        $("#random_toggle").val("1");
+        $("#type_filter").submit();
+      });
+
     });
   </script>
 
