@@ -56,7 +56,7 @@
                 <div class="row flex-nowrap">
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Distiller:</div>
                   <div class="col-9 ps-4 ps-sm-2">
-                    <a href="{{ url_for("main.distillery_detail", distillery_id=bottle.distillery.id, username=bottle.user.username.lower()) }}">{{ bottle.distillery.name }}</a>
+                    <a href="{{ url_for("main.distillery_detail", distillery_id=bottle.distillery.id) }}">{{ bottle.distillery.name }}</a>
                   </div>
                 </div>
                 <div class="row flex-nowrap">
