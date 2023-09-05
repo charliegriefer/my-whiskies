@@ -210,14 +210,18 @@ def distillery_detail(distillery_id: str):
         has_killed_bottles = len([b for b in _bottles if b.date_killed]) > 0
 
     is_my_list = current_user.is_authenticated and current_user.username.lower() == _distillery.user.username.lower()
-    return render_template("distillery_detail.html",
+
+    response = make_response(render_template("distillery_detail.html",
                            title=f"{_distillery.user.username}'s Whiskies: {_distillery.name}",
                            user=_distillery.user,
                            is_my_list=is_my_list,
                            distillery=_distillery,
                            bottles=bottles_to_list,
                            has_killed_bottles=has_killed_bottles,
-                           dt_list_length=dt_list_length)
+                           dt_list_length=dt_list_length))
+
+    response.set_cookie("dt-list-length", value=dt_list_length, expires=datetime.now() + relativedelta(years=1))
+    return response
 
 
 @main_blueprint.route("/distillery_delete/<string:distillery_id>")
