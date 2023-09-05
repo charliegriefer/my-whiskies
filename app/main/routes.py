@@ -192,10 +192,11 @@ def distillery_edit(distillery_id: str):
 
 @main_blueprint.route("/distillery/<string:distillery_id>", methods=["GET", "POST"])
 def distillery_detail(distillery_id: str):
+    dt_list_length = request.cookies.get("dt-list-length", "50")
     _distillery = Distillery.query.get_or_404(distillery_id)
     _bottles = Bottle.query.filter(Bottle.distillery_id == distillery_id).filter(Bottle.user_id == current_user.get_id())
-    is_random = False
 
+    print(_bottles)
     if request.method == "POST":
         if bool(int(request.form.get("random_toggle"))):
             if _bottles.count() > 0:
@@ -216,7 +217,7 @@ def distillery_detail(distillery_id: str):
                            distillery=_distillery,
                            bottles=bottles_to_list,
                            has_killed_bottles=has_killed_bottles,
-                           is_random=is_random)
+                           dt_list_length=dt_list_length)
 
 
 @main_blueprint.route("/distillery_delete/<string:distillery_id>")
