@@ -32,7 +32,7 @@
 
       <hr />
 
-        <table id="distillery-bottles" class="table table-striped" style="width:100%;">
+        <table id="bottles" class="table table-striped" style="width:100%;">
         <thead>
             <tr>
               {% if is_my_list %}
@@ -122,27 +122,27 @@
 
       let dk_column = {% if is_my_list %}6{% else %}5{% endif %};
 
-      let table = $("#distillery-bottles").DataTable({
-          language: {
-              "emptyTable": "{{ distillery.user.username }} has no bottles from {{ distillery.name }}. Yet."
-          },
-          columnDefs: [
-            {% if is_my_list %}
+      let table = $("#bottles").DataTable({
+        language: {
+          "emptyTable": "emptyTable": "{{ distillery.user.username }} has no bottles from {{ distillery.name }}. Yet."
+        },
+        columnDefs: [
+          {% if is_my_list %}
             {
               target: 0,
               searchable: false,
               orderable: false,
             },
-            {% endif %}
-            {
-              target: dk_column,
-              orderable: false,
-              visible: false
-            }
-          ],
-          order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
-          "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-          "pageLength": {{ dt_list_length }}
+          {% endif %}
+          {
+            target: dk_column,
+            orderable: false,
+            visible: false
+          }
+        ],
+        order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
+        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "pageLength": {{ dt_list_length }}
       });
 
       table
