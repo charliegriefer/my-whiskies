@@ -193,7 +193,7 @@ def distillery_edit(distillery_id: str):
 @main_blueprint.route("/distillery/<string:distillery_id>", methods=["GET", "POST"])
 def distillery_detail(distillery_id: str):
     _distillery = Distillery.query.get_or_404(distillery_id)
-    _bottles = Bottle.query.filter_by(distillery_id = distillery_id, user_id = current_user.get_id())
+    _bottles = Bottle.query.filter(Bottle.distillery_id == distillery_id).filter(Bottle.user_id == current_user.get_id())
     is_random = False
 
     if request.method == "POST":
