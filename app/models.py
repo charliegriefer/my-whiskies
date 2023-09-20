@@ -39,10 +39,10 @@ class Bottle(db.Model):
     date_killed = db.Column(db.DateTime, nullable=True)
     image_count = db.Column(db.Integer, default=0)
     distillery_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False)
-    bottler_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False)
+    bottler_id = db.Column(db.String(36), db.ForeignKey("bottler.id"), nullable=True)
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"), nullable=False)
     distillery = db.relationship("Distillery", foreign_keys=[distillery_id])
-    bottler = db.relationship("Distillery", foreign_keys=[bottler_id])
+    bottler = db.relationship("Bottler", foreign_keys=[bottler_id])
     user = db.relationship("User", back_populates="bottles")
 
 
@@ -57,6 +57,17 @@ class Distillery(db.Model):
     user = db.relationship("User", back_populates="distilleries")
 
 
+class Bottler(db.Model):
+    id = db.Column(db.String(36), primary_key=True, default=uuid.uuid4)
+    name = db.Column(db.String(65), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    region_1 = db.Column(db.String(36), nullable=False)
+    region_2 = db.Column(db.String(36), nullable=False)
+    url = db.Column(db.String(64))
+    user_id = db.Column(db.String(36), db.ForeignKey("user.id"))
+    user = db.relationship("User", back_populates="bottlers")
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.String(36), primary_key=True, default=uuid.uuid4)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -68,6 +79,7 @@ class User(UserMixin, db.Model):
     is_deleted = db.Column(db.Boolean(), nullable=False, default=False)
     deleted_date = db.Column(db.DateTime, nullable=True)
     distilleries = db.relationship("Distillery", back_populates="user")
+    bottlers = db.relationship("Bottler", back_populates="user")
     bottles = db.relationship("Bottle", back_populates="user")
 
     def get_mail_confirm_token(self, expires_in: int = 600) -> str:
