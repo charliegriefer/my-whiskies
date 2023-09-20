@@ -16,28 +16,6 @@
 
       <div class="container">
         <div class="row">
-          <div class="col ms-0 ps-0" id="distilleries">
-            <h3>Distilleries</h3>
-            <div>
-              {% if is_my_home and user.distilleries|length == 0 %}
-                <i class="bi bi-exclamation-circle pe-1"></i> You have no distilleries. If you'd like us to add some, <a href="{{ url_for('main.bulk_distillery_add') }}">click here</a>.
-                <br />
-              {% endif %}
-              {% if is_my_home %}
-                <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('main.distillery_add') }}">Add a distillery</a>
-                <br />
-              {% endif %}
-              {% if user.distilleries|length > 0 %}
-                <i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.distilleries_list', username=username) }}">List distilleries</a> ({{ user.distilleries|length }})
-                <br />
-              {% endif %}
-            </div>
-          </div>
-        </div>
-
-        <div class="spacer py-1">&nbsp;</div>
-
-        <div class="row">
           <div class="col ms-0 ps-0" id="bottles">
             <h3>Bottles</h3>
             <div>
@@ -52,6 +30,46 @@
             </div>
           </div>
         </div>
+
+        <div class="spacer py-1">&nbsp;</div>
+
+        <div class="row">
+            <div class="col ms-0 ps-0" id="bottles">
+              <h3>Bottlers</h3>
+              <div>
+                {% if is_my_home %}
+                  <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('main.bottler_add') }}">Add a bottler</a>
+                  <br />
+                {% endif %}
+                {% if user.bottlers|length > 0 %}
+                  <i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.bottlers_list', username=username) }}">List bottlers</a> ({{ user.bottlers|length }})
+                  <br />
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="spacer py-1">&nbsp;</div>
+
+          <div class="row">
+            <div class="col ms-0 ps-0" id="distilleries">
+              <h3>Distilleries</h3>
+              <div>
+                {% if is_my_home and user.distilleries|length == 0 %}
+                  <i class="bi bi-exclamation-circle pe-1"></i> You have no distilleries. If you'd like us to add some, <a href="{{ url_for('main.bulk_distillery_add') }}">click here</a>.
+                  <br />
+                {% endif %}
+                {% if is_my_home %}
+                  <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('main.distillery_add') }}">Add a distillery</a>
+                  <br />
+                {% endif %}
+                {% if user.distilleries|length > 0 %}
+                  <i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('main.distilleries_list', username=username) }}">List distilleries</a> ({{ user.distilleries|length }})
+                  <br />
+                {% endif %}
+              </div>
+            </div>
+          </div>
 
         {% if is_my_home %}
         <div class="spacer py-1">&nbsp;</div>

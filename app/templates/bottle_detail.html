@@ -62,7 +62,11 @@
                 <div class="row flex-nowrap">
                     <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Bottler:</div>
                     <div class="col-9 ps-4 ps-sm-2">
-                      {{ bottle.bottler.name }}
+                        {% if bottle.bottler_id %}
+                            <a href="{{ url_for("main.bottler_detail", bottler_id=bottle.bottler.id) }}">{{ bottle.bottler.name }}</a>
+                        {% else %}
+                            Distillery Bottling
+                        {% endif %}
                     </div>
                   </div>
                 <div class="row flex-nowrap">
