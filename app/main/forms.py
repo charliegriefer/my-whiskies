@@ -14,6 +14,22 @@ def get_current_year() -> int:
 
 img_message = "Permitted file types: jpg/jpeg, png"
 
+class BottlerForm(FlaskForm):
+    name = StringField("Name:", validators=[InputRequired(), Length(1, 65)], render_kw={"placeholder": "Name"})
+    description = TextAreaField("Description:",
+                                validators=[Length(max=65000)],
+                                render_kw={"placeholder": "Description"})
+    region_1 = StringField("Location 1:",
+                           validators=[InputRequired(), Length(max=36)],
+                           render_kw={"placeholder": "Location 1"})
+    region_2 = StringField("Location 2:",
+                           validators=[InputRequired(), Length(max=36)],
+                           render_kw={"placeholder": "Location 2"})
+    url = StringField("URL:",
+                      validators=[Length(max=64), URL(message="Invalid URL"), Optional()],
+                      render_kw={"placeholder": "URL"})
+    submit = SubmitField("Add Bottler")
+
 
 class DistilleryForm(FlaskForm):
     name = StringField("Name:", validators=[InputRequired(), Length(1, 65)], render_kw={"placeholder": "Name"})
@@ -37,7 +53,7 @@ class BottleForm(FlaskForm):
     url = StringField("URL:", validators=[Length(max=100), URL(), Optional()], render_kw={"placeholder": "URL"})
     type = SelectField("Bottle Type:", validators=[InputRequired()])
     distillery_id = SelectField("Distiller:", validators=[InputRequired()])
-    bottler_id = SelectField("Bottler:", validators=[InputRequired()])
+    bottler_id = SelectField("Bottler:")
     year = IntegerField("Year:",
                         validators=[Optional(),
                                     NumberRange(min=1900,
@@ -75,3 +91,7 @@ class BottleEditForm(BottleForm):
 
 class DistilleryEditForm(DistilleryForm):
     submit = SubmitField("Edit Distillery")
+
+
+class BottlerEditForm(BottlerForm):
+    submit = SubmitField("Edit Bottler")

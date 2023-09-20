@@ -24,11 +24,11 @@ def prep_bottle_form(user, form: Union[BottleForm, BottleEditForm]) -> Union[Bot
     form.distillery_id.choices = [(d.id, d.name) for d in distilleries]
     form.distillery_id.choices.insert(0, ("", "Choose a Distillery"))
 
-    # set up the bottlers dropdown (same as distilleries)
-    bottlers = user.distilleries
+    # set up the bottlers dropdown
+    bottlers = user.bottlers
     bottlers.sort(key=lambda d: d.name)
-    form.bottler_id.choices = [(d.id, d.name) for d in distilleries]
-    form.bottler_id.choices.insert(0, ("", "Choose a Bottler"))
+    form.bottler_id.choices = [(b.id, b.name) for b in bottlers]
+    form.bottler_id.choices.insert(0, (0, "Distillery Bottling"))
 
     # set up the star rating dropdown
     form.stars.choices = [(str(x * 0.5), str(x * 0.5)) for x in range(0, 11)]

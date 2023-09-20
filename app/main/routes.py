@@ -15,8 +15,8 @@ from sqlalchemy.sql.expression import func
 from app.extensions import db
 from app.main import handler as main_handler
 from app.main import main_blueprint
-from app.main.forms import BottleForm, BottleEditForm, DistilleryForm, DistilleryEditForm
-from app.models import Bottle, BottleTypes, Distillery, User
+from app.main.forms import BottleForm, BottleEditForm, BottlerForm, BottlerEditForm, DistilleryForm, DistilleryEditForm
+from app.models import Bottle, Bottler, BottleTypes, Distillery, User
 
 
 @main_blueprint.route("/")
@@ -82,6 +82,7 @@ def home(username: str):
         user = User.query.filter(User.username == username).first_or_404()
         is_my_home = False
 
+    print(user)
     live_bottles = [bottle for bottle in user.bottles if bottle.date_killed is None]
 
     response = make_response(render_template("home.html",
@@ -95,10 +96,111 @@ def home(username: str):
     return response
 
 
+# BOTTLERS
+# #####################################################################################################################
+@main_blueprint.route("/<username>/bottlers", endpoint="bottlers_list")
+def bottlers_list(username: str):
+    """ Don't need a big docstring here. This endpoint lists a user's bottlers. """
+    dt_list_length = request.cookies.get("bt-list-length", "50")
+    is_my_list = current_user.is_authenticated and current_user.username.lower() == username.lower()
+    user = User.query.filter(User.username == username).first_or_404()
+
+    response = make_response(render_template("bottler_list.html",
+                                             title=f"{user.username}'s Whiskies: Bottlers",
+                                             is_my_list=is_my_list,
+                                             user=user,
+                                             dt_list_length=dt_list_length))
+    response.set_cookie("dt-list-length", value=dt_list_length, expires=datetime.now() + relativedelta(years=1))
+    return response
+
+
+@main_blueprint.route("/bottler_add", methods=["GET", "POST"])
+@login_required
+def bottler_add():
+    form = BottlerForm()
+    if request.method == "POST" and form.validate_on_submit():
+        bottler_in = Bottler(user_id=current_user.id)
+        form.populate_obj(bottler_in)
+        db.session.add(bottler_in)
+        db.session.commit()
+        flash(f"\"{bottler_in.name}\" has been successfully added.", "success")
+        return redirect(url_for("main.home", username=current_user.username.lower()))
+    return render_template("bottler_add.html",
+                           title=f"{current_user.username}'s Whiskies: Add Bottler",
+                           user=current_user,
+                           form=form)
+
+
+@main_blueprint.route("/bottler_edit/<string:bottler_id>", methods=["GET", "POST"])
+@login_required
+def bottler_edit(bottler_id: str):
+    _bottler = Bottler.query.get_or_404(bottler_id)
+    form = BottlerEditForm()
+
+    if request.method == "POST" and form.validate_on_submit():
+        form.populate_obj(_bottler)
+
+        db.session.add(_bottler)
+        db.session.commit()
+        flash(f"\"{_bottler.name}\" has been successfully updated.", "success")
+        return redirect(url_for("main.bottlers_list", username=current_user.username.lower()))
+    else:
+        form = BottlerEditForm(obj=_bottler)
+        return render_template("bottler_edit.html",
+                               title=f"{current_user.username}'s Whiskies: Edit Bottler",
+                               bottler=_bottler,
+                               form=form)
+
+
+@main_blueprint.route("/bottler/<string:bottler_id>", methods=["GET", "POST"])
+def bottler_detail(bottler_id: str):
+    dt_list_length = request.cookies.get("dt-list-length", "50")
+    _bottler = Bottler.query.get_or_404(bottler_id)
+    _bottles = Bottle.query.filter(Bottle.bottler_id == bottler_id).filter(Bottle.user_id == current_user.get_id())
+
+    if request.method == "POST":
+        if bool(int(request.form.get("random_toggle"))):
+            if _bottles.count() > 0:
+                has_killed_bottles = False
+                bottles_to_list = [Bottle.query.filter(Bottle.date_killed.is_(None))
+                                               .filter(Bottle.bottler_id == bottler_id)
+                                               .filter(Bottle.user_id == current_user.get_id())
+                                               .order_by(func.rand()).first()]
+    else:
+        bottles_to_list = _bottles
+        has_killed_bottles = len([b for b in _bottles if b.date_killed]) > 0
+
+    is_my_list = current_user.is_authenticated and current_user.username.lower() == _bottler.user.username.lower()
+
+    response = make_response(render_template("bottler_detail.html",
+                           title=f"{_bottler.user.username}'s Whiskies: {_bottler.name}",
+                           user=_bottler.user,
+                           is_my_list=is_my_list,
+                           bottler=_bottler,
+                           bottles=bottles_to_list,
+                           has_killed_bottles=has_killed_bottles,
+                           dt_list_length=dt_list_length))
+
+    response.set_cookie("dt-list-length", value=dt_list_length, expires=datetime.now() + relativedelta(years=1))
+    return response
+
+
+@main_blueprint.route("/bottler_delete/<string:bottler_id>")
+@login_required
+def bottler_delete(bottler_id: str):
+    _bottler = Bottler.query.get_or_404(bottler_id)
+
+    if len(_bottler.bottles) > 0:
+        flash(f"You cannot delete \"{_bottler.name}\", because it has bottles associated to it.", "danger")
+        return redirect(url_for("main.bottlers_list", username=current_user.username.lower()))
+    db.session.delete(_bottler)
+    db.session.commit()
+    flash(f"\"{_bottler.name}\" has been successfully deleted.", "success")
+    return redirect(url_for("main.bottlers_list", username=current_user.username.lower()))
+
+
 # DISTILLERIES
-# ######################################################################################################################
-
-
+# #####################################################################################################################
 @main_blueprint.route("/bulk_distillery_add")
 @login_required
 def bulk_distillery_add():
@@ -196,7 +298,6 @@ def distillery_detail(distillery_id: str):
     _distillery = Distillery.query.get_or_404(distillery_id)
     _bottles = Bottle.query.filter(Bottle.distillery_id == distillery_id).filter(Bottle.user_id == current_user.get_id())
 
-    print(_bottles)
     if request.method == "POST":
         if bool(int(request.form.get("random_toggle"))):
             if _bottles.count() > 0:
@@ -239,7 +340,7 @@ def distillery_delete(distillery_id: str):
 
 
 # BOTTLES
-# ######################################################################################################################
+# #####################################################################################################################
 
 
 @main_blueprint.route("/<username>/bottles", methods=["GET", "POST"], endpoint="list_bottles")
@@ -321,6 +422,11 @@ def bottle_add():
     if request.method == "POST" and form.validate_on_submit():
         bottle_in = Bottle(user_id=current_user.id)
         form.populate_obj(bottle_in)
+
+        # handle "Distillery Bottling"
+        if bottle_in.bottler_id == "0":
+            bottle_in.bottler_id = None
+
         db.session.add(bottle_in)
         db.session.commit()
 
