@@ -155,7 +155,8 @@ def bottler_edit(bottler_id: str):
 def bottler_detail(bottler_id: str):
     dt_list_length = request.cookies.get("dt-list-length", "50")
     _bottler = Bottler.query.get_or_404(bottler_id)
-    _bottles = Bottle.query.filter(Bottle.bottler_id == bottler_id).filter(Bottle.user_id == current_user.get_id())
+
+    _bottles = Bottle.query.filter(Bottle.bottler_id == bottler_id).filter(Bottle.user_id == _bottler.user.id)
 
     if request.method == "POST":
         if bool(int(request.form.get("random_toggle"))):
@@ -294,7 +295,8 @@ def distillery_edit(distillery_id: str):
 def distillery_detail(distillery_id: str):
     dt_list_length = request.cookies.get("dt-list-length", "50")
     _distillery = Distillery.query.get_or_404(distillery_id)
-    _bottles = Bottle.query.filter(Bottle.distillery_id == distillery_id).filter(Bottle.user_id == current_user.get_id())
+
+    _bottles = Bottle.query.filter(Bottle.distillery_id == distillery_id).filter(Bottle.user_id == _distillery.user.id)
 
     if request.method == "POST":
         if bool(int(request.form.get("random_toggle"))):
