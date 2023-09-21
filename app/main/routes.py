@@ -82,7 +82,6 @@ def home(username: str):
         user = User.query.filter(User.username == username).first_or_404()
         is_my_home = False
 
-    print(user)
     live_bottles = [bottle for bottle in user.bottles if bottle.date_killed is None]
 
     response = make_response(render_template("home.html",
@@ -258,6 +257,7 @@ def distilleries_list(username: str):
 @login_required
 def distillery_add():
     form = DistilleryForm()
+
     if request.method == "POST" and form.validate_on_submit():
         distillery_in = Distillery(user_id=current_user.id)
         form.populate_obj(distillery_in)
@@ -275,8 +275,7 @@ def distillery_add():
 @login_required
 def distillery_edit(distillery_id: str):
     _distillery = Distillery.query.get_or_404(distillery_id)
-    form = DistilleryEditForm()
-
+    form = DistilleryEditForm(obj=_distillery)
     if request.method == "POST" and form.validate_on_submit():
         form.populate_obj(_distillery)
 
@@ -284,12 +283,11 @@ def distillery_edit(distillery_id: str):
         db.session.commit()
         flash(f"\"{_distillery.name}\" has been successfully updated.", "success")
         return redirect(url_for("main.distilleries_list", username=current_user.username.lower()))
-    else:
-        form = DistilleryEditForm(obj=_distillery)
-        return render_template("distillery_edit.html",
-                               title=f"{current_user.username}'s Whiskies: Edit Distillery",
-                               distillery=_distillery,
-                               form=form)
+
+    return render_template("distillery_edit.html",
+                            title=f"{current_user.username}'s Whiskies: Edit Distillery",
+                            distillery=_distillery,
+                            form=form)
 
 
 @main_blueprint.route("/distillery/<string:distillery_id>", methods=["GET", "POST"])
