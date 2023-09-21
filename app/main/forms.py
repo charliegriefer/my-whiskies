@@ -43,20 +43,30 @@ class DistilleryForm(FlaskForm):
                            validators=[InputRequired(), Length(max=36)],
                            render_kw={"placeholder": "Location 2"})
     url = StringField("URL:",
-                      validators=[Length(max=64), URL(message="Invalid URL"), Optional()],
+                      validators=[Length(max=64), URL(message="Please Enter a Valid URL"), Optional()],
                       render_kw={"placeholder": "URL"})
     submit = SubmitField("Add Distillery")
 
 
 class BottleForm(FlaskForm):
-    name = TextAreaField("Name:", validators=[InputRequired(), Length(max=100)], render_kw={"placeholder": "Name"})
-    url = StringField("URL:", validators=[Length(max=100), URL(), Optional()], render_kw={"placeholder": "URL"})
+    name = TextAreaField("Name:",
+                         validators=[InputRequired(),
+                                     Length(max=100)],
+                         render_kw={"placeholder": "Name"})
+    url = StringField("URL:",
+                      validators=[Length(max=100),
+                                  URL(message="Please Enter a Valid URL"),
+                                  Optional()],
+                      render_kw={"placeholder": "URL"})
     type = SelectField("Bottle Type:", validators=[InputRequired()])
     distillery_id = SelectField("Distiller:", validators=[InputRequired()])
     bottler_id = SelectField("Bottler:")
     size = IntegerField("Size (ml):",
                         default=750,
-                        validators=[Optional(), NumberRange(min=0, max=2000, message="Size must not exceed 2000.")],
+                        validators=[Optional(),
+                                    NumberRange(min=0,
+                                                max=2000,
+                                                message="Size must not exceed 2000.")],
                         render_kw={"placeholder": "Size (ml)"})
     year_barrelled = IntegerField("Year Barrelled:",
                                   validators=[Optional(),
@@ -99,7 +109,20 @@ class BottleEditForm(BottleForm):
     submit = SubmitField("Edit Bottle")
 
 
-class DistilleryEditForm(DistilleryForm):
+class DistilleryEditForm(FlaskForm):
+    name = StringField("Name:", validators=[InputRequired(), Length(1, 65)], render_kw={"placeholder": "Name"})
+    description = TextAreaField("Description:",
+                                validators=[Length(max=65000)],
+                                render_kw={"placeholder": "Description"})
+    region_1 = StringField("Location 1:",
+                           validators=[InputRequired(), Length(max=36)],
+                           render_kw={"placeholder": "Location 1"})
+    region_2 = StringField("Location 2:",
+                           validators=[InputRequired(), Length(max=36)],
+                           render_kw={"placeholder": "Location 2"})
+    url = StringField("URL:",
+                      validators=[Length(max=64), URL(message="Please Enter a Valid URL"), Optional()],
+                      render_kw={"placeholder": "URL"})
     submit = SubmitField("Edit Distillery")
 
 
