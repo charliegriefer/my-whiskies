@@ -27,8 +27,10 @@ class Bottle(db.Model):
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     name = db.Column(db.String(64), nullable=False)
     type = db.Column(db.Enum(BottleTypes))
-    year = db.Column(db.Integer)
     abv = db.Column(db.Float)
+    size = db.Column(db.Integer)
+    year_barrelled = db.Column(db.Integer, nullable=True)
+    year_bottled = db.Column(db.Integer, nullable=True)
     url = db.Column(db.String(64))
     description = db.Column(db.Text, nullable=True)
     review = db.Column(db.Text, nullable=True)
@@ -138,7 +140,9 @@ def bottle_before_update(mapper, connect, target):
 
 def clean_bottle_data(target):
     target.name = target.name.strip()
-    target.year = target.year if target.year else None
+    target.size = target.size if target.size else None
+    target.year_barrelled = target.year_barrelled if target.year_barrelled else None
+    target.year_bottled = target.year_bottled if target.year_bottled else None
     target.url = target.url.strip() if target.url else None
     target.description = target.description.strip() if target.description else None
     target.review = target.review.strip() if target.review else None
