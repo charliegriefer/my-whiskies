@@ -464,6 +464,10 @@ def bottle_edit(bottle_id: str):
     if request.method == "POST" and form.validate_on_submit():
         form.populate_obj(_bottle)
 
+        # handle "Distillery Bottling"
+        if _bottle.bottler_id == "0":
+            _bottle.bottler_id = None
+
         main_handler.bottle_edit_images(form, _bottle)
         image_upload_success = main_handler.bottle_add_images(form, _bottle)
 
