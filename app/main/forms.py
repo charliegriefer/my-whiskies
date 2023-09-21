@@ -54,12 +54,22 @@ class BottleForm(FlaskForm):
     type = SelectField("Bottle Type:", validators=[InputRequired()])
     distillery_id = SelectField("Distiller:", validators=[InputRequired()])
     bottler_id = SelectField("Bottler:")
-    year = IntegerField("Year:",
-                        validators=[Optional(),
-                                    NumberRange(min=1900,
-                                                max=get_current_year(),
-                                                message=f"Year must be between 1900 and {get_current_year()}.")],
-                        render_kw={"placeholder": "Year"})
+    size = IntegerField("Size (ml):",
+                        default=750,
+                        validators=[Optional(), NumberRange(min=0, max=2000, message="Size must not exceed 2000.")],
+                        render_kw={"placeholder": "Size (ml)"})
+    year_barrelled = IntegerField("Year Barrelled:",
+                                  validators=[Optional(),
+                                  NumberRange(min=1900,
+                                  max=get_current_year(),
+                                  message=f"Year Barrlled must be between 1900 and {get_current_year()}.")],
+                                  render_kw={"placeholder": "Year Barrelled"})
+    year_bottled = IntegerField("Year Bottled:",
+                                validators=[Optional(),
+                                NumberRange(min=1900,
+                                max=get_current_year(),
+                                message=f"Year Bottled must be between 1900 and {get_current_year()}.")],
+                                render_kw={"placeholder": "Year Bottled"})
     abv = DecimalField("ABV:",
                        places=2,
                        validators=[Optional(), NumberRange(min=30, max=90, message="Invalid value for ABV")],

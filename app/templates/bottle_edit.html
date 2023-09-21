@@ -81,12 +81,36 @@
               {% endif %}
             </div>
             <div class="mb-3">
-              {{ form.year.label(class="form-label") }}
-              {% if form.year.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.year(class="form-control") }}
-              {% if form.year.errors %}
+                {{ form.size.label(class="form-label") }}
+                {% if form.size.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.size(class="form-control") }}
+                {% if form.size.errors %}
+                  <ul class="errors">
+                    {% for error in form.size.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.year_barrelled.label(class="form-label") }}
+                {% if form.year_barrelled.flags.required %}<span class="text-danger">*</span>{% endif %}
+                {{ form.year_barrelled(class="form-control") }}
+                {% if form.year_barrelled.errors %}
+                  <ul class="errors">
+                    {% for error in form.year_barrelled.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            <div class="mb-3">
+              {{ form.year_bottled.label(class="form-label") }}
+              {% if form.year_bottled.flags.required %}<span class="text-danger">*</span>{% endif %}
+              {{ form.year_bottled(class="form-control") }}
+              {% if form.year_bottled.errors %}
                 <ul class="errors">
-                  {% for error in form.year.errors %}
+                  {% for error in form.year_bottled.errors %}
                     <li>{{ error }}</li>
                   {% endfor %}
                 </ul>

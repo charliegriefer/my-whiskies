@@ -56,16 +56,16 @@
               {% endif %}
             </div>
             <div class="mb-3">
-                {{ form.bottler_id.label(class="form-label") }}
-                {% if form.bottler_id.flags.required %}<span class="text-danger">*</span>{% endif %}
-                {{ form.bottler_id(class="form-select") }}
-                {% if form.bottler_id.errors %}
-                  <ul class="errors">
-                    {% for error in form.bottler_id.errors %}
-                      <li>{{ error }}</li>
-                    {% endfor %}
-                  </ul>
-                {% endif %}
+              {{ form.bottler_id.label(class="form-label") }}
+              {% if form.bottler_id.flags.required %}<span class="text-danger">*</span>{% endif %}
+              {{ form.bottler_id(class="form-select") }}
+              {% if form.bottler_id.errors %}
+                <ul class="errors">
+                  {% for error in form.bottler_id.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
             </div>
             <div class="mb-3">
               {{ form.type.label(class="form-label") }}
@@ -80,12 +80,36 @@
               {% endif %}
             </div>
             <div class="mb-3">
-              {{ form.year.label(class="form-label") }}
-              {% if form.year.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.year(class="form-control") }}
-              {% if form.year.errors %}
+              {{ form.size.label(class="form-label") }}
+              {% if form.size.flags.required %}<span class="text-danger">*</span>{% endif %}
+              {{ form.size(class="form-control") }}
+              {% if form.size.errors %}
                 <ul class="errors">
-                  {% for error in form.year.errors %}
+                  {% for error in form.size.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+            <div class="mb-3">
+              {{ form.year_barrelled.label(class="form-label") }}
+              {% if form.year_barrelled.flags.required %}<span class="text-danger">*</span>{% endif %}
+              {{ form.year_barrelled(class="form-control") }}
+              {% if form.year_barrelled.errors %}
+                <ul class="errors">
+                  {% for error in form.year_barrelled.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+            <div class="mb-3">
+              {{ form.year_bottled.label(class="form-label") }}
+              {% if form.year_bottled.flags.required %}<span class="text-danger">*</span>{% endif %}
+              {{ form.year_bottled(class="form-control") }}
+              {% if form.year_bottled.errors %}
+                <ul class="errors">
+                  {% for error in form.year_bottled.errors %}
                     <li>{{ error }}</li>
                   {% endfor %}
                 </ul>
@@ -283,10 +307,10 @@
   {{ super() }}
 
   <script type="text/javascript">
-      function clearField(id_input) {
-        let fileInput = document.getElementById(id_input)
-        fileInput.value = ""
-        fileInput.dispatchEvent(new Event("change"));
-      }
+    function clearField(id_input) {
+      let fileInput = document.getElementById(id_input)
+      fileInput.value = ""
+      fileInput.dispatchEvent(new Event("change"));
+    }
   </script>
 {% endblock %}
