@@ -15,6 +15,7 @@ from app.extensions import db, login_manager
 class BottleTypes(enum.Enum):
     american_whiskey = "American Whiskey"
     bourbon = "Bourbon"
+    canadian_whiskey = "Canadian Whiskey"
     irish_whiskey = "Irish Whiskey"
     rye = "Rye"
     scotch = "Scotch"
