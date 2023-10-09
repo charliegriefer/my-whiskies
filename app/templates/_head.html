@@ -3,6 +3,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  {% if bottle %}
+    {% if bottle.image_count %}
+  <meta data-rh="true" property="og:image" content="https://my-whiskies-pics.s3-us-west-1.amazonaws.com/{{ bottle.id }}_1.png" />
+<!-- <meta data-rh="true" property="og:image" content="https://d2j6dbq0eux0bg.cloudfront.net/images/72661808/3902092801.png" /> -->
+    {% endif %}
+  {% endif %}
+  {% if title %}
+  <meta data-rh="true" property="og:title" content="{{ title }}" />
+  {% endif %}
+
   <!-- favico -->
   <link href="{{ url_for('static', filename='favicon/favicon.ico') }}" rel="shortcut icon">
   <!-- Bootstrap CSS -->
