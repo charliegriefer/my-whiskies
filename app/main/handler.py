@@ -56,7 +56,10 @@ def bottle_add_images(form: Union[BottleForm, BottleEditForm], bottle_in: Bottle
 
             s3_client = boto3.client("s3")
             try:
-                s3_client.put_object(Body=in_mem_file, Bucket="my-whiskies-pics", Key=f"{new_filename}.png")
+                s3_client.put_object(Body=in_mem_file,
+                                     Bucket="my-whiskies-pics",
+                                     Key=f"{new_filename}.png",
+                                     ContentType="image/png")
             except ClientError:
                 # TODO: log error
                 return False
@@ -71,7 +74,8 @@ def bottle_edit_images(form: BottleEditForm, bottle: Bottle):
         if form[f"remove_image_{i}"].data:
             s3_client.copy_object(Bucket="my-whiskies-pics",
                                   CopySource=f"my-whiskies-pics/{bottle.id}_{i}.png",
-                                  Key=f"__del_{bottle.id}_{i}.png")
+                                  Key=f"__del_{bottle.id}_{i}.png",
+                                  ContentType="image/png")
             s3_client.delete_object(Bucket="my-whiskies-pics", Key=f"{bottle.id}_{i}.png")
 
     images = s3_client.list_objects(Bucket="my-whiskies-pics", Prefix=bottle.id).get("Contents", [])
@@ -83,7 +87,8 @@ def bottle_edit_images(form: BottleEditForm, bottle: Bottle):
         if idx != img_num:
             s3_client.copy_object(Bucket="my-whiskies-pics",
                                   CopySource=f"my-whiskies-pics/{bottle.id}_{img_num}.png",
-                                  Key=f"{bottle.id}_{idx}.png")
+                                  Key=f"{bottle.id}_{idx}.png",
+                                  ContentType="image/png")
             s3_client.delete_object(Bucket="my-whiskies-pics", Key=f"{bottle.id}_{img_num}.png")
 
 
