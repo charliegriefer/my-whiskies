@@ -1,0 +1,38 @@
+{% extends "base.html" %} {% block app_content %}
+{{ current_user.username }}'s Whiskies: Bottles
+Add Bottle
+
+{{ form.csrf_token }}
+{{ form.name.label(class="form-label") }} {% if form.name.flags.required %}*{% endif %} {{ form.name(class="form-control") }} {% if form.name.errors %} {% for error in form.name.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.url.label(class="form-label") }} {% if form.url.flags.required %}*{% endif %} {{ form.url(class="form-control") }} {% if form.url.errors %} {% for error in form.url.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.distillery_id.label(class="form-label") }} {% if form.distillery_id.flags.required %}*{% endif %} {{ form.distillery_id(class="form-select") }} {% if form.distillery_id.errors %} {% for error in form.distillery_id.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.bottler_id.label(class="form-label") }} {% if form.bottler_id.flags.required %}*{% endif %} {{ form.bottler_id(class="form-select") }} {% if form.bottler_id.errors %} {% for error in form.bottler_id.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.type.label(class="form-label") }} {% if form.type.flags.required %}*{% endif %} {{ form.type(class="form-select") }} {% if form.type.errors %} {% for error in form.type.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.size.label(class="form-label") }} {% if form.size.flags.required %}*{% endif %} {{ form.size(class="form-control") }} {% if form.size.errors %} {% for error in form.size.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.year_barrelled.label(class="form-label") }} {% if form.year_barrelled.flags.required %}*{% endif %} {{ form.year_barrelled(class="form-control") }} {% if form.year_barrelled.errors %} {% for error in form.year_barrelled.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.year_bottled.label(class="form-label") }} {% if form.year_bottled.flags.required %}*{% endif %} {{ form.year_bottled(class="form-control") }} {% if form.year_bottled.errors %} {% for error in form.year_bottled.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.abv.label(class="form-label") }} {% if form.abv.flags.required %}*{% endif %} {{ form.abv(class="form-control") }} {% if form.abv.errors %} {% for error in form.abv.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.description.label(class="form-label") }} {% if form.description.flags.required %}*{% endif %} {{ form.description(class="form-control") }} {% if form.description.errors %} {% for error in form.description.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.stars.label(class="form-label") }} {% if form.stars.flags.required %}*{% endif %} {{ form.stars(class="form-select") }} {% if form.stars.errors %} {% for error in form.stars.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.review.label(class="form-label") }} {% if form.review.flags.required %}*{% endif %} {{ form.review(class="form-control") }} {% if form.review.errors %} {% for error in form.review.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.submit(class="btn btn-primary") }}
+{{ form.cost.label(class="form-label") }} {% if form.cost.flags.required %}*{% endif %} {{ form.cost(class="form-control") }} {% if form.cost.errors %} {% for error in form.cost.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.date_purchased.label(class="form-label") }} {% if form.date_purchased.flags.required %}*{% endif %} {{ form.date_purchased(class="form-control") }} {% if form.date_purchased.errors %} {% for error in form.date_purchased.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.date_opened.label(class="form-label") }} {% if form.date_opened.flags.required %}*{% endif %} {{ form.date_opened(class="form-control") }} {% if form.date_opened.errors %} {% for error in form.date_opened.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.date_killed.label(class="form-label") }} {% if form.date_killed.flags.required %}*{% endif %} {{ form.date_killed(class="form-control") }} {% if form.date_killed.errors %} {% for error in form.date_killed.errors %} {{ error }} {% endfor %} {% endif %}
+
+Upload up to 3 images. Portrait-oriented images are preferred. 
+By uploading images I agree to the Image Terms and Conditions.
+{{ form.bottle_image_1.label(class="form-label") }} {% if form.bottle_image_1.flags.required %}*{% endif %} {{ form.bottle_image_1(class="form-control") }} {% if form.bottle_image_1.errors %} {% for error in form.bottle_image_1.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.bottle_image_2.label(class="form-label") }} {% if form.bottle_image_2.flags.required %}*{% endif %} {{ form.bottle_image_2(class="form-control") }} {% if form.bottle_image_2.errors %} {% for error in form.bottle_image_2.errors %} {{ error }} {% endfor %} {% endif %}
+{{ form.bottle_image_3.label(class="form-label") }} {% if form.bottle_image_3.flags.required %}*{% endif %} {{ form.bottle_image_3(class="form-control") }} {% if form.bottle_image_3.errors %} {% for error in form.bottle_image_3.errors %} {{ error }} {% endfor %} {% endif %}
+Image Terms and Conditions
+The following rules will be strictly enforced in regard to uploaded images.
+	•	You may only upload your own personal images. No copyrighted images are permitted.
+	•	Only photos of whiskey bottles and/or whiskey glasses are permitted. Photos must not include any of the following:
+	◦	Any individuals
+	◦	Any physical addresses or phone numbers
+	◦	Any text, such as links to other websites or any personal information
+Any account found to violate these rules with any images will be terminated immediately.
+Close Window
+{% endblock %} {% block scripts %} {{ super() }} {% endblock %}
