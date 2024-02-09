@@ -54,7 +54,7 @@ class BottleForm(FlaskForm):
                                      Length(max=100)],
                          render_kw={"placeholder": "Name"})
     url = StringField("URL:",
-                      validators=[Length(max=100),
+                      validators=[Length(max=140),
                                   URL(message="Please Enter a Valid URL"),
                                   Optional()],
                       render_kw={"placeholder": "URL"})
