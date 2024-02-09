@@ -32,7 +32,7 @@ class Bottle(db.Model):
     size = db.Column(db.Integer)
     year_barrelled = db.Column(db.Integer, nullable=True)
     year_bottled = db.Column(db.Integer, nullable=True)
-    url = db.Column(db.String(64))
+    url = db.Column(db.String(140))
     description = db.Column(db.Text, nullable=True)
     review = db.Column(db.Text, nullable=True)
     stars = db.Column(db.Float, nullable=True)
