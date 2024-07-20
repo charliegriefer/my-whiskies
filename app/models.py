@@ -61,6 +61,11 @@ class Distillery(db.Model):
     bottles = db.relationship("Bottle", back_populates="distillery")
 
 
+class BottleDistillery(db.Model):
+    bottle_id = db.Column(db.String(36), db.ForeignKey("bottle.id"), nullable=False, primary_key=True)
+    distillery_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False, primary_key=True)
+
+
 class Bottler(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=uuid.uuid4)
     name = db.Column(db.String(65), nullable=False)
