@@ -3,7 +3,7 @@ import datetime
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import (
-    DateField, DecimalField, HiddenField, IntegerField, SelectField, StringField, SubmitField, TextAreaField
+    DateField, DecimalField, HiddenField, IntegerField, SelectField, SelectMultipleField, StringField, SubmitField, TextAreaField, widgets
 )
 from wtforms.validators import InputRequired, Length, NumberRange, Optional, URL
 
@@ -13,6 +13,10 @@ def get_current_year() -> int:
 
 
 img_message = "Permitted file types: jpg/jpeg, png"
+
+class MultiCheckboxField(SelectMultipleField):
+    widget = widgets.ListWidget(prefix_label=False)
+    option_widget = widgets.CheckboxInput()
 
 class BottlerForm(FlaskForm):
     name = StringField("Name:", validators=[InputRequired(), Length(1, 65)], render_kw={"placeholder": "Name"})
@@ -59,7 +63,7 @@ class BottleForm(FlaskForm):
                                   Optional()],
                       render_kw={"placeholder": "URL"})
     type = SelectField("Bottle Type:", validators=[InputRequired()])
-    distillery_id = SelectField("Distiller:", validators=[InputRequired()])
+    distilleries = SelectMultipleField("Distiller:", validators=[InputRequired()])
     bottler_id = SelectField("Bottler:")
     size = IntegerField("Size (ml):",
                         default=750,
