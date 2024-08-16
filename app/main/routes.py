@@ -7,79 +7,49 @@ from datetime import datetime
 import boto3
 import pandas as pd
 from dateutil.relativedelta import relativedelta
-from flask import current_app, flash, make_response, redirect, render_template, request, send_file, url_for
+from flask import (current_app, flash, make_response, redirect,
+                   render_template, request, send_file, url_for)
 from flask_login import current_user, login_required
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 from sqlalchemy.sql.expression import func
 
 from app.extensions import db
 from app.main import handler as main_handler
 from app.main import main_blueprint
-from app.main.forms import BottleForm, BottleEditForm, BottlerForm, BottlerEditForm, DistilleryForm, DistilleryEditForm
-from app.models import Bottle, Bottler, BottleDistillery, BottleTypes, Distillery, User
+from app.main.forms import (BottleEditForm, BottleForm, BottlerEditForm,
+                            BottlerForm, DistilleryEditForm, DistilleryForm)
+from app.models import Bottle, Bottler, BottleTypes, Distillery, User
 
 
 @main_blueprint.route("/")
 @main_blueprint.route("/index")
 def index():
-    """
-    Unauthenticated home page.
-    ---
-    get:
-        summary: Unauthenticated home page endpoint.
-        description: Details about the site. Some stats for fun.
-        parameters:
-            - n/a
-        responses:
-            200:
-                description: Nothing to see here.
-    """
-    # if current_user.is_authenticated:
-    #     return redirect(url_for("main.home", username=current_user.username.lower()))
-
-    user_count = User.query.filter(User.email_confirmed == 1).count()
-
-    distillery_count = Distillery.query.with_entities(Distillery.name).order_by(Distillery.name)
-    distillery_count = distillery_count.group_by(Distillery.name).count()
-    bottle_count = Bottle.query.count()
-    pic_count = Bottle.query.with_entities(func.sum(Bottle.image_count)).scalar()
-
-    bt_counts = Bottle.query.with_entities(Bottle.type,
-                                           func.count(Bottle.type)).order_by(Bottle.type).group_by(Bottle.type)
-
-    bottle_type_counts = {i.value: 0 for i in BottleTypes}
-    [bottle_type_counts.__setitem__(f[0].value, f[1]) for f in bt_counts]
+    # pylint: disable=not-callable
+    user_count = db.session.execute(select(func.count(User.id)).where(User.email_confirmed == 1)).scalar()
+    distillery_count = db.session.execute(select(func.count(Distillery.name.distinct()))).scalar()
+    bottle_count = db.session.execute(select(func.count(Bottle.id))).scalar()
+    pic_count = db.session.execute(select(func.sum(Bottle.image_count))).scalar()
+    bottle_type_counts = db.session.execute(
+        select(Bottle.type, func.count(Bottle.type)).group_by(Bottle.type).order_by(func.count(Bottle.type).desc())
+    ).all()
 
     return render_template("index.html",
                            title="My Whiskies Online",
                            user_count=user_count,
-                           pic_count=pic_count,
                            distillery_count=distillery_count,
                            bottle_count=bottle_count,
+                           pic_count=pic_count,
                            bottle_type_counts=bottle_type_counts)
 
 
 @main_blueprint.route("/<string:username>", endpoint="home")
 def home(username: str):
-    """
-    Authenticated home page.
-    ---
-    get:
-        summary: Authenticated home page endpoint.
-        description: Stats about the user. Distilleries, bottles.
-        parameters:
-            - na/
-        responses:
-            200:
-                description: User's distillery counts and bottle counts to be returned.
-    """
     cookie_exists = request.cookies.get("my-whiskies-user", None)
-
     if current_user.is_authenticated:
         user = current_user
         is_my_home = current_user.username.lower() == username.lower()
     else:
-        user = User.query.filter(User.username == username).first_or_404()
+        user = db.one_or_404(db.select(User).filter_by(username=username))
         is_my_home = False
 
     live_bottles = [bottle for bottle in user.bottles if bottle.date_killed is None]
@@ -96,7 +66,7 @@ def home(username: str):
 
 
 # BOTTLERS
-# #####################################################################################################################
+# ####################################################################################################################
 @main_blueprint.route("/<username>/bottlers", endpoint="bottlers_list")
 def bottlers_list(username: str):
     """ Don't need a big docstring here. This endpoint lists a user's bottlers. """
@@ -225,11 +195,12 @@ def bulk_distillery_add():
         return redirect(url_for("main.home", username=current_user.username.lower()))
 
     json_file = os.path.join(current_app.static_folder, "data", "base_distilleries.json")
-    with open(json_file, "r") as f:
+    with open(json_file, mode="r", encoding="utf-8") as f:
         data = json.load(f)
 
         base_distilleries = data.get("distilleries")
-        [d.__setitem__("user_id", current_user.id) for d in base_distilleries]
+        for distillery in base_distilleries:
+            distillery["user_id"] = current_user.id
 
         db.session.execute(insert(Distillery), base_distilleries)
         db.session.commit()
@@ -408,10 +379,6 @@ def bottles(username: str):
 @main_blueprint.route("/bottle/<bottle_id>")
 def bottle_detail(bottle_id: str):
     _bottle = Bottle.query.get_or_404(bottle_id)
-    print("\n-----------------\n")
-
-    [print(d.name) for d in _bottle.distilleries]
-    print("\n-----------------\n")
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
 
     return render_template("bottle_detail.html",
@@ -466,12 +433,30 @@ def bottle_add():
 @main_blueprint.route("/bottle_edit/<string:bottle_id>", methods=["GET", "POST"])
 @login_required
 def bottle_edit(bottle_id: str):
-    _bottle = Bottle.query.get_or_404(bottle_id)
+    # _bottle = Bottle.query.get_or_404(bottle_id)
+    _bottle = db.get_or_404(Bottle, bottle_id)
     form = main_handler.prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
 
     if request.method == "POST" and form.validate_on_submit():
 
-        form.populate_obj(_bottle)
+        _bottle.name = form.name.data
+        _bottle.url = form.url.data
+        _bottle.type_id = form.type.data
+        d = []
+        for distllery_id in form.distilleries.data:
+            d.append(Distillery.query.get(distllery_id))
+        _bottle.distilleries = d
+        _bottle.size = form.size.data
+        _bottle.year_barrelled = form.year_barrelled.data
+        _bottle.year_bottled = form.year_bottled.data
+        _bottle.abv = form.abv.data
+        _bottle.description = form.description.data
+        _bottle.review = form.review.data
+        _bottle.stars = form.stars.data
+        _bottle.cost = form.cost.data
+        _bottle.date_purchased = form.date_purchased.data
+        _bottle.date_opened = form.date_opened.data
+        _bottle.date_killed = form.date_killed.data
 
         # handle "Distillery Bottling"
         if _bottle.bottler_id == "0":
