@@ -2,12 +2,14 @@ import enum
 import uuid
 from datetime import datetime
 from time import time
+from typing import List
 
 import jwt
 from flask import current_app
 from flask_login import UserMixin
-from sqlalchemy import event
+from sqlalchemy import event, String, DateTime
 from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.extensions import db, login_manager
 
@@ -23,10 +25,17 @@ class BottleTypes(enum.Enum):
     other = "Other"
 
 
+class BottleDistillery(db.Model):
+    __tablename__ = "bottle_distillery"
+    bottle_id = db.Column(db.String(36), db.ForeignKey("bottle.id"), nullable=False, primary_key=True)
+    distillery_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False, primary_key=True)
+
+
 class Bottle(db.Model):
-    id = db.Column(db.String(36), primary_key=True, default=uuid.uuid4)
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    name = db.Column(db.String(64), nullable=False)
+    __tablename__ = "bottle"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uuid.uuid4)
+    date_created: Mapped[datetime] = mapped_column(nullable=False, default=datetime.utcnow)
+    name: Mapped[str] = mapped_column(String(64), nullable=False)
     type = db.Column(db.Enum(BottleTypes))
     abv = db.Column(db.Float)
     size = db.Column(db.Integer)
@@ -41,15 +50,18 @@ class Bottle(db.Model):
     date_opened = db.Column(db.DateTime, nullable=True)
     date_killed = db.Column(db.DateTime, nullable=True)
     image_count = db.Column(db.Integer, default=0)
-    distillery_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False)
+
     bottler_id = db.Column(db.String(36), db.ForeignKey("bottler.id"), nullable=True)
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"), nullable=False)
-    distillery = db.relationship("Distillery", foreign_keys=[distillery_id])
+
+    distilleries: Mapped[List["Distillery"]] = db.relationship("Distillery", secondary="bottle_distillery", back_populates="bottles", order_by="Distillery.name")
+
     bottler = db.relationship("Bottler", foreign_keys=[bottler_id])
     user = db.relationship("User", back_populates="bottles")
 
 
 class Distillery(db.Model):
+    __tablename__ = "distillery"
     id = db.Column(db.String(36), primary_key=True, default=uuid.uuid4)
     name = db.Column(db.String(65), nullable=False)
     description = db.Column(db.Text, nullable=True)
@@ -58,15 +70,11 @@ class Distillery(db.Model):
     url = db.Column(db.String(64))
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"))
     user = db.relationship("User", back_populates="distilleries")
-    bottles = db.relationship("Bottle", back_populates="distillery")
-
-
-class BottleDistillery(db.Model):
-    bottle_id = db.Column(db.String(36), db.ForeignKey("bottle.id"), nullable=False, primary_key=True)
-    distillery_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False, primary_key=True)
+    bottles = db.relationship("Bottle", secondary="bottle_distillery", back_populates="distilleries")
 
 
 class Bottler(db.Model):
+    __tablename__ = "bottler"
     id = db.Column(db.String(36), primary_key=True, default=uuid.uuid4)
     name = db.Column(db.String(65), nullable=False)
     description = db.Column(db.Text, nullable=True)
