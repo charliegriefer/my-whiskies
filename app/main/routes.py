@@ -16,7 +16,7 @@ from app.extensions import db
 from app.main import handler as main_handler
 from app.main import main_blueprint
 from app.main.forms import BottleForm, BottleEditForm, BottlerForm, BottlerEditForm, DistilleryForm, DistilleryEditForm
-from app.models import Bottle, Bottler, BottleTypes, Distillery, User
+from app.models import Bottle, Bottler, BottleDistillery, BottleTypes, Distillery, User
 
 
 @main_blueprint.route("/")
@@ -296,7 +296,11 @@ def distillery_detail(distillery_id: str):
     dt_list_length = request.cookies.get("dt-list-length", "50")
     _distillery = Distillery.query.get_or_404(distillery_id)
 
-    _bottles = Bottle.query.filter(Bottle.distillery_id == distillery_id).filter(Bottle.user_id == _distillery.user.id)
+    _bottles = (
+        Bottle.query
+            .filter(Bottle.user_id == _distillery.user.id)
+            .filter(Bottle.distilleries.any(id=distillery_id))
+    )
 
     if request.method == "POST":
         if bool(int(request.form.get("random_toggle"))):
@@ -404,6 +408,10 @@ def bottles(username: str):
 @main_blueprint.route("/bottle/<bottle_id>")
 def bottle_detail(bottle_id: str):
     _bottle = Bottle.query.get_or_404(bottle_id)
+    print("\n-----------------\n")
+
+    [print(d.name) for d in _bottle.distilleries]
+    print("\n-----------------\n")
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
 
     return render_template("bottle_detail.html",
@@ -462,6 +470,7 @@ def bottle_edit(bottle_id: str):
     form = main_handler.prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
 
     if request.method == "POST" and form.validate_on_submit():
+
         form.populate_obj(_bottle)
 
         # handle "Distillery Bottling"
@@ -487,6 +496,7 @@ def bottle_edit(bottle_id: str):
 
     else:
         form.type.data = _bottle.type.name
+        form.distilleries.data = [d.id for d in _bottle.distilleries]
         return render_template("bottle_edit.html",
                                title=f"{current_user.username}'s Whiskies: Edit Bottle",
                                ts=time.time(),
