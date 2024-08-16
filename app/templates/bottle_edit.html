@@ -44,18 +44,20 @@
                 </ul>
               {% endif %}
             </div>
+
             <div class="mb-3">
-              {{ form.distillery_id.label(class="form-label") }}
-              {% if form.distillery_id.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.distillery_id(class="form-select") }}
-              {% if form.distillery_id.errors %}
+              {{ form.distilleries.label(class="form-label") }}
+              {% if form.distilleries.flags.required %}<span class="text-danger">*</span>{% endif %}
+              {{ form.distilleries(class="form-select") }}
+              {% if form.distilleries.errors %}
                 <ul class="errors">
-                  {% for error in form.distillery_id.errors %}
+                  {% for error in form.distilleries.errors %}
                     <li>{{ error }}</li>
                   {% endfor %}
                 </ul>
               {% endif %}
             </div>
+
             <div class="mb-3">
               {{ form.bottler_id.label(class="form-label") }}
               {% if form.bottler_id.flags.required %}<span class="text-danger">*</span>{% endif %}
