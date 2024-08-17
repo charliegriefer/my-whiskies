@@ -209,6 +209,7 @@ def distilleries_list(username: str):
 
     response = make_response(render_template("distillery_list.html",
                                              title=f"{user.username}'s Whiskies: Distilleries",
+                                             has_datatable=True,
                                              is_my_list=is_my_list,
                                              user=user,
                                              dt_list_length=dt_list_length))
