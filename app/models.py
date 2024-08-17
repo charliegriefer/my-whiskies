@@ -25,10 +25,11 @@ class BottleTypes(enum.Enum):
     other = "Other"
 
 
-class BottleDistillery(db.Model):
-    __tablename__ = "bottle_distillery"
-    bottle_id = db.Column(db.String(36), db.ForeignKey("bottle.id"), nullable=False, primary_key=True)
-    distillery_id = db.Column(db.String(36), db.ForeignKey("distillery.id"), nullable=False, primary_key=True)
+bottle_distillery = db.Table(
+    "bottle_distillery",
+    db.Column("bottle_id", db.String(36), db.ForeignKey("bottle.id"), nullable=False),
+    db.Column("distillery_id", db.String(36), db.ForeignKey("distillery.id"), nullable=False),
+)
 
 
 class Bottle(db.Model):
@@ -54,7 +55,8 @@ class Bottle(db.Model):
     bottler_id = db.Column(db.String(36), db.ForeignKey("bottler.id"), nullable=True)
     user_id = db.Column(db.String(36), db.ForeignKey("user.id"), nullable=False)
 
-    distilleries: Mapped[List["Distillery"]] = db.relationship("Distillery", secondary="bottle_distillery", back_populates="bottles", order_by="Distillery.name")
+    distilleries: Mapped[List["Distillery"]] = db.relationship(secondary="bottle_distillery",
+                                                               order_by="Distillery.name")
 
     bottler = db.relationship("Bottler", foreign_keys=[bottler_id])
     user = db.relationship("User", back_populates="bottles")
