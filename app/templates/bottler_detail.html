@@ -123,7 +123,9 @@
       let dk_column = {% if is_my_list %}6{% else %}5{% endif %};
 
       let table = $("#bottles").DataTable({
-        "emptyTable": "{{ bottler.user.username }} has no bottles from {{ bottler.name }}. Yet.",
+        language: {
+          emptyTable: "{{ bottler.user.username }} has no bottles from {{ bottler.name }}. Yet."
+        },
         columnDefs: [
           {% if is_my_list %}
             {
