@@ -7,7 +7,7 @@ from typing import List
 import jwt
 from flask import current_app
 from flask_login import UserMixin
-from sqlalchemy import DateTime, String, event
+from sqlalchemy import String, event
 from sqlalchemy.orm import Mapped, mapped_column
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -15,6 +15,7 @@ from app.extensions import db, login_manager
 
 
 class BottleTypes(enum.Enum):
+    # pylint: disable=C0103
     american_whiskey = "American Whiskey"
     bourbon = "Bourbon"
     canadian_whiskey = "Canadian Whiskey"
@@ -110,12 +111,13 @@ class User(UserMixin, db.Model):
     def verify_mail_confirm_token(token):
         try:
             decoded = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
-            id = decoded["confirm_reg"]
+            user_id = decoded["confirm_reg"]
+            user = db.get_or_404(User, user_id)
+            return user
         except (jwt.exceptions.DecodeError, jwt.exceptions.ExpiredSignatureError):
-            # TODO: add some logging here!
+            # TODO: add some logging here! # pylint: disable=W0511
             return None
-        else:
-            return User.query.get(id)
+
 
     def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)
@@ -131,26 +133,27 @@ class User(UserMixin, db.Model):
     def verify_reset_password_token(token: str):
         try:
             decoded = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
-            id = decoded["reset_password"]
+            user_id = decoded["reset_password"]
+            user = db.get_or_404(User, user_id)
+            return user
         except (jwt.exceptions.DecodeError, jwt.exceptions.ExpiredSignatureError):
-            # TODO: add some logging here!
+            # TODO: add some logging here! # pylint: disable=W0511
             return None
-        else:
-            return User.query.get(id)
 
 
 @login_manager.user_loader
-def load_user(id: str) -> User:
-    return User.query.get(id)
+def load_user(user_id: str) -> User:
+    user = db.get_or_404(User, user_id)
+    return user
 
 
 @event.listens_for(Bottle, "before_insert")
-def bottle_before_insert(mapper, connect, target):
+def bottle_before_insert(target):
     clean_bottle_data(target)
 
 
 @event.listens_for(Bottle, "before_update")
-def bottle_before_update(mapper, connect, target):
+def bottle_before_update(target):
     clean_bottle_data(target)
 
 
@@ -166,7 +169,7 @@ def clean_bottle_data(target):
 
 
 @event.listens_for(Distillery, "before_insert")
-def clean_distillery_data(mapper, connect, target):
+def clean_distillery_data(target):
     target.name = target.name.strip()
     target.region_1 = target.region_1.strip()
     target.region_2 = target.region_2.strip()
