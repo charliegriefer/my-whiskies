@@ -147,13 +147,15 @@ def load_user(user_id: str) -> User:
     return user
 
 
+# pylint: disable=W0613
 @event.listens_for(Bottle, "before_insert")
-def bottle_before_insert(target):
+def bottle_before_insert(mapper, connect, target):
     clean_bottle_data(target)
 
 
+# pylint: disable=W0613
 @event.listens_for(Bottle, "before_update")
-def bottle_before_update(target):
+def bottle_before_update(mapper, connect, target):
     clean_bottle_data(target)
 
 
@@ -168,8 +170,9 @@ def clean_bottle_data(target):
     target.stars = target.stars if target.stars else None
 
 
+# pylint: disable=W0613
 @event.listens_for(Distillery, "before_insert")
-def clean_distillery_data(target):
+def clean_distillery_data(mapper, connect, target):
     target.name = target.name.strip()
     target.region_1 = target.region_1.strip()
     target.region_2 = target.region_2.strip()
