@@ -391,7 +391,7 @@ def bottle_add():
 
         bottle_in.name = form.name.data
         bottle_in.url = form.url.data
-        bottle_in.type_id = form.type.data
+        bottle_in.type = form.type.data
         d = []
         for distllery_id in form.distilleries.data:
             d.append(Distillery.query.get(distllery_id))
@@ -451,7 +451,7 @@ def bottle_edit(bottle_id: str):
 
         _bottle.name = form.name.data
         _bottle.url = form.url.data
-        _bottle.type_id = form.type.data
+        _bottle.type = form.type.data
         d = []
         for distllery_id in form.distilleries.data:
             d.append(Distillery.query.get(distllery_id))
