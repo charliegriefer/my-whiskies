@@ -49,8 +49,8 @@
               <li>Photos Uploaded: <span class="text-danger fw-bold">{{ pic_count }}</span></li>
               <li>Bottles Tracked: <span class="text-danger fw-bold">{{ bottle_count }}</span>
                 <ul>
-                  {% for k, v in bottle_type_counts.items() %}
-                    <li>{{ k }}: <span class="text-primary fw-bold">{{ v }}</span></li>
+                  {% for your_mom in bottle_type_counts %}
+                    <li>{{ your_mom[0].value }}: <span class="text-danger fw-bold">{{ your_mom[1] }}</span></li>
                   {% endfor %}
                 </ul>
               </li>
