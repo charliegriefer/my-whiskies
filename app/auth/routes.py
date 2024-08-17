@@ -19,7 +19,7 @@ def login():
         return redirect(url_for("main.home", username=current_user.username))
     form = LoginForm()
     if request.method == "POST" and form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data, is_deleted=False).first()
+        user = db.one_or_404(db.select(User).filter_by(username=form.username.data, is_deleted=False))
         if user is None or not user.check_password(form.password.data):
             flash("Incorrect username or password!", "danger")
             return redirect(url_for("auth.login"))
