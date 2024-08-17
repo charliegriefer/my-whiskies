@@ -35,6 +35,7 @@ def index():
 
     return render_template("index.html",
                            title="My Whiskies Online",
+                           has_datatable=True,
                            user_count=user_count,
                            distillery_count=distillery_count,
                            bottle_count=bottle_count,
@@ -51,11 +52,10 @@ def home(username: str):
     else:
         user = db.one_or_404(db.select(User).filter_by(username=username))
         is_my_home = False
-
     live_bottles = [bottle for bottle in user.bottles if bottle.date_killed is None]
-
     response = make_response(render_template("home.html",
                                              title=f"{user.username}'s Whiskies",
+                                             has_datatable=False,
                                              user=user,
                                              live_bottles=live_bottles,
                                              is_my_home=is_my_home,
@@ -69,13 +69,12 @@ def home(username: str):
 # ####################################################################################################################
 @main_blueprint.route("/<username>/bottlers", endpoint="bottlers_list")
 def bottlers_list(username: str):
-    """ Don't need a big docstring here. This endpoint lists a user's bottlers. """
     dt_list_length = request.cookies.get("bt-list-length", "50")
     is_my_list = current_user.is_authenticated and current_user.username.lower() == username.lower()
-    user = User.query.filter(User.username == username).first_or_404()
-
+    user = db.one_or_404(db.select(User).filter_by(username=username))
     response = make_response(render_template("bottler_list.html",
                                              title=f"{user.username}'s Whiskies: Bottlers",
+                                             has_datatable=True,
                                              is_my_list=is_my_list,
                                              user=user,
                                              dt_list_length=dt_list_length))
@@ -103,12 +102,10 @@ def bottler_add():
 @main_blueprint.route("/bottler_edit/<string:bottler_id>", methods=["GET", "POST"])
 @login_required
 def bottler_edit(bottler_id: str):
-    _bottler = Bottler.query.get_or_404(bottler_id)
+    _bottler = db.get_or_404(Bottler, bottler_id)
     form = BottlerEditForm()
-
     if request.method == "POST" and form.validate_on_submit():
         form.populate_obj(_bottler)
-
         db.session.add(_bottler)
         db.session.commit()
         flash(f"\"{_bottler.name}\" has been successfully updated.", "success")
@@ -124,33 +121,27 @@ def bottler_edit(bottler_id: str):
 @main_blueprint.route("/bottler/<string:bottler_id>", methods=["GET", "POST"])
 def bottler_detail(bottler_id: str):
     dt_list_length = request.cookies.get("dt-list-length", "50")
-    _bottler = Bottler.query.get_or_404(bottler_id)
-
-    _bottles = Bottle.query.filter(Bottle.bottler_id == bottler_id).filter(Bottle.user_id == _bottler.user.id)
-
+    _bottler = db.get_or_404(Bottler, bottler_id)
+    _bottles = _bottler.bottles
     if request.method == "POST":
         if bool(int(request.form.get("random_toggle"))):
-            if _bottles.count() > 0:
+            if len(_bottles) > 0:
                 has_killed_bottles = False
-                bottles_to_list = [Bottle.query.filter(Bottle.date_killed.is_(None))
-                                               .filter(Bottle.bottler_id == bottler_id)
-                                               .filter(Bottle.user_id == current_user.get_id())
-                                               .order_by(func.rand()).first()]
+                live_bottles = [bottle for bottle in _bottles if bottle.date_killed is None]
+                bottles_to_list = [random.choice(live_bottles)]
     else:
         bottles_to_list = _bottles
         has_killed_bottles = len([b for b in _bottles if b.date_killed]) > 0
-
     is_my_list = current_user.is_authenticated and current_user.username.lower() == _bottler.user.username.lower()
-
     response = make_response(render_template("bottler_detail.html",
                            title=f"{_bottler.user.username}'s Whiskies: {_bottler.name}",
+                           has_datatable=True,
                            user=_bottler.user,
                            is_my_list=is_my_list,
                            bottler=_bottler,
                            bottles=bottles_to_list,
                            has_killed_bottles=has_killed_bottles,
                            dt_list_length=dt_list_length))
-
     response.set_cookie("dt-list-length", value=dt_list_length, expires=datetime.now() + relativedelta(years=1))
     return response
 
@@ -364,6 +355,7 @@ def bottles(username: str):
 
     response = make_response(render_template("bottle_list.html",
                                              title=f"{user.username}'s Whiskies: Bottles",
+                                             has_datatable=True,
                                              user=user,
                                              bottles=bottles_to_list,
                                              has_killed_bottles=bool(len(killed_bottles)),
@@ -396,7 +388,25 @@ def bottle_add():
 
     if request.method == "POST" and form.validate_on_submit():
         bottle_in = Bottle(user_id=current_user.id)
-        form.populate_obj(bottle_in)
+
+        bottle_in.name = form.name.data
+        bottle_in.url = form.url.data
+        bottle_in.type_id = form.type.data
+        d = []
+        for distllery_id in form.distilleries.data:
+            d.append(Distillery.query.get(distllery_id))
+        bottle_in.distilleries = d
+        bottle_in.size = form.size.data
+        bottle_in.year_barrelled = form.year_barrelled.data
+        bottle_in.year_bottled = form.year_bottled.data
+        bottle_in.abv = form.abv.data
+        bottle_in.description = form.description.data
+        bottle_in.review = form.review.data
+        bottle_in.stars = form.stars.data
+        bottle_in.cost = form.cost.data
+        bottle_in.date_purchased = form.date_purchased.data
+        bottle_in.date_opened = form.date_opened.data
+        bottle_in.date_killed = form.date_killed.data
 
         # handle "Distillery Bottling"
         if bottle_in.bottler_id == "0":
