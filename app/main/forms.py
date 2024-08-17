@@ -1,18 +1,19 @@
 import datetime
 
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed
-from wtforms import (
-    DateField, DecimalField, HiddenField, IntegerField, SelectField, SelectMultipleField, StringField, SubmitField, TextAreaField, widgets
-)
-from wtforms.validators import InputRequired, Length, NumberRange, Optional, URL
+from flask_wtf.file import FileAllowed, FileField
+from wtforms import (DateField, DecimalField, HiddenField, IntegerField,
+                     SelectField, SelectMultipleField, StringField,
+                     SubmitField, TextAreaField, widgets)
+from wtforms.validators import (URL, InputRequired, Length, NumberRange,
+                                Optional)
 
 
 def get_current_year() -> int:
     return datetime.date.today().year
 
 
-img_message = "Permitted file types: jpg/jpeg, png"
+IMG_MESSAGE = "Permitted file types: jpg/jpeg, png"
 
 class MultiCheckboxField(SelectMultipleField):
     widget = widgets.ListWidget(prefix_label=False)
@@ -89,7 +90,11 @@ class BottleForm(FlaskForm):
                        validators=[Optional(), NumberRange(min=30, max=90, message="Invalid value for ABV")],
                        render_kw={"placeholder": "00.00"})
 
-    cost = DecimalField("Cost:", places=2, validators=[Optional(), NumberRange(min=0)], render_kw={"placeholder": "00.00"})
+    cost = DecimalField("Cost:",
+                        places=2,
+                        validators=[Optional(),
+                        NumberRange(min=0)],
+                        render_kw={"placeholder": "00.00"})
     stars = SelectField("Stars:", validators=[Optional()], validate_choice=False)
 
     description = TextAreaField("Description:", validators=[Length(0, 65000)])
@@ -99,9 +104,9 @@ class BottleForm(FlaskForm):
     date_opened = DateField("Date Opened:", validators=[Optional()])
     date_killed = DateField("Date Killed:", validators=[Optional()])
 
-    bottle_image_1 = FileField("Image 1:", validators=[FileAllowed(["jpg", "jpeg", "png"], img_message)])
-    bottle_image_2 = FileField("Image 2:", validators=[FileAllowed(["jpg", "jpeg", "png"], img_message)])
-    bottle_image_3 = FileField("Image 3:", validators=[FileAllowed(["jpg", "jpeg", "png"], img_message)])
+    bottle_image_1 = FileField("Image 1:", validators=[FileAllowed(["jpg", "jpeg", "png"], IMG_MESSAGE)])
+    bottle_image_2 = FileField("Image 2:", validators=[FileAllowed(["jpg", "jpeg", "png"], IMG_MESSAGE)])
+    bottle_image_3 = FileField("Image 3:", validators=[FileAllowed(["jpg", "jpeg", "png"], IMG_MESSAGE)])
 
     submit = SubmitField("Add Bottle")
 
