@@ -7,9 +7,9 @@ from typing import List
 import jwt
 from flask import current_app
 from flask_login import UserMixin
-from sqlalchemy import event, String, DateTime
-from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy import DateTime, String, event
 from sqlalchemy.orm import Mapped, mapped_column
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.extensions import db, login_manager
 
