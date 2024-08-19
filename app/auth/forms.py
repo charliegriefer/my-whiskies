@@ -5,8 +5,9 @@ import requests
 from flask import current_app, request
 
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, PasswordField, StringField, SubmitField
+from wtforms import BooleanField, HiddenField, PasswordField, StringField, SubmitField
 from wtforms.validators import Email, EqualTo, InputRequired, Length, ValidationError
+from wtforms.fields import EmailField
 
 from app.models import User
 
@@ -20,9 +21,13 @@ USERNAME_DESCRIPTION += "<li>Must be between 4 and 24 characters.</li>"
 USERNAME_DESCRIPTION += "<li>Valid special characters: - _ @ ! ^ * $</li>"
 USERNAME_DESCRIPTION += "<li>Spaces are not allowed.</li></ul>"
 
-CAPTCHA_MESSAGE = "There was an issue processing your registration. Please try again later."
-CAPTCHA_MESSAGE += "<br />If the problem persists, please contact us us at "
-CAPTCHA_MESSAGE += "<a href='mailto:bartender@my-whiskies.online'>bartender@my-whiskies.online</a>."
+REG_CAPTCHA_MESSAGE = "There was an issue processing your registration. Please try again later."
+REG_CAPTCHA_MESSAGE += "<br />If this problem persists, please contact us us at "
+REG_CAPTCHA_MESSAGE += '<a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a>.'
+
+RESET_CAPTCHA_MESSAGE = "There was an issue processing your request. Please try again later."
+RESET_CAPTCHA_MESSAGE += "<br />If this problem persists, please contact us us at "
+RESET_CAPTCHA_MESSAGE += '<a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a>.'
 
 
 class ReCaptchaV3:
@@ -32,8 +37,15 @@ class ReCaptchaV3:
 
     def __call__(self, form, field):
         recaptcha_response = request.form.get("g-recaptcha-response")
+
+        error_msg = ""
+        if form.form_name.data == "reset_pw_request":
+            error_msg = RESET_CAPTCHA_MESSAGE
+        elif form.form_name.data == "registration":
+            error_msg = REG_CAPTCHA_MESSAGE
+
         if not recaptcha_response:
-            raise ValidationError("reCAPTCHA is required.")
+            raise ValidationError(error_msg)  # TODO: differentiate between missing and invalid recaptcha
 
         r = requests.post(
             "https://www.google.com/recaptcha/api/siteverify",
@@ -46,12 +58,12 @@ class ReCaptchaV3:
         )
         result = r.json()
 
-        if not result.get("success"):
-            raise ValidationError(CAPTCHA_MESSAGE)
+        if result.get("success"):
+            raise ValidationError(error_msg)  # TODO: differentiate between missing and invalid recaptcha
 
         score = result.get("score", 0)
         if score < self.threshold:
-            raise ValidationError("reCAPTCHA score is too low.")
+            raise ValidationError(error_msg)  # TODO: differentiate between missing and invalid recaptcha
 
         field.data = score
 
@@ -64,9 +76,11 @@ class LoginForm(FlaskForm):
 
 
 class ResetPasswordRequestForm(FlaskForm):
-    email = StringField("Email Address:",
-                        validators=[InputRequired(), Email(message="Enter a valid e-mail address.")],
-                        render_kw={"placeholder": "E-Mail Address"},)
+    form_name = HiddenField("form_name", default="reset_pw_request")
+    email = EmailField("Email Address:",
+                       validators=[InputRequired(), Email(message="Enter a valid e-mail address.")],
+                       render_kw={"placeholder": "E-Mail Address"})
+    recaptcha = SubmitField(validators=[ReCaptchaV3(action="submit", threshold=0.5)])
     submit = SubmitField("Submit")
 
 
@@ -82,6 +96,7 @@ class ResetPWForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
+    form_name = HiddenField("form_name", default="registration")
     username = StringField("Username:",
                            validators=[InputRequired(), Length(min=4, max=24)],
                            render_kw={"placeholder": "Username"},
