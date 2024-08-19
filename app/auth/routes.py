@@ -72,7 +72,12 @@ def register():
             </ul>""")), "info")
         return redirect(url_for("auth.login"))
     if form.errors:
-        flash(get_flash_msg(form), "danger")
+        m = get_flash_msg(form)
+        flash(m.get("message"), "danger")
+        if m.get("reset_errors"):
+            form = RegistrationForm()
+            terms_label = Markup(f"I agree to the terms of <a href=\"{url_for('main.terms')}\">Terms of Service</a>.")
+            form.agree_terms.label = Label("agree_terms", terms_label)
     return render_template("auth/register.html",
                            title="My Whiskies Online: Register",
                            has_captcha=True,
@@ -137,10 +142,13 @@ def reset_password_request():
         return redirect(url_for("auth.login"))
 
     if form.errors:
-        flash("Please enter a valid email address.", "danger")
+        m = get_flash_msg(form)
+        flash(m.get("message"), "danger")
     return render_template("auth/reset_password_request.html",
                            title="My Whiskies Online: Forgot Password",
-                           form=form)
+                           has_captcha=True,
+                           form=form,
+                           recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"])
 
 
 @auth_blueprint.route("/reset_password/<token>", methods=["GET", "POST"])
@@ -159,10 +167,17 @@ def reset_password(token: str):
     return render_template("auth/reset_password.html", title="My Whiskies Online: Reset Password", form=form)
 
 
-def get_flash_msg(form) -> str:
-    flash_msg = "Please correct the following issue(s): <ul>"
-    for _, v in form.errors.items():
-        for e in v:
-            flash_msg += f"<li>{e}</li>"
-    flash_msg += "</ul>"
-    return flash_msg
+def get_flash_msg(form) -> dict:
+    reset_errors = False
+    if "recaptcha" in form.errors:
+        flash_msg = form.errors["recaptcha"][0]
+        reset_errors = True
+    else:
+        flash_msg = "Please correct the following issue(s): "
+        flash_msg += "<ul>"
+        for _, v in form.errors.items():
+            for e in v:
+                flash_msg += f"<li>{e}</li>"
+        flash_msg += "</ul>"
+
+    return {"message": flash_msg, "reset_errors": reset_errors}
