@@ -1,20 +1,58 @@
 import re
 
+import requests
+
+from flask import current_app, request
+
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, PasswordField, StringField, SubmitField
 from wtforms.validators import Email, EqualTo, InputRequired, Length, ValidationError
 
 from app.models import User
 
-pw_description = "Password requirements:<ul>"
-pw_description += "<li>Must be between 8 and 22 characters.</li>"
-pw_description += "<li>Must contain at least one uppercase letter, one lowercase letter, and one digit.</li>"
-pw_description += "<li>Spaces are not allowed.</li></ul>"
+PW_DESCRIPTION = "Password requirements:<ul>"
+PW_DESCRIPTION += "<li>Must be between 8 and 22 characters.</li>"
+PW_DESCRIPTION += "<li>Must contain at least one uppercase letter, one lowercase letter, and one digit.</li>"
+PW_DESCRIPTION += "<li>Spaces are not allowed.</li></ul>"
 
-username_description = "Username requirements:<ul>"
-username_description += "<li>Must be between 4 and 24 characters.</li>"
-username_description += "<li>Valid special characters: - _ @ ! ^ * $</li>"
-username_description += "<li>Spaces are not allowed.</li></ul>"
+USERNAME_DESCRIPTION = "Username requirements:<ul>"
+USERNAME_DESCRIPTION += "<li>Must be between 4 and 24 characters.</li>"
+USERNAME_DESCRIPTION += "<li>Valid special characters: - _ @ ! ^ * $</li>"
+USERNAME_DESCRIPTION += "<li>Spaces are not allowed.</li></ul>"
+
+CAPTCHA_MESSAGE = "There was an issue processing your registration. Please try again later."
+CAPTCHA_MESSAGE += "<br />If the problem persists, please contact us us at "
+CAPTCHA_MESSAGE += "<a href='mailto:bartender@my-whiskies.online'>bartender@my-whiskies.online</a>."
+
+class ReCaptchaV3:
+    def __init__(self, action="form", threshold=0.5):
+        self.action = action
+        self.threshold = threshold
+
+    def __call__(self, form, field):
+        recaptcha_response = request.form.get("g-recaptcha-response")
+        if not recaptcha_response:
+            raise ValidationError("reCAPTCHA is required.")
+
+        r = requests.post(
+            "https://www.google.com/recaptcha/api/siteverify",
+            timeout=5,
+            data={
+               "secret": current_app.config["RECAPTCHA_PRIVATE_KEY"],
+                "response": recaptcha_response,
+                "remoteip": request.remote_addr
+            }
+        )
+        result = r.json()
+
+        if not result.get("success"):
+            raise ValidationError(CAPTCHA_MESSAGE)
+
+        score = result.get("score", 0)
+        if score < self.threshold:
+            raise ValidationError("reCAPTCHA score is too low.")
+
+        field.data = score
 
 
 class LoginForm(FlaskForm):
@@ -35,7 +73,7 @@ class ResetPWForm(FlaskForm):
     password = PasswordField("Password:",
                              validators=[InputRequired(), Length(min=8, max=24)],
                              render_kw={"placeholder": "Password"},
-                             description=pw_description)
+                             description=PW_DESCRIPTION)
     password2 = PasswordField("Repeat Password:",
                               validators=[InputRequired(), EqualTo("password", message="Passwords do not match.")],
                               render_kw={"placeholder": "Repeat Password"})
@@ -46,20 +84,21 @@ class RegistrationForm(FlaskForm):
     username = StringField("Username:",
                            validators=[InputRequired(), Length(min=4, max=24)],
                            render_kw={"placeholder": "Username"},
-                           description=username_description)
+                           description=USERNAME_DESCRIPTION)
     email = StringField("Email Address:",
                         validators=[InputRequired(), Email()],
                         render_kw={"placeholder": "Email Address"})
     password = PasswordField("Password:",
                              validators=[InputRequired(), Length(min=8, max=24)],
                              render_kw={"placeholder": "Password"},
-                             description=pw_description)
+                             description=PW_DESCRIPTION)
     password2 = PasswordField("Repeat Password:",
                               validators=[InputRequired(), EqualTo("password", message="Passwords do not match.")],
                               render_kw={"placeholder": "Repeat Password"})
-    agree_terms = BooleanField("",
-                               validators=[InputRequired()])
+    agree_terms = BooleanField("", validators=[InputRequired()])
+    recaptcha = SubmitField(validators=[ReCaptchaV3(action="submit", threshold=0.5)])
     submit = SubmitField("Register")
+
 
     def validate_username(self, username: StringField) -> None:
         error_message = ""
