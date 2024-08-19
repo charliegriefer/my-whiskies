@@ -40,6 +40,10 @@ class BaseConfig:
     LOG_LEVEL = logging.DEBUG
     LOG_BACKTRACE = False
 
+    # RECAPTCHA
+    RECAPTCHA_PUBLIC_KEY = os.environ["RECAPTCHA_PUBLIC_KEY"]
+    RECAPTCHA_PRIVATE_KEY = os.environ["RECAPTCHA_PRIVATE_KEY"]
+
     @staticmethod
     def init_app(app):
         pass
