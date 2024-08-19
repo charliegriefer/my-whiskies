@@ -41,11 +41,11 @@
                 {{ form.agree_terms(class="form-check-input" + (" is-invalid" if form.password2.errors else "")) }}
                 {{ form.agree_terms.label(class="form-check-label") }}
               </div>
+              <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
               <div class="mb-3 pt-3">
                 {{ form.submit(class="btn btn-primary") }}
               </div>
             </form>
-
           </div>
         </div>
       </div>
