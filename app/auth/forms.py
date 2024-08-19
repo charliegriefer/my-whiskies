@@ -24,6 +24,7 @@ CAPTCHA_MESSAGE = "There was an issue processing your registration. Please try a
 CAPTCHA_MESSAGE += "<br />If the problem persists, please contact us us at "
 CAPTCHA_MESSAGE += "<a href='mailto:bartender@my-whiskies.online'>bartender@my-whiskies.online</a>."
 
+
 class ReCaptchaV3:
     def __init__(self, action="form", threshold=0.5):
         self.action = action
@@ -38,7 +39,7 @@ class ReCaptchaV3:
             "https://www.google.com/recaptcha/api/siteverify",
             timeout=5,
             data={
-               "secret": current_app.config["RECAPTCHA_PRIVATE_KEY"],
+                "secret": current_app.config["RECAPTCHA_PRIVATE_KEY"],
                 "response": recaptcha_response,
                 "remoteip": request.remote_addr
             }
@@ -98,7 +99,6 @@ class RegistrationForm(FlaskForm):
     agree_terms = BooleanField("", validators=[InputRequired()])
     recaptcha = SubmitField(validators=[ReCaptchaV3(action="submit", threshold=0.5)])
     submit = SubmitField("Register")
-
 
     def validate_username(self, username: StringField) -> None:
         error_message = ""
