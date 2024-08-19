@@ -134,14 +134,14 @@ def bottler_detail(bottler_id: str):
         has_killed_bottles = len([b for b in _bottles if b.date_killed]) > 0
     is_my_list = current_user.is_authenticated and current_user.username.lower() == _bottler.user.username.lower()
     response = make_response(render_template("bottler_detail.html",
-                           title=f"{_bottler.user.username}'s Whiskies: {_bottler.name}",
-                           has_datatable=True,
-                           user=_bottler.user,
-                           is_my_list=is_my_list,
-                           bottler=_bottler,
-                           bottles=bottles_to_list,
-                           has_killed_bottles=has_killed_bottles,
-                           dt_list_length=dt_list_length))
+                                             title=f"{_bottler.user.username}'s Whiskies: {_bottler.name}",
+                                             has_datatable=True,
+                                             user=_bottler.user,
+                                             is_my_list=is_my_list,
+                                             bottler=_bottler,
+                                             bottles=bottles_to_list,
+                                             has_killed_bottles=has_killed_bottles,
+                                             dt_list_length=dt_list_length))
     response.set_cookie("dt-list-length", value=dt_list_length, expires=datetime.now() + relativedelta(years=1))
     return response
 
@@ -249,9 +249,9 @@ def distillery_edit(distillery_id: str):
         return redirect(url_for("main.distilleries_list", username=current_user.username.lower()))
 
     return render_template("distillery_edit.html",
-                            title=f"{current_user.username}'s Whiskies: Edit Distillery",
-                            distillery=_distillery,
-                            form=form)
+                           title=f"{current_user.username}'s Whiskies: Edit Distillery",
+                           distillery=_distillery,
+                           form=form)
 
 
 @main_blueprint.route("/distillery/<string:distillery_id>", methods=["GET", "POST"])
@@ -260,9 +260,8 @@ def distillery_detail(distillery_id: str):
     _distillery = Distillery.query.get_or_404(distillery_id)
 
     _bottles = (
-        Bottle.query
-            .filter(Bottle.user_id == _distillery.user.id)
-            .filter(Bottle.distilleries.any(id=distillery_id))
+        Bottle.query.filter(Bottle.user_id == _distillery.user.id)
+                    .filter(Bottle.distilleries.any(id=distillery_id))
     )
 
     if request.method == "POST":
@@ -280,14 +279,14 @@ def distillery_detail(distillery_id: str):
     is_my_list = current_user.is_authenticated and current_user.username.lower() == _distillery.user.username.lower()
 
     response = make_response(render_template("distillery_detail.html",
-                           title=f"{_distillery.user.username}'s Whiskies: {_distillery.name}",
-                           has_datatable=True,
-                           user=_distillery.user,
-                           is_my_list=is_my_list,
-                           distillery=_distillery,
-                           bottles=bottles_to_list,
-                           has_killed_bottles=has_killed_bottles,
-                           dt_list_length=dt_list_length))
+                                             title=f"{_distillery.user.username}'s Whiskies: {_distillery.name}",
+                                             has_datatable=True,
+                                             user=_distillery.user,
+                                             is_my_list=is_my_list,
+                                             distillery=_distillery,
+                                             bottles=bottles_to_list,
+                                             has_killed_bottles=has_killed_bottles,
+                                             dt_list_length=dt_list_length))
 
     response.set_cookie("dt-list-length", value=dt_list_length, expires=datetime.now() + relativedelta(years=1))
     return response

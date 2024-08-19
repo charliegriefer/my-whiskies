@@ -70,16 +70,24 @@ class BottleForm(FlaskForm):
                                                 message="Size must not exceed 2000.")],
                         render_kw={"placeholder": "Size (ml)"})
     year_barrelled = IntegerField("Year Barrelled:",
-                                  validators=[Optional(),
-                                  NumberRange(min=1900,
-                                  max=get_current_year(),
-                                  message=f"Year Barrlled must be between 1900 and {get_current_year()}.")],
+                                  validators=[
+                                      Optional(),
+                                      NumberRange(
+                                          min=1900,
+                                          max=get_current_year(),
+                                          message=f"Year Barrlled must be between 1900 and {get_current_year()}."
+                                      )
+                                  ],
                                   render_kw={"placeholder": "Year Barrelled"})
     year_bottled = IntegerField("Year Bottled:",
-                                validators=[Optional(),
-                                NumberRange(min=1900,
-                                max=get_current_year(),
-                                message=f"Year Bottled must be between 1900 and {get_current_year()}.")],
+                                validators=[
+                                    Optional(),
+                                    NumberRange(
+                                        min=1900,
+                                        max=get_current_year(),
+                                        message=f"Year Bottled must be between 1900 and {get_current_year()}."
+                                    )
+                                ],
                                 render_kw={"placeholder": "Year Bottled"})
     abv = DecimalField("ABV:",
                        places=2,
@@ -87,10 +95,7 @@ class BottleForm(FlaskForm):
                        render_kw={"placeholder": "00.00"})
 
     cost = DecimalField("Cost:",
-                        places=2,
-                        validators=[Optional(),
-                        NumberRange(min=0)],
-                        render_kw={"placeholder": "00.00"})
+                        places=2, validators=[Optional(), NumberRange(min=0)], render_kw={"placeholder": "00.00"})
     stars = SelectField("Stars:", validators=[Optional()], validate_choice=False)
 
     description = TextAreaField("Description:", validators=[Length(0, 65000)])
