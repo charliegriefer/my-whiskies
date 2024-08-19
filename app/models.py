@@ -118,7 +118,6 @@ class User(UserMixin, db.Model):
             # TODO: add some logging here! # pylint: disable=W0511
             return None
 
-
     def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)
 
@@ -153,7 +152,6 @@ def bottle_before_insert(mapper, connect, target):
     clean_bottle_data(target)
 
 
-# pylint: disable=W0613
 @event.listens_for(Bottle, "before_update")
 def bottle_before_update(mapper, connect, target):
     clean_bottle_data(target)
@@ -170,7 +168,6 @@ def clean_bottle_data(target):
     target.stars = target.stars if target.stars else None
 
 
-# pylint: disable=W0613
 @event.listens_for(Distillery, "before_insert")
 def clean_distillery_data(mapper, connect, target):
     target.name = target.name.strip()
