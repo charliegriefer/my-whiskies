@@ -77,8 +77,7 @@ def register():
                            title="My Whiskies Online: Register",
                            has_captcha=True,
                            form=form,
-                           recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"]
-    )
+                           recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"])
 
 
 @auth_blueprint.route("/confirm_register/<token>", methods=["GET", "POST"])
