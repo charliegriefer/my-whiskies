@@ -58,7 +58,7 @@ class ReCaptchaV3:
         )
         result = r.json()
 
-        if result.get("success"):
+        if not result.get("success"):
             raise ValidationError(error_msg)  # TODO: differentiate between missing and invalid recaptcha
 
         score = result.get("score", 0)
