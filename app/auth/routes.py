@@ -1,7 +1,7 @@
 from datetime import datetime
 from textwrap import dedent
 
-from flask import flash, redirect, render_template, request, url_for, Markup
+from flask import current_app, flash, redirect, render_template, request, url_for, Markup
 from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
 from wtforms.fields.core import Label
@@ -51,6 +51,7 @@ def register():
     terms_label = Markup(f"I agree to the terms of <a href=\"{url_for('main.terms')}\">Terms of Service</a>.")
     form.agree_terms.label = Label("agree_terms", terms_label)
     if request.method == "POST" and form.validate_on_submit():
+        # print(form.recaptcha.data)
         user_in = User()
 
         user_in.username = form.username.data.strip()
@@ -72,7 +73,12 @@ def register():
         return redirect(url_for("auth.login"))
     if form.errors:
         flash(get_flash_msg(form), "danger")
-    return render_template("auth/register.html", title="My Whiskies Online: Register", form=form)
+    return render_template("auth/register.html",
+                           title="My Whiskies Online: Register",
+                           has_captcha=True,
+                           form=form,
+                           recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"]
+    )
 
 
 @auth_blueprint.route("/confirm_register/<token>", methods=["GET", "POST"])
