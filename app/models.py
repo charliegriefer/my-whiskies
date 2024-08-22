@@ -3,19 +3,19 @@ import uuid
 from datetime import datetime
 from time import time
 from typing import List
-
+import decimal
 import jwt
 from flask import current_app
 from flask_login import UserMixin
-from sqlalchemy import String, event
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import ForeignKey
+from sqlalchemy import DateTime, Enum, Integer, Numeric, String, Text, event
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.extensions import db, login_manager
 
 
 class BottleTypes(enum.Enum):
-    # pylint: disable=C0103
     american_whiskey = "American Whiskey"
     bourbon = "Bourbon"
     canadian_whiskey = "Canadian Whiskey"
@@ -36,31 +36,31 @@ bottle_distillery = db.Table(
 class Bottle(db.Model):
     __tablename__ = "bottle"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uuid.uuid4)
-    date_created: Mapped[datetime] = mapped_column(nullable=False, default=datetime.utcnow)
+    date_created: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.utcnow)
     name: Mapped[str] = mapped_column(String(64), nullable=False)
-    type = db.Column(db.Enum(BottleTypes))
-    abv = db.Column(db.Float)
-    size = db.Column(db.Integer)
-    year_barrelled = db.Column(db.Integer, nullable=True)
-    year_bottled = db.Column(db.Integer, nullable=True)
-    url = db.Column(db.String(140))
-    description = db.Column(db.Text, nullable=True)
-    review = db.Column(db.Text, nullable=True)
-    stars = db.Column(db.Float, nullable=True)
-    cost = db.Column(db.Float, nullable=True)
-    date_purchased = db.Column(db.DateTime, nullable=True)
-    date_opened = db.Column(db.DateTime, nullable=True)
-    date_killed = db.Column(db.DateTime, nullable=True)
-    image_count = db.Column(db.Integer, default=0)
+    type: Mapped[BottleTypes] = mapped_column(Enum(BottleTypes))
+    abv: Mapped[decimal.Decimal] = mapped_column(Numeric(2, 4))
+    size: Mapped[int] = db.mapped_column(Integer)
+    year_barrelled: Mapped[int] = mapped_column(Integer, nullable=True)
+    year_bottled: Mapped[int] = mapped_column(Integer, nullable=True)
+    url: Mapped[str] = mapped_column(String(140))
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    review: Mapped[str] = mapped_column(Text, nullable=True)
+    stars: Mapped[decimal.Decimal] = mapped_column(Numeric(1, 1), nullable=True)
+    cost: Mapped[decimal.Decimal] = mapped_column(Numeric(10, 2), nullable=True)
+    date_purchased: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    date_opened: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    date_killed: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    image_count: Mapped[int] = mapped_column(Integer, default=0)
 
-    bottler_id = db.Column(db.String(36), db.ForeignKey("bottler.id"), nullable=True)
-    user_id = db.Column(db.String(36), db.ForeignKey("user.id"), nullable=False)
+    bottler_id: Mapped[str] = mapped_column(String(36), ForeignKey("bottler.id"), nullable=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("user.id"), nullable=False)
 
-    distilleries: Mapped[List["Distillery"]] = db.relationship(secondary="bottle_distillery",
-                                                               order_by="Distillery.name")
+    distilleries: Mapped[List["Distillery"]] = relationship(secondary="bottle_distillery",
+                                                            order_by="Distillery.name")
 
-    bottler = db.relationship("Bottler", foreign_keys=[bottler_id])
-    user = db.relationship("User", back_populates="bottles")
+    bottler = relationship("Bottler", foreign_keys=[bottler_id])
+    user = relationship("User", back_populates="bottles")
 
 
 class Distillery(db.Model):
