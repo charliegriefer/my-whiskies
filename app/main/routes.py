@@ -397,6 +397,7 @@ def bottle_add():
         for distllery_id in form.distilleries.data:
             d.append(Distillery.query.get(distllery_id))
         bottle_in.distilleries = d
+        bottle_in.bottler_id = form.bottler_id.data
         bottle_in.size = form.size.data
         bottle_in.year_barrelled = form.year_barrelled.data
         bottle_in.year_bottled = form.year_bottled.data
@@ -449,7 +450,6 @@ def bottle_edit(bottle_id: str):
     form = main_handler.prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
 
     if request.method == "POST" and form.validate_on_submit():
-
         _bottle.name = form.name.data
         _bottle.url = form.url.data
         _bottle.type = form.type.data
@@ -457,6 +457,7 @@ def bottle_edit(bottle_id: str):
         for distllery_id in form.distilleries.data:
             d.append(Distillery.query.get(distllery_id))
         _bottle.distilleries = d
+        _bottle.bottler_id = form.bottler_id.data
         _bottle.size = form.size.data
         _bottle.year_barrelled = form.year_barrelled.data
         _bottle.year_bottled = form.year_bottled.data
