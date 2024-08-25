@@ -1,14 +1,14 @@
 from datetime import datetime
 from textwrap import dedent
 
-from flask import current_app, flash, redirect, render_template, request, url_for, Markup
+from flask import Markup, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
 from wtforms.fields.core import Label
 
 from app.auth import auth_blueprint
 from app.auth.email import send_password_reset_email, send_registration_confirmation_email
-from app.auth.forms import LoginForm, RegistrationForm, ResendRegEmailForm, ResetPWForm, ResetPasswordRequestForm
+from app.auth.forms import LoginForm, RegistrationForm, ResendRegEmailForm, ResetPasswordRequestForm, ResetPWForm
 from app.extensions import db
 from app.models import User
 
@@ -20,7 +20,7 @@ def login():
     form = LoginForm()
     if request.method == "POST" and form.validate_on_submit():
         user = db.one_or_404(db.select(User).filter_by(username=form.username.data, is_deleted=False))
-        if user is None or not user.check_password(form.password.data):
+        if not user.check_password(form.password.data):
             flash("Incorrect username or password!", "danger")
             return redirect(url_for("auth.login"))
         if not user.email_confirmed:
@@ -51,7 +51,6 @@ def register():
     terms_label = Markup(f"I agree to the terms of <a href=\"{url_for('main.terms')}\">Terms of Service</a>.")
     form.agree_terms.label = Label("agree_terms", terms_label)
     if request.method == "POST" and form.validate_on_submit():
-        # print(form.recaptcha.data)
         user_in = User()
 
         user_in.username = form.username.data.strip()
@@ -110,7 +109,7 @@ def resend_register():
         return redirect(url_for("main.home", username=current_user.username))
     form = ResendRegEmailForm()
     if request.method == "POST" and form.validate_on_submit():
-        user = db.session.query(User).filter(User.email == form.email.data).one_or_none()
+        user = db.session.execute(db.select(User).filter(User.email == form.email.data))
         if user:
             send_registration_confirmation_email(user)
             flash(f"A new registration verification e-mail has been sent to {form.email.data}", "info")
@@ -129,7 +128,7 @@ def reset_password_request():
         return redirect(url_for("main.home", username=current_user.username))
     form = ResetPasswordRequestForm()
     if request.method == "POST" and form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data, is_deleted=False).first()
+        user = db.session.execute(db.select(User).filter_by(email=form.email.data, is_deleted=False)).first()
         if user:
             send_password_reset_email(user)
         flash(Markup(dedent("""\
