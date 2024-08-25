@@ -1,14 +1,14 @@
+import decimal
 import enum
 import uuid
 from datetime import datetime
 from time import time
-from typing import List
-import decimal
+from typing import List, Optional
+
 import jwt
 from flask import current_app
 from flask_login import UserMixin
-from sqlalchemy import ForeignKey
-from sqlalchemy import DateTime, Enum, Integer, Numeric, String, Text, event
+from sqlalchemy import Column, ForeignKey, Numeric, String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -26,82 +26,94 @@ class BottleTypes(enum.Enum):
     other = "Other"
 
 
+# Don't need a class here. This is an association table and should never be queried directly.
 bottle_distillery = db.Table(
     "bottle_distillery",
-    db.Column("bottle_id", db.String(36), db.ForeignKey("bottle.id"), nullable=False),
-    db.Column("distillery_id", db.String(36), db.ForeignKey("distillery.id"), nullable=False),
+    Column("bottle_id", ForeignKey("bottle.id"), primary_key=True),
+    Column("distillery_id", ForeignKey("distillery.id"), primary_key=True)
 )
 
 
 class Bottle(db.Model):
     __tablename__ = "bottle"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uuid.uuid4)
-    date_created: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.utcnow)
-    name: Mapped[str] = mapped_column(String(64), nullable=False)
-    type: Mapped[BottleTypes] = mapped_column(Enum(BottleTypes))
-    abv: Mapped[decimal.Decimal] = mapped_column(Numeric(2, 4))
-    size: Mapped[int] = db.mapped_column(Integer)
-    year_barrelled: Mapped[int] = mapped_column(Integer, nullable=True)
-    year_bottled: Mapped[int] = mapped_column(Integer, nullable=True)
-    url: Mapped[str] = mapped_column(String(140))
-    description: Mapped[str] = mapped_column(Text, nullable=True)
-    review: Mapped[str] = mapped_column(Text, nullable=True)
-    stars: Mapped[decimal.Decimal] = mapped_column(Numeric(1, 1), nullable=True)
-    cost: Mapped[decimal.Decimal] = mapped_column(Numeric(10, 2), nullable=True)
-    date_purchased: Mapped[datetime] = mapped_column(DateTime, nullable=True)
-    date_opened: Mapped[datetime] = mapped_column(DateTime, nullable=True)
-    date_killed: Mapped[datetime] = mapped_column(DateTime, nullable=True)
-    image_count: Mapped[int] = mapped_column(Integer, default=0)
+    date_created: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    name: Mapped[str] = mapped_column(String(64))
+    type: Mapped[BottleTypes]
+    abv: Mapped[Optional[decimal.Decimal]] = mapped_column(Numeric(6, 4))
+    size: Mapped[Optional[int]]
+    year_barrelled: Mapped[Optional[int]]
+    year_bottled: Mapped[Optional[int]]
+    url: Mapped[Optional[str]] = mapped_column(String(140))
+    description: Mapped[Optional[str]] = mapped_column(Text)
+    review: Mapped[Optional[str]] = mapped_column(Text)
+    stars: Mapped[Optional[decimal.Decimal]] = mapped_column(Numeric(2, 1))
+    cost: Mapped[Optional[decimal.Decimal]] = mapped_column(Numeric(8, 2))
+    date_purchased: Mapped[Optional[datetime]]
+    date_opened: Mapped[Optional[datetime]]
+    date_killed: Mapped[Optional[datetime]]
+    image_count: Mapped[int] = mapped_column(default=0)
 
-    bottler_id: Mapped[str] = mapped_column(String(36), ForeignKey("bottler.id"), nullable=True)
-    user_id: Mapped[str] = mapped_column(ForeignKey("user.id"), nullable=False)
+    # foreign keys
+    bottler_id: Mapped[Optional[str]] = mapped_column(ForeignKey("bottler.id"))
+    user_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
 
+    # relationships
+    user: Mapped["User"] = relationship(back_populates="bottles")
     distilleries: Mapped[List["Distillery"]] = relationship(secondary="bottle_distillery",
                                                             order_by="Distillery.name")
-
-    bottler = relationship("Bottler", foreign_keys=[bottler_id])
-    user = relationship("User", back_populates="bottles")
+    bottler: Mapped["Bottler"] = relationship(foreign_keys=[bottler_id])
 
 
 class Distillery(db.Model):
     __tablename__ = "distillery"
-    id = db.Column(db.String(36), primary_key=True, default=uuid.uuid4)
-    name = db.Column(db.String(65), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    region_1 = db.Column(db.String(36), nullable=False)
-    region_2 = db.Column(db.String(36), nullable=False)
-    url = db.Column(db.String(64))
-    user_id = db.Column(db.String(36), db.ForeignKey("user.id"))
-    user = db.relationship("User", back_populates="distilleries")
-    bottles = db.relationship("Bottle", secondary="bottle_distillery", back_populates="distilleries")
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(String(65))
+    description: Mapped[Optional[str]] = mapped_column(Text)
+    region_1: Mapped[str] = mapped_column(String(36))
+    region_2: Mapped[str] = mapped_column(String(36))
+    url: Mapped[Optional[str]] = mapped_column(String(64))
+
+    # foreign keys
+    user_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
+
+    # relationships
+    user: Mapped["User"] = relationship(back_populates="distilleries")
+    bottles: Mapped[List["Bottle"]] = relationship(secondary="bottle_distillery", back_populates="distilleries")
 
 
 class Bottler(db.Model):
     __tablename__ = "bottler"
-    id = db.Column(db.String(36), primary_key=True, default=uuid.uuid4)
-    name = db.Column(db.String(65), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    region_1 = db.Column(db.String(36), nullable=False)
-    region_2 = db.Column(db.String(36), nullable=False)
-    url = db.Column(db.String(64))
-    user_id = db.Column(db.String(36), db.ForeignKey("user.id"))
-    user = db.relationship("User", back_populates="bottlers")
-    bottles = db.relationship("Bottle", back_populates="bottler")
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(String(65))
+    description: Mapped[Optional[str]] = mapped_column(Text)
+    region_1: Mapped[str] = mapped_column(String(36))
+    region_2: Mapped[str] = mapped_column(String(36))
+    url: Mapped[Optional[str]] = mapped_column(String(64))
+
+    # foreign_keys
+    user_id: Mapped[str] = mapped_column(db.ForeignKey("user.id"))
+
+    # relationships
+    user: Mapped["User"] = relationship(back_populates="bottlers")
+    bottles: Mapped[List["Bottle"]] = relationship(back_populates="bottler")
 
 
 class User(UserMixin, db.Model):
-    id = db.Column(db.String(36), primary_key=True, default=uuid.uuid4)
-    username = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
-    date_registered = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    email_confirmed = db.Column(db.Boolean(), nullable=False, default=False)
-    email_confirm_date = db.Column(db.DateTime, nullable=True)
-    is_deleted = db.Column(db.Boolean(), nullable=False, default=False)
-    deleted_date = db.Column(db.DateTime, nullable=True)
-    distilleries = db.relationship("Distillery", back_populates="user")
-    bottlers = db.relationship("Bottler", back_populates="user")
-    bottles = db.relationship("Bottle", back_populates="user")
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uuid.uuid4)
+    username: Mapped[str] = mapped_column(String(64), index=True, unique=True)
+    email: Mapped[str] = mapped_column(String(120), index=True, unique=True)
+    password_hash: Mapped[str] = mapped_column(String(128))
+    date_registered: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    email_confirmed: Mapped[bool] = mapped_column(default=False)
+    email_confirm_date: Mapped[Optional[datetime]]
+    is_deleted: Mapped[bool] = mapped_column(default=False)
+    deleted_date: Mapped[Optional[datetime]]
+
+    # relationships
+    distilleries: Mapped[List["Distillery"]] = relationship(back_populates="user")
+    bottlers: Mapped[List["Bottler"]] = relationship(back_populates="user")
+    bottles: Mapped[List["Bottle"]] = relationship(back_populates="user")
 
     def get_mail_confirm_token(self, expires_in: int = 600) -> str:
         payload = {"confirm_reg": self.id, "exp": time() + expires_in}
@@ -115,7 +127,7 @@ class User(UserMixin, db.Model):
             user = db.get_or_404(User, user_id)
             return user
         except (jwt.exceptions.DecodeError, jwt.exceptions.ExpiredSignatureError):
-            # TODO: add some logging here! # pylint: disable=W0511
+            # TODO: add some logging here!
             return None
 
     def set_password(self, password: str) -> None:
@@ -136,7 +148,7 @@ class User(UserMixin, db.Model):
             user = db.get_or_404(User, user_id)
             return user
         except (jwt.exceptions.DecodeError, jwt.exceptions.ExpiredSignatureError):
-            # TODO: add some logging here! # pylint: disable=W0511
+            # TODO: add some logging here!
             return None
 
 
@@ -146,7 +158,6 @@ def load_user(user_id: str) -> User:
     return user
 
 
-# pylint: disable=W0613
 @event.listens_for(Bottle, "before_insert")
 def bottle_before_insert(mapper, connect, target):
     clean_bottle_data(target)
