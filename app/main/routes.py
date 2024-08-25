@@ -7,8 +7,7 @@ from datetime import datetime
 import boto3
 import pandas as pd
 from dateutil.relativedelta import relativedelta
-from flask import (current_app, flash, make_response, redirect,
-                   render_template, request, send_file, url_for)
+from flask import current_app, flash, make_response, redirect, render_template, request, send_file, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import insert, select
 from sqlalchemy.sql.expression import func
@@ -16,15 +15,13 @@ from sqlalchemy.sql.expression import func
 from app.extensions import db
 from app.main import handler as main_handler
 from app.main import main_blueprint
-from app.main.forms import (BottleEditForm, BottleForm, BottlerEditForm,
-                            BottlerForm, DistilleryEditForm, DistilleryForm)
+from app.main.forms import BottleEditForm, BottleForm, BottlerEditForm, BottlerForm, DistilleryEditForm, DistilleryForm
 from app.models import Bottle, Bottler, BottleTypes, Distillery, User
 
 
 @main_blueprint.route("/")
 @main_blueprint.route("/index", strict_slashes=False)
 def index():
-    # pylint: disable=not-callable
     user_count = db.session.execute(select(func.count(User.id)).where(User.email_confirmed == 1)).scalar()
     distillery_count = db.session.execute(select(func.count(Distillery.name.distinct()))).scalar()
     bottle_count = db.session.execute(select(func.count(Bottle.id))).scalar()
@@ -149,7 +146,7 @@ def bottler_detail(bottler_id: str):
 @main_blueprint.route("/bottler_delete/<string:bottler_id>")
 @login_required
 def bottler_delete(bottler_id: str):
-    _bottler = Bottler.query.get_or_404(bottler_id)
+    _bottler = db.get_or_404(Bottler, bottler_id)
 
     if len(_bottler.bottles) > 0:
         flash(f"You cannot delete \"{_bottler.name}\", because it has bottles associated to it.", "danger")
@@ -205,7 +202,7 @@ def distilleries_list(username: str):
     """ Don't need a big docstring here. This endpoint lists a user's distilleries. """
     dt_list_length = request.cookies.get("dt-list-length", "50")
     is_my_list = current_user.is_authenticated and current_user.username.lower() == username.lower()
-    user = User.query.filter(User.username == username).first_or_404()
+    user = db.one_or_404(db.select(User).filter_by(username=username))
 
     response = make_response(render_template("distillery_list.html",
                                              title=f"{user.username}'s Whiskies: Distilleries",
@@ -238,7 +235,7 @@ def distillery_add():
 @main_blueprint.route("/distillery_edit/<string:distillery_id>", methods=["GET", "POST"])
 @login_required
 def distillery_edit(distillery_id: str):
-    _distillery = Distillery.query.get_or_404(distillery_id)
+    _distillery = db.get_or_404(Distillery, distillery_id)
     form = DistilleryEditForm(obj=_distillery)
     if request.method == "POST" and form.validate_on_submit():
         form.populate_obj(_distillery)
@@ -257,21 +254,24 @@ def distillery_edit(distillery_id: str):
 @main_blueprint.route("/distillery/<string:distillery_id>", methods=["GET", "POST"])
 def distillery_detail(distillery_id: str):
     dt_list_length = request.cookies.get("dt-list-length", "50")
-    _distillery = Distillery.query.get_or_404(distillery_id)
+    _distillery = db.get_or_404(Distillery, distillery_id)
 
-    _bottles = (
-        Bottle.query.filter(Bottle.user_id == _distillery.user.id)
-                    .filter(Bottle.distilleries.any(id=distillery_id))
+    _bottles = db.session.execute(
+        select(Bottle).filter_by(Bottle.user_id == _distillery.user.id, Bottle.distilleries.any(id=distillery_id))
     )
 
     if request.method == "POST":
         if bool(int(request.form.get("random_toggle"))):
+            # Return a random bottle.
+            # Cannot be a killed bottle. Template expects a list, so wrap in a list.
             if _bottles.count() > 0:
                 has_killed_bottles = False
-                bottles_to_list = [Bottle.query.filter(Bottle.date_killed.is_(None))
-                                               .filter(Bottle.distillery_id == distillery_id)
-                                               .filter(Bottle.user_id == current_user.get_id())
-                                               .order_by(func.rand()).first()]
+
+                bottles_to_list = [db.session.execute(
+                    select(Bottle).filter_by(Bottle.date_killed.is_(None),
+                                             Bottle.distillery_id == distillery_id,
+                                             Bottle.user_id == current_user.get_id())
+                ).order_by(func.rand()).first()]
     else:
         bottles_to_list = _bottles
         has_killed_bottles = len([b for b in _bottles if b.date_killed]) > 0
@@ -295,7 +295,7 @@ def distillery_detail(distillery_id: str):
 @main_blueprint.route("/distillery_delete/<string:distillery_id>")
 @login_required
 def distillery_delete(distillery_id: str):
-    _distillery = Distillery.query.get_or_404(distillery_id)
+    _distillery = db.get_or_404(Distillery, distillery_id)
 
     if len(_distillery.bottles) > 0:
         flash(f"You cannot delete \"{_distillery.name}\", because it has bottles associated to it.", "danger")
@@ -332,7 +332,7 @@ def bottles(username: str):
             - random_toggle: If true, returns a random record from the existing bottle list
     """
     dt_list_length = request.cookies.get("dt-list-length", "50")
-    user = User.query.filter(User.username == username).first_or_404()
+    user = db.one_or_404(db.select(User).filter_by(username=username))
 
     all_bottles = user.bottles
     killed_bottles = [b for b in all_bottles if b.date_killed]
@@ -371,7 +371,7 @@ def bottles(username: str):
 
 @main_blueprint.route("/bottle/<bottle_id>")
 def bottle_detail(bottle_id: str):
-    _bottle = Bottle.query.get_or_404(bottle_id)
+    _bottle = db.get_or_404(Bottle, bottle_id)
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
 
     return render_template("bottle_detail.html",
@@ -428,7 +428,8 @@ def bottle_add():
         else:
             flash_message = f"An error occurred while creating \"{bottle_in.name}\"."
             flash_category = "danger"
-            Bottle.query.get(bottle_in.id).delete()
+            db.session.delete(bottle_in)
+            db.session.commit()
 
         bottle_in.image_count = main_handler.get_bottle_image_count(bottle_in.id)
 
@@ -445,7 +446,6 @@ def bottle_add():
 @main_blueprint.route("/bottle_edit/<string:bottle_id>", methods=["GET", "POST"])
 @login_required
 def bottle_edit(bottle_id: str):
-    # _bottle = Bottle.query.get_or_404(bottle_id)
     _bottle = db.get_or_404(Bottle, bottle_id)
     form = main_handler.prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
 
@@ -504,8 +504,7 @@ def bottle_edit(bottle_id: str):
 @main_blueprint.route("/bottle_delete/<string:bottle_id>")
 @login_required
 def bottle_delete(bottle_id: str):
-    bottle_to_delete = Bottle.query.get_or_404(bottle_id)
-
+    bottle_to_delete = db.get_or_404(Bottle, bottle_id)
     db.session.delete(bottle_to_delete)
 
     if bottle_to_delete.image_count:
@@ -521,7 +520,7 @@ def bottle_delete(bottle_id: str):
 @main_blueprint.route("/export_data/<string:user_id>")
 @login_required
 def export_data(user_id: str):
-    user = User.query.get_or_404(user_id)
+    user = db.get_or_404(User, user_id)
 
     fieldnames = ["Bottle Name", "Bottle Type", "Distillery", "Year", "ABV", "Description",
                   "Review", "Stars", "Cost", "Date Purchased", "Date Opened", "Date Killed"]
@@ -530,7 +529,7 @@ def export_data(user_id: str):
     for _bottle in user.bottles:
         _bottles.append([_bottle.name,
                          _bottle.type.value,
-                         _bottle.distillery.name,
+                         _bottle.distillery.name,   # TODO: This needs to be updated to handle multiple distilleries
                          _bottle.year,
                          _bottle.abv,
                          _bottle.description,
