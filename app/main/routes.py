@@ -22,7 +22,7 @@ from app.models import Bottle, Bottler, BottleTypes, Distillery, User
 
 
 @main_blueprint.route("/")
-@main_blueprint.route("/index")
+@main_blueprint.route("/index", strict_slashes=False)
 def index():
     # pylint: disable=not-callable
     user_count = db.session.execute(select(func.count(User.id)).where(User.email_confirmed == 1)).scalar()
@@ -67,7 +67,7 @@ def home(username: str):
 
 # BOTTLERS
 # ####################################################################################################################
-@main_blueprint.route("/<username>/bottlers", endpoint="bottlers_list")
+@main_blueprint.route("/<username>/bottlers", endpoint="bottlers_list", strict_slashes=False)
 def bottlers_list(username: str):
     dt_list_length = request.cookies.get("bt-list-length", "50")
     is_my_list = current_user.is_authenticated and current_user.username.lower() == username.lower()
@@ -200,7 +200,7 @@ def bulk_distillery_add():
     return redirect(url_for("main.home", username=current_user.username.lower()))
 
 
-@main_blueprint.route("/<username>/distilleries", endpoint="distilleries_list")
+@main_blueprint.route("/<username>/distilleries", endpoint="distilleries_list", strict_slashes=False)
 def distilleries_list(username: str):
     """ Don't need a big docstring here. This endpoint lists a user's distilleries. """
     dt_list_length = request.cookies.get("dt-list-length", "50")
@@ -310,7 +310,7 @@ def distillery_delete(distillery_id: str):
 # #####################################################################################################################
 
 
-@main_blueprint.route("/<username>/bottles", methods=["GET", "POST"], endpoint="list_bottles")
+@main_blueprint.route("/<username>/bottles", methods=["GET", "POST"], endpoint="list_bottles", strict_slashes=False)
 def bottles(username: str):
     """
     List a User's Bottles.
