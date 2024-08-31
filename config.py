@@ -44,6 +44,8 @@ class BaseConfig:
     RECAPTCHA_PUBLIC_KEY = os.environ["RECAPTCHA_PUBLIC_KEY"]
     RECAPTCHA_PRIVATE_KEY = os.environ["RECAPTCHA_PRIVATE_KEY"]
 
+    TESTING = False
+
     @staticmethod
     def init_app(app):
         pass
@@ -64,3 +66,8 @@ class ProdConfig(BaseConfig):
     # LOGGING
     LOG_LEVEL = logging.INFO
     LOG_BACKTRACE = True
+
+
+class TestConfig(BaseConfig):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = os.environ["SQLALCHEMY_DATABASE_URI_TEST"]
