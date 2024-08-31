@@ -1,8 +1,8 @@
 from flask import current_app, render_template, request
 
-from app import db
-from app.email import send_email
-from app.errors import errors_blueprint
+from my_whiskies import db
+from my_whiskies.email import send_email
+from my_whiskies.errors import errors_blueprint
 
 
 @errors_blueprint.app_errorhandler(404)

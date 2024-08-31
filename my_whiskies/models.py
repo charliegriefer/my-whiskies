@@ -12,7 +12,7 @@ from sqlalchemy import Column, ForeignKey, Numeric, String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.extensions import db, login_manager
+from my_whiskies.extensions import db
 
 
 class BottleTypes(enum.Enum):
@@ -150,12 +150,6 @@ class User(UserMixin, db.Model):
         except (jwt.exceptions.DecodeError, jwt.exceptions.ExpiredSignatureError):
             # TODO: add some logging here!
             return None
-
-
-@login_manager.user_loader
-def load_user(user_id: str) -> User:
-    user = db.get_or_404(User, user_id)
-    return user
 
 
 @event.listens_for(Bottle, "before_insert")
