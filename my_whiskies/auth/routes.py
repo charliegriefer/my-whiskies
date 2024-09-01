@@ -13,7 +13,7 @@ from my_whiskies.extensions import db
 from my_whiskies.models import User
 
 
-@auth_blueprint.route("/login", methods=["GET", "POST"], strict_slashes=False)
+@auth_blueprint.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("main.home", username=current_user.username))
@@ -37,13 +37,13 @@ def login():
     return render_template("auth/login.html", title="My Whiskies Online: Log In", form=form)
 
 
-@auth_blueprint.route("/logout", strict_slashes=False)
+@auth_blueprint.route("/logout")
 def logout():
     logout_user()
     return redirect(url_for("main.index"))
 
 
-@auth_blueprint.route("/register", methods=["GET", "POST"], strict_slashes=False)
+@auth_blueprint.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for("main.home", username=current_user.username))
@@ -85,7 +85,7 @@ def register():
                            recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"])
 
 
-@auth_blueprint.route("/confirm_register/<token>", methods=["GET", "POST"], strict_slashes=False)
+@auth_blueprint.route("/confirm_register/<token>", methods=["GET", "POST"])
 def confirm_register(token: str):
     if current_user.is_authenticated:
         return redirect(url_for("main.home", username=current_user.username))
@@ -104,7 +104,7 @@ def confirm_register(token: str):
     return redirect(url_for("auth.login"))
 
 
-@auth_blueprint.route("/resend_register", methods=["GET", "POST"], strict_slashes=False)
+@auth_blueprint.route("/resend_register/", methods=["GET", "POST"])
 def resend_register():
     if current_user.is_authenticated:
         return redirect(url_for("main.home", username=current_user.username))
@@ -123,7 +123,7 @@ def resend_register():
                            form=form)
 
 
-@auth_blueprint.route("/reset_password_request", methods=["GET", "POST"], strict_slashes=False)
+@auth_blueprint.route("/reset_password_request", methods=["GET", "POST"])
 def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for("main.home", username=current_user.username))
@@ -151,7 +151,7 @@ def reset_password_request():
                            recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"])
 
 
-@auth_blueprint.route("/reset_password/<token>", methods=["GET", "POST"], strict_slashes=False)
+@auth_blueprint.route("/reset_password/<token>", methods=["GET", "POST"])
 def reset_password(token: str):
     if current_user.is_authenticated:
         return redirect(url_for("main.home", username=current_user.username))
