@@ -19,7 +19,7 @@ Jinja2==3.1.2
 jmespath==1.0.1
 Mako==1.2.4
 MarkupSafe==2.1.2
-mysqlclient==2.2.4
+mysqlclient==2.1.1
 pandas==1.5.3
 Pillow==9.4.0
 PyJWT==2.6.0
