@@ -7,21 +7,24 @@ from datetime import datetime
 import boto3
 import pandas as pd
 from dateutil.relativedelta import relativedelta
-from flask import current_app, flash, make_response, redirect, render_template, request, send_file, url_for
+from flask import (current_app, flash, make_response, redirect,
+                   render_template, request, send_file, url_for)
 from flask_login import current_user, login_required
 from sqlalchemy import insert, select
 from sqlalchemy.sql.expression import func
 
-from my_whiskies.extensions import db
-from my_whiskies.main import handler as main_handler
-from my_whiskies.main import main_blueprint
-from my_whiskies.main import forms
-from my_whiskies.models import Bottle, Bottler, BottleTypes, Distillery, User
+from app.extensions import db
+from app.main import handler as main_handler
+from app.main import main_blueprint
+from app.main.forms import (BottleEditForm, BottleForm, BottlerEditForm,
+                            BottlerForm, DistilleryEditForm, DistilleryForm)
+from app.models import Bottle, Bottler, BottleTypes, Distillery, User
 
 
 @main_blueprint.route("/")
-@main_blueprint.route("/index")
+@main_blueprint.route("/index", strict_slashes=False)
 def index():
+    # pylint: disable=not-callable
     user_count = db.session.execute(select(func.count(User.id)).where(User.email_confirmed == 1)).scalar()
     distillery_count = db.session.execute(select(func.count(Distillery.name.distinct()))).scalar()
     bottle_count = db.session.execute(select(func.count(Bottle.id))).scalar()
@@ -64,7 +67,7 @@ def home(username: str):
 
 # BOTTLERS
 # ####################################################################################################################
-@main_blueprint.route("/<username>/bottlers", endpoint="bottlers_list")
+@main_blueprint.route("/<username>/bottlers", endpoint="bottlers_list", strict_slashes=False)
 def bottlers_list(username: str):
     dt_list_length = request.cookies.get("bt-list-length", "50")
     is_my_list = current_user.is_authenticated and current_user.username.lower() == username.lower()
@@ -82,7 +85,7 @@ def bottlers_list(username: str):
 @main_blueprint.route("/bottler_add", methods=["GET", "POST"])
 @login_required
 def bottler_add():
-    form = forms.BottlerForm()
+    form = BottlerForm()
     if request.method == "POST" and form.validate_on_submit():
         bottler_in = Bottler(user_id=current_user.id)
         form.populate_obj(bottler_in)
@@ -100,7 +103,7 @@ def bottler_add():
 @login_required
 def bottler_edit(bottler_id: str):
     _bottler = db.get_or_404(Bottler, bottler_id)
-    form = forms.BottlerEditForm()
+    form = BottlerEditForm()
     if request.method == "POST" and form.validate_on_submit():
         form.populate_obj(_bottler)
         db.session.add(_bottler)
@@ -108,7 +111,7 @@ def bottler_edit(bottler_id: str):
         flash(f"\"{_bottler.name}\" has been successfully updated.", "success")
         return redirect(url_for("main.bottlers_list", username=current_user.username.lower()))
     else:
-        form = forms.BottlerEditForm(obj=_bottler)
+        form = BottlerEditForm(obj=_bottler)
         return render_template("bottler_edit.html",
                                title=f"{current_user.username}'s Whiskies: Edit Bottler",
                                bottler=_bottler,
@@ -197,7 +200,7 @@ def bulk_distillery_add():
     return redirect(url_for("main.home", username=current_user.username.lower()))
 
 
-@main_blueprint.route("/<username>/distilleries", endpoint="distilleries_list")
+@main_blueprint.route("/<username>/distilleries", endpoint="distilleries_list", strict_slashes=False)
 def distilleries_list(username: str):
     """ Don't need a big docstring here. This endpoint lists a user's distilleries. """
     dt_list_length = request.cookies.get("dt-list-length", "50")
@@ -217,7 +220,7 @@ def distilleries_list(username: str):
 @main_blueprint.route("/distillery_add", methods=["GET", "POST"])
 @login_required
 def distillery_add():
-    form = forms.DistilleryForm()
+    form = DistilleryForm()
 
     if request.method == "POST" and form.validate_on_submit():
         distillery_in = Distillery(user_id=current_user.id)
@@ -236,7 +239,7 @@ def distillery_add():
 @login_required
 def distillery_edit(distillery_id: str):
     _distillery = Distillery.query.get_or_404(distillery_id)
-    form = forms.DistilleryEditForm(obj=_distillery)
+    form = DistilleryEditForm(obj=_distillery)
     if request.method == "POST" and form.validate_on_submit():
         form.populate_obj(_distillery)
 
@@ -307,7 +310,7 @@ def distillery_delete(distillery_id: str):
 # #####################################################################################################################
 
 
-@main_blueprint.route("/<username>/bottles", methods=["GET", "POST"], endpoint="list_bottles")
+@main_blueprint.route("/<username>/bottles", methods=["GET", "POST"], endpoint="list_bottles", strict_slashes=False)
 def bottles(username: str):
     """
     List a User's Bottles.
@@ -382,7 +385,7 @@ def bottle_detail(bottle_id: str):
 @main_blueprint.route("/bottle_add", methods=["GET", "POST"])
 @login_required
 def bottle_add():
-    form = main_handler.prep_bottle_form(current_user, forms.BottleForm())
+    form = main_handler.prep_bottle_form(current_user, BottleForm())
 
     if request.method == "POST" and form.validate_on_submit():
         bottle_in = Bottle(user_id=current_user.id)
@@ -444,7 +447,7 @@ def bottle_add():
 def bottle_edit(bottle_id: str):
     # _bottle = Bottle.query.get_or_404(bottle_id)
     _bottle = db.get_or_404(Bottle, bottle_id)
-    form = main_handler.prep_bottle_form(current_user, forms.BottleEditForm(obj=_bottle))
+    form = main_handler.prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
 
     if request.method == "POST" and form.validate_on_submit():
         _bottle.name = form.name.data
