@@ -9,7 +9,7 @@ from wtforms import BooleanField, HiddenField, PasswordField, StringField, Submi
 from wtforms.validators import Email, EqualTo, InputRequired, Length, ValidationError
 from wtforms.fields import EmailField
 
-from my_whiskies.models import User
+from app.models import User
 
 PW_DESCRIPTION = "Password requirements:<ul>"
 PW_DESCRIPTION += "<li>Must be between 8 and 22 characters.</li>"

@@ -6,18 +6,18 @@ from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
 from wtforms.fields.core import Label
 
-from my_whiskies.auth import auth_blueprint
-from my_whiskies.auth.email import send_password_reset_email, send_registration_confirmation_email
-from my_whiskies.auth import forms
-from my_whiskies.extensions import db
-from my_whiskies.models import User
+from app.auth import auth_blueprint
+from app.auth.email import send_password_reset_email, send_registration_confirmation_email
+from app.auth.forms import LoginForm, RegistrationForm, ResendRegEmailForm, ResetPWForm, ResetPasswordRequestForm
+from app.extensions import db
+from app.models import User
 
 
-@auth_blueprint.route("/login", methods=["GET", "POST"])
+@auth_blueprint.route("/login", methods=["GET", "POST"], strict_slashes=False)
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("main.home", username=current_user.username))
-    form = forms.LoginForm()
+    form = LoginForm()
     if request.method == "POST" and form.validate_on_submit():
         user = db.one_or_404(db.select(User).filter_by(username=form.username.data, is_deleted=False))
         if user is None or not user.check_password(form.password.data):
@@ -37,17 +37,17 @@ def login():
     return render_template("auth/login.html", title="My Whiskies Online: Log In", form=form)
 
 
-@auth_blueprint.route("/logout")
+@auth_blueprint.route("/logout", strict_slashes=False)
 def logout():
     logout_user()
     return redirect(url_for("main.index"))
 
 
-@auth_blueprint.route("/register", methods=["GET", "POST"])
+@auth_blueprint.route("/register", methods=["GET", "POST"], strict_slashes=False)
 def register():
     if current_user.is_authenticated:
         return redirect(url_for("main.home", username=current_user.username))
-    form = forms.RegistrationForm()
+    form = RegistrationForm()
     terms_label = Markup(f"I agree to the terms of <a href=\"{url_for('main.terms')}\">Terms of Service</a>.")
     form.agree_terms.label = Label("agree_terms", terms_label)
     if request.method == "POST" and form.validate_on_submit():
@@ -75,7 +75,7 @@ def register():
         m = get_flash_msg(form)
         flash(m.get("message"), "danger")
         if m.get("reset_errors"):
-            form = forms.RegistrationForm()
+            form = RegistrationForm()
             terms_label = Markup(f"I agree to the terms of <a href=\"{url_for('main.terms')}\">Terms of Service</a>.")
             form.agree_terms.label = Label("agree_terms", terms_label)
     return render_template("auth/register.html",
@@ -85,7 +85,7 @@ def register():
                            recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"])
 
 
-@auth_blueprint.route("/confirm_register/<token>", methods=["GET", "POST"])
+@auth_blueprint.route("/confirm_register/<token>", methods=["GET", "POST"], strict_slashes=False)
 def confirm_register(token: str):
     if current_user.is_authenticated:
         return redirect(url_for("main.home", username=current_user.username))
@@ -104,11 +104,11 @@ def confirm_register(token: str):
     return redirect(url_for("auth.login"))
 
 
-@auth_blueprint.route("/resend_register/", methods=["GET", "POST"])
+@auth_blueprint.route("/resend_register", methods=["GET", "POST"], strict_slashes=False)
 def resend_register():
     if current_user.is_authenticated:
         return redirect(url_for("main.home", username=current_user.username))
-    form = forms.ResendRegEmailForm()
+    form = ResendRegEmailForm()
     if request.method == "POST" and form.validate_on_submit():
         user = db.session.query(User).filter(User.email == form.email.data).one_or_none()
         if user:
@@ -123,11 +123,11 @@ def resend_register():
                            form=form)
 
 
-@auth_blueprint.route("/reset_password_request", methods=["GET", "POST"])
+@auth_blueprint.route("/reset_password_request", methods=["GET", "POST"], strict_slashes=False)
 def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for("main.home", username=current_user.username))
-    form = forms.ResetPasswordRequestForm()
+    form = ResetPasswordRequestForm()
     if request.method == "POST" and form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data, is_deleted=False).first()
         if user:
@@ -151,14 +151,14 @@ def reset_password_request():
                            recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"])
 
 
-@auth_blueprint.route("/reset_password/<token>", methods=["GET", "POST"])
+@auth_blueprint.route("/reset_password/<token>", methods=["GET", "POST"], strict_slashes=False)
 def reset_password(token: str):
     if current_user.is_authenticated:
         return redirect(url_for("main.home", username=current_user.username))
     user = User.verify_reset_password_token(token)
     if not user:
         return redirect(url_for("main.index"))
-    form = forms.ResetPWForm()
+    form = ResetPWForm()
     if request.method == "POST" and form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
