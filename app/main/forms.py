@@ -4,8 +4,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from wtforms import (DateField, DecimalField, HiddenField, IntegerField, SelectField,
                      SelectMultipleField, StringField, SubmitField, TextAreaField)
-from wtforms.validators import (URL, InputRequired, Length, NumberRange,
-                                Optional)
+from wtforms.validators import URL, InputRequired, Length, NumberRange, Optional
 
 
 def get_current_year() -> int:

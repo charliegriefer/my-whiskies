@@ -6,8 +6,7 @@ from PIL import Image
 from botocore.exceptions import ClientError
 
 from app.main.forms import BottleForm, BottleEditForm
-from app.models import Bottle
-from app.models import BottleTypes
+from app.models import Bottle, BottleTypes
 
 
 def prep_bottle_form(user, form: Union[BottleForm, BottleEditForm]) -> Union[BottleForm, BottleEditForm]:
