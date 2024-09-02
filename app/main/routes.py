@@ -518,37 +518,37 @@ def bottle_delete(bottle_id: str):
     return redirect(url_for("main.list_bottles", username=current_user.username.lower()))
 
 
-@main_blueprint.route("/export_data/<string:user_id>")
-@login_required
-def export_data(user_id: str):
-    user = User.query.get_or_404(user_id)
+# @main_blueprint.route("/export_data/<string:user_id>")
+# @login_required
+# def export_data(user_id: str):
+#     user = User.query.get_or_404(user_id)
 
-    fieldnames = ["Bottle Name", "Bottle Type", "Distillery", "Year", "ABV", "Description",
-                  "Review", "Stars", "Cost", "Date Purchased", "Date Opened", "Date Killed"]
+#     fieldnames = ["Bottle Name", "Bottle Type", "Distillery", "Year", "ABV", "Description",
+#                   "Review", "Stars", "Cost", "Date Purchased", "Date Opened", "Date Killed"]
 
-    _bottles = []
-    for _bottle in user.bottles:
-        _bottles.append([_bottle.name,
-                         _bottle.type.value,
-                         _bottle.distillery.name,
-                         _bottle.year,
-                         _bottle.abv,
-                         _bottle.description,
-                         _bottle.review,
-                         _bottle.stars,
-                         _bottle.cost,
-                         _bottle.date_purchased,
-                         _bottle.date_opened,
-                         _bottle.date_killed])
+#     _bottles = []
+#     for _bottle in user.bottles:
+#         _bottles.append([_bottle.name,
+#                          _bottle.type.value,
+#                          _bottle.distillery.name,
+#                          _bottle.year,
+#                          _bottle.abv,
+#                          _bottle.description,
+#                          _bottle.review,
+#                          _bottle.stars,
+#                          _bottle.cost,
+#                          _bottle.date_purchased,
+#                          _bottle.date_opened,
+#                          _bottle.date_killed])
 
-    df = pd.DataFrame(_bottles, columns=fieldnames)
-    df = df.sort_values(by=["Bottle Name"])
-    df.to_csv(f"/tmp/{user_id}.csv", index=False)
+#     df = pd.DataFrame(_bottles, columns=fieldnames)
+#     df = df.sort_values(by=["Bottle Name"])
+#     df.to_csv(f"/tmp/{user_id}.csv", index=False)
 
-    return send_file(f"/tmp/{user_id}.csv",
-                     as_attachment=True,
-                     mimetype="text/csv",
-                     download_name=f"my_whiskies_{user.username.lower()}.csv")
+#     return send_file(f"/tmp/{user_id}.csv",
+#                      as_attachment=True,
+#                      mimetype="text/csv",
+#                      download_name=f"my_whiskies_{user.username.lower()}.csv")
 
 
 @main_blueprint.route("/terms")
