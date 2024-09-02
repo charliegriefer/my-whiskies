@@ -3,7 +3,7 @@ import os
 import pytest
 
 from app import create_app
-from my_whiskies.extensions import db
+from app.extensions import db
 
 
 @pytest.fixture

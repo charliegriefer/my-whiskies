@@ -12,7 +12,7 @@ from sqlalchemy import Column, ForeignKey, Numeric, String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from my_whiskies.extensions import db
+from app.extensions import db
 
 
 class BottleTypes(enum.Enum):

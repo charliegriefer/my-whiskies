@@ -6,11 +6,11 @@ from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
 from wtforms.fields.core import Label
 
-from my_whiskies.auth import auth_blueprint
-from my_whiskies.auth.email import send_password_reset_email, send_registration_confirmation_email
-from my_whiskies.auth import forms
-from my_whiskies.extensions import db
-from my_whiskies.models import User
+from app.auth import auth_blueprint
+from app.auth.email import send_password_reset_email, send_registration_confirmation_email
+from app.auth import forms
+from app.extensions import db
+from app.models import User
 
 
 @auth_blueprint.route("/login", methods=["GET", "POST"], strict_slashes=False)

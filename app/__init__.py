@@ -5,8 +5,8 @@ import flask
 from dotenv import load_dotenv
 from flask import Flask
 
-from my_whiskies.extensions import db, login, mail, migrate
-from my_whiskies.models import User
+from app.extensions import db, login, mail, migrate
+from app.models import User
 
 dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
 load_dotenv(dotenv_path=dotenv_path, verbose=True)
@@ -35,7 +35,7 @@ def initialize_extensions(app) -> None:
     mail.init_app(app)
     migrate.init_app(app, db)
 
-    from my_whiskies.models import User
+    from app.models import User
 
     @login.user_loader
     def load_user(user_id: str) -> User:
@@ -44,9 +44,9 @@ def initialize_extensions(app) -> None:
 
 
 def register_blueprints(app) -> None:
-    from my_whiskies.auth import auth_blueprint
-    from my_whiskies.errors import errors_blueprint
-    from my_whiskies.main import main_blueprint
+    from app.auth import auth_blueprint
+    from app.errors import errors_blueprint
+    from app.main import main_blueprint
 
     app.register_blueprint(auth_blueprint, url_prefix="/auth")
     app.register_blueprint(errors_blueprint)

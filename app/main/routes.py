@@ -12,11 +12,11 @@ from flask_login import current_user, login_required
 from sqlalchemy import insert, select
 from sqlalchemy.sql.expression import func
 
-from my_whiskies.extensions import db
-from my_whiskies.main import handler as main_handler
-from my_whiskies.main import main_blueprint
-from my_whiskies.main import forms
-from my_whiskies.models import Bottle, Bottler, BottleTypes, Distillery, User
+from app.extensions import db
+from app.main import forms
+from app.main import handler as main_handler
+from app.main import main_blueprint
+from app.models import Bottle, Bottler, BottleTypes, Distillery, User
 
 
 @main_blueprint.route("/")
