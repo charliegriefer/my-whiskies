@@ -5,9 +5,9 @@ import time
 from datetime import datetime
 
 import boto3
-import pandas as pd
+# import pandas as pd
 from dateutil.relativedelta import relativedelta
-from flask import current_app, flash, make_response, redirect, render_template, request, send_file, url_for
+from flask import current_app, flash, make_response, redirect, render_template, request, url_for  # send_file,
 from flask_login import current_user, login_required
 from sqlalchemy import insert, select
 from sqlalchemy.sql.expression import func
@@ -23,7 +23,6 @@ from app.models import Bottle, Bottler, BottleTypes, Distillery, User
 @main_blueprint.route("/")
 @main_blueprint.route("/index", strict_slashes=False)
 def index():
-    # pylint: disable=not-callable
     user_count = db.session.execute(select(func.count(User.id)).where(User.email_confirmed == 1)).scalar()
     distillery_count = db.session.execute(select(func.count(Distillery.name.distinct()))).scalar()
     bottle_count = db.session.execute(select(func.count(Bottle.id))).scalar()
