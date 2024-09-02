@@ -4,10 +4,8 @@ from dotenv import load_dotenv
 
 dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
 
-
-load_dotenv(dotenv_path=dotenv_path, verbose=True)
-
 basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(dotenv_path=dotenv_path, verbose=True)
 
 
 class BaseConfig:
@@ -64,3 +62,8 @@ class ProdConfig(BaseConfig):
     # LOGGING
     LOG_LEVEL = logging.INFO
     LOG_BACKTRACE = True
+
+
+class TestConfig(BaseConfig):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = os.environ["SQLALCHEMY_DATABASE_URI_TEST"]
