@@ -70,19 +70,6 @@
               </div>
             </div>
           </div>
-
-        {% if is_my_home %}
-        <div class="spacer py-1">&nbsp;</div>
-
-        <div class="row">
-          <div class="col ms-0 ps-0" id="exports">
-            <h3>Export Data</h3>
-            <div>
-              <i class="bi bi-filetype-csv"></i> <a href="{{ url_for('main.export_data', user_id=user.id) }}">Export Bottle Data</a>
-            </div>
-          </div>
-        </div>
-        {% endif %}
       </div>
     </main>
 
