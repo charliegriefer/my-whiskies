@@ -2,8 +2,8 @@ import datetime
 
 import pytest
 
-from my_whiskies.extensions import db
-from my_whiskies.models import Bottle, Bottler, Distillery, User
+from app.extensions import db
+from app.models import Bottle, Bottler, Distillery, User
 
 
 pw = "LuCwH6jOZk"
