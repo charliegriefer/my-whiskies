@@ -7,8 +7,7 @@ from datetime import datetime
 import boto3
 import pandas as pd
 from dateutil.relativedelta import relativedelta
-from flask import (current_app, flash, make_response, redirect,
-                   render_template, request, send_file, url_for)
+from flask import current_app, flash, make_response, redirect, render_template, request, send_file, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import insert, select
 from sqlalchemy.sql.expression import func
