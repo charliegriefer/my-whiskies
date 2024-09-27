@@ -256,8 +256,12 @@ def distillery_detail(distillery_id: str):
     dt_list_length = request.cookies.get("dt-list-length", "50")
     _distillery = db.get_or_404(Distillery, distillery_id)
     user = _distillery.user
-    # TODO: we should be able to filter this instrumentedlist instead of doing a list comprehension
-    _bottles = [b for b in user.bottles if distillery_id in [d.id for d in b.distilleries]]
+
+    stmt = select(Bottle).join(Bottle.distilleries).filter(
+        Bottle.user_id == user.id,
+        Distillery.id == distillery_id
+    )
+    _bottles = db.session.scalars(stmt).all()
 
     if request.method == "POST":
         if bool(int(request.form.get("random_toggle"))):
