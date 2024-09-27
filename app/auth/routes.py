@@ -1,9 +1,10 @@
 from datetime import datetime
 from textwrap import dedent
 
-from flask import Markup, current_app, flash, redirect, render_template, request, url_for
+from flask import current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_user, logout_user
-from werkzeug.urls import url_parse
+from markupsafe import Markup
+from urllib.parse import urlparse
 from wtforms.fields.core import Label
 
 from app.auth import auth_blueprint
@@ -31,7 +32,7 @@ def login():
             return redirect(url_for("auth.login"))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get("next")
-        if not next_page or url_parse(next_page).netloc != "":
+        if not next_page or urlparse(next_page).netloc != "":
             next_page = url_for("main.home", username=user.username.lower())
         return redirect(next_page)
     return render_template("auth/login.html", title="My Whiskies Online: Log In", form=form)
