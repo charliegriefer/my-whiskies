@@ -255,10 +255,8 @@ def distillery_edit(distillery_id: str):
 def distillery_detail(distillery_id: str):
     dt_list_length = request.cookies.get("dt-list-length", "50")
     _distillery = db.get_or_404(Distillery, distillery_id)
-
-    _bottles = db.session.execute(
-        select(Bottle).filter_by(Bottle.user_id == _distillery.user.id, Bottle.distilleries.any(id=distillery_id))
-    )
+    user = _distillery.user
+    _bottles = user.bottles
 
     if request.method == "POST":
         if bool(int(request.form.get("random_toggle"))):
@@ -274,7 +272,9 @@ def distillery_detail(distillery_id: str):
                 ).order_by(func.rand()).first()]
     else:
         bottles_to_list = _bottles
-        has_killed_bottles = len([b for b in _bottles if b.date_killed]) > 0
+        for bottle in bottles_to_list:
+            print("B: ", bottle.name)
+        has_killed_bottles = len([b for b in _bottles if hasattr(b, "date_killed")]) > 0
 
     is_my_list = current_user.is_authenticated and current_user.username.lower() == _distillery.user.username.lower()
 
