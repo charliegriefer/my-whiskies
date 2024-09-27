@@ -1,10 +1,11 @@
 import os
+from datetime import datetime
+from logging.config import dictConfig
 
 import flask
 from dotenv import load_dotenv
 from flask import Flask
 
-from logging.config import dictConfig
 from app.extensions import db, login_manager, mail, migrate
 
 dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
@@ -47,6 +48,10 @@ def create_app():
             }
         }
     )
+
+    @app.context_processor
+    def inject_today_date():
+        return {"current_date": datetime.today()}
 
     @app.before_request
     def before_request():
