@@ -256,7 +256,8 @@ def distillery_detail(distillery_id: str):
     dt_list_length = request.cookies.get("dt-list-length", "50")
     _distillery = db.get_or_404(Distillery, distillery_id)
     user = _distillery.user
-    _bottles = user.bottles
+    # TODO: we should be able to filter this instrumentedlist instead of doing a list comprehension
+    _bottles = [b for b in user.bottles if distillery_id in [d.id for d in b.distilleries]]
 
     if request.method == "POST":
         if bool(int(request.form.get("random_toggle"))):
@@ -272,9 +273,7 @@ def distillery_detail(distillery_id: str):
                 ).order_by(func.rand()).first()]
     else:
         bottles_to_list = _bottles
-        for bottle in bottles_to_list:
-            print("B: ", bottle.name)
-        has_killed_bottles = len([b for b in _bottles if hasattr(b, "date_killed")]) > 0
+        has_killed_bottles = len([b for b in _bottles if b.date_killed]) > 0
 
     is_my_list = current_user.is_authenticated and current_user.username.lower() == _distillery.user.username.lower()
 
