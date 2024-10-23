@@ -4,6 +4,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask
 
+from mywhiskies.blueprints.auth.views import auth
 from mywhiskies.blueprints.bottle.views import bottle
 from mywhiskies.blueprints.bottler.views import bottler
 from mywhiskies.blueprints.distillery.views import distillery
@@ -34,6 +35,7 @@ def create_app(settings_override=None):
     def inject_today_date():
         return {"current_date": datetime.today()}
 
+    app.register_blueprint(auth)
     app.register_blueprint(bottle)
     app.register_blueprint(bottler)
     app.register_blueprint(distillery)
