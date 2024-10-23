@@ -1,8 +1,0 @@
-Hey {{ user.username }}!
-
-To complete your registration with my-whiskies.online, please click the following link:
-
-{{ url_for('auth.confirm_register', token=token, _external=True) }}
-
-All the best,
-Your Bartender

@@ -1,3 +1,0 @@
-{{ error }}
-
-Detail: {{ error.original_exception }}
