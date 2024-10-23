@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container">
+
+      <div class="row mt-4">
+        <div class="col">
+          <h3 class="mb-0" style="color:#696969;">My Whiskies Online</h3>
+          <h1>Register</h1>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="container ms-0 ps-0">
+        <div class="row">
+          <div class="col-md-4 pt-4">
+
+            <form method="post">
+              {{ form.csrf_token }}
+              <div class="mb-3">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else "")) }}
+                <div class="form-text">{{ form.username.description|safe }}</div>
+              </div>
+              <div class="mb-3">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
+              </div>
+              <div class="mb-3">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else "")) }}
+                <div class="form-text">{{ form.password.description|safe }}</div>
+              </div>
+              <div class="mb-3">
+                {{ form.password2.label(class="form-label") }}
+                {{ form.password2(class="form-control" + (" is-invalid" if form.password2.errors else "")) }}
+              </div>
+              <div class="mb-3">
+                {{ form.agree_terms(class="form-check-input" + (" is-invalid" if form.password2.errors else "")) }}
+                {{ form.agree_terms.label(class="form-check-label") }}
+              </div>
+              <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+              <div class="mb-3 pt-3">
+                {{ form.submit(class="btn btn-primary") }}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+{% endblock %}
