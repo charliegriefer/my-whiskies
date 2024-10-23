@@ -1,0 +1,160 @@
+html { font-size: 14px; }
+
+body {
+  overflow-y: scroll;
+}
+
+a {
+  color: #337ab7;
+  text-decoration: none;
+}
+a:focus, a:hover {
+  color: #23527c;
+  text-decoration: underline;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.popover-body ul { padding-left: 18px; }
+
+.error {
+  color: crimson;
+}
+
+/* nav bar */
+/* ---------------------------------------------------------------------------------------- */
+.navbar {
+  border-bottom: 1px solid #D3D3D3;
+}
+
+#nav_login, #nav_logout {
+  color: #000;
+}
+#nav_login:hover, #nav_logout:hover {
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.container hr {
+  margin-top: 0;
+}
+
+/* bottle image on bottle detail page */
+.bottle-img {
+  max-height: 100%;
+  max-width: 100%;
+  margin: auto;
+}
+
+/* alerts */
+/* https://vikramlearning.com/dotnet/article/blazor-bootstrap-alert-component-examples/88/157 */
+/* ---------------------------------------------------------------------------------------- */
+.alert ul { margin-bottom: 0px; }
+
+.bg-primary { background-color: #cce5ff !important; }
+.text-primary { color: #26509b !important; }
+
+.bg-secondary { background-color: #e2e3e5 !important; }
+.text-secondary { color: #474b4f !important; }
+
+.bg-success { background-color: #d4edda !important; }
+.text-success { color: #474b4f !important; }
+
+.bg-danger { background-color: #f8d7da !important; }
+.text-danger { color: #985458 !important; }
+
+.bg-warning { background-color: #fff3cd !important;}
+.text-warning { color: #8e7c45 !important; }
+
+.bg-info { background-color: #d1ecf1 !important; }
+.text-info { color: #985458 !important; }
+
+.bg-light { background-color: #fefefe !important; }
+.text-light { color: #6b6d7f !important; }
+
+.bg-dark { background-color: #d3d3d4 !important; }
+.text-dark { color: #d6d8d9 !important; }
+
+
+
+#bottleCarousel {
+  margin-bottom: 40px;
+}
+
+.carousel.slide {
+    width: 100%;
+    max-width: 400px !important;
+}
+
+.carousel-indicators {
+  bottom: -50px;
+}
+
+.carousel .carousel-indicators button {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+}
+
+.carousel .carousel-indicators button {background-color: #808080;}
+.carousel .carousel-indicators button.active {background-color: #696969;}
+
+.carousel .carousel-control-next, .carousel .carousel-control-prev {
+  background: #FAF9F6;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  top: 45%;
+}
+.carousel .carousel-control-next {
+  right: 14px;
+}
+.carousel .carousel-control-prev {
+  left: 14px;
+}
+.carousel .carousel-control-next-icon {
+  height: 20px;
+  width: 20px;
+  margin-right: -4px;
+}
+.carousel .carousel-control-prev-icon {
+  height: 20px;
+  width: 20px;
+  margin-left: -4px;
+}
+ul.terms li {
+  margin-left: 24px;
+}
+
+
+/* tidying up the data tables */
+
+#bottles_wrapper div.row:first-child,
+#distilleries_wrapper div.row:first-child {
+  padding-top:8px;
+  margin-bottom:12px;
+}
+#bottles_wrapper div.row:last-child,
+#distilleries_wrapper div.row:last-child {
+  margin-top:12px;
+  padding-bottom:24px;
+}
+
+/* the distillery page datatable *//* dataTable on distillery page */
+#distillery-bottles_wrapper div.row:first-child,
+#distillery-bottles_wrapper div.row:last-child {
+  display:none;
+}
+
+.tooltip-arrow:before {
+    /* border-top-color: #0d6efd !important; */
+    border-left-color: #337ab7 !important;
+}
+
+.tooltip-inner {
+    background: #337ab7;
+    padding: 10px;
+    opacity: 1.0;
+}

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  {% include "_head.html" %}
+<body>
+  {% include "_navbar.html" %}
+  {% block content %}
+    <div class="container">
+      {% include "_flash.html" %}
+      {% block app_content %}{% endblock %}
+    </div>
+    {% include "_footer.html" %}
+  {% endblock %}
+
+  {% block scripts %}
+    {% include "_scripts.html" %}
+  {% endblock %}
+
+</body>
+</html>
