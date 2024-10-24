@@ -1,0 +1,70 @@
+{% extends "_base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container ps-0">
+
+      <div class="row mt-4">
+        <div class="col">
+          <h1>My Whiskies Online</h1>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="container">
+        <div class="row">
+          <div class="col-8 ms-0 ps-0 pe-5">
+            <p>
+              <span class="fw-bold">My Whiskies Online</span> is a venture started by a whiskey nerd who also happens to be a data nerd.
+              After accumulating more bottles than he could readily keep track of, it became evident that the
+              solution was a database.
+            </p>
+            <p>So the database was created. And then a web front-end. And things were good.</p>
+            <p>But this only ran locally on a laptop, and could only be used by one person (me).</p>
+            <p class="fst-italic">
+              The whiskey community is all about sharing.
+            </p>
+            <p>
+              With that in mind, an effort was underway to build an application that could be used by anybody online.
+            </p>
+            <p>This is that application.</p>
+
+            <span class="fw-bold">My Whiskies Online</span> is made with:
+            <ul class="mt-2">
+              <li><a href="https://www.python.org" target="_blank" rel="noopener noreferrer">Python <i class="bi bi-box-arrow-up-right"></i></a></li>
+              <li><a href="https://flask.palletsprojects.com/en/2.2.x/" target="_blank" rel="noopener noreferrer">Flask <i class="bi bi-box-arrow-up-right"></i></a></li>
+              <li><a href="https://www.mysql.com" target="_blank" rel="noopener noreferrer">MySQL <i class="bi bi-box-arrow-up-right"></i></a></li>
+              <li><a href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">Amazon Web Services <i class="bi bi-box-arrow-up-right"></i></a></li>
+              <li><a href="https://getbootstrap.com" target="_blank" rel="noopener noreferrer">Bootstrap <i class="bi bi-box-arrow-up-right"></i></a></li>
+              <li><i class="bi bi-heart text-danger"></i></li>
+            </ul>
+
+          </div>
+          <div class="col" style="border-left:1px solid gray;">
+            <p class="fw-bold">Data Nerd Stats: <i class="bi bi-bar-chart-line"></i></p>
+            <ul>
+              <li>Number of Users: <span class="text-danger fw-bold">{{ user_count }}</span></li>
+              <li>Distilleries Tracked: <span class="text-danger fw-bold">{{ distillery_count }}</span></li>
+              <li>Photos Uploaded: <span class="text-danger fw-bold">{{ pic_count }}</span></li>
+              <li>Bottles Tracked: <span class="text-danger fw-bold">{{ bottle_count }}</span>
+                <ul>
+                  {% for your_mom in bottle_type_counts %}
+                    <li>{{ your_mom[0].value }}: <span class="text-danger fw-bold">{{ your_mom[1] }}</span></li>
+                  {% endfor %}
+                </ul>
+              </li>
+            </ul>
+            <p class="pt-3 ms-2">
+              Not a member yet? <a href="{{ url_for('auth.register') }}" class="btn btn-primary ms-1 text-decoration-none" role="button">Join Us!</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+{% endblock %}

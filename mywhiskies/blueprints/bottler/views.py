@@ -18,7 +18,7 @@ from mywhiskies.blueprints.bottler.models import Bottler
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 
-bottler = Blueprint("bottler", __name__)
+bottler = Blueprint("bottler", __name__, template_folder="templates")
 
 
 @bottler.route("/<username>/bottlers", endpoint="bottlers_list", strict_slashes=False)
@@ -31,7 +31,7 @@ def bottlers_list(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     response = make_response(
         render_template(
-            "bottler_list.html",
+            "bottler/bottler_list.html",
             title=f"{user.username}'s Whiskies: Bottlers",
             has_datatable=True,
             is_my_list=is_my_list,
@@ -57,9 +57,9 @@ def bottler_add():
         db.session.add(bottler_in)
         db.session.commit()
         flash(f'"{bottler_in.name}" has been successfully added.', "success")
-        return redirect(url_for("main.home", username=current_user.username.lower()))
+        return redirect(url_for("core.home", username=current_user.username.lower()))
     return render_template(
-        "bottler_add.html",
+        "bottler/bottler_add.html",
         title=f"{current_user.username}'s Whiskies: Add Bottler",
         user=current_user,
         form=form,
@@ -77,12 +77,12 @@ def bottler_edit(bottler_id: str):
         db.session.commit()
         flash(f'"{_bottler.name}" has been successfully updated.', "success")
         return redirect(
-            url_for("main.bottlers_list", username=current_user.username.lower())
+            url_for("bottler.bottlers_list", username=current_user.username.lower())
         )
     else:
         form = BottlerEditForm(obj=_bottler)
         return render_template(
-            "bottler_edit.html",
+            "bottler/bottler_edit.html",
             title=f"{current_user.username}'s Whiskies: Edit Bottler",
             bottler=_bottler,
             form=form,
@@ -111,7 +111,7 @@ def bottler_detail(bottler_id: str):
     )
     response = make_response(
         render_template(
-            "bottler_detail.html",
+            "bottler/bottler_detail.html",
             title=f"{_bottler.user.username}'s Whiskies: {_bottler.name}",
             has_datatable=True,
             user=_bottler.user,
@@ -141,11 +141,11 @@ def bottler_delete(bottler_id: str):
             "danger",
         )
         return redirect(
-            url_for("main.bottlers_list", username=current_user.username.lower())
+            url_for("bottler.bottlers_list", username=current_user.username.lower())
         )
     db.session.delete(_bottler)
     db.session.commit()
     flash(f'"{_bottler.name}" has been successfully deleted.', "success")
     return redirect(
-        url_for("main.bottlers_list", username=current_user.username.lower())
+        url_for("bottler.bottlers_list", username=current_user.username.lower())
     )

@@ -7,7 +7,9 @@ from flask import Flask
 from mywhiskies.blueprints.auth.views import auth
 from mywhiskies.blueprints.bottle.views import bottle
 from mywhiskies.blueprints.bottler.views import bottler
+from mywhiskies.blueprints.core.views import core
 from mywhiskies.blueprints.distillery.views import distillery
+from mywhiskies.blueprints.errors.views import errors
 from mywhiskies.blueprints.user.views import user
 from mywhiskies.extensions import db, login_manager, mail, migrate
 
@@ -36,9 +38,11 @@ def create_app(settings_override=None):
         return {"current_date": datetime.today()}
 
     app.register_blueprint(auth)
+    app.register_blueprint(core)
     app.register_blueprint(bottle)
     app.register_blueprint(bottler)
     app.register_blueprint(distillery)
+    app.register_blueprint(errors)
     app.register_blueprint(user)
     register_extensions(app)
     login_manager.login_view = "auth.login"

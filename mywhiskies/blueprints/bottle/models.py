@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, List, Optional
 from sqlalchemy import ForeignKey, Numeric, String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from mywhiskies.blueprints.core.models import bottle_distillery  # noqa: F401
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 
