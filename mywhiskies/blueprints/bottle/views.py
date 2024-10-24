@@ -22,7 +22,7 @@ from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 
-bottle = Blueprint("bottle", __name__)
+bottle = Blueprint("bottle", __name__, template_folder="templates")
 
 
 @bottle.route(
@@ -83,7 +83,7 @@ def bottles(username: str):
 
     response = make_response(
         render_template(
-            "bottle_list.html",
+            "bottle/bottle_list.html",
             title=f"{user.username}'s Whiskies: Bottles",
             has_datatable=True,
             user=user,
@@ -110,7 +110,7 @@ def bottle_detail(bottle_id: str):
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
 
     return render_template(
-        "bottle_detail.html",
+        "bottle/bottle_detail.html",
         title=f"{_bottle.user.username}'s Whiskies: {_bottle.name}",
         bottle=_bottle,
         user=_bottle.user,
@@ -173,10 +173,10 @@ def bottle_add():
         db.session.commit()
 
         flash(flash_message, flash_category)
-        return redirect(url_for("main.home", username=current_user.username.lower()))
+        return redirect(url_for("core.home", username=current_user.username.lower()))
 
     return render_template(
-        "bottle_add.html",
+        "bottle/bottle_add.html",
         title=f"{current_user.username}'s Whiskies: Add Bottle",
         form=form,
     )
@@ -228,13 +228,13 @@ def bottle_edit(bottle_id: str):
             flash_category = "danger"
 
         flash(flash_message, flash_category)
-        return redirect(url_for("main.home", username=current_user.username.lower()))
+        return redirect(url_for("core.home", username=current_user.username.lower()))
 
     else:
         form.type.data = _bottle.type.name
         form.distilleries.data = [d.id for d in _bottle.distilleries]
         return render_template(
-            "bottle_edit.html",
+            "bottle/bottle_edit.html",
             title=f"{current_user.username}'s Whiskies: Edit Bottle",
             ts=time.time(),
             bottle=_bottle,
@@ -258,5 +258,5 @@ def bottle_delete(bottle_id: str):
 
     flash(f'"{bottle_to_delete.name}" has been successfully deleted.', "success")
     return redirect(
-        url_for("main.list_bottles", username=current_user.username.lower())
+        url_for("bottle.list_bottles", username=current_user.username.lower())
     )

@@ -1,0 +1,21 @@
+{% extends "_base.html" %}
+
+{% block app_content %}
+
+  <main class="flex-shrink-0">
+    <div class="container">
+      <h1>404!</h1>
+      <hr />
+
+        <p>Sorry, but we couldn't find what you were looking for. We don't know why. Sometimes these things happen.</p>
+        <p>If you're so inclined, contact <a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a> with some details about what you were looking for, and we'll check into it.</p>
+        <p><a href="{{ url_for('core.index') }}">Home</a></p>
+
+    </div>
+  </main>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+{% endblock %}
