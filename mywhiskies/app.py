@@ -11,7 +11,7 @@ from mywhiskies.blueprints.core.views import core
 from mywhiskies.blueprints.distillery.views import distillery
 from mywhiskies.blueprints.errors.views import errors
 from mywhiskies.blueprints.user.views import user
-from mywhiskies.extensions import db, login_manager, mail, migrate
+from mywhiskies.extensions import register_extensions
 
 dotenv_path = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"
@@ -45,14 +45,5 @@ def create_app(settings_override=None):
     app.register_blueprint(errors)
     app.register_blueprint(user)
     register_extensions(app)
-    login_manager.login_view = "auth.login"
-    login_manager.login_message = "Please log in to access this page."
 
     return app
-
-
-def register_extensions(app):
-    db.init_app(app)
-    login_manager.init_app(app)
-    mail.init_app(app)
-    migrate.init_app(app, db)
