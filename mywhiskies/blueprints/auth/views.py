@@ -176,9 +176,13 @@ def reset_password_request():
         return redirect(url_for("core.home", username=current_user.username))
     form = ResetPasswordRequestForm()
     if request.method == "POST" and form.validate_on_submit():
-        user = db.session.execute(
-            db.select(User).filter_by(email=form.email.data, is_deleted=False)
-        ).first()
+        user = (
+            db.session.execute(
+                db.select(User).filter_by(email=form.email.data, is_deleted=False)
+            )
+            .scalars()
+            .first()
+        )
         if user:
             send_password_reset_email(user)
         flash(
