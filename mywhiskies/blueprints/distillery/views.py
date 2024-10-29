@@ -183,7 +183,7 @@ def distillery_detail(distillery_id: str):
 
     response = make_response(
         render_template(
-            "distillery_detail.html",
+            "distillery/distillery_detail.html",
             title=f"{_distillery.user.username}'s Whiskies: {_distillery.name}",
             has_datatable=True,
             user=_distillery.user,
