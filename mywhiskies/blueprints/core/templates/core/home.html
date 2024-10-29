@@ -20,7 +20,7 @@
             <h3>Bottles</h3>
             <div>
               {% if is_my_home %}
-                {% if user.bottles|length == 0 %}
+                {% if user.distilleries|length == 0 %}
                   <i class="bi bi-exclamation-circle pe-1" style="color:red;"></i> You won't be able to add any new bottles until you <a href="{{ url_for('distillery.distillery_add') }}">add at least one distillery</a>.
                   <br />
                 {% else %}
