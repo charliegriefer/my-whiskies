@@ -1,5 +1,6 @@
 import json
 import os
+import random
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
@@ -15,7 +16,6 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from sqlalchemy import insert, select
-from sqlalchemy.sql.expression import func
 
 from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryForm
@@ -158,20 +158,11 @@ def distillery_detail(distillery_id: str):
         if bool(int(request.form.get("random_toggle"))):
             # Return a random bottle.
             # Cannot be a killed bottle. Template expects a list, so wrap in a list.
-            if _bottles.count() > 0:
+            if len(_bottles):
                 has_killed_bottles = False
 
-                bottles_to_list = [
-                    db.session.execute(
-                        select(Bottle).filter_by(
-                            Bottle.date_killed.is_(None),
-                            Bottle.distillery_id == distillery_id,
-                            Bottle.user_id == current_user.get_id(),
-                        )
-                    )
-                    .order_by(func.rand())
-                    .first()
-                ]
+                unkilled_bottles = [b for b in _bottles if not b.date_killed]
+                bottles_to_list = [random.choice(unkilled_bottles)]
     else:
         bottles_to_list = _bottles
         has_killed_bottles = len([b for b in _bottles if b.date_killed]) > 0

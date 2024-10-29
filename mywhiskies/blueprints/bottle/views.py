@@ -71,7 +71,8 @@ def bottles(username: str):
             ]
             if bool(int(request.form.get("random_toggle"))):
                 if len(bottles_to_list) > 0:
-                    bottles_to_list = [random.choice(bottles_to_list)]
+                    unkilled_bottles = [b for b in bottles_to_list if not b.date_killed]
+                    bottles_to_list = [random.choice(unkilled_bottles)]
         else:
             bottles_to_list = []
 
