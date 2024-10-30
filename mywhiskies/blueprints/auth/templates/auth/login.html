@@ -1,0 +1,65 @@
+{% extends "_base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container">
+
+      <div class="row mt-4">
+        <div class="col">
+          <h3 class="mb-0" style="color:#696969;">My Whiskies Online</h3>
+          <h1>Log In</h1>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="container ms-0 ps-0">
+        <div class="row">
+          <div class="col-md-4 pt-4">
+
+            <form method="post">
+              {{ form.csrf_token }}
+              <div class="mb-3">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control") }}
+
+          {% if form.username.errors %}
+              <ul class="errors">
+                  {% for error in form.username.errors %}
+                      <li>{{ error }}</li>
+                  {% endfor %}
+              </ul>
+          {% endif %}
+              </div>
+              <div class="mb-3">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control") }}
+              </div>
+              <div class="mb-3">
+                {{ form.remember_me(class="form-check-input", id="remember_me") }}
+                {{ form.remember_me.label(class="form-check-label", for="remember_me") }}
+              </div>
+              <div class="mb-3 pt-3">
+                {{ form.submit(class="btn btn-primary") }}
+              </div>
+            </form>
+          </div>
+        </div>
+
+      <br>
+
+      <p>New User? <a href="{{ url_for('auth.register') }}">Click to Register!</a></p>
+      <p>
+        Forgot Your Password?
+        <a href="{{ url_for('auth.reset_password_request') }}">Click to Reset It</a>
+      </p>
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript">
+  </script>
+{% endblock %}

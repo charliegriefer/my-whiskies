@@ -2,9 +2,11 @@ import datetime
 
 import pytest
 
-from app.extensions import db
-from app.models import Bottle, Bottler, Distillery, User
-
+from mywhiskies.blueprints.bottle.models import Bottle
+from mywhiskies.blueprints.bottler.models import Bottler
+from mywhiskies.blueprints.distillery.models import Distillery
+from mywhiskies.blueprints.user.models import User
+from mywhiskies.extensions import db
 
 pw = "LuCwH6jOZk"
 
@@ -14,19 +16,15 @@ test_user_email = "whiskeytest@griefer.com"
 test_distillery_1 = {
     "name": "Test Distillery 1",
     "region_1": "Fallon",
-    "region_2": "NV"
+    "region_2": "NV",
 }
 test_distillery_2 = {
     "name": "Test Distillery 2",
     "region_1": "Denisonx",
-    "region_2": "TX"
+    "region_2": "TX",
 }
 
-test_bottler = {
-    "name": "Test Bottler",
-    "region_1": "Vergennes",
-    "region_2": "VT"
-}
+test_bottler = {"name": "Test Bottler", "region_1": "Vergennes", "region_2": "VT"}
 
 
 def test_user_add(client):
@@ -152,7 +150,9 @@ def test_add_bottle(client):
     db.session.add(distillery)
     db.session.commit()
 
-    bottle = Bottle(name="Test Bottle", user_id=user.id, type="bourbon", distilleries=[distillery])
+    bottle = Bottle(
+        name="Test Bottle", user_id=user.id, type="bourbon", distilleries=[distillery]
+    )
     db.session.add(bottle)
     db.session.commit()
 
