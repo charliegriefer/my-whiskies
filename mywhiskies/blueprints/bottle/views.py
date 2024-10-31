@@ -9,6 +9,7 @@ from botocore.exceptions import ClientError
 from dateutil.relativedelta import relativedelta
 from flask import (
     Blueprint,
+    current_app,
     flash,
     make_response,
     redirect,
@@ -26,6 +27,16 @@ from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 
 bottle = Blueprint("bottle", __name__, template_folder="templates")
+
+
+def get_s3_config():
+    return (
+        current_app.config["BOTTLE_IMAGE_S3_BUCKET"],
+        current_app.config["BOTTLE_IMAGE_S3_KEY"],
+        current_app.config["BOTTLE_IMAGE_S3_URL"]
+        + "/"
+        + current_app.config["BOTTLE_IMAGE_S3_KEY"],
+    )
 
 
 @bottle.route(
@@ -110,6 +121,7 @@ def bottles(username: str):
 
 @bottle.route("/bottle/<bottle_id>")
 def bottle_detail(bottle_id: str):
+    _, _, img_s3_url = get_s3_config()
     _bottle = db.get_or_404(Bottle, bottle_id)
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
 
@@ -118,6 +130,7 @@ def bottle_detail(bottle_id: str):
         title=f"{_bottle.user.username}'s Whiskies: {_bottle.name}",
         bottle=_bottle,
         user=_bottle.user,
+        img_s3_url=img_s3_url,
         ts=time.time(),
         is_my_bottle=is_my_bottle,
     )
@@ -189,6 +202,7 @@ def bottle_add():
 @bottle.route("/bottle/edit/<string:bottle_id>", methods=["GET", "POST"])
 @login_required
 def bottle_edit(bottle_id: str):
+    _, _, img_s3_url = get_s3_config()
     _bottle = db.get_or_404(Bottle, bottle_id)
     form = prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
 
@@ -240,6 +254,7 @@ def bottle_edit(bottle_id: str):
         return render_template(
             "bottle/bottle_edit.html",
             title=f"{current_user.username}'s Whiskies: Edit Bottle",
+            img_s3_url=img_s3_url,
             ts=time.time(),
             bottle=_bottle,
             form=form,
@@ -249,6 +264,7 @@ def bottle_edit(bottle_id: str):
 @bottle.route("/bottle/delete/<string:bottle_id>")
 @login_required
 def bottle_delete(bottle_id: str):
+    img_s3_bucket, img_s3_key, _ = get_s3_config()
     bottle_to_delete = db.get_or_404(Bottle, bottle_id)
     db.session.delete(bottle_to_delete)
 
@@ -256,7 +272,8 @@ def bottle_delete(bottle_id: str):
         s3_client = boto3.client("s3")
         for i in range(1, bottle_to_delete.image_count + 1):
             s3_client.delete_object(
-                Bucket="my-whiskies-pics", Key=f"{bottle_to_delete.id}_{i}.png"
+                Bucket=f"{img_s3_bucket}",
+                Key=f"{img_s3_key}/{bottle_to_delete.id}_{i}.png",
             )
     db.session.commit()
 
@@ -321,11 +338,12 @@ def bottle_add_images(
             in_mem_file.seek(0)
 
             s3_client = boto3.client("s3")
+            img_s3_bucket, img_s3_key, _ = get_s3_config()
             try:
                 s3_client.put_object(
                     Body=in_mem_file,
-                    Bucket="my-whiskies-pics",
-                    Key=f"{new_filename}.png",
+                    Bucket=img_s3_bucket,
+                    Key=f"{img_s3_key}/{new_filename}.png",
                     ContentType="image/png",
                 )
             except ClientError:
@@ -337,22 +355,23 @@ def bottle_add_images(
 
 def bottle_edit_images(form: BottleEditForm, bottle: Bottle):
     s3_client = boto3.client("s3")
+    img_s3_bucket, img_s3_key, _ = get_s3_config()
 
     for i in range(1, 4):
         if form[f"remove_image_{i}"].data:
             s3_client.copy_object(
-                Bucket="my-whiskies-pics",
-                CopySource=f"my-whiskies-pics/{bottle.id}_{i}.png",
+                Bucket=f"{img_s3_bucket}",
+                CopySource=f"{img_s3_bucket}/{img_s3_key}/{bottle.id}_{i}.png",
                 Key=f"__del_{bottle.id}_{i}.png",
                 ContentType="image/png",
             )
             s3_client.delete_object(
-                Bucket="my-whiskies-pics", Key=f"{bottle.id}_{i}.png"
+                Bucket=f"{img_s3_bucket}", Key=f"{img_s3_key}/{bottle.id}_{i}.png"
             )
 
-    images = s3_client.list_objects(Bucket="my-whiskies-pics", Prefix=bottle.id).get(
-        "Contents", []
-    )
+    images = s3_client.list_objects(
+        Bucket=f"{img_s3_bucket}", Prefix=f"{img_s3_key}/{bottle.id}"
+    ).get("Contents", [])
     images.sort(key=lambda obj: obj.get("Key"))
 
     for idx, img in enumerate(images, 1):
@@ -360,27 +379,29 @@ def bottle_edit_images(form: BottleEditForm, bottle: Bottle):
 
         if idx != img_num:
             s3_client.copy_object(
-                Bucket="my-whiskies-pics",
-                CopySource=f"my-whiskies-pics/{bottle.id}_{img_num}.png",
-                Key=f"{bottle.id}_{idx}.png",
+                Bucket=f"{img_s3_bucket}",
+                CopySource=f"{img_s3_bucket}/{img_s3_key}/{bottle.id}_{img_num}.png",
+                Key=f"{img_s3_key}/{bottle.id}_{idx}.png",
                 ContentType="image/png",
             )
             s3_client.delete_object(
-                Bucket="my-whiskies-pics", Key=f"{bottle.id}_{img_num}.png"
+                Bucket=f"{img_s3_bucket}", Key=f"{img_s3_key}/{bottle.id}_{img_num}.png"
             )
 
 
 def bottle_delete_images(bottle: Bottle):
     s3_client = boto3.client("s3")
+    img_s3_bucket, img_s3_key, _ = get_s3_config()
     for i in range(1, 4):
         s3_client.delete_object(
-            Bucket="my-whiskies-pics", Key=f"__del_{bottle.id}_{i}.png"
+            Bucket=f"{img_s3_bucket}", Key=f"{img_s3_key}/__del_{bottle.id}_{i}.png"
         )
 
 
 def get_bottle_image_count(bottle_id: str) -> int:
     s3_client = boto3.client("s3")
-    images = s3_client.list_objects(Bucket="my-whiskies-pics", Prefix=bottle_id).get(
-        "Contents", []
-    )
+    img_s3_bucket, img_s3_key, _ = get_s3_config()
+    images = s3_client.list_objects(
+        Bucket=f"{img_s3_bucket}", Prefix=f"{img_s3_key}/{bottle_id}"
+    ).get("Contents", [])
     return len(images)
