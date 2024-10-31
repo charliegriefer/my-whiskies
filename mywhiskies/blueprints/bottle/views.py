@@ -362,7 +362,7 @@ def bottle_edit_images(form: BottleEditForm, bottle: Bottle):
             s3_client.copy_object(
                 Bucket=f"{img_s3_bucket}",
                 CopySource=f"{img_s3_bucket}/{img_s3_key}/{bottle.id}_{i}.png",
-                Key=f"__del_{bottle.id}_{i}.png",
+                Key=f"{img_s3_key}/__del_{bottle.id}_{i}.png",
                 ContentType="image/png",
             )
             s3_client.delete_object(
