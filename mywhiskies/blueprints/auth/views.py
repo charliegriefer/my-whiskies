@@ -12,11 +12,11 @@ from flask import (
     request,
     url_for,
 )
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, logout_user
 from flask_mail import Message
-from werkzeug.urls import url_parse
 from wtforms.fields.core import Label
 
+from mywhiskies.blueprints.auth import services
 from mywhiskies.blueprints.auth.forms import (
     LoginForm,
     RegistrationForm,
@@ -34,27 +34,23 @@ auth = Blueprint("auth", __name__, template_folder="templates")
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("core.home", username=current_user.username))
+
     form = LoginForm()
+
     if request.method == "POST" and form.validate_on_submit():
-        user = db.one_or_404(
-            db.select(User).filter_by(username=form.username.data, is_deleted=False)
-        )
-        if not user.check_password(form.password.data):
+        user = services.get_user_by_username(form.username.data)
+
+        if not services.validate_password(user, form.password.data):
             flash("Incorrect username or password!", "danger")
             return redirect(url_for("auth.login"))
-        if not user.email_confirmed:
-            message = "You have not yet confirmed your e-mail address.  "
-            message += "If you need the verification email re-sent, please "
-            message += Markup(
-                f"<a href='{url_for('auth.resend_register')}'>click here</a>."
-            )
-            flash(message, "danger")
+
+        if not services.check_email_confirmation(user):
             return redirect(url_for("auth.login"))
-        login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get("next")
-        if not next_page or url_parse(next_page).netloc != "":
-            next_page = url_for("core.home", username=user.username.lower())
+
+        services.log_in_user(user, form.remember_me.data)
+        next_page = services.determine_next_page(user, request.args.get("next"))
         return redirect(next_page)
+
     return render_template(
         "auth/login.html", title="My Whiskies Online: Log In", form=form
     )
