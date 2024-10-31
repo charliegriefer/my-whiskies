@@ -1,4 +1,4 @@
-from flask import Markup, flash, url_for
+from flask import flash, url_for
 from flask_login import login_user
 from werkzeug.urls import url_parse
 
@@ -19,7 +19,7 @@ def check_email_confirmation(user):
         message = (
             "You have not yet confirmed your e-mail address. "
             "If you need the verification email re-sent, please "
-            + Markup(f"<a href='{url_for('auth.resend_register')}'>click here</a>.")
+            f"<a href='{url_for('auth.resend_register')}'>click here</a>."
         )
         flash(message, "danger")
         return False
