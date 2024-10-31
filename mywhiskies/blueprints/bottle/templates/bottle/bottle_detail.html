@@ -177,7 +177,7 @@
                   <div class="carousel-inner">
                     {% for n in range(1, bottle.image_count + 1) %}
                       <div class="carousel-item{% if n == 1 %} active{% endif %}">
-                        <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img rounded border border-2 border-dark d-block w-100" src="https://my-whiskies-pics.s3-us-west-1.amazonaws.com/{{ bottle.id }}_{{ n }}.png" />
+                        <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img rounded border border-2 border-dark d-block w-100" src="{{img_s3_url}}/{{ bottle.id }}_{{ n }}.png" />
                       </div>
                     {% endfor %}
                     <button class="carousel-control-prev" type="button" data-bs-target="#bottleCarousel" data-bs-slide="prev">
@@ -191,7 +191,7 @@
                   </div>
                 </div>
               {% else %}
-                <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="float-end bottle-img rounded border border-2 border-dark me-0 pe-0" src="https://my-whiskies-pics.s3-us-west-1.amazonaws.com/{{ bottle.id }}_1.png?r={{ ts }}" />
+                <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="float-end bottle-img rounded border border-2 border-dark me-0 pe-0" src="{{img_s3_url}}/{{ bottle.id }}_1.png?r={{ ts }}" />
               {% endif %}
             {% endif %}
           </div>
