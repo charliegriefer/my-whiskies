@@ -1,8 +1,11 @@
-import os
 import logging
+import os
+
 from dotenv import load_dotenv
 
-dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+dotenv_path = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"
+)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(dotenv_path=dotenv_path, verbose=True)
@@ -11,7 +14,6 @@ load_dotenv(dotenv_path=dotenv_path, verbose=True)
 class BaseConfig:
     SECRET_KEY = os.environ["SECRET_KEY"]
     PERMANENT_SESSION_LIFETIME = 86400  # 24 hours
-    BOTTLE_IMAGE_PATH = os.path.join(basedir, "app/static/bottles/")
 
     # DATABASE
     SQLALCHEMY_DATABASE_URI = os.environ["SQLALCHEMY_DATABASE_URI"]
@@ -42,6 +44,11 @@ class BaseConfig:
     RECAPTCHA_PUBLIC_KEY = os.environ["RECAPTCHA_PUBLIC_KEY"]
     RECAPTCHA_PRIVATE_KEY = os.environ["RECAPTCHA_PRIVATE_KEY"]
 
+    # AWS
+    BOTTLE_IMAGE_S3_BUCKET = "my-whiskies-pics"
+    BOTTLE_IMAGE_S3_KEY = "dev"
+    BOTTLE_IMAGE_S3_URL = "https://my-whiskies-pics.s3-us-west-1.amazonaws.com"
+
     @staticmethod
     def init_app(app):
         pass
@@ -62,6 +69,9 @@ class ProdConfig(BaseConfig):
     # LOGGING
     LOG_LEVEL = logging.INFO
     LOG_BACKTRACE = True
+
+    # AWS
+    BOTTLE_IMAGE_S3_KEY = "prod"
 
 
 class TestConfig(BaseConfig):
