@@ -4,8 +4,8 @@ from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask
 
-from mywhiskies.blueprints.auth.views import auth
-from mywhiskies.blueprints.bottle.views import bottle
+from mywhiskies.blueprints.auth import auth
+from mywhiskies.blueprints.bottle import bottle_bp
 from mywhiskies.blueprints.bottler.views import bottler
 from mywhiskies.blueprints.core.views import core
 from mywhiskies.blueprints.distillery.views import distillery
@@ -39,7 +39,7 @@ def create_app(settings_override=None):
 
     app.register_blueprint(auth)
     app.register_blueprint(core)
-    app.register_blueprint(bottle)
+    app.register_blueprint(bottle_bp)
     app.register_blueprint(bottler)
     app.register_blueprint(distillery)
     app.register_blueprint(errors)
