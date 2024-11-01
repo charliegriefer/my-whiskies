@@ -43,7 +43,7 @@ def bottler_add():
 
     if form.validate_on_submit():
         add_bottler(form, current_user)
-        return redirect(url_for("core.home", username=current_user.username.lower()))
+        return redirect(url_for("core.home", username=current_user.username))
 
     return render_template(
         "bottler/bottler_add.html",

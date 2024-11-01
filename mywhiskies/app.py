@@ -8,7 +8,7 @@ from mywhiskies.blueprints.auth import auth
 from mywhiskies.blueprints.bottle import bottle_bp
 from mywhiskies.blueprints.bottler import bottler_bp
 from mywhiskies.blueprints.core.views import core
-from mywhiskies.blueprints.distillery.views import distillery
+from mywhiskies.blueprints.distillery import distillery_bp
 from mywhiskies.blueprints.errors.views import errors
 from mywhiskies.blueprints.user.views import user
 from mywhiskies.extensions import register_extensions
@@ -41,7 +41,7 @@ def create_app(settings_override=None):
     app.register_blueprint(core)
     app.register_blueprint(bottle_bp)
     app.register_blueprint(bottler_bp)
-    app.register_blueprint(distillery)
+    app.register_blueprint(distillery_bp)
     app.register_blueprint(errors)
     app.register_blueprint(user)
     register_extensions(app)
