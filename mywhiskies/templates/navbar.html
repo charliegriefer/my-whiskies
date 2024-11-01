@@ -2,16 +2,16 @@
   <div class="container">
     <img src="{{ url_for('static', filename='cheers.png') }}" style="width:7%;" class="me-3" />
     {% if current_user.is_authenticated %}
-      {% set username = current_user.username.lower() %}
+      {% set username = current_user.username %}
     {% else %}
       {% if user %}
-        {% set username = user.username.lower() %}
+        {% set username = user.username %}
       {% endif %}
       {% if bottle %}
-        {% set username = bottle.user.username.lower() %}
+        {% set username = bottle.user.username %}
       {% endif %}
       {% if distillery %}
-        {% set username = distillery.user.username.lower() %}
+        {% set username = distillery.user.username %}
       {% endif %}
     {% endif %}
     {% if request.endpoint == "core.index" %}
