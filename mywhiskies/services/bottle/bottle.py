@@ -1,12 +1,15 @@
 import random
 
 import boto3
-from flask import flash
-from flask_login import current_user
+from flask import flash, make_response, render_template, request
+from flask.wrappers import Response
 
+from mywhiskies.blueprints.bottle.forms import BottleEditForm, BottleForm
 from mywhiskies.blueprints.bottle.models import Bottle, BottleTypes
 from mywhiskies.blueprints.distillery.models import Distillery
+from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.services import utils
 from mywhiskies.services.bottle.image import (
     add_bottle_images,
     delete_bottle_images,
@@ -16,7 +19,7 @@ from mywhiskies.services.bottle.image import (
 )
 
 
-def list_bottles(user, request):
+def list_bottles(user: User, request: request, current_user: User) -> Response:
     all_bottles = user.bottles
     killed_bottles = [b for b in all_bottles if b.date_killed]
 
@@ -37,22 +40,32 @@ def list_bottles(user, request):
         active_bottle_types = [bt.name for bt in BottleTypes]
         bottles_to_list = all_bottles
 
-    is_my_list = (
-        current_user.is_authenticated
-        and current_user.username.lower() == user.username.lower()
+    response = make_response(
+        render_template(
+            "bottle/bottle_list.html",
+            title=f"{user.username}'s Whiskies: Bottles",
+            has_datatable=True,
+            user=user,
+            bottles=bottles_to_list,
+            has_killed_bottles=bool(len(killed_bottles)),
+            bottle_types=BottleTypes,
+            active_filters=active_bottle_types,
+            dt_list_length=request.cookies.get("dt-list-length", "50"),
+            is_my_list=utils.is_my_list(user.username, current_user),
+        )
     )
 
-    return bottles_to_list, active_bottle_types, is_my_list, killed_bottles
+    return response
 
 
-def add_bottle(form, user) -> None:
+def add_bottle(form: BottleForm, user: User) -> None:
     distilleries = []
     for distillery_id in form.distilleries.data:
         distilleries.append(db.session.get(Distillery, distillery_id))
 
     bottler_id = form.bottler_id.data if form.bottler_id.data != "0" else None
 
-    bottle = Bottle(
+    bottle_in = Bottle(
         user_id=user.id,
         name=form.name.data,
         url=form.url.data,
@@ -72,30 +85,30 @@ def add_bottle(form, user) -> None:
         date_killed=form.date_killed.data,
     )
 
-    db.session.add(bottle)
+    db.session.add(bottle_in)
     db.session.commit()
 
     db.session.flush()
-    flash_message = f'"{bottle.name}" has been successfully added.'
+    flash_message = f'"{bottle_in.name}" has been successfully added.'
     flash_category = "success"
 
-    image_upload_success = add_bottle_images(form, bottle)
+    image_upload_success = add_bottle_images(form, bottle_in)
 
     if image_upload_success:
         pass
     else:
-        flash_message = f'An error occurred while creating "{bottle.name}".'
+        flash_message = f'An error occurred while creating "{bottle_in.name}".'
         flash_category = "danger"
-        db.session.delete(bottle)
+        db.session.delete(bottle_in)
         db.session.commit()
 
-    bottle.image_count = get_bottle_image_count(bottle.id)
+    bottle_in.image_count = get_bottle_image_count(bottle_in.id)
     db.session.commit()
 
     flash(flash_message, flash_category)
 
 
-def edit_bottle(form, bottle):
+def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
     distilleries = []
     for distillery_id in form.distilleries.data:
         distilleries.append(db.session.get(Distillery, distillery_id))

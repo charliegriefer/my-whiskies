@@ -6,7 +6,7 @@ from flask import Flask
 
 from mywhiskies.blueprints.auth import auth
 from mywhiskies.blueprints.bottle import bottle_bp
-from mywhiskies.blueprints.bottler.views import bottler
+from mywhiskies.blueprints.bottler import bottler_bp
 from mywhiskies.blueprints.core.views import core
 from mywhiskies.blueprints.distillery.views import distillery
 from mywhiskies.blueprints.errors.views import errors
@@ -40,7 +40,7 @@ def create_app(settings_override=None):
     app.register_blueprint(auth)
     app.register_blueprint(core)
     app.register_blueprint(bottle_bp)
-    app.register_blueprint(bottler)
+    app.register_blueprint(bottler_bp)
     app.register_blueprint(distillery)
     app.register_blueprint(errors)
     app.register_blueprint(user)

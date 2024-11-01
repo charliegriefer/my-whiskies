@@ -1,4 +1,14 @@
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 from flask import Markup, flash
+
+
+def is_my_list(username, current_user) -> bool:
+    return (
+        current_user.is_authenticated
+        and current_user.username.lower() == username.lower()
+    )
 
 
 def handle_form_errors(form):
@@ -21,3 +31,11 @@ def get_flash_msg(form) -> dict:
         flash_msg += "</ul>"
 
     return {"message": flash_msg, "reset_errors": reset_errors}
+
+
+def set_cookie_expiration(response, cookie_name, value, years=1):
+    response.set_cookie(
+        cookie_name,
+        value=value,
+        expires=datetime.now() + relativedelta(years=years),
+    )
