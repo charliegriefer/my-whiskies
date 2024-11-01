@@ -11,7 +11,7 @@ from mywhiskies.blueprints.core.models import bottle_distillery  # noqa: F401
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # avoid circular imports
     from mywhiskies.blueprints.bottler.models import Bottler
     from mywhiskies.blueprints.distillery.models import Distillery
 
