@@ -12,7 +12,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from mywhiskies.extensions import db, login_manager
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # avoid circular imports
     from mywhiskies.blueprints.bottle.models import Bottle
     from mywhiskies.blueprints.bottler.models import Bottler
     from mywhiskies.blueprints.distillery.models import Distillery

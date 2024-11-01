@@ -7,7 +7,7 @@ from flask import Flask
 from mywhiskies.blueprints.auth import auth
 from mywhiskies.blueprints.bottle import bottle_bp
 from mywhiskies.blueprints.bottler import bottler_bp
-from mywhiskies.blueprints.core.views import core
+from mywhiskies.blueprints.core import core_bp
 from mywhiskies.blueprints.distillery import distillery_bp
 from mywhiskies.blueprints.errors.views import errors
 from mywhiskies.extensions import register_extensions
@@ -31,7 +31,7 @@ def create_app(settings_override: dict = None) -> Flask:
         return {"current_date": datetime.today()}
 
     app.register_blueprint(auth)
-    app.register_blueprint(core)
+    app.register_blueprint(core_bp)
     app.register_blueprint(bottle_bp)
     app.register_blueprint(bottler_bp)
     app.register_blueprint(distillery_bp)
