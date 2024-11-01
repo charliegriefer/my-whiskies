@@ -2,7 +2,7 @@ import time
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
-from flask import flash, make_response, redirect, render_template, request, url_for
+from flask import make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.bottle import bottle_bp
@@ -13,11 +13,11 @@ from mywhiskies.extensions import db
 from mywhiskies.services.bottle.bottle import (
     add_bottle,
     delete_bottle,
-    get_s3_config,
-    handle_bottle_edit,
-    list_user_bottles,
-    prepare_bottle_form,
+    edit_bottle,
+    list_bottles,
 )
+from mywhiskies.services.bottle.form import prepare_bottle_form
+from mywhiskies.services.bottle.image import get_s3_config
 
 
 @bottle_bp.route(
@@ -30,8 +30,8 @@ def bottles(username: str):
     dt_list_length = request.cookies.get("dt-list-length", "50")
     user = db.one_or_404(db.select(User).filter_by(username=username))
 
-    bottles_to_list, active_bottle_types, is_my_list, killed_bottles = (
-        list_user_bottles(user, request)
+    bottles_to_list, active_bottle_types, is_my_list, killed_bottles = list_bottles(
+        user, request
     )
 
     response = make_response(
@@ -80,7 +80,7 @@ def bottle_add():
     form = prepare_bottle_form(current_user, BottleForm())
 
     if form.validate_on_submit():
-        _ = add_bottle(form, current_user)
+        add_bottle(form, current_user)
         return redirect(url_for("core.home", username=current_user.username.lower()))
 
     return render_template(
@@ -93,12 +93,14 @@ def bottle_add():
 @bottle_bp.route("/bottle/edit/<string:bottle_id>", methods=["GET", "POST"])
 @login_required
 def bottle_edit(bottle_id: str):
+    _, _, img_s3_url = get_s3_config()
     _bottle = db.get_or_404(Bottle, bottle_id)
     form = prepare_bottle_form(current_user, BottleEditForm(obj=_bottle))
+    form.type.data = _bottle.type.name
+    form.distilleries.data = [d.id for d in _bottle.distilleries]
 
     if form.validate_on_submit():
-        handle_bottle_edit(form, _bottle)
-        flash(f'"{_bottle.name}" has been successfully updated.', "success")
+        edit_bottle(form, _bottle)
         return redirect(url_for("core.home", username=current_user.username.lower()))
 
     return render_template(
@@ -106,14 +108,14 @@ def bottle_edit(bottle_id: str):
         title=f"{current_user.username}'s Whiskies: Edit Bottle",
         bottle=_bottle,
         form=form,
+        img_s3_url=img_s3_url,
     )
 
 
 @bottle_bp.route("/bottle/delete/<string:bottle_id>")
 @login_required
-def gottle_delete(bottle_id: str):
+def bottle_delete(bottle_id: str):
     delete_bottle(bottle_id)
-    flash("Bottle deleted succesfully", "success")
     return redirect(
         url_for("bottle.list_bottles", username=current_user.username.lower())
     )
