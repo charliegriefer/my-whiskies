@@ -1,15 +1,19 @@
 import os
 import tempfile
+import uuid
+from unittest.mock import MagicMock, patch
 
 import pytest
 from flask import Flask, url_for
-from werkzeug.datastructures import MultiDict
+from werkzeug.datastructures import FileStorage, MultiDict
 
 from mywhiskies.blueprints.bottle.forms import BottleAddForm
+from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 from mywhiskies.services.bottle.form import prepare_bottle_form
+from mywhiskies.services.bottle.image import add_bottle_images
 
 
 @pytest.fixture
@@ -39,40 +43,54 @@ def mock_image():
 
 def test_add_bottle_requires_login(app):
     with app.test_client() as client:
-        # Attempt to access the add bottle page without logging in
         response = client.get(url_for("bottle.bottle_add"), follow_redirects=False)
-
-        # Check if the response status code is 302 (redirection)
         assert response.status_code == 302
-
-        # Check if the location header points to the login page
         assert url_for("auth.login", _external=False) in response.headers["Location"]
 
 
-def test_valid_bottle_form(
-    app: Flask, test_user: User, test_distillery: Distillery, mock_image: str
-) -> None:
-    form = BottleAddForm()
-    prepare_bottle_form(test_user, form)
+def test_valid_bottle_form(app, test_user, test_distillery, mock_image: str):
+    with app.app_context():
+        with open(mock_image, "rb") as f:
+            file_storage = FileStorage(
+                stream=f, filename="test_image.png", content_type="image/png"
+            )
 
-    with open(mock_image, "rb") as img_file:
-        formdata = MultiDict(
-            {
-                "name": "Frey Ranch Single Barrel Bourbon",
-                "url": "https://shop.freyranch.com",
-                "type": "bourbon",
-                "distilleries": [test_distillery.id],
-                "bottler_id": "0",
-                "size": 750,
-                "year_barrelled": 2020,
-                "year_bottled": 2022,
-                "abv": 68.8,
-                "cost": 50.00,
-                "stars": "5",
-                "description": "A fine sample bottle.",
-                "review": "Excellent taste.",
-                "bottle_image_1": (img_file, "test_image.png"),
-            }
-        )
-        form.process(formdata)
-        assert form.validate()
+            formdata = MultiDict(
+                {
+                    "name": "Test Bottle",
+                    "type": "bourbon",
+                    "year_barrelled": 2020,
+                    "year_bottled": 2022,
+                    "abv": 68.8,
+                    "cost": 50.00,
+                    "stars": "5",
+                    "description": "A fine sample bottle.",
+                    "review": "Excellent taste.",
+                    "distilleries": [test_distillery.id],
+                    "bottler_id": "0",
+                    "bottle_image_1": file_storage,
+                }
+            )
+
+            form = BottleAddForm()
+            prepare_bottle_form(test_user, form)
+            form.process(formdata)
+
+            assert form.validate(), f"Form validation failed: {form.errors}"
+
+            with patch("boto3.client") as mock_boto_client, patch(
+                "PIL.Image.open"
+            ) as mock_image_open:
+                mock_image_obj = MagicMock()
+                mock_image_open.return_value = mock_image_obj
+                mock_image_obj.width = 800  # Ensure width is greater than 400
+                mock_image_obj.height = 600  # Arbitrary height for the mock
+
+                mock_s3_client = MagicMock()
+                mock_boto_client.return_value = mock_s3_client
+
+                bottle = Bottle(id=str(uuid.uuid4()))
+                result = add_bottle_images(form, bottle)
+
+                assert result is True, "Image upload failed"
+                assert mock_s3_client.put_object.called, "S3 put_object was not called"
