@@ -12,6 +12,8 @@ load_dotenv(dotenv_path=dotenv_path, verbose=True)
 
 
 class BaseConfig:
+    ENV = "development"
+
     SECRET_KEY = os.environ["SECRET_KEY"]
     PERMANENT_SESSION_LIFETIME = 86400  # 24 hours
 
@@ -59,6 +61,8 @@ class DevConfig(BaseConfig):
 
 
 class ProdConfig(BaseConfig):
+    ENV = "production"
+
     # DATABASE
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -77,3 +81,8 @@ class ProdConfig(BaseConfig):
 class TestConfig(BaseConfig):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ["SQLALCHEMY_DATABASE_URI_TEST"]
+    SQLALCHEMY_ENGINE_OPTIONS = {}
+
+    WTF_CSRF_ENABLED = False  # Disable CSRF for testing purposes
+    TESTING_RECAPTCHA_BYPASS = True  # Bypass ReCaptcha validation in tests
+    LOG_LEVEL = logging.CRITICAL  # Suppress logging output during tests
