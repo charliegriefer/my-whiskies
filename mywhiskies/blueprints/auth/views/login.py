@@ -40,7 +40,6 @@ def login():
             return redirect(url_for("auth.login"))
 
         if not check_email_confirmation(user):
-            flash("You have not yet confirmed your e-mail address.", "danger")
             return redirect(url_for("auth.login"))
 
         log_in_user(user, form.remember_me.data)
