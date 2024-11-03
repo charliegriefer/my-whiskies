@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 from werkzeug.datastructures import MultiDict
 
 from mywhiskies.blueprints.auth.forms import RegistrationForm
@@ -8,19 +6,18 @@ from mywhiskies.blueprints.auth.forms import RegistrationForm
 def test_valid_registration_form(app):
     """Test that a valid form passes validation."""
     with app.app_context():
-        with patch.object(RegistrationForm, "recaptcha", True):  # Mock ReCAPTCHA
-            form = RegistrationForm(
-                formdata=MultiDict(
-                    {
-                        "username": "validuser",
-                        "email": "user@example.com",
-                        "password": "StrongPassword123",
-                        "password2": "StrongPassword123",
-                        "agree_terms": True,
-                    }
-                )
+        form = RegistrationForm(
+            formdata=MultiDict(
+                {
+                    "username": "validuser",
+                    "email": "user@example.com",
+                    "password": "StrongPassword123",
+                    "password2": "StrongPassword123",
+                    "agree_terms": True,
+                }
             )
-            assert form.validate(), f"Form validation failed: {form.errors}"
+        )
+        assert form.validate(), f"Form validation failed: {form.errors}"
 
 
 def test_invalid_email(app):
