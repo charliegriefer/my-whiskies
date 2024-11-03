@@ -34,8 +34,8 @@ def register():
         flash_registration_instructions()
         return redirect(url_for("auth.login"))
 
-    current_app.logger.info(f"Form validation errors: {form.errors}")
-    utils.handle_form_errors(form)
+        current_app.logger.info(f"Form validation errors: {form.errors}")
+        utils.handle_form_errors(form)
 
     return render_template(
         "auth/register.html",
