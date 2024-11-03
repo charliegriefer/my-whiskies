@@ -10,9 +10,7 @@ def test_reset_password_request_form_valid(app, test_user):
         }
     )
     form = ResetPasswordRequestForm(formdata)
-    foo = form.validate()
-    print(form.errors)
-    assert foo
+    assert form.validate()
 
 
 def test_reset_password_request_form_invalid_email(app):
