@@ -19,7 +19,9 @@ if TYPE_CHECKING:  # avoid circular imports
 
 
 class User(UserMixin, db.Model):
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uuid.uuid4)
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
     username: Mapped[str] = mapped_column(String(64), index=True, unique=True)
     email: Mapped[str] = mapped_column(String(120), index=True, unique=True)
     password_hash: Mapped[str] = mapped_column(String(128))
@@ -77,5 +79,4 @@ class User(UserMixin, db.Model):
 
 @login_manager.user_loader
 def load_user(user_id: str) -> User:
-    user = db.get_or_404(User, user_id)
-    return user
+    return db.get_or_404(User, user_id)
