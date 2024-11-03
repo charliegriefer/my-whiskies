@@ -42,6 +42,11 @@ class ReCaptchaV3:
         self.threshold = threshold
 
     def __call__(self, form, field):
+        # bypass recaptcha validation during tests
+        if current_app.config.get("TESTING"):
+            field.data = 1.0
+            return
+
         recaptcha_response = request.form.get("g-recaptcha-response")
 
         error_msg = ""
