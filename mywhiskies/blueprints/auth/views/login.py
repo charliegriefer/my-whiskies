@@ -1,12 +1,15 @@
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, logout_user
+from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 
 from mywhiskies.blueprints.auth import auth
 from mywhiskies.blueprints.auth.forms import LoginForm
+from mywhiskies.blueprints.user.models import User
+from mywhiskies.extensions import db
 from mywhiskies.services.auth.login import (
     check_email_confirmation,
     determine_next_page,
-    get_user_by_username,
     log_in_user,
     validate_password,
 )
@@ -20,13 +23,24 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = get_user_by_username(form.username.data)
+        user = (
+            (
+                db.session.execute(
+                    select(User)
+                    .filter_by(username=form.username.data, is_deleted=False)
+                    .options(joinedload(User.distilleries))
+                )
+            )
+            .scalars()
+            .first()
+        )
 
-        if not validate_password(user, form.password.data):
+        if user is None or not validate_password(user, form.password.data):
             flash("Incorrect username or password!", "danger")
             return redirect(url_for("auth.login"))
 
         if not check_email_confirmation(user):
+            flash("You have not yet confirmed your e-mail address.", "danger")
             return redirect(url_for("auth.login"))
 
         log_in_user(user, form.remember_me.data)
