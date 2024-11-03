@@ -1,9 +1,12 @@
 import os
 from datetime import datetime
+from typing import Type
 
 from dotenv import load_dotenv
 from flask import Flask
+from flask.config import Config
 
+from config import BaseConfig
 from mywhiskies.blueprints.auth import auth
 from mywhiskies.blueprints.bottle import bottle_bp
 from mywhiskies.blueprints.bottler import bottler_bp
@@ -18,10 +21,12 @@ dotenv_path = os.path.join(
 load_dotenv(dotenv_path=dotenv_path, verbose=True)
 
 
-def create_app(settings_override: dict = None) -> Flask:
+def create_app(
+    config_class: Type[Config] = BaseConfig, settings_override: dict = None
+) -> Flask:
     app = Flask(__name__, instance_relative_config=True)
 
-    app.config.from_object(os.environ["CONFIG_TYPE"])
+    app.config.from_object(config_class)
 
     if settings_override:
         app.config.update(settings_override)
