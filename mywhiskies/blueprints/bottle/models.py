@@ -29,7 +29,9 @@ class BottleTypes(enum.Enum):
 
 class Bottle(db.Model):
     __tablename__ = "bottle"
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uuid.uuid4)
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
     date_created: Mapped[datetime] = mapped_column(default=datetime.utcnow)
     name: Mapped[str] = mapped_column(String(64))
     type: Mapped[BottleTypes]
