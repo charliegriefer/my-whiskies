@@ -9,31 +9,41 @@ from wtforms.validators import Email, EqualTo, InputRequired, Length, Validation
 
 from mywhiskies.blueprints.user.models import User
 
-PW_DESCRIPTION = "Password requirements:<ul>"
-PW_DESCRIPTION += "<li>Must be between 8 and 22 characters.</li>"
-PW_DESCRIPTION += "<li>Must contain at least one uppercase letter, one lowercase letter, and one digit.</li>"
-PW_DESCRIPTION += "<li>Spaces are not allowed.</li></ul>"
+USERNAME_DESCRIPTION = (
+    "Username requirements:<ul>"
+    "<li>Must be between 4 and 24 characters.</li>"
+    "<li>Valid special characters: - _ @ ! ^ * $</li>"
+    "<li>Spaces are not allowed.</li></ul>"
+)
 
-USERNAME_DESCRIPTION = "Username requirements:<ul>"
-USERNAME_DESCRIPTION += "<li>Must be between 4 and 24 characters.</li>"
-USERNAME_DESCRIPTION += "<li>Valid special characters: - _ @ ! ^ * $</li>"
-USERNAME_DESCRIPTION += "<li>Spaces are not allowed.</li></ul>"
+PW_DESCRIPTION = (
+    "Password requirements:<ul>"
+    "<li>Must be between 8 and 22 characters.</li>"
+    "<li>Must contain at least one uppercase letter, one lowercase letter, and one digit.</li>"
+    "<li>Spaces are not allowed.</li></ul>"
+)
 
 REG_CAPTCHA_MESSAGE = (
     "There was an issue processing your registration. Please try again later."
-)
-REG_CAPTCHA_MESSAGE += "<br />If this problem persists, please contact us us at "
-REG_CAPTCHA_MESSAGE += (
+    "<br />If this problem persists, please contact us us at "
     '<a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a>.'
 )
 
 RESET_CAPTCHA_MESSAGE = (
     "There was an issue processing your request. Please try again later."
-)
-RESET_CAPTCHA_MESSAGE += "<br />If this problem persists, please contact us us at "
-RESET_CAPTCHA_MESSAGE += (
+    "<br />If this problem persists, please contact us us at "
     '<a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a>.'
 )
+
+
+class PasswordValidatorMixin:
+    def validate_password(self, password: StringField) -> None:
+        regex = [r"[A-Z]", r"[a-z]", r"[0-9]"]
+        is_valid_pw = all(re.search(r, password.data) for r in regex) and not re.search(
+            r"\s", password.data
+        )
+        if password.data != self.password and not is_valid_pw:
+            raise ValidationError("Password is invalid.")
 
 
 class ReCaptchaV3:
@@ -107,7 +117,7 @@ class ResetPasswordRequestForm(FlaskForm):
     submit = SubmitField("Submit")
 
 
-class ResetPWForm(FlaskForm):
+class ResetPWForm(PasswordValidatorMixin, FlaskForm):
     password = PasswordField(
         "Password:",
         validators=[InputRequired(), Length(min=8, max=24)],
@@ -125,7 +135,7 @@ class ResetPWForm(FlaskForm):
     submit = SubmitField("Reset My Password ")
 
 
-class RegistrationForm(FlaskForm):
+class RegistrationForm(PasswordValidatorMixin, FlaskForm):
     form_name = HiddenField("form_name", default="registration")
     username = StringField(
         "Username:",
@@ -168,14 +178,6 @@ class RegistrationForm(FlaskForm):
 
         if username.data != self.username and len(error_message):
             raise ValidationError(error_message)
-
-    def validate_password(self, password: StringField) -> None:
-        regex = [r"[A-Z]", r"[a-z]", r"[0-9]"]
-        is_valid_pw = all(re.search(r, password.data) for r in regex) and not re.search(
-            r"\s", password.data
-        )
-        if password.data != self.password and not is_valid_pw:
-            raise ValidationError("Password is invalid.")
 
     def validate_email(self, email: StringField) -> None:
         if email.data != self.email and User.query.filter_by(email=email.data).first():
