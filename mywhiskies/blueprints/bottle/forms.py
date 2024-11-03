@@ -22,7 +22,7 @@ def get_current_year() -> int:
     return datetime.date.today().year
 
 
-class BottleForm(FlaskForm):
+class BottleAddForm(FlaskForm):
     name = TextAreaField(
         "Name:",
         validators=[InputRequired(), Length(max=100)],
@@ -111,7 +111,7 @@ class BottleForm(FlaskForm):
     submit = SubmitField("Add Bottle")
 
 
-class BottleEditForm(BottleForm):
+class BottleEditForm(BottleAddForm):
     remove_image_1 = HiddenField()
     remove_image_2 = HiddenField()
     remove_image_3 = HiddenField()

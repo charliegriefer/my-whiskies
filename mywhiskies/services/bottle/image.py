@@ -6,7 +6,7 @@ from botocore.exceptions import ClientError
 from flask import current_app
 from PIL import Image
 
-from mywhiskies.blueprints.bottle.forms import BottleEditForm, BottleForm
+from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
 from mywhiskies.blueprints.bottle.models import Bottle
 
 
@@ -30,7 +30,7 @@ def get_bottle_image_count(bottle_id: str) -> int:
 
 
 def add_bottle_images(
-    form: Union[BottleForm, BottleEditForm], bottle_in: Bottle
+    form: Union[BottleAddForm, BottleEditForm], bottle_in: Bottle
 ) -> bool:
     for i in range(1, 4):
         image_field = form[f"bottle_image_{i}"]

@@ -1,12 +1,12 @@
 from typing import Union
 
-from mywhiskies.blueprints.bottle.forms import BottleEditForm, BottleForm
+from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
 from mywhiskies.blueprints.bottle.models import BottleTypes
 
 
 def prepare_bottle_form(
-    user, form: Union[BottleForm, BottleEditForm]
-) -> Union[BottleForm, BottleEditForm]:
+    user, form: Union[BottleAddForm, BottleEditForm]
+) -> Union[BottleAddForm, BottleEditForm]:
 
     # set up bottle type dropdown
     form.type.choices = [(t.name, t.value) for t in BottleTypes]
