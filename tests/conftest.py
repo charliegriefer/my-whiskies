@@ -29,6 +29,20 @@ def app():
         db.drop_all()
 
 
+@pytest.fixture(autouse=True)
+def transaction(app):
+    """Wrap each test in a transaction and roll back after."""
+    connection = db.engine.connect()
+    transaction = connection.begin()
+    db.session.remove()
+    db.configure_mappers()
+
+    yield  # This is where the test will run
+
+    transaction.rollback()
+    connection.close()
+
+
 @pytest.fixture
 def test_user(app):
     with app.app_context():
@@ -45,7 +59,11 @@ def test_user(app):
         user.set_password(TEST_PASSWORD)
         db.session.add(user)
         db.session.commit()
-    return user
+    yield user
+
+    with app.app_context():
+        db.session.execute(db.delete(User).where(User.username == "testuser"))
+        db.session.commit()
 
 
 @pytest.fixture
