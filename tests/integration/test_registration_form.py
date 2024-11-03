@@ -64,7 +64,7 @@ def test_agree_terms_required(app):
                 "email": "user@example.com",
                 "password": "StrongPassword123",
                 "password2": "StrongPassword123",
-                "agree_terms": False,  # User didn't agree to terms
+                "agree_terms": False,
             },
         )
         assert not form.validate()
