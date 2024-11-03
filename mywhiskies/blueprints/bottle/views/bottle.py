@@ -4,7 +4,7 @@ from flask import redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.bottle import bottle_bp
-from mywhiskies.blueprints.bottle.forms import BottleEditForm, BottleForm
+from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
 from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
@@ -54,7 +54,7 @@ def bottle_detail(bottle_id: str):
 @bottle_bp.route("/bottle/add", methods=["GET", "POST"])
 @login_required
 def bottle_add():
-    form = prepare_bottle_form(current_user, BottleForm())
+    form = prepare_bottle_form(current_user, BottleAddForm())
     if form.validate_on_submit():
         add_bottle(form, current_user)
         return redirect(url_for("core.home", username=current_user.username))

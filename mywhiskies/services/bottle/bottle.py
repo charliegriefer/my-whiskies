@@ -4,7 +4,7 @@ import boto3
 from flask import flash, make_response, render_template, request
 from flask.wrappers import Response
 
-from mywhiskies.blueprints.bottle.forms import BottleEditForm, BottleForm
+from mywhiskies.blueprints.bottle.forms import BottleEditForm, BottleAddForm
 from mywhiskies.blueprints.bottle.models import Bottle, BottleTypes
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
@@ -58,7 +58,7 @@ def list_bottles(user: User, request: request, current_user: User) -> Response:
     return response
 
 
-def add_bottle(form: BottleForm, user: User) -> None:
+def add_bottle(form: BottleAddForm, user: User) -> None:
     distilleries = []
     for distillery_id in form.distilleries.data:
         distilleries.append(db.session.get(Distillery, distillery_id))
