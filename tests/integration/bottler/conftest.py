@@ -114,14 +114,3 @@ def npc_user(app: Flask) -> User:
     db.session.add(bottle)
     db.session.commit()
     return user
-
-
-def html_encode(text: str) -> str:
-    """HTML encodes characters in a string in order to be able to search for that string in response.data"""
-    return (
-        text.replace("&", "&amp;")
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
-        .replace('"', "&quot;")
-        .replace("'", "&#39;")
-    )
