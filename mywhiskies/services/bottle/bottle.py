@@ -168,4 +168,4 @@ def delete_bottle(user: User, bottle_id: str) -> None:
                 Key=f"{img_s3_key}/{bottle_to_delete.id}_{i}.png",
             )
     db.session.commit()
-    flash("Bottle deleted succesfully", "success")
+    flash("Bottle deleted successfully", "success")
