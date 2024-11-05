@@ -1,5 +1,6 @@
 from flask import Flask, url_for
 
+from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.user.models import User
 from tests.conftest import TEST_PASSWORD
 
@@ -32,7 +33,9 @@ def test_bottle_list(app: Flask, test_user: User):
             assert bottle.description.encode("utf-8") in response.data
 
 
-def test_random_bottle_button_logged_in(app: Flask, test_user: User):
+def test_bottle_list_logged_in_elements(
+    app: Flask, test_user: User, npc_user: User, test_user_bottle: Bottle
+):
     with app.test_client() as client:
         # log in the test user
         client.post(
@@ -43,20 +46,36 @@ def test_random_bottle_button_logged_in(app: Flask, test_user: User):
             },
         )
 
-        # Access the user's bottle list page
+        # get the bottle list page for another user.
+        # even though we're logged in, we shouldn't see edit or delete icons in another user's list.
+        response = client.get(
+            url_for("bottle.list_bottles", username=npc_user.username)
+        )
+        assert response.status_code == 200
+        assert b"Random Bottle" not in response.data
+        assert b"bi-pencil" not in response.data
+        assert b"bi-trash" not in response.data
+
+        # get the bottle list page the current user.
+        # now we should see the edit and delete iconss, as well as the "random" button.
         response = client.get(
             url_for("bottle.list_bottles", username=test_user.username)
         )
         assert response.status_code == 200
+        assert b"Random Bottle" in response.data
+        assert b"bi-pencil" in response.data
+        assert b"bi-trash" in response.data
 
-        # Check that the random bottle button is present in the response
-        assert b"Random Bottle" in response.data  # Adjust the button text accordingly
 
-
-def test_random_bottle_button_not_logged_in(app: Flask):
+def test_bottle_list_logged_out_elements(app: Flask):
     with app.test_client() as client:
-        # Get the bottle list without logging in
+        # not logged in, so we shouldn't see the random bottle button, or any edit or delete icons in any lists.
         response = client.get(url_for("bottle.list_bottles", username="testuser"))
-
-        # Check if the random bottle button is not displayed
         assert b"Random Bottle" not in response.data
+        assert b"bi-pencil" not in response.data
+        assert b"bi-trash" not in response.data
+
+        response = client.get(url_for("bottle.list_bottles", username="testuser"))
+        assert b"Random Bottle" not in response.data
+        assert b"bi-pencil" not in response.data
+        assert b"bi-trash" not in response.data
