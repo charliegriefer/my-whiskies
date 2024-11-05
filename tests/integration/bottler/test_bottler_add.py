@@ -44,7 +44,7 @@ def test_valid_bottler_form(app: Flask, test_user: User):
             response = client.post(
                 url_for("bottler.bottler_add"), data=formdata, follow_redirects=True
             )
-            
+
             # Check that the user is redirected to the home page
             assert response.status_code == 200
             assert (
