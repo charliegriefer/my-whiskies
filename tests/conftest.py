@@ -2,6 +2,9 @@ import os
 import sys
 
 import pytest
+from flask import Flask
+from flask.testing import FlaskClient
+from flask_login import logout_user
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from mywhiskies.blueprints.user.models import User
@@ -16,8 +19,14 @@ from mywhiskies.extensions import db  # noqa: E402
 TEST_PASSWORD = "testpass"
 
 
+@pytest.fixture(autouse=True)
+def logged_out_user(app: Flask, client: FlaskClient) -> None:
+    yield
+    logout_user()
+
+
 @pytest.fixture(scope="session")
-def app():
+def app() -> Flask:
     app = create_app(config_class=TestConfig)
     app.teardown_bkp = app.teardown_appcontext_funcs
     app.teardown_appcontext_funcs = []
@@ -29,7 +38,7 @@ def app():
 
 
 @pytest.fixture(scope="function", autouse=True)
-def session(app):
+def session(app: Flask) -> scoped_session:
     """Create a new database session for a test."""
     connection = db.engine.connect()
     transaction = connection.begin()
@@ -47,7 +56,7 @@ def session(app):
 
 
 @pytest.fixture
-def test_user(app):
+def test_user(app: Flask) -> User:
     user = User(
         username="testuser",
         email="test@example.com",
@@ -60,5 +69,5 @@ def test_user(app):
 
 
 @pytest.fixture
-def login_data(test_user):
+def login_data(test_user: User) -> dict:
     return {"username": test_user.username, "password": TEST_PASSWORD}
