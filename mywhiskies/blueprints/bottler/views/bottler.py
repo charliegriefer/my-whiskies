@@ -2,7 +2,7 @@ from flask import make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.bottler import bottler_bp
-from mywhiskies.blueprints.bottler.forms import BottlerEditForm, BottlerForm
+from mywhiskies.blueprints.bottler.forms import BottlerAddForm, BottlerEditForm
 from mywhiskies.blueprints.bottler.models import Bottler
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
@@ -39,7 +39,7 @@ def bottler_detail(bottler_id: str):
 @bottler_bp.route("/bottler/add", methods=["GET", "POST"])
 @login_required
 def bottler_add():
-    form = BottlerForm()
+    form = BottlerAddForm()
 
     if form.validate_on_submit():
         add_bottler(form, current_user)
