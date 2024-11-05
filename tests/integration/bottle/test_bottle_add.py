@@ -20,16 +20,13 @@ def test_add_bottle_requires_login(app: Flask):
 
 
 def test_valid_bottle_form(
-    app: Flask, test_user: User, test_distillery: Distillery, mock_image: str
+    app: Flask, test_user: User, test_user_distillery: Distillery, mock_image: str
 ):
     with app.app_context():
         with open(mock_image, "rb") as f:
             file_storage = FileStorage(
                 stream=f, filename="test_image.png", content_type="image/png"
             )
-            print("*" * 80)
-            print(test_distillery.id)
-            print("*" * 80)
             formdata = MultiDict(
                 {
                     "name": "Test Bottle",
@@ -41,7 +38,7 @@ def test_valid_bottle_form(
                     "stars": "5",
                     "description": "A fine sample bottle.",
                     "review": "Excellent taste.",
-                    "distilleries": [test_distillery.id],
+                    "distilleries": [test_user_distillery.id],
                     "bottler_id": "0",
                     "bottle_image_1": file_storage,
                 }

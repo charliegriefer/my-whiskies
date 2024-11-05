@@ -11,10 +11,10 @@ from mywhiskies.services.bottle.bottle import edit_bottle
 from mywhiskies.services.bottle.form import prepare_bottle_form
 
 
-def test_add_bottle_requires_login(app, test_bottle):
+def test_add_bottle_requires_login(app, test_user_bottle):
     with app.test_client() as client:
         response = client.get(
-            url_for("bottle.bottle_edit", bottle_id=test_bottle.id),
+            url_for("bottle.bottle_edit", bottle_id=test_user_bottle.id),
             follow_redirects=False,
         )
         assert response.status_code == 302
@@ -24,7 +24,7 @@ def test_add_bottle_requires_login(app, test_bottle):
 def test_valid_bottle_edit_form(
     app: Flask,
     test_user: User,
-    test_bottle: Bottle,
+    test_user_bottle: Bottle,
     mock_image: str,
 ) -> None:
     """Test the validation of a valid bottle edit form with image upload."""
@@ -46,7 +46,7 @@ def test_valid_bottle_edit_form(
                     "stars": "4",
                     "description": "An updated fine sample bottle.",
                     "review": "Still excellent taste.",
-                    "distilleries": [str(d.id) for d in test_bottle.distilleries],
+                    "distilleries": [str(d.id) for d in test_user_bottle.distilleries],
                     "bottler_id": "0",
                     "bottle_image_1": file_storage,
                 }
@@ -70,9 +70,9 @@ def test_valid_bottle_edit_form(
                 mock_boto_client.return_value = mock_s3_client
 
                 # Ensure the distillery object is attached to the session
-                test_bottle.distilleries = [
-                    db.session.merge(d) for d in test_bottle.distilleries
+                test_user_bottle.distilleries = [
+                    db.session.merge(d) for d in test_user_bottle.distilleries
                 ]
 
                 # Call the edit bottle function
-                edit_bottle(form, test_bottle)
+                edit_bottle(form, test_user_bottle)
