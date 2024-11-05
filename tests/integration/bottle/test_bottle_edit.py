@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-from flask import Flask
+from flask import Flask, url_for
 from werkzeug.datastructures import FileStorage, MultiDict
 
 from mywhiskies.blueprints.bottle.forms import BottleEditForm
@@ -9,6 +9,16 @@ from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 from mywhiskies.services.bottle.bottle import edit_bottle
 from mywhiskies.services.bottle.form import prepare_bottle_form
+
+
+def test_add_bottle_requires_login(app, test_bottle):
+    with app.test_client() as client:
+        response = client.get(
+            url_for("bottle.bottle_edit", bottle_id=test_bottle.id),
+            follow_redirects=False,
+        )
+        assert response.status_code == 302
+        assert url_for("auth.login", _external=False) in response.headers["Location"]
 
 
 def test_valid_bottle_edit_form(
