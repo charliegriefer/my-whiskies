@@ -4,7 +4,7 @@ from flask import flash, make_response, render_template
 from flask.wrappers import Response
 from werkzeug.local import LocalProxy
 
-from mywhiskies.blueprints.bottler.forms import BottlerEditForm, BottlerForm
+from mywhiskies.blueprints.bottler.forms import BottlerAddForm, BottlerEditForm
 from mywhiskies.blueprints.bottler.models import Bottler
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
@@ -25,7 +25,7 @@ def list_bottlers(user: User, current_user: User) -> Response:
     return response
 
 
-def add_bottler(form: BottlerForm, user: User) -> None:
+def add_bottler(form: BottlerAddForm, user: User) -> None:
     bottler_in = Bottler(user_id=user.id)
     form.populate_obj(bottler_in)
     db.session.add(bottler_in)
