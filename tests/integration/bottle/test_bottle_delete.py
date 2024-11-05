@@ -2,7 +2,6 @@ from flask import Flask, url_for
 
 from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.user.models import User
-from mywhiskies.extensions import db
 from tests.conftest import TEST_PASSWORD
 
 
@@ -41,9 +40,13 @@ def test_delete_not_my_bottle(app: Flask, test_user: User, npc_user: User):
 
 
 def test_delete_my_bottle(
-    app: Flask, test_user: User, test_user_bottle_to_delete: Bottle
+    app: Flask,
+    test_user: User,
+    test_user_bottle: Bottle,
+    test_user_bottle_to_delete: Bottle,
 ) -> None:
     with app.test_client() as client:
+        # Log in the user
         client.post(
             url_for("auth.login"),
             data={
@@ -51,16 +54,16 @@ def test_delete_my_bottle(
                 "password": TEST_PASSWORD,
             },
         )
-        db.session.refresh(test_user)
-        test_user = (
-            db.session.query(User)
-            .options(db.joinedload(User.bottles))
-            .filter_by(id=test_user.id)
-            .one()
-        )
+        bottles_before_delete = [bottle.name for bottle in test_user.bottles]
+
+        # Perform the delete operation
         response = client.get(
             url_for("bottle.bottle_delete", bottle_id=test_user_bottle_to_delete.id),
             follow_redirects=True,
         )
         assert response.status_code == 200
-        assert b"Bottle deleted succesfully" in response.data
+        assert b"Bottle deleted successfully" in response.data
+
+        bottles_after_delete = [bottle.name for bottle in test_user.bottles]
+
+        assert len(bottles_after_delete) == len(bottles_before_delete) - 1
