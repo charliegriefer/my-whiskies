@@ -1,44 +1,13 @@
-import os
-import tempfile
 import uuid
 from unittest.mock import MagicMock, patch
 
-import pytest
-from flask import Flask, url_for
+from flask import url_for
 from werkzeug.datastructures import FileStorage, MultiDict
 
 from mywhiskies.blueprints.bottle.forms import BottleAddForm
 from mywhiskies.blueprints.bottle.models import Bottle
-from mywhiskies.blueprints.distillery.models import Distillery
-from mywhiskies.blueprints.user.models import User
-from mywhiskies.extensions import db
 from mywhiskies.services.bottle.form import prepare_bottle_form
 from mywhiskies.services.bottle.image import add_bottle_images
-
-
-@pytest.fixture
-def test_distillery(app: Flask, test_user: User) -> Distillery:
-    with app.app_context():
-        distillery = Distillery(
-            name="Frey Ranch",
-            description="A distillery in Nevada.",
-            region_1="Nevada",
-            region_2="USA",
-            url="https://freyranch.com",
-            user_id=test_user.id,
-        )
-        db.session.add(distillery)
-        db.session.commit()
-    return distillery
-
-
-@pytest.fixture
-def mock_image():
-    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
-        temp_file.write(b"\x89PNG\r\n\x1a\n" + b"\x00" * 1024)
-        temp_file_path = temp_file.name
-    yield temp_file_path
-    os.remove(temp_file_path)
 
 
 def test_add_bottle_requires_login(app):
@@ -54,7 +23,9 @@ def test_valid_bottle_form(app, test_user, test_distillery, mock_image: str):
             file_storage = FileStorage(
                 stream=f, filename="test_image.png", content_type="image/png"
             )
-
+            print("*" * 80)
+            print(test_distillery.id)
+            print("*" * 80)
             formdata = MultiDict(
                 {
                     "name": "Test Bottle",

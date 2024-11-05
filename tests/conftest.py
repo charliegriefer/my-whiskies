@@ -2,6 +2,7 @@ import os
 import sys
 
 import pytest
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 from mywhiskies.blueprints.user.models import User
 
@@ -10,8 +11,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 from config import TestConfig  # noqa: E402
 from mywhiskies.app import create_app  # noqa: E402
-
-# from mywhiskies.blueprints.user.models import User  # noqa: E402
 from mywhiskies.extensions import db  # noqa: E402
 
 TEST_PASSWORD = "testpass"
@@ -29,41 +28,35 @@ def app():
         db.drop_all()
 
 
-@pytest.fixture(autouse=True)
-def transaction(app):
-    """Wrap each test in a transaction and roll back after."""
+@pytest.fixture(scope="function", autouse=True)
+def session(app):
+    """Create a new database session for a test."""
     connection = db.engine.connect()
     transaction = connection.begin()
-    db.session.remove()
-    db.configure_mappers()
 
-    yield  # This is where the test will run
+    session_factory = sessionmaker(bind=connection)
+    Session = scoped_session(session_factory)
+
+    db.session = Session
+
+    yield Session
 
     transaction.rollback()
     connection.close()
+    Session.remove()
 
 
 @pytest.fixture
 def test_user(app):
-    with app.app_context():
-        # delete any existing users with the same username or email
-        db.session.execute(db.delete(User).where(User.username == "testuser"))
-        db.session.execute(db.delete(User).where(User.email == "test@example.com"))
-        db.session.commit()
-
-        user = User(
-            username="testuser",
-            email="test@example.com",
-            email_confirmed=True,
-        )
-        user.set_password(TEST_PASSWORD)
-        db.session.add(user)
-        db.session.commit()
-    yield user
-
-    with app.app_context():
-        db.session.execute(db.delete(User).where(User.username == "testuser"))
-        db.session.commit()
+    user = User(
+        username="testuser",
+        email="test@example.com",
+        email_confirmed=True,
+    )
+    user.set_password(TEST_PASSWORD)
+    db.session.add(user)
+    db.session.commit()
+    return user
 
 
 @pytest.fixture
