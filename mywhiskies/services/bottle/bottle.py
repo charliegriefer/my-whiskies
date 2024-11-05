@@ -4,7 +4,7 @@ import boto3
 from flask import flash, make_response, render_template, request
 from flask.wrappers import Response
 
-from mywhiskies.blueprints.bottle.forms import BottleEditForm, BottleAddForm
+from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
 from mywhiskies.blueprints.bottle.models import Bottle, BottleTypes
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
@@ -40,10 +40,12 @@ def list_bottles(user: User, request: request, current_user: User) -> Response:
         active_bottle_types = [bt.name for bt in BottleTypes]
         bottles_to_list = all_bottles
 
+    page_title = f"{user.username}'{'' if user.username.endswith('s') else 's'} Whiskies: Bottles"
+    print("PAGE TITLE: ----> ", page_title)
     response = make_response(
         render_template(
             "bottle/bottle_list.html",
-            title=f"{user.username}'s Whiskies: Bottles",
+            title=page_title,
             has_datatable=True,
             user=user,
             bottles=bottles_to_list,
