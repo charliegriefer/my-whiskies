@@ -1,23 +1,27 @@
 import uuid
 from unittest.mock import MagicMock, patch
 
-from flask import url_for
+from flask import Flask, url_for
 from werkzeug.datastructures import FileStorage, MultiDict
 
 from mywhiskies.blueprints.bottle.forms import BottleAddForm
 from mywhiskies.blueprints.bottle.models import Bottle
+from mywhiskies.blueprints.distillery.models import Distillery
+from mywhiskies.blueprints.user.models import User
 from mywhiskies.services.bottle.form import prepare_bottle_form
 from mywhiskies.services.bottle.image import add_bottle_images
 
 
-def test_add_bottle_requires_login(app):
+def test_add_bottle_requires_login(app: Flask):
     with app.test_client() as client:
         response = client.get(url_for("bottle.bottle_add"), follow_redirects=False)
         assert response.status_code == 302
         assert url_for("auth.login", _external=False) in response.headers["Location"]
 
 
-def test_valid_bottle_form(app, test_user, test_distillery, mock_image: str):
+def test_valid_bottle_form(
+    app: Flask, test_user: User, test_distillery: Distillery, mock_image: str
+):
     with app.app_context():
         with open(mock_image, "rb") as f:
             file_storage = FileStorage(
