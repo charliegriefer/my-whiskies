@@ -19,12 +19,6 @@ from mywhiskies.extensions import db  # noqa: E402
 TEST_PASSWORD = "testpass"
 
 
-@pytest.fixture(autouse=True)
-def logged_out_user(app: Flask, client: FlaskClient) -> None:
-    yield
-    logout_user()
-
-
 @pytest.fixture(scope="session")
 def app() -> Flask:
     app = create_app(config_class=TestConfig)
@@ -42,10 +36,8 @@ def session(app: Flask) -> scoped_session:
     """Create a new database session for a test."""
     connection = db.engine.connect()
     transaction = connection.begin()
-
     session_factory = sessionmaker(bind=connection)
     Session = scoped_session(session_factory)
-
     db.session = Session
 
     yield Session
@@ -56,16 +48,35 @@ def session(app: Flask) -> scoped_session:
 
 
 @pytest.fixture
-def test_user(app: Flask) -> User:
+def test_user(session: scoped_session) -> User:
     user = User(
         username="testuser",
         email="test@example.com",
         email_confirmed=True,
     )
     user.set_password(TEST_PASSWORD)
-    db.session.add(user)
-    db.session.commit()
+    session.add(user)
+    session.commit()
     return user
+
+
+@pytest.fixture(autouse=True)
+def refreshed_user(app: Flask, test_user: User) -> User:
+    """Automatically refresh the user object before each test."""
+    yield refresh_user(test_user)
+
+
+def refresh_user(user: User) -> User:
+    """Refresh the user instance and return the latest state."""
+    db.session.refresh(user)
+    return db.session.get(User, user.id)
+
+
+@pytest.fixture(autouse=True)
+def logged_out_user(app: Flask, client: FlaskClient) -> None:
+    """Ensure the user is logged out before each test."""
+    yield
+    logout_user()
 
 
 @pytest.fixture
