@@ -90,5 +90,5 @@ def bottle_edit(bottle_id: str):
 @bottle_bp.route("/bottle/delete/<string:bottle_id>")
 @login_required
 def bottle_delete(bottle_id: str):
-    delete_bottle(bottle_id)
+    delete_bottle(current_user, bottle_id)
     return redirect(url_for("bottle.list_bottles", username=current_user.username))
