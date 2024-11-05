@@ -41,7 +41,7 @@ def list_bottles(user: User, request: request, current_user: User) -> Response:
         bottles_to_list = all_bottles
 
     page_title = f"{user.username}'{'' if user.username.endswith('s') else 's'} Whiskies: Bottles"
-    print("PAGE TITLE: ----> ", page_title)
+
     response = make_response(
         render_template(
             "bottle/bottle_list.html",
