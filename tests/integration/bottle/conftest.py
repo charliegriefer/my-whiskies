@@ -50,6 +50,28 @@ def test_user_bottle(
 
 
 @pytest.fixture
+def test_user_bottle_to_delete(
+    app: Flask, test_user: User, test_user_distillery: Distillery
+) -> Bottle:
+    """Create a test bottle for test_user to delete."""
+    bottle = Bottle(
+        name="Frey Ranch Oat Whiskey",
+        type="american_whiskey",
+        year_barrelled=2018,
+        year_bottled=2022,
+        abv=52.5,
+        cost=99.00,
+        stars="2",
+        description="Not really my jam.",
+        user_id=test_user.id,
+        distilleries=[test_user_distillery],
+    )
+    db.session.add(bottle)
+    db.session.commit()
+    return bottle
+
+
+@pytest.fixture
 def npc_user(app: Flask) -> User:
     """Create a separate user with a distillery and a bottle."""
     user = User(
