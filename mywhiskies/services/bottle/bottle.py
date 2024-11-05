@@ -151,7 +151,11 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
     flash(flash_message, flash_category)
 
 
-def delete_bottle(bottle_id: str) -> None:
+def delete_bottle(user: User, bottle_id: str) -> None:
+    user_bottles = [b.id for b in user.bottles]
+    if bottle_id not in user_bottles:
+        flash("There was an issue deleting the bottle.", "danger")
+        return
     img_s3_bucket, img_s3_key, _ = get_s3_config()
     bottle_to_delete = db.get_or_404(Bottle, bottle_id)
     db.session.delete(bottle_to_delete)
