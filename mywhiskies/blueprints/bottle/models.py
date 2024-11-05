@@ -50,11 +50,11 @@ class Bottle(db.Model):
     image_count: Mapped[int] = mapped_column(default=0)
 
     # foreign keys
-    bottler_id: Mapped[Optional[str]] = mapped_column(ForeignKey("bottler.id"))
     user_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
+    bottler_id: Mapped[Optional[str]] = mapped_column(ForeignKey("bottler.id"))
 
     # relationships
-    user: Mapped["User"] = relationship(back_populates="bottles")
+    user: Mapped["User"] = relationship("User", back_populates="bottles", lazy="select")
 
     distilleries: Mapped[List["Distillery"]] = relationship(
         "Distillery",

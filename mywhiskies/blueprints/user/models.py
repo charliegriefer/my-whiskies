@@ -32,9 +32,13 @@ class User(UserMixin, db.Model):
     deleted_date: Mapped[Optional[datetime]]
 
     # relationships
-    distilleries: Mapped[List["Distillery"]] = relationship(back_populates="user")
-    bottlers: Mapped[List["Bottler"]] = relationship(back_populates="user")
-    bottles: Mapped[List["Bottle"]] = relationship(back_populates="user")
+    distilleries: Mapped[List["Distillery"]] = relationship(
+        "Distillery", back_populates="user"
+    )
+    bottlers: Mapped[List["Bottler"]] = relationship("Bottler", back_populates="user")
+    bottles: Mapped[List["Bottle"]] = relationship(
+        "Bottle", back_populates="user", lazy="select"
+    )
 
     def get_mail_confirm_token(self, expires_in: int = 600) -> str:
         payload = {"confirm_reg": self.id, "exp": time() + expires_in}
