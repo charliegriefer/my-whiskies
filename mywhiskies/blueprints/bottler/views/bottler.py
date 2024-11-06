@@ -76,5 +76,5 @@ def bottler_edit(bottler_id: str):
 @bottler_bp.route("/bottler/delete/<string:bottler_id>")
 @login_required
 def bottler_delete(bottler_id: str):
-    delete_bottler(bottler_id, current_user)
+    delete_bottler(current_user, bottler_id)
     return redirect(url_for("bottler.bottlers_list", username=current_user.username))
