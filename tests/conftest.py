@@ -7,6 +7,9 @@ from flask.testing import FlaskClient
 from flask_login import logout_user
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+from mywhiskies.blueprints.bottle.models import Bottle
+from mywhiskies.blueprints.bottler.models import Bottler
+from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
 
 # Ensure the parent directory is added to the system path before imports
@@ -57,6 +60,55 @@ def test_user(session: scoped_session) -> User:
     user.set_password(TEST_PASSWORD)
     session.add(user)
     session.commit()
+
+    bottler = Bottler(
+        name="Lost Lantern",
+        description="The best independent bottler.",
+        region_1="Vergennes",
+        region_2="VT",
+        url="https://lostlanternwhiskey.com",
+        user_id=user.id,
+    )
+    session.add(bottler)
+    session.commit()
+
+    bottler = Bottler(
+        name="Two Souls Spirits",
+        description="A bottler without any bottles",
+        region_1="Davie",
+        region_2="FL",
+        url="https://twosoulsspirits.com",
+        user_id=user.id,
+    )
+    session.add(bottler)
+    session.commit()
+
+    distillery = Distillery(
+        name="Frey Ranch",
+        description="A distillery in Nevada.",
+        region_1="Nevada",
+        region_2="USA",
+        url="https://freyranch.com",
+        user_id=user.id,
+    )
+    session.add(distillery)
+    session.commit()
+
+    bottle = Bottle(
+        name="Frey Ranch Straight Rye Whiskey",
+        type="rye",
+        year_barrelled=2018,
+        year_bottled=2024,
+        abv=68.8,
+        cost=114.00,
+        stars="5",
+        description="100% Fallon-grown rye goodness",
+        user_id=user.id,
+        distilleries=[distillery],
+        bottler_id=bottler.id,
+    )
+    db.session.add(bottle)
+    db.session.commit()
     return user
 
 
