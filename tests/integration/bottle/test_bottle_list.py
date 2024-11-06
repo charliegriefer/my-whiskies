@@ -18,7 +18,7 @@ def test_bottle_list(app: Flask, test_user: User):
             assert bottle.name.encode("utf-8") in response.data
             assert bottle.type.name.encode("utf-8") in response.data
             if bottle.abv:
-                assert bottle.abv.encode("utf-8") in response.data
+                assert str(bottle.abv).encode("utf-8") in response.data
             assert bottle.description.encode("utf-8") in response.data
 
 
