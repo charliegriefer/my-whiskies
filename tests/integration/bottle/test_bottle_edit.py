@@ -11,7 +11,7 @@ from mywhiskies.services.bottle.bottle import edit_bottle
 from mywhiskies.services.bottle.form import prepare_bottle_form
 
 
-def test_add_bottle_requires_login(app, test_user_bottle):
+def test_edit_bottle_requires_login(app, test_user_bottle):
     with app.test_client() as client:
         response = client.get(
             url_for("bottle.bottle_edit", bottle_id=test_user_bottle.id),
