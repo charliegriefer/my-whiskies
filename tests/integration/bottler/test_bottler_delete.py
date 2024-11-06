@@ -2,7 +2,7 @@ from flask import Flask, url_for
 
 from mywhiskies.blueprints.bottler.models import Bottler
 from mywhiskies.blueprints.user.models import User
-from tests.conftest import TEST_PASSWORD
+from tests.conftest import TEST_USER_PASSWORD
 
 
 def test_delete_bottler_not_logged_in(
@@ -26,7 +26,7 @@ def test_delete_not_my_bottler(app: Flask, test_user: User, npc_user: User) -> N
             url_for("auth.login"),
             data={
                 "username": test_user.username,
-                "password": TEST_PASSWORD,
+                "password": TEST_USER_PASSWORD,
             },
         )
         response = client.get(
@@ -43,7 +43,7 @@ def test_delete_my_bottler_has_bottles(app: Flask, test_user: User) -> None:
             url_for("auth.login"),
             data={
                 "username": test_user.username,
-                "password": TEST_PASSWORD,
+                "password": TEST_USER_PASSWORD,
             },
         )
 

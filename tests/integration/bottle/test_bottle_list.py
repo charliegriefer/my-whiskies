@@ -2,7 +2,7 @@ from flask import Flask, url_for
 
 from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.user.models import User
-from tests.conftest import TEST_PASSWORD, html_encode
+from tests.conftest import TEST_USER_PASSWORD, html_encode
 
 
 def test_bottle_list(app: Flask, test_user: User):
@@ -31,7 +31,7 @@ def test_bottle_list_logged_in_elements(
             url_for("auth.login"),
             data={
                 "username": test_user.username,
-                "password": TEST_PASSWORD,
+                "password": TEST_USER_PASSWORD,
             },
         )
 
