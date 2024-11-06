@@ -35,3 +35,28 @@ def test_delete_not_my_bottler(app: Flask, test_user: User, npc_user: User) -> N
         )
         assert response.status_code == 200
         assert b"There was an issue deleting this bottler" in response.data
+
+
+def test_delete_my_bottler_has_bottles(app: Flask, test_user: User) -> None:
+    with app.test_client() as client:
+        client.post(
+            url_for("auth.login"),
+            data={
+                "username": test_user.username,
+                "password": TEST_PASSWORD,
+            },
+        )
+
+        # the test user should have two bottlers. One with a bottle associated, and one without.
+        for bottler in test_user.bottlers:
+            response = client.get(
+                url_for("bottler.bottler_delete", bottler_id=bottler.id),
+                follow_redirects=True,
+            )
+            if bottler.bottles:
+                assert response.status_code == 200
+                assert b"Cannot delete" in response.data
+            else:
+                assert response.status_code == 200
+                assert b"has been successfully deleted" in response.data
+                assert b"Cannot delete" not in response.data
