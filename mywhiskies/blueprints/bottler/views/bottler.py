@@ -57,10 +57,10 @@ def bottler_add():
 @login_required
 def bottler_edit(bottler_id: str):
     bottler = db.get_or_404(Bottler, bottler_id)
-    form = BottlerEditForm(obj=bottler if request.method != "POST" else None)
-    edit_bottler(form, bottler)
+    form = BottlerEditForm(obj=bottler)
 
     if form.validate_on_submit():
+        edit_bottler(form, bottler)
         return redirect(
             url_for("bottler.bottlers_list", username=current_user.username)
         )

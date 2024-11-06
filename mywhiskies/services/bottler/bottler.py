@@ -34,9 +34,9 @@ def add_bottler(form: BottlerAddForm, user: User) -> None:
 
 
 def edit_bottler(form: BottlerEditForm, bottler: Bottler) -> None:
-    if form.validate_on_submit():
-        db.session.commit()
-        flash(f'"{bottler.name}" has been successfully updated.', "success")
+    form.populate_obj(bottler)
+    db.session.commit()
+    flash(f'"{bottler.name}" has been successfully updated.', "success")
 
 
 def delete_bottler(bottler_id: str, current_user: User) -> None:
