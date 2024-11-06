@@ -16,7 +16,7 @@ def test_bottler_list(app: Flask, test_user: User):
         assert expected_title.encode("utf-8") in response.data
         for bottler in test_user.bottlers:
             assert bottler.name.encode("utf-8") in response.data
-            assert bottler.location_1.encode("utf-8") in response.data
+            assert bottler.region_1.encode("utf-8") in response.data
             if bottler.url:
                 assert bottler.url.encode("utf-8") in response.data
 
