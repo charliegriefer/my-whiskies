@@ -90,13 +90,14 @@ def npc_user(app: Flask) -> User:
     db.session.commit()
 
     bottler = Bottler(
-        name="Lost Lantern",
-        description="The best independent bottler.",
-        region_1="Vergennes",
-        region_2="VT",
-        url="https://lostlanternwhiskey.com",
+        name="Somebody Else's Bottler",
+        description="I have no idea. This is not my bottler.",
+        region_1="Lawrenceburg",
+        region_2="IN",
         user_id=user.id,
     )
+    db.session.add(bottler)
+    db.session.commit()
 
     bottle = Bottle(
         name="Frey Ranch Straight Rye Whiskey",
