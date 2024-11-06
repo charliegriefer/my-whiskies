@@ -34,7 +34,7 @@ def test_delete_not_my_bottle(app: Flask, test_user: User, npc_user: User):
             follow_redirects=True,
         )
         assert response.status_code == 200
-        assert b"There was an issue deleting the bottle" in response.data
+        assert b"There was an issue deleting this bottle" in response.data
 
 
 def test_delete_my_bottle(
