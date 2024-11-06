@@ -7,8 +7,6 @@ from tests.conftest import TEST_PASSWORD
 
 def test_delete_bottle_not_logged_in(
     app: Flask,
-    test_user: User,
-    test_user_bottle: Bottle,
     test_user_bottle_to_delete: Bottle,
 ):
     """Test that a user must be logged in to delete a bottle."""
