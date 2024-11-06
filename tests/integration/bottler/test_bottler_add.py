@@ -3,7 +3,7 @@ from werkzeug.datastructures import MultiDict
 
 from mywhiskies.blueprints.bottler.forms import BottlerAddForm
 from mywhiskies.blueprints.user.models import User
-from tests.conftest import TEST_PASSWORD
+from tests.conftest import TEST_USER_PASSWORD
 
 
 def test_add_bottler_requires_login(app: Flask):
@@ -38,7 +38,7 @@ def test_valid_bottler_form(app: Flask, test_user: User):
                 url_for("auth.login"),
                 data={
                     "username": test_user.username,
-                    "password": TEST_PASSWORD,
+                    "password": TEST_USER_PASSWORD,
                 },
             )
             response = client.post(

@@ -3,7 +3,7 @@ from flask import Flask, url_for
 from mywhiskies.blueprints.bottler.models import Bottler
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
-from tests.conftest import TEST_PASSWORD
+from tests.conftest import TEST_USER_PASSWORD
 
 
 def test_edit_bottler_requires_login(app: Flask, test_user_bottler: Bottler) -> None:
@@ -25,7 +25,7 @@ def test_valid_bottler_edit_form(
             url_for("auth.login"),
             data={
                 "username": test_user.username,
-                "password": TEST_PASSWORD,
+                "password": TEST_USER_PASSWORD,
             },
         )
 

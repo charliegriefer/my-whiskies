@@ -2,7 +2,7 @@ from flask import Flask, url_for
 
 from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.user.models import User
-from tests.conftest import TEST_PASSWORD
+from tests.conftest import TEST_USER_PASSWORD
 
 
 def test_delete_bottle_not_logged_in(
@@ -26,7 +26,7 @@ def test_delete_not_my_bottle(app: Flask, test_user: User, npc_user: User):
             url_for("auth.login"),
             data={
                 "username": test_user.username,
-                "password": TEST_PASSWORD,
+                "password": TEST_USER_PASSWORD,
             },
         )
         response = client.get(
@@ -49,7 +49,7 @@ def test_delete_my_bottle(
             url_for("auth.login"),
             data={
                 "username": test_user.username,
-                "password": TEST_PASSWORD,
+                "password": TEST_USER_PASSWORD,
             },
         )
         bottles_before_delete = [bottle.name for bottle in test_user.bottles]
