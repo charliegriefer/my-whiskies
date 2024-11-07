@@ -5,15 +5,12 @@ import pytest
 from flask import Flask
 
 from mywhiskies.blueprints.bottle.models import Bottle
-from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 
 
 @pytest.fixture
-def test_user_bottle_to_delete(
-    app: Flask, test_user: User, test_user_distillery: Distillery
-) -> Bottle:
+def test_user_bottle_to_delete(app: Flask, test_user: User) -> Bottle:
     """Create a test bottle for test_user to delete."""
     bottle = Bottle(
         name="Frey Ranch Oat Whiskey",
@@ -25,7 +22,7 @@ def test_user_bottle_to_delete(
         stars="2",
         description="Not really my jam.",
         user_id=test_user.id,
-        distilleries=[test_user_distillery],
+        distilleries=[test_user.distilleries[0]],
     )
     db.session.add(bottle)
     db.session.commit()
