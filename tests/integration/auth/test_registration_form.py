@@ -1,10 +1,9 @@
-from flask import Flask
 from werkzeug.datastructures import MultiDict
 
 from mywhiskies.blueprints.auth.forms import RegistrationForm
 
 
-def test_valid_registration_form(app: Flask) -> None:
+def test_valid_registration_form() -> None:
     """Test that a valid form passes validation."""
     form = RegistrationForm(
         formdata=MultiDict(
@@ -20,7 +19,7 @@ def test_valid_registration_form(app: Flask) -> None:
     assert form.validate(), f"Form validation failed: {form.errors}"
 
 
-def test_invalid_email(app: Flask) -> None:
+def test_invalid_email() -> None:
     """Test that an invalid email fails validation."""
     form = RegistrationForm(
         formdata=None,
@@ -36,7 +35,7 @@ def test_invalid_email(app: Flask) -> None:
     assert "email" in form.errors
 
 
-def test_passwords_do_not_match(app: Flask) -> None:
+def test_passwords_do_not_match() -> None:
     """Test that non-matching passwords fail validation."""
     form = RegistrationForm(
         formdata=None,
@@ -52,7 +51,7 @@ def test_passwords_do_not_match(app: Flask) -> None:
     assert "password2" in form.errors
 
 
-def test_agree_terms_required(app: Flask) -> None:
+def test_agree_terms_required() -> None:
     """Test that not agreeing to terms fails validation."""
     form = RegistrationForm(
         formdata=None,
