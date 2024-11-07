@@ -5,7 +5,6 @@ import pytest
 from flask import Flask
 from flask.testing import FlaskClient
 from flask_login import logout_user
-from sqlalchemy.orm import scoped_session, sessionmaker
 
 from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.bottler.models import Bottler
@@ -34,29 +33,29 @@ def app() -> Flask:
         db.drop_all()
 
 
-@pytest.fixture()
+@pytest.fixture
 def client(app: Flask) -> FlaskClient:
     return app.test_client()
 
 
-@pytest.fixture(scope="function", autouse=True)
-def session(app: Flask) -> scoped_session:
-    """Create a new database session for a test."""
-    connection = db.engine.connect()
-    transaction = connection.begin()
-    session_factory = sessionmaker(bind=connection)
-    Session = scoped_session(session_factory)
-    db.session = Session
+# @pytest.fixture(scope="function", autouse=True)
+# def session(app: Flask) -> scoped_session:
+#     """Create a new database session for a test."""
+#     connection = db.engine.connect()
+#     transaction = connection.begin()
+#     session_factory = sessionmaker(bind=connection)
+#     Session = scoped_session(session_factory)
+#     db.session = Session
 
-    yield Session
+#     yield Session
 
-    transaction.rollback()
-    connection.close()
-    Session.remove()
+#     transaction.rollback()
+#     connection.close()
+#     Session.remove()
 
 
 @pytest.fixture
-def test_user(session: scoped_session) -> User:
+def test_user() -> User:
     """
     A test user that we'll be using frequently throughout our tests.
     This user has one distillery, two bottlers, and one bottle.
@@ -67,8 +66,8 @@ def test_user(session: scoped_session) -> User:
         email_confirmed=True,
     )
     user.set_password(TEST_USER_PASSWORD)
-    session.add(user)
-    session.commit()
+    db.session.add(user)
+    db.session.commit()
 
     bottler = Bottler(
         name="Lost Lantern",
@@ -78,8 +77,8 @@ def test_user(session: scoped_session) -> User:
         url="https://lostlanternwhiskey.com",
         user_id=user.id,
     )
-    session.add(bottler)
-    session.commit()
+    db.session.add(bottler)
+    db.session.commit()
 
     bottler = Bottler(
         name="Two Souls Spirits",
@@ -89,8 +88,8 @@ def test_user(session: scoped_session) -> User:
         url="https://twosoulsspirits.com",
         user_id=user.id,
     )
-    session.add(bottler)
-    session.commit()
+    db.session.add(bottler)
+    db.session.commit()
 
     distillery = Distillery(
         name="Frey Ranch",
@@ -100,8 +99,8 @@ def test_user(session: scoped_session) -> User:
         url="https://freyranch.com",
         user_id=user.id,
     )
-    session.add(distillery)
-    session.commit()
+    db.session.add(distillery)
+    db.session.commit()
 
     bottle = Bottle(
         name="Frey Ranch Straight Rye Whiskey",
@@ -122,7 +121,7 @@ def test_user(session: scoped_session) -> User:
 
 
 @pytest.fixture
-def npc_user(app: Flask) -> User:
+def npc_user() -> User:
     """
     A test user similar to the one above.
     This user exists for our main test_user to be able to attempt deleting another user's objects.
@@ -134,6 +133,17 @@ def npc_user(app: Flask) -> User:
     )
     user.set_password("npcPass1234")
     db.session.add(user)
+    db.session.commit()
+
+    bottler = Bottler(
+        name="Lost Lantern",
+        description="The best independent bottler.",
+        region_1="Vergennes",
+        region_2="VT",
+        url="https://lostlanternwhiskey.com",
+        user_id=user.id,
+    )
+    db.session.add(bottler)
     db.session.commit()
 
     distillery = Distillery(
@@ -165,15 +175,10 @@ def npc_user(app: Flask) -> User:
 
 
 @pytest.fixture(autouse=True)
-def logged_out_user(app: Flask, client: FlaskClient) -> None:
+def logged_out_user() -> None:
     """Ensure the user is logged out before each test."""
     yield
     logout_user()
-
-
-@pytest.fixture
-def login_data(test_user: User) -> dict:
-    return {"username": test_user.username, "password": TEST_USER_PASSWORD}
 
 
 def html_encode(text: str) -> str:
