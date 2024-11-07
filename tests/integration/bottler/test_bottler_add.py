@@ -4,7 +4,15 @@ from werkzeug.datastructures import MultiDict
 
 from mywhiskies.blueprints.bottler.forms import BottlerAddForm
 from mywhiskies.blueprints.user.models import User
-from tests.conftest import TEST_USER_PASSWORD
+
+new_bottler_formdata = MultiDict(
+    {
+        "name": "Fierce & Kind",
+        "region_1": "Oceanside",
+        "region_2": "CA",
+        "url": "https://fiercenkind.com/",
+    }
+)
 
 
 def test_add_bottler_requires_login(client: FlaskClient) -> None:
@@ -14,32 +22,20 @@ def test_add_bottler_requires_login(client: FlaskClient) -> None:
 
 
 def test_valid_bottler_form(client: FlaskClient, test_user: User) -> None:
-    user_bottlers_count = len(test_user.bottlers)
-
-    formdata = MultiDict(
-        {
-            "name": "Fierce & Kind",
-            "region_1": "Oceanside",
-            "region_2": "CA",
-            "url": "https://fiercenkind.com/",
-        }
-    )
-
+    """Test that a valid bottler form passes validation."""
     form = BottlerAddForm()
-    form.process(formdata)
+    form.process(new_bottler_formdata)
 
     assert form.validate(), f"Form validation failed: {form.errors}"
 
-    # Submit the form and follow the redirect
-    client.post(
-        url_for("auth.login"),
-        data={
-            "username": test_user.username,
-            "password": TEST_USER_PASSWORD,
-        },
-    )
+
+def test_add_bottler(logged_in_user: FlaskClient, test_user: User) -> None:
+    """Test that a logged-in user can add a bottler."""
+    client = logged_in_user
+    user_bottlers_count = len(test_user.bottlers)
+
     response = client.post(
-        url_for("bottler.bottler_add"), data=formdata, follow_redirects=True
+        url_for("bottler.bottler_add"), data=new_bottler_formdata, follow_redirects=True
     )
 
     # Check that the user is redirected to the home page
@@ -47,7 +43,7 @@ def test_valid_bottler_form(client: FlaskClient, test_user: User) -> None:
     assert url_for("core.home", username=test_user.username) in response.request.url
 
     # Check that the flash message is in the response data
-    bottler_name = formdata["name"]
+    bottler_name = new_bottler_formdata["name"]
     assert f'"{bottler_name}" has been successfully added.' in response.get_data(
         as_text=True
     )

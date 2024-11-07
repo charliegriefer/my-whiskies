@@ -4,7 +4,6 @@ from flask.testing import FlaskClient
 from mywhiskies.blueprints.bottler.models import Bottler
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
-from tests.conftest import TEST_USER_PASSWORD
 
 
 def test_edit_bottler_requires_login(client: FlaskClient, test_user: User) -> None:
@@ -16,14 +15,8 @@ def test_edit_bottler_requires_login(client: FlaskClient, test_user: User) -> No
     assert url_for("auth.login", _external=False) in response.headers["Location"]
 
 
-def test_valid_bottler_edit_form(client: FlaskClient, test_user: User) -> None:
-    client.post(
-        url_for("auth.login"),
-        data={
-            "username": test_user.username,
-            "password": TEST_USER_PASSWORD,
-        },
-    )
+def test_valid_bottler_edit_form(logged_in_user: FlaskClient, test_user: User) -> None:
+    client = logged_in_user
 
     formdata = {
         "name": "Updated Bottler Name",
