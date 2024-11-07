@@ -152,13 +152,14 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
 
 
 def delete_bottle(user: User, bottle_id: str) -> None:
-    user_bottles = [b.id for b in user.bottles]
-    if bottle_id not in user_bottles:
+    # Fetch the bottle directly and check ownership
+    bottle_to_delete = db.session.get(Bottle, bottle_id)
+
+    if not bottle_to_delete or bottle_to_delete.user_id != user.id:
         flash("There was an issue deleting this bottle.", "danger")
         return
+
     img_s3_bucket, img_s3_key, _ = get_s3_config()
-    bottle_to_delete = db.get_or_404(Bottle, bottle_id)
-    db.session.delete(bottle_to_delete)
 
     if bottle_to_delete.image_count:
         s3_client = boto3.client("s3")
@@ -167,5 +168,7 @@ def delete_bottle(user: User, bottle_id: str) -> None:
                 Bucket=f"{img_s3_bucket}",
                 Key=f"{img_s3_key}/{bottle_to_delete.id}_{i}.png",
             )
+
+    db.session.delete(bottle_to_delete)
     db.session.commit()
     flash("Bottle deleted successfully", "success")
