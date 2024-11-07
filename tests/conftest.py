@@ -22,7 +22,7 @@ from mywhiskies.extensions import db  # noqa: E402
 TEST_USER_PASSWORD = "testpass"
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def app() -> Flask:
     app = create_app(config_class=TestConfig)
     app.teardown_bkp = app.teardown_appcontext_funcs
@@ -32,6 +32,11 @@ def app() -> Flask:
         yield app
         db.session.remove()
         db.drop_all()
+
+
+@pytest.fixture()
+def client(app: Flask) -> FlaskClient:
+    return app.test_client()
 
 
 @pytest.fixture(scope="function", autouse=True)
