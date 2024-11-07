@@ -12,10 +12,50 @@ from mywhiskies.services.bottle.form import prepare_bottle_form
 from mywhiskies.services.bottle.image import add_bottle_images
 
 
-def test_add_bottle_requires_login(app: Flask, client: FlaskClient) -> None:
+def create_bottle_formdata(
+    test_user: User, file_storage: FileStorage = None
+) -> MultiDict:
+    """Create the form data for adding a bottle."""
+    formdata = MultiDict(
+        {
+            "name": "Test Bottle",
+            "type": "bourbon",
+            "year_barrelled": 2020,
+            "year_bottled": 2022,
+            "abv": 68.8,
+            "cost": 50.00,
+            "stars": "5",
+            "description": "A fine sample bottle.",
+            "review": "Excellent taste.",
+            "distilleries": [str(test_user.distilleries[0].id)],
+            "bottler_id": "0",
+        }
+    )
+    if file_storage:
+        formdata.add("bottle_image_1", file_storage)
+    return formdata
+
+
+def test_add_bottle_requires_login(
+    app: Flask, client: FlaskClient, test_user: User
+) -> None:
+    # loading the form should fail.
     response = client.get(url_for("bottle.bottle_add"), follow_redirects=False)
     assert response.status_code == 302
     assert url_for("auth.login", _external=False) in response.headers["Location"]
+
+    # make sure the form can't be submitted in any other way.
+    test_user_bottle_count = len(test_user.bottles)
+    formdata = create_bottle_formdata(test_user)
+    response = client.post(
+        url_for("bottle.bottle_add"),
+        data=formdata,
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert "Please log in to access this page." in response.get_data(as_text=True)
+    # verify that the bottle was _not_ added
+    assert test_user_bottle_count == len(test_user.bottles)
 
 
 def test_valid_bottle_form(app: Flask, test_user: User, mock_image: str) -> None:
@@ -23,22 +63,7 @@ def test_valid_bottle_form(app: Flask, test_user: User, mock_image: str) -> None
         file_storage = FileStorage(
             stream=f, filename="test_image.png", content_type="image/png"
         )
-        formdata = MultiDict(
-            {
-                "name": "Test Bottle",
-                "type": "bourbon",
-                "year_barrelled": 2020,
-                "year_bottled": 2022,
-                "abv": 68.8,
-                "cost": 50.00,
-                "stars": "5",
-                "description": "A fine sample bottle.",
-                "review": "Excellent taste.",
-                "distilleries": [test_user.distilleries[0].id],
-                "bottler_id": "0",
-                "bottle_image_1": file_storage,
-            }
-        )
+        formdata = create_bottle_formdata(test_user, file_storage)
 
         form = BottleAddForm()
         prepare_bottle_form(test_user, form)

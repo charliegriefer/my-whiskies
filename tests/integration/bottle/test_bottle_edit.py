@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-from flask import Flask, url_for
+from flask import url_for
 from flask.testing import FlaskClient
 from werkzeug.datastructures import FileStorage, MultiDict
 
@@ -11,9 +11,8 @@ from mywhiskies.services.bottle.bottle import edit_bottle
 from mywhiskies.services.bottle.form import prepare_bottle_form
 
 
-def test_edit_bottle_requires_login(
-    app: Flask, client: FlaskClient, test_user: User
-) -> None:
+def test_edit_bottle_requires_login(client: FlaskClient, test_user: User) -> None:
+    # loading the form should fail.
     response = client.get(
         url_for("bottle.bottle_edit", bottle_id=test_user.bottles[0].id),
         follow_redirects=False,
@@ -21,9 +20,21 @@ def test_edit_bottle_requires_login(
     assert response.status_code == 302
     assert url_for("auth.login", _external=False) in response.headers["Location"]
 
+    # make sure the form can't be submitted in any other way.
+    bottle_name = test_user.bottles[0].name
+    formdata = MultiDict({"name": "Updated Bottle Name"})
+    response = client.post(
+        url_for("bottle.bottle_edit", bottle_id=test_user.bottles[0].id),
+        data=formdata,
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert "Please log in to access this page." in response.get_data(as_text=True)
+    # verify that the bottle was _not_ updated
+    assert bottle_name == test_user.bottles[0].name
+
 
 def test_valid_bottle_edit_form(
-    app: Flask,
     test_user: User,
     mock_image: str,
 ) -> None:
