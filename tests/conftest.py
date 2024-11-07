@@ -53,6 +53,12 @@ def session(app):
 
 
 @pytest.fixture
+def test_client(app: Flask) -> FlaskClient:
+    """Create a test client for the Flask application."""
+    return app.test_client()
+
+
+@pytest.fixture
 def test_user() -> User:
     """Create a test user with associated objects."""
     user = User(
