@@ -5,6 +5,7 @@ import pytest
 from flask import Flask
 from flask.testing import FlaskClient
 from flask_login import logout_user
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.bottler.models import Bottler
@@ -38,28 +39,27 @@ def client(app: Flask) -> FlaskClient:
     return app.test_client()
 
 
-# @pytest.fixture(scope="function", autouse=True)
-# def session(app: Flask) -> scoped_session:
-#     """Create a new database session for a test."""
-#     connection = db.engine.connect()
-#     transaction = connection.begin()
-#     session_factory = sessionmaker(bind=connection)
-#     Session = scoped_session(session_factory)
-#     db.session = Session
+@pytest.fixture(scope="function", autouse=True)
+def session(app):
+    """Create a new database session for a test."""
+    connection = db.engine.connect()
+    transaction = connection.begin()
 
-#     yield Session
+    session_factory = sessionmaker(bind=connection)
+    Session = scoped_session(session_factory)
 
-#     transaction.rollback()
-#     connection.close()
-#     Session.remove()
+    db.session = Session
+
+    yield Session
+
+    transaction.rollback()
+    connection.close()
+    Session.remove()
 
 
 @pytest.fixture
 def test_user() -> User:
-    """
-    A test user that we'll be using frequently throughout our tests.
-    This user has one distillery, two bottlers, and one bottle.
-    """
+    """Create a test user with associated objects."""
     user = User(
         username="test_user",
         email="test@example.com",
@@ -117,15 +117,13 @@ def test_user() -> User:
     )
     db.session.add(bottle)
     db.session.commit()
+
     return user
 
 
 @pytest.fixture
 def npc_user() -> User:
-    """
-    A test user similar to the one above.
-    This user exists for our main test_user to be able to attempt deleting another user's objects.
-    """
+    """Create a test user for testing how logged in users interact with other users' data."""
     user = User(
         username="npc_user",
         email="npc@example.com",
@@ -171,6 +169,7 @@ def npc_user() -> User:
     )
     db.session.add(bottle)
     db.session.commit()
+
     return user
 
 
