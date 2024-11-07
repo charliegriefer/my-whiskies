@@ -175,7 +175,7 @@ def npc_user() -> User:
 
 
 @pytest.fixture
-def login_user(client: FlaskClient, test_user: User) -> FlaskClient:
+def logged_in_user(client: FlaskClient, test_user: User) -> FlaskClient:
     """Log in the test user and return the logged-in client."""
     client.post(
         url_for("auth.login"),
@@ -192,6 +192,11 @@ def logged_out_user() -> None:
     """Ensure the user is logged out before each test."""
     yield
     logout_user()
+
+
+def expected_page_title(username: str) -> str:
+    suffix = "'s" if not username.endswith("s") else "'"
+    return html_encode(f"{username}{suffix} Whiskies")
 
 
 def html_encode(text: str) -> str:
