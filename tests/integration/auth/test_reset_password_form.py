@@ -1,5 +1,6 @@
 import pytest
 from flask import Flask, url_for
+from flask.testing import FlaskClient
 from flask_login import logout_user
 from sqlalchemy import select
 from werkzeug.datastructures import MultiDict
@@ -7,6 +8,7 @@ from werkzeug.datastructures import MultiDict
 from mywhiskies.blueprints.auth.forms import ResetPWForm
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from tests.conftest import TEST_USER_PASSWORD
 
 
 @pytest.fixture
@@ -15,29 +17,28 @@ def reset_token(test_user: User) -> str:
 
 
 def test_reset_password_valid_token(
-    app: Flask, reset_token: str, login_data: dict
+    app: Flask, client: FlaskClient, reset_token: str, test_user: User
 ) -> None:
-    with app.test_client() as client:
-        logout_user()
-        response = client.post(
-            url_for("auth.reset_password", token=reset_token),
-            data={
-                "password": "NewPassword123",
-                "password2": "NewPassword123",
-            },
-            follow_redirects=True,
-        )
-        assert response.status_code == 200
-        assert b"Your password has been reset" in response.data
+    logout_user()
+    response = client.post(
+        url_for("auth.reset_password", token=reset_token),
+        data={
+            "password": "NewPassword123",
+            "password2": "NewPassword123",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"Your password has been reset" in response.data
 
-        # verify the password has been updated
-        user = (
-            db.session.execute(select(User).filter_by(username=login_data["username"]))
-            .scalars()
-            .first()
-        )
-        assert user.check_password("NewPassword123")
-        assert not user.check_password(login_data["password"])
+    # verify the password has been updated
+    user = (
+        db.session.execute(select(User).filter_by(username=test_user.username))
+        .scalars()
+        .first()
+    )
+    assert user.check_password("NewPassword123")
+    assert not user.check_password(TEST_USER_PASSWORD)
 
 
 def test_valid_password_reset(app: Flask) -> None:
