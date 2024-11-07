@@ -119,6 +119,17 @@ def test_user() -> User:
     db.session.add(bottle)
     db.session.commit()
 
+    distillery = Distillery(
+        name="Lexington Brewing and Distilling Co.",
+        description="A distillery with no bottles.",
+        region_1="Lexington",
+        region_2="KY",
+        url="https://lexingtonbrewingco.com",
+        user_id=user.id,
+    )
+    db.session.add(distillery)
+    db.session.commit()
+
     return user
 
 
