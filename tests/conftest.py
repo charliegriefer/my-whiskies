@@ -2,7 +2,7 @@ import os
 import sys
 
 import pytest
-from flask import Flask
+from flask import Flask, url_for
 from flask.testing import FlaskClient
 from flask_login import logout_user
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -171,6 +171,19 @@ def npc_user() -> User:
     db.session.commit()
 
     return user
+
+
+@pytest.fixture
+def login_user(client: FlaskClient, test_user: User) -> FlaskClient:
+    """Log in the test user and return the logged-in client."""
+    client.post(
+        url_for("auth.login"),
+        data={
+            "username": test_user.username,
+            "password": TEST_USER_PASSWORD,
+        },
+    )
+    return client
 
 
 @pytest.fixture(autouse=True)
