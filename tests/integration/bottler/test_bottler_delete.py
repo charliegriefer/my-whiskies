@@ -2,13 +2,9 @@ from flask import url_for
 from flask.testing import FlaskClient
 
 from mywhiskies.blueprints.user.models import User
-from tests.conftest import TEST_USER_PASSWORD
 
 
-def test_delete_bottler_not_logged_in(
-    client: FlaskClient,
-    test_user: User,
-) -> None:
+def test_delete_bottler_not_logged_in(client: FlaskClient, test_user: User) -> None:
     """Test that a user must be logged in to delete a bottler."""
     response = client.get(
         url_for("bottler.bottler_delete", bottler_id=test_user.bottlers[0].id),
@@ -19,16 +15,10 @@ def test_delete_bottler_not_logged_in(
 
 
 def test_delete_not_my_bottler(
-    client: FlaskClient, test_user: User, npc_user: User
+    logged_in_user: FlaskClient, test_user: User, npc_user: User
 ) -> None:
     """Test that even if logged in, a user cannot delete another user's bottler."""
-    client.post(
-        url_for("auth.login"),
-        data={
-            "username": test_user.username,
-            "password": TEST_USER_PASSWORD,
-        },
-    )
+    client = logged_in_user
     response = client.get(
         url_for("bottler.bottler_delete", bottler_id=npc_user.bottlers[0].id),
         follow_redirects=True,
@@ -37,15 +27,10 @@ def test_delete_not_my_bottler(
     assert "There was an issue deleting this bottler" in response.get_data(as_text=True)
 
 
-def test_delete_my_bottler_has_bottles(client: FlaskClient, test_user: User) -> None:
-    client.post(
-        url_for("auth.login"),
-        data={
-            "username": test_user.username,
-            "password": TEST_USER_PASSWORD,
-        },
-    )
-
+def test_delete_my_bottler_has_bottles(
+    logged_in_user: FlaskClient, test_user: User
+) -> None:
+    client = logged_in_user
     # the test user should have two bottlers. One with a bottle associated, and one without.
     for bottler in test_user.bottlers:
         response = client.get(
