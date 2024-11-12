@@ -6,9 +6,13 @@ from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 
 
-def test_edit_distillery_requires_login(client: FlaskClient, test_user: User) -> None:
+def test_edit_distillery_requires_login(
+    client: FlaskClient, test_user_01: User
+) -> None:
     response = client.get(
-        url_for("distillery.distillery_edit", distillery_id=test_user.bottlers[0].id),
+        url_for(
+            "distillery.distillery_edit", distillery_id=test_user_01.bottlers[0].id
+        ),
         follow_redirects=False,
     )
     assert response.status_code == 302
@@ -16,7 +20,7 @@ def test_edit_distillery_requires_login(client: FlaskClient, test_user: User) ->
 
 
 def test_valid_distillery_edit_form(
-    logged_in_user: FlaskClient, test_user: User
+    logged_in_user: FlaskClient, test_user_01: User
 ) -> None:
     client = logged_in_user
 
@@ -30,7 +34,7 @@ def test_valid_distillery_edit_form(
 
     response = client.post(
         url_for(
-            "distillery.distillery_edit", distillery_id=test_user.distilleries[0].id
+            "distillery.distillery_edit", distillery_id=test_user_01.distilleries[0].id
         ),
         data=formdata,
         follow_redirects=True,
@@ -38,7 +42,7 @@ def test_valid_distillery_edit_form(
 
     assert response.status_code == 200
     assert (
-        url_for("distillery.distilleries_list", username=test_user.username)
+        url_for("distillery.distilleries_list", username=test_user_01.username)
         in response.request.url
     )
 
@@ -46,7 +50,7 @@ def test_valid_distillery_edit_form(
         as_text=True
     )
 
-    updated_distillery = db.session.get(Distillery, test_user.distilleries[0].id)
+    updated_distillery = db.session.get(Distillery, test_user_01.distilleries[0].id)
     assert updated_distillery.name == formdata["name"]
     assert updated_distillery.description == formdata["description"]
     assert updated_distillery.region_1 == formdata["region_1"]

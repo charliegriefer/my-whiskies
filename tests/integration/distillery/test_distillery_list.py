@@ -5,18 +5,18 @@ from mywhiskies.blueprints.user.models import User
 from tests.conftest import expected_page_title
 
 
-def test_distillery_list(client: FlaskClient, test_user: User):
-    expected_title = expected_page_title(test_user.username)
+def test_distillery_list(client: FlaskClient, test_user_01: User) -> None:
+    expected_title = expected_page_title(test_user_01.username)
 
     response = client.get(
-        url_for("distillery.distilleries_list", username=test_user.username)
+        url_for("distillery.distilleries_list", username=test_user_01.username)
     )
     response_data = response.get_data(as_text=True)
 
     assert response.status_code == 200
 
     assert expected_title in response_data
-    for distillery in test_user.distilleries:
+    for distillery in test_user_01.distilleries:
         assert distillery.name in response_data
         assert distillery.region_1 in response_data
         if distillery.url:
@@ -24,14 +24,14 @@ def test_distillery_list(client: FlaskClient, test_user: User):
 
 
 def distillery_list_logged_in_elements(
-    logged_in_user: FlaskClient, test_user: User, npc_user: User
-):
+    logged_in_user: FlaskClient, test_user_01: User, test_user_02: User
+) -> None:
     client = logged_in_user
 
     # get the distillery list page for another user.
     # even though we're logged in, we shouldn't see edit or delete icons in another user's list.
     response = client.get(
-        url_for("distillery.distilleries_list", username=npc_user.username)
+        url_for("distillery.distilleries_list", username=test_user_02.username)
     )
     assert response.status_code == 200
 
@@ -44,7 +44,7 @@ def distillery_list_logged_in_elements(
     # get the distillery  list page the current user.
     # now we should see the edit and delete iconss, as well as the "Add" button.
     response = client.get(
-        url_for("distillery.distilleries_list", username=test_user.username)
+        url_for("distillery.distilleries_list", username=test_user_01.username)
     )
     response_data = response.get_data(as_text=True)
 

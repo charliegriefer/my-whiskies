@@ -21,7 +21,7 @@ def test_add_distillery_requires_login(client: FlaskClient) -> None:
     assert url_for("auth.login", _external=False) in response.headers["Location"]
 
 
-def test_valid_distillery_form(client: FlaskClient, test_user: User) -> None:
+def test_valid_distillery_form(client: FlaskClient) -> None:
     """Test that a valid distillery form passes validation."""
     form = DistilleryForm()
     form.process(new_distillery_formdata)
@@ -29,10 +29,10 @@ def test_valid_distillery_form(client: FlaskClient, test_user: User) -> None:
     assert form.validate(), f"Form validation failed: {form.errors}"
 
 
-def test_add_distillery(logged_in_user: FlaskClient, test_user: User) -> None:
+def test_add_distillery(logged_in_user: FlaskClient, test_user_01: User) -> None:
     """Test that a logged-in user can add a distillery."""
     client = logged_in_user
-    user_distilleries_count = len(test_user.distilleries)
+    user_distilleries_count = len(test_user_01.distilleries)
 
     response = client.post(
         url_for("distillery.distillery_add"),
@@ -42,7 +42,7 @@ def test_add_distillery(logged_in_user: FlaskClient, test_user: User) -> None:
 
     # Check that the user is redirected to the home page
     assert response.status_code == 200
-    assert url_for("core.home", username=test_user.username) in response.request.url
+    assert url_for("core.home", username=test_user_01.username) in response.request.url
 
     # Check that the flash message is in the response data
     distillery_name = new_distillery_formdata["name"]
@@ -50,4 +50,4 @@ def test_add_distillery(logged_in_user: FlaskClient, test_user: User) -> None:
         as_text=True
     )
 
-    assert len(test_user.distilleries) == user_distilleries_count + 1
+    assert len(test_user_01.distilleries) == user_distilleries_count + 1
