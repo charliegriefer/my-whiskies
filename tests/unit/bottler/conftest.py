@@ -7,14 +7,14 @@ from mywhiskies.extensions import db
 
 
 @pytest.fixture
-def test_bottler(app: Flask, test_user: User) -> Bottler:
+def test_bottler(app: Flask, test_user_01: User) -> Bottler:
     bottler = Bottler(
         name="Single Cask Nation",
         description="Bottled by whisky geeks for whisky geeks the world over.",
         region_1="Guilford",
         region_2="CT",
         url="https://www.singlecasknation.com",
-        user_id=test_user.id,
+        user_id=test_user_01.id,
     )
     db.session.add(bottler)
     db.session.commit()
