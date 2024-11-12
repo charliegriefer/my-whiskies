@@ -21,7 +21,7 @@ def test_bottler(app: Flask, test_user_01: User) -> Bottler:
     yield bottler
     # delete all bottles associated with the bottler before deleting the bottler
     bottlers = (
-        db.session.execute(db.select(Bottler).where(Bottler.user_id == test_user.id))
+        db.session.execute(db.select(Bottler).where(Bottler.user_id == test_user_01.id))
         .scalars()
         .all()
     )
