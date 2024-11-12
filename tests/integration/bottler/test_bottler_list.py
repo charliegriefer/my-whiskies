@@ -5,16 +5,18 @@ from mywhiskies.blueprints.user.models import User
 from tests.conftest import expected_page_title
 
 
-def test_bottler_list(client: FlaskClient, test_user: User):
-    expected_title = expected_page_title(test_user.username)
+def test_bottler_list(client: FlaskClient, test_user_01: User):
+    expected_title = expected_page_title(test_user_01.username)
 
-    response = client.get(url_for("bottler.bottlers_list", username=test_user.username))
+    response = client.get(
+        url_for("bottler.bottlers_list", username=test_user_01.username)
+    )
     response_data = response.get_data(as_text=True)
 
     assert response.status_code == 200
 
     assert expected_title in response_data
-    for bottler in test_user.bottlers:
+    for bottler in test_user_01.bottlers:
         assert bottler.name in response_data
         assert bottler.region_1 in response_data
         if bottler.url:
@@ -22,13 +24,15 @@ def test_bottler_list(client: FlaskClient, test_user: User):
 
 
 def test_bottler_list_logged_in_elements(
-    logged_in_user: FlaskClient, test_user: User, npc_user: User
+    logged_in_user: FlaskClient, test_user_01: User, test_user_02: User
 ):
     client = logged_in_user
 
     # get the bottler list page for another user.
     # even though we're logged in, we shouldn't see edit or delete icons in another user's list.
-    response = client.get(url_for("bottler.bottlers_list", username=npc_user.username))
+    response = client.get(
+        url_for("bottler.bottlers_list", username=test_user_02.username)
+    )
     assert response.status_code == 200
 
     response_data = response.get_data(as_text=True)
@@ -39,7 +43,9 @@ def test_bottler_list_logged_in_elements(
 
     # get the bottler list page the current user.
     # now we should see the edit and delete iconss, as well as the "Add" button.
-    response = client.get(url_for("bottler.bottlers_list", username=test_user.username))
+    response = client.get(
+        url_for("bottler.bottlers_list", username=test_user_01.username)
+    )
     response_data = response.get_data(as_text=True)
 
     assert response.status_code == 200

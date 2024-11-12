@@ -21,7 +21,7 @@ def test_add_bottler_requires_login(client: FlaskClient) -> None:
     assert url_for("auth.login", _external=False) in response.headers["Location"]
 
 
-def test_valid_bottler_form(client: FlaskClient, test_user: User) -> None:
+def test_valid_bottler_form() -> None:
     """Test that a valid bottler form passes validation."""
     form = BottlerAddForm()
     form.process(new_bottler_formdata)
@@ -29,10 +29,10 @@ def test_valid_bottler_form(client: FlaskClient, test_user: User) -> None:
     assert form.validate(), f"Form validation failed: {form.errors}"
 
 
-def test_add_bottler(logged_in_user: FlaskClient, test_user: User) -> None:
+def test_add_bottler(logged_in_user: FlaskClient, test_user_01: User) -> None:
     """Test that a logged-in user can add a bottler."""
     client = logged_in_user
-    user_bottlers_count = len(test_user.bottlers)
+    user_bottlers_count = len(test_user_01.bottlers)
 
     response = client.post(
         url_for("bottler.bottler_add"), data=new_bottler_formdata, follow_redirects=True
@@ -40,7 +40,7 @@ def test_add_bottler(logged_in_user: FlaskClient, test_user: User) -> None:
 
     # Check that the user is redirected to the home page
     assert response.status_code == 200
-    assert url_for("core.home", username=test_user.username) in response.request.url
+    assert url_for("core.home", username=test_user_01.username) in response.request.url
 
     # Check that the flash message is in the response data
     bottler_name = new_bottler_formdata["name"]
@@ -48,4 +48,4 @@ def test_add_bottler(logged_in_user: FlaskClient, test_user: User) -> None:
         as_text=True
     )
 
-    assert len(test_user.bottlers) == user_bottlers_count + 1
+    assert len(test_user_01.bottlers) == user_bottlers_count + 1
