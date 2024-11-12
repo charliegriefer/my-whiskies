@@ -1,9 +1,6 @@
-from unittest.mock import ANY, patch
-
-import pytest
+from unittest.mock import ANY, MagicMock, patch
 
 from mywhiskies.blueprints.user.models import User
-from mywhiskies.extensions import db
 from mywhiskies.services.auth.password import (
     find_user_for_password_reset,
     flash_password_reset_instructions,
@@ -13,43 +10,29 @@ from mywhiskies.services.auth.password import (
 )
 
 
-@pytest.fixture
-def test_user(app):
-    user = User(username="testuser", email="test@example.com")
-    user.set_password("testpassword")
-    db.session.add(user)
-    db.session.commit()
-    yield user
-    db.session.delete(user)
-    db.session.commit()
+def test_find_user_for_password_reset(test_user_01: User) -> None:
+    user = find_user_for_password_reset(test_user_01.email)
+    assert user == test_user_01
 
 
-def test_find_user_for_password_reset(test_user):
-    user = find_user_for_password_reset(test_user.email)
-    assert user == test_user
-
-
-def test_verify_reset_password_token(test_user):
-    token = test_user.get_reset_password_token()
+def test_verify_reset_password_token(test_user_01: User) -> None:
+    token = test_user_01.get_reset_password_token()
     user = verify_reset_password_token(token)
-    assert user == test_user
+    assert user == test_user_01
 
 
-def test_reset_user_password(test_user):
-    reset_user_password(test_user, "newpassword")
-    assert test_user.check_password("newpassword")
+def test_reset_user_password(test_user_01: User) -> None:
+    reset_user_password(test_user_01, "newpassword")
+    assert test_user_01.check_password("newpassword")
 
 
 @patch("mywhiskies.services.auth.password.flash")
-def test_flash_password_reset_instructions(mock_flash):
+def test_flash_password_reset_instructions(mock_flash: MagicMock) -> None:
     flash_password_reset_instructions()
-    mock_flash.assert_called_once_with(
-        ANY,  # Ignore the dynamic part
-        "info",
-    )
+    mock_flash.assert_called_once_with(ANY, "info")
 
 
 @patch("mywhiskies.services.auth.password.flash")
-def test_flash_password_reset_success(mock_flash):
+def test_flash_password_reset_success(mock_flash: MagicMock) -> None:
     flash_password_reset_success()
     mock_flash.assert_called_once_with("Your password has been reset.", "success")
