@@ -18,15 +18,15 @@ def create_bottle_formdata(
     """Create the form data for adding a bottle."""
     formdata = MultiDict(
         {
-            "name": "Test Bottle",
+            "name": "Frey Ranch ""Farm Strength""",
             "type": "bourbon",
-            "year_barrelled": 2020,
-            "year_bottled": 2022,
-            "abv": 68.8,
-            "cost": 50.00,
-            "stars": "5",
-            "description": "A fine sample bottle.",
-            "review": "Excellent taste.",
+            "year_barrelled": 2018,
+            "year_bottled": 2023,
+            "abv": 62.15,
+            "cost": 79.99,
+            "stars": "4.5",
+            "description": "Cask strength straight bourbon whiskey.",
+            "review": "This bottle can go toe-to-toe with most Frey Ranch SiB offerings",
             "distilleries": [str(test_user.distilleries[0].id)],
             "bottler_id": "0",
         }
@@ -37,7 +37,7 @@ def create_bottle_formdata(
 
 
 def test_add_bottle_requires_login(
-    app: Flask, client: FlaskClient, test_user: User
+    app: Flask, client: FlaskClient, test_user_01: User
 ) -> None:
     # loading the form should fail.
     response = client.get(url_for("bottle.bottle_add"), follow_redirects=False)
@@ -45,8 +45,8 @@ def test_add_bottle_requires_login(
     assert url_for("auth.login", _external=False) in response.headers["Location"]
 
     # make sure the form can't be submitted in any other way.
-    test_user_bottle_count = len(test_user.bottles)
-    formdata = create_bottle_formdata(test_user)
+    test_user_bottle_count = len(test_user_01.bottles)
+    formdata = create_bottle_formdata(test_user_01)
     response = client.post(
         url_for("bottle.bottle_add"),
         data=formdata,
@@ -55,18 +55,18 @@ def test_add_bottle_requires_login(
     assert response.status_code == 200
     assert "Please log in to access this page." in response.get_data(as_text=True)
     # verify that the bottle was _not_ added
-    assert test_user_bottle_count == len(test_user.bottles)
+    assert test_user_bottle_count == len(test_user_01.bottles)
 
 
-def test_valid_bottle_form(app: Flask, test_user: User, mock_image: str) -> None:
+def test_valid_bottle_form(app: Flask, test_user_01: User, mock_image: str) -> None:
     with open(mock_image, "rb") as f:
         file_storage = FileStorage(
             stream=f, filename="test_image.png", content_type="image/png"
         )
-        formdata = create_bottle_formdata(test_user, file_storage)
+        formdata = create_bottle_formdata(test_user_01, file_storage)
 
         form = BottleAddForm()
-        prepare_bottle_form(test_user, form)
+        prepare_bottle_form(test_user_01, form)
         form.process(formdata)
 
         assert form.validate(), f"Form validation failed: {form.errors}"
