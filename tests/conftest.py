@@ -59,45 +59,56 @@ def test_client(app: Flask) -> FlaskClient:
 
 
 @pytest.fixture
-def test_user() -> User:
-    """Create a test user with associated objects."""
+def test_user_01() -> User:
+    """
+    Create a test user with associated objects.
+    2 Bottlers: Lost Lantern and Crowded Barrel Whiskey Co.
+    2 Distilleries: Frey Ranch and Lexington Brewing and Distilling Co.
+    1 Bottle: Frey Ranch Straight Rye Whiskey
+
+    Can delete Crowded Barrel Whiskey Co., as there are no related bottles.
+    Can delete Lexington Brewing and Distilling Co. as there are no related bottles.
+    """
     user = User(
-        username="test_user",
-        email="test@example.com",
+        username="test_user_01",
+        email="test_user_01@example.com",
         email_confirmed=True,
     )
     user.set_password(TEST_USER_PASSWORD)
     db.session.add(user)
     db.session.commit()
 
+    # incorrect information below. will fix later when testing edit a bottler.
     bottler = Bottler(
         name="Lost Lantern",
-        description="The best independent bottler.",
-        region_1="Vergennes",
-        region_2="VT",
-        url="https://lostlanternwhiskey.com",
+        description="An independent bottler.",
+        region_1="Vergenes",
+        region_2="VS",
+        url="https://lostlantern.com",
         user_id=user.id,
     )
     db.session.add(bottler)
     db.session.commit()
 
+    # this bottler has no bottles. We should be able to delete it.
     bottler = Bottler(
-        name="Two Souls Spirits",
-        description="A bottler without any bottles",
-        region_1="Davie",
-        region_2="FL",
-        url="https://twosoulsspirits.com",
+        name="Crowded Barrel Whiskey Co.",
+        description="The world's first crowdsourced whiskey distillery.",
+        region_1="Austin",
+        region_2="TX",
+        url="https://crowdedbarrelwhiskey.com",
         user_id=user.id,
     )
     db.session.add(bottler)
     db.session.commit()
 
+    # incorrect information below. will fix later when testing edit a distillery.
     distillery = Distillery(
-        name="Frey Ranch",
-        description="A distillery in Nevada.",
+        name="Frey Ranh",
+        description="A distillery in Nevda.",
         region_1="Nevada",
         region_2="USA",
-        url="https://freyranch.com",
+        url="https://frey.com",
         user_id=user.id,
     )
     db.session.add(distillery)
@@ -119,12 +130,13 @@ def test_user() -> User:
     db.session.add(bottle)
     db.session.commit()
 
+    # this distillery has no bottles. We should be able to delete it.
     distillery = Distillery(
-        name="Lexington Brewing and Distilling Co.",
-        description="A distillery with no bottles.",
-        region_1="Lexington",
-        region_2="KY",
-        url="https://lexingtonbrewingco.com",
+        name="Ironroot Republic",
+        description="A family-owned Texas distillery.",
+        region_1="Denison",
+        region_2="TX",
+        url="https://ironrootrepublic.com",
         user_id=user.id,
     )
     db.session.add(distillery)
@@ -134,14 +146,14 @@ def test_user() -> User:
 
 
 @pytest.fixture
-def npc_user() -> User:
+def test_user_02() -> User:
     """Create a test user for testing how logged in users interact with other users' data."""
     user = User(
-        username="npc_user",
-        email="npc@example.com",
+        username="test_user_02",
+        email="test_user_02@example.com",
         email_confirmed=True,
     )
-    user.set_password("npcPass1234")
+    user.set_password("TestUser0002")
     db.session.add(user)
     db.session.commit()
 
@@ -158,9 +170,9 @@ def npc_user() -> User:
 
     distillery = Distillery(
         name="Frey Ranch",
-        description="A distillery in Nevada.",
-        region_1="Nevada",
-        region_2="USA",
+        description="A distillery in Nevda.",
+        region_1="Fallon",
+        region_2="NV",
         url="https://freyranch.com",
         user_id=user.id,
     )
