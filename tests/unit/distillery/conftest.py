@@ -21,11 +21,17 @@ def test_distillery(app: Flask, test_user_01: User) -> Distillery:
     )
     db.session.add(distillery)
     db.session.commit()
+
     yield distillery
-    # delete all bottles associated with the distillery before deleting the distillery
-    if distillery.bottles:
-        [db.session.delete(bottle) for bottle in distillery.bottles]
+
+    # check if bottles are still associated with the distillery and delete if present
+    for bottle in distillery.bottles:
+        # ensure that the bottle has a non-null primary key before attempting to get it
+        if bottle.id is not None and db.session.get(type(bottle), bottle.id):
+            db.session.delete(bottle)
+
     # only attempt to delete if the distillery still exists
     if db.session.get(Distillery, distillery.id):
         db.session.delete(distillery)
-        db.session.commit()
+
+    db.session.commit()
