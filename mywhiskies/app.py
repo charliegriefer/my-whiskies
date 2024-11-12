@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 from typing import Type
 
@@ -15,10 +14,7 @@ from mywhiskies.blueprints.distillery import distillery_bp
 from mywhiskies.blueprints.errors.views import errors
 from mywhiskies.extensions import register_extensions
 
-dotenv_path = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"
-)
-load_dotenv(dotenv_path=dotenv_path, verbose=True)
+load_dotenv()
 
 
 def create_app(
@@ -44,3 +40,6 @@ def create_app(
     register_extensions(app)
 
     return app
+
+
+app = create_app()
