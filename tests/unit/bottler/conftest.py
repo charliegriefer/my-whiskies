@@ -18,15 +18,17 @@ def test_bottler(app: Flask, test_user_01: User) -> Bottler:
     )
     db.session.add(bottler)
     db.session.commit()
+
     yield bottler
-    # delete all bottles associated with the bottler before deleting the bottler
-    bottlers = (
-        db.session.execute(db.select(Bottler).where(Bottler.user_id == test_user_01.id))
-        .scalars()
-        .all()
-    )
-    [db.session.delete(bottler) for bottler in bottlers]
+
+    # check if bottles are still associated with the bottler and delete if present
+    for bottle in bottler.bottles:
+        # ensure that the bottle has a non-null primary key before attempting to get it
+        if bottle.id is not None and db.session.get(type(bottle), bottle.id):
+            db.session.delete(bottle)
+
     # only attempt to delete if the bottler still exists
     if db.session.get(Bottler, bottler.id):
         db.session.delete(bottler)
-        db.session.commit()
+
+    db.session.commit()
