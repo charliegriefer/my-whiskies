@@ -17,6 +17,6 @@ def test_bottle(app: Flask, test_user_01: User) -> Bottle:
     db.session.add(bottle)
     db.session.commit()
     yield bottle
-    if bottle in db.session:
+    if db.session.get(Bottle, bottle.id):
         db.session.delete(bottle)
         db.session.commit()
