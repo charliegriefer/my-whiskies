@@ -1,14 +1,12 @@
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
-import pytest
 from flask import request
 from flask.testing import FlaskClient
 
 from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
 from mywhiskies.blueprints.bottle.models import Bottle, BottleTypes
 from mywhiskies.blueprints.user.models import User
-from mywhiskies.extensions import db
 from mywhiskies.services.bottle.bottle import (
     add_bottle,
     delete_bottle,
@@ -17,50 +15,20 @@ from mywhiskies.services.bottle.bottle import (
 )
 
 
-@pytest.fixture
-def test_user(app):
-    user = User(username="testuser", email="test@example.com")
-    user.set_password("testPassword1234")
-    db.session.add(user)
-    db.session.commit()
-    yield user
-    # delete all bottles associated with the user before deleting the user
-    bottles = (
-        db.session.execute(db.select(Bottle).where(Bottle.user_id == user.id))
-        .scalars()
-        .all()
-    )
-    [db.session.delete(bottle) for bottle in bottles]
-    db.session.commit()
-
-
-@pytest.fixture
-def test_bottle(app, test_user):
-    bottle = Bottle(
-        name="Test Bottle",
-        type=BottleTypes.bourbon,
-        abv=45.0,
-        user_id=test_user.id,
-    )
-    db.session.add(bottle)
-    db.session.commit()
-    yield bottle
-    # only attempt to delete if the bottle still exists
-    if db.session.get(Bottle, bottle.id):
-        db.session.delete(bottle)
-        db.session.commit()
-
-
 @patch("mywhiskies.services.bottle.bottle.render_template")
-def test_list_bottles(mock_render_template, test_user, client: FlaskClient):
+def test_list_bottles(
+    mock_render_template: MagicMock, test_user_01: User, client: FlaskClient
+) -> None:
     mock_render_template.return_value = "Rendered Template"
-    response = list_bottles(test_user, request, test_user)
+    response = list_bottles(test_user_01, request, test_user_01)
     assert response.data == b"Rendered Template"
 
 
 @patch("mywhiskies.services.bottle.bottle.add_bottle_images")
 @patch("mywhiskies.services.bottle.bottle.flash")
-def test_add_bottle(mock_flash, mock_add_bottle_images, test_user):
+def test_add_bottle(
+    mock_flash: MagicMock, mock_add_bottle_images: MagicMock, test_user_01: User
+) -> None:
     mock_add_bottle_images.return_value = True
     form = MagicMock(spec=BottleAddForm)
     form.distilleries.data = []
@@ -79,7 +47,7 @@ def test_add_bottle(mock_flash, mock_add_bottle_images, test_user):
     form.date_purchased.data = datetime(2024, 1, 1)
     form.date_opened.data = datetime(2024, 2, 1)
     form.date_killed.data = datetime(2024, 3, 1)
-    add_bottle(form, test_user)
+    add_bottle(form, test_user_01)
     mock_flash.assert_called_once_with(
         '"Test Bottle" has been successfully added.', "success"
     )
@@ -89,8 +57,11 @@ def test_add_bottle(mock_flash, mock_add_bottle_images, test_user):
 @patch("mywhiskies.services.bottle.bottle.add_bottle_images")
 @patch("mywhiskies.services.bottle.bottle.flash")
 def test_edit_bottle(
-    mock_flash, mock_add_bottle_images, mock_edit_bottle_images, test_bottle
-):
+    mock_flash: MagicMock,
+    mock_add_bottle_images: MagicMock,
+    mock_edit_bottle_images: MagicMock,
+    test_bottle: Bottle,
+) -> None:
     mock_add_bottle_images.return_value = True
     form = MagicMock(spec=BottleEditForm)
     form.distilleries.data = []
@@ -117,6 +88,11 @@ def test_edit_bottle(
 
 @patch("mywhiskies.services.bottle.bottle.boto3.client")
 @patch("mywhiskies.services.bottle.bottle.flash")
-def test_delete_bottle(mock_flash, mock_boto_client, test_user, test_bottle):
-    delete_bottle(test_user, test_bottle.id)
+def test_delete_bottle(
+    mock_flash: MagicMock,
+    mock_boto_client: MagicMock,
+    test_user_01: User,
+    test_bottle: Bottle,
+) -> None:
+    delete_bottle(test_user_01, test_bottle.id)
     mock_flash.assert_called_once_with("Bottle deleted successfully", "success")
