@@ -3,7 +3,7 @@ from wtforms import StringField, SubmitField, TextAreaField
 from wtforms.validators import URL, InputRequired, Length, Optional
 
 
-class BottlerForm(FlaskForm):
+class BottlerAddForm(FlaskForm):
     name = StringField(
         "Name:",
         validators=[InputRequired(), Length(1, 65)],
@@ -32,5 +32,5 @@ class BottlerForm(FlaskForm):
     submit = SubmitField("Add Bottler")
 
 
-class BottlerEditForm(BottlerForm):
+class BottlerEditForm(BottlerAddForm):
     submit = SubmitField("Edit Bottler")
