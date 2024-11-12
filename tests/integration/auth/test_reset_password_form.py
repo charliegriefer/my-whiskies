@@ -1,4 +1,3 @@
-import pytest
 from flask import Flask, url_for
 from flask.testing import FlaskClient
 from sqlalchemy import select
@@ -10,17 +9,14 @@ from mywhiskies.extensions import db
 from tests.conftest import TEST_USER_PASSWORD
 
 
-@pytest.fixture
-def reset_token(test_user: User) -> str:
-    return test_user.get_reset_password_token()
-
-
 def test_reset_password_valid_token(
-    app: Flask, client: FlaskClient, reset_token: str, test_user: User
+    app: Flask, client: FlaskClient, test_user_01: User
 ) -> None:
     with app.app_context():
         response = client.post(
-            url_for("auth.reset_password", token=reset_token),
+            url_for(
+                "auth.reset_password", token=test_user_01.get_reset_password_token()
+            ),
             data={"password": "NewPassword123", "password2": "NewPassword123"},
             follow_redirects=True,
         )
@@ -29,7 +25,7 @@ def test_reset_password_valid_token(
 
         # verify the password has been updated
         user = (
-            db.session.execute(select(User).filter_by(username=test_user.username))
+            db.session.execute(select(User).filter_by(username=test_user_01.username))
             .scalars()
             .first()
         )
