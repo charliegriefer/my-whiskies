@@ -7,14 +7,16 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # avoid circular imports
     from mywhiskies.blueprints.bottle.models import Bottle
 
 
 class Bottler(db.Model):
     __tablename__ = "bottler"
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uuid.uuid4)
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
     name: Mapped[str] = mapped_column(String(65))
     description: Mapped[Optional[str]] = mapped_column(Text)
     region_1: Mapped[str] = mapped_column(String(36))

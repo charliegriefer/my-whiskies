@@ -12,14 +12,16 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from mywhiskies.extensions import db, login_manager
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # avoid circular imports
     from mywhiskies.blueprints.bottle.models import Bottle
     from mywhiskies.blueprints.bottler.models import Bottler
     from mywhiskies.blueprints.distillery.models import Distillery
 
 
 class User(UserMixin, db.Model):
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uuid.uuid4)
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
     username: Mapped[str] = mapped_column(String(64), index=True, unique=True)
     email: Mapped[str] = mapped_column(String(120), index=True, unique=True)
     password_hash: Mapped[str] = mapped_column(String(128))
@@ -30,9 +32,13 @@ class User(UserMixin, db.Model):
     deleted_date: Mapped[Optional[datetime]]
 
     # relationships
-    distilleries: Mapped[List["Distillery"]] = relationship(back_populates="user")
-    bottlers: Mapped[List["Bottler"]] = relationship(back_populates="user")
-    bottles: Mapped[List["Bottle"]] = relationship(back_populates="user")
+    distilleries: Mapped[List["Distillery"]] = relationship(
+        "Distillery", back_populates="user"
+    )
+    bottlers: Mapped[List["Bottler"]] = relationship("Bottler", back_populates="user")
+    bottles: Mapped[List["Bottle"]] = relationship(
+        "Bottle", back_populates="user", lazy="select"
+    )
 
     def get_mail_confirm_token(self, expires_in: int = 600) -> str:
         payload = {"confirm_reg": self.id, "exp": time() + expires_in}
@@ -77,5 +83,4 @@ class User(UserMixin, db.Model):
 
 @login_manager.user_loader
 def load_user(user_id: str) -> User:
-    user = db.get_or_404(User, user_id)
-    return user
+    return db.get_or_404(User, user_id)

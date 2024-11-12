@@ -11,7 +11,7 @@ from mywhiskies.blueprints.core.models import bottle_distillery  # noqa: F401
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # avoid circular imports
     from mywhiskies.blueprints.bottler.models import Bottler
     from mywhiskies.blueprints.distillery.models import Distillery
 
@@ -29,7 +29,9 @@ class BottleTypes(enum.Enum):
 
 class Bottle(db.Model):
     __tablename__ = "bottle"
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uuid.uuid4)
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
     date_created: Mapped[datetime] = mapped_column(default=datetime.utcnow)
     name: Mapped[str] = mapped_column(String(64))
     type: Mapped[BottleTypes]
@@ -48,11 +50,11 @@ class Bottle(db.Model):
     image_count: Mapped[int] = mapped_column(default=0)
 
     # foreign keys
-    bottler_id: Mapped[Optional[str]] = mapped_column(ForeignKey("bottler.id"))
     user_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
+    bottler_id: Mapped[Optional[str]] = mapped_column(ForeignKey("bottler.id"))
 
     # relationships
-    user: Mapped["User"] = relationship(back_populates="bottles")
+    user: Mapped["User"] = relationship("User", back_populates="bottles", lazy="select")
 
     distilleries: Mapped[List["Distillery"]] = relationship(
         "Distillery",

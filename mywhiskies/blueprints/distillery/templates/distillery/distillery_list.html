@@ -130,7 +130,10 @@
         {% endif %}
         order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        "pageLength": {{ dt_list_length }}
+        "pageLength": {{ dt_list_length }}, 
+        "oLanguage": {
+          "sEmptyTable": "My Custom Message On Empty Table"
+        }
       });
 
       /* set cookie when length dropdown is changed */
