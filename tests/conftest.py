@@ -198,12 +198,12 @@ def test_user_02() -> User:
 
 
 @pytest.fixture
-def logged_in_user(client: FlaskClient, test_user: User) -> FlaskClient:
+def logged_in_user(client: FlaskClient, test_user_01: User) -> FlaskClient:
     """Log in the test user and return the logged-in client."""
     client.post(
         url_for("auth.login"),
         data={
-            "username": test_user.username,
+            "username": test_user_01.username,
             "password": TEST_USER_PASSWORD,
         },
     )
