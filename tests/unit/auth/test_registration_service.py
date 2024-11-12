@@ -1,23 +1,10 @@
-import pytest
 from werkzeug.datastructures import MultiDict
 
 from mywhiskies.blueprints.auth.forms import RegistrationForm
 from mywhiskies.blueprints.user.models import User
-from mywhiskies.extensions import db
 
 
-@pytest.fixture
-def test_user(app):
-    user = User(username="existinguser", email="existing@example.com")
-    user.set_password("testpassword")
-    db.session.add(user)
-    db.session.commit()
-    yield user
-    db.session.delete(user)
-    db.session.commit()
-
-
-def test_valid_registration_form():
+def test_valid_registration_form() -> None:
     form = RegistrationForm(
         formdata=MultiDict(
             {
@@ -32,7 +19,7 @@ def test_valid_registration_form():
     assert form.validate(), f"Form validation failed: {form.errors}"
 
 
-def test_invalid_username_format():
+def test_invalid_username_format() -> None:
     form = RegistrationForm(
         formdata=MultiDict(
             {
@@ -48,14 +35,14 @@ def test_invalid_username_format():
     assert "username" in form.errors
 
 
-def test_duplicate_username(test_user):
+def test_duplicate_username(test_user_01: User) -> None:
     form = RegistrationForm(
         formdata=MultiDict(
             {
-                "username": "existinguser",
+                "username": test_user_01.username,
                 "email": "newuser@example.com",
-                "password": "newpassword",
-                "password2": "newpassword",
+                "password": "NewPassword1234",
+                "password2": "NewPassword1234",
                 "agree_terms": True,
             }
         )
@@ -64,14 +51,14 @@ def test_duplicate_username(test_user):
     assert "username" in form.errors
 
 
-def test_invalid_email_format():
+def test_invalid_email_format() -> None:
     form = RegistrationForm(
         formdata=MultiDict(
             {
                 "username": "newuser",
                 "email": "invalid-email",
-                "password": "newpassword",
-                "password2": "newpassword",
+                "password": "NewPassword1234",
+                "password2": "NewPassword1234",
                 "agree_terms": True,
             }
         )
@@ -80,14 +67,14 @@ def test_invalid_email_format():
     assert "email" in form.errors
 
 
-def test_duplicate_email(test_user):
+def test_duplicate_email(test_user_01: User) -> None:
     form = RegistrationForm(
         formdata=MultiDict(
             {
-                "username": "newuser",
-                "email": "existing@example.com",
-                "password": "newpassword",
-                "password2": "newpassword",
+                "username": "whiskey_guy_42069",
+                "email": test_user_01.email,
+                "password": "NewPassword1234",
+                "password2": "NewPassword1234",
                 "agree_terms": True,
             }
         )
@@ -96,14 +83,14 @@ def test_duplicate_email(test_user):
     assert "email" in form.errors
 
 
-def test_password_mismatch():
+def test_password_mismatch() -> None:
     form = RegistrationForm(
         formdata=MultiDict(
             {
-                "username": "newuser",
+                "username": "whiskey_guy_42069",
                 "email": "newuser@example.com",
-                "password": "newpassword",
-                "password2": "differentpassword",
+                "password": "NewPassword1234",
+                "password2": "NewPassword12345",
                 "agree_terms": True,
             }
         )
@@ -112,14 +99,14 @@ def test_password_mismatch():
     assert "password2" in form.errors
 
 
-def test_terms_not_agreed():
+def test_terms_not_agreed() -> None:
     form = RegistrationForm(
         formdata=MultiDict(
             {
-                "username": "newuser",
+                "username": "whiskey_guy_42069",
                 "email": "newuser@example.com",
-                "password": "newpassword",
-                "password2": "newpassword",
+                "password": "NewPassword1234",
+                "password2": "NewPassword1234",
                 "agree_terms": False,
             }
         )
