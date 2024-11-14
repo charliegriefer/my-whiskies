@@ -8,7 +8,7 @@ from werkzeug.datastructures import FileStorage, MultiDict
 from mywhiskies.blueprints.bottle.forms import BottleAddForm
 from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.user.models import User
-from mywhiskies.services.bottle.form import prepare_bottle_form
+from mywhiskies.services.bottle.form import prep_bottle_form
 from mywhiskies.services.bottle.image import add_bottle_images
 
 
@@ -18,7 +18,7 @@ def create_bottle_formdata(
     """Create the form data for adding a bottle."""
     formdata = MultiDict(
         {
-            "name": "Frey Ranch ""Farm Strength""",
+            "name": "Frey Ranch " "Farm Strength" "",
             "type": "bourbon",
             "year_barrelled": 2018,
             "year_bottled": 2023,
@@ -66,7 +66,7 @@ def test_valid_bottle_form(app: Flask, test_user_01: User, mock_image: str) -> N
         formdata = create_bottle_formdata(test_user_01, file_storage)
 
         form = BottleAddForm()
-        prepare_bottle_form(test_user_01, form)
+        prep_bottle_form(test_user_01, form)
         form.process(formdata)
 
         assert form.validate(), f"Form validation failed: {form.errors}"
