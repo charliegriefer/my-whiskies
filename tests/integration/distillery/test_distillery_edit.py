@@ -25,11 +25,11 @@ def test_valid_distillery_edit_form(
     client = logged_in_user
 
     formdata = {
-        "name": "Frey Ranch Distillery and Farm and Stuff",
-        "description": "The BEST distillery in Nevada.",
-        "region_1": "Fallon",
-        "region_2": "NV",
-        "url": "https://freyranch.com/index.html",
+        "name": "Frey Ranch UPDATED",
+        "description": "A distillery in Nevada UPDATED.",
+        "region_1": "Fallon UPDATED",
+        "region_2": "NV UPDATED",
+        "url": "https://freyranch.com/UPDATED",
     }
 
     response = client.post(
