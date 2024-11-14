@@ -43,7 +43,7 @@ class BaseConfig:
 
     # AWS
     BOTTLE_IMAGE_S3_BUCKET = "my-whiskies-pics"
-    BOTTLE_IMAGE_S3_KEY = os.environ["BOTTLE_IMAGE_S3_KEY"]
+    BOTTLE_IMAGE_S3_KEY = "dev"
     BOTTLE_IMAGE_S3_URL = "https://my-whiskies-pics.s3-us-west-1.amazonaws.com"
 
     @staticmethod
