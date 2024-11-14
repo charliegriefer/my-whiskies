@@ -61,140 +61,121 @@ def test_client(app: Flask) -> FlaskClient:
 @pytest.fixture
 def test_user_01() -> User:
     """
-    Create a test user with associated objects.
-    2 Bottlers: Lost Lantern and Crowded Barrel Whiskey Co.
-    2 Distilleries: Frey Ranch and Lexington Brewing and Distilling Co.
-    1 Bottle: Frey Ranch Straight Rye Whiskey
+    Create a test user (test_user_01) with associated objects:
+        - 4 Distilleries: Frey Ranch, Still Austin, Ironroot Republic, and Boulder Spirits
+        - 2 Bottlers: Lost Lantern and Crowded Barrel Whiskey Co.
+        - 2 Bottles: Frey Ranch Straight Rye Whiskey and Far-Flung Bourbon
 
-    Can delete Crowded Barrel Whiskey Co., as there are no related bottles.
-    Can delete Lexington Brewing and Distilling Co. as there are no related bottles.
+    Expectations:
+        - Can delete distillery Boulder Spirits, as there are no related bottles.
+        - Cannot delete distilleries Frey Ranch or Still Austin as there are related bottles.
+        - Can delete bottler Crowded Barrel Whiskey Co., as there are no related bottles.
+        - Cannot delete bottler Lost Lantern as there is a related bottle.
+        - Far-Flung Bourbon has two distilleries (Frey Ranch and Still Austin):
+            - Edit to add a third (Boulder Spirits) and ensure that the bottle now has 3 distilleries.
+            - Edit to remove one distillery (Frey Ranch) and ensure that there is only one distillery.
     """
-    user = User(
+    test_user_01 = User(
         username="test_user_01",
         email="test_user_01@example.com",
         email_confirmed=True,
     )
-    user.set_password(TEST_USER_PASSWORD)
-    db.session.add(user)
+    test_user_01.set_password(TEST_USER_PASSWORD)
+    db.session.add(test_user_01)
     db.session.commit()
 
-    # incorrect information below. will fix later when testing edit a bottler.
-    bottler = Bottler(
-        name="Lost Lantern",
-        description="An independent bottler.",
-        region_1="Vergenes",
-        region_2="VS",
-        url="https://lostlantern.com",
-        user_id=user.id,
-    )
-    db.session.add(bottler)
+    # create user's distilleries
+    boulder_spirits = _boulder_spirits()
+    boulder_spirits.user_id = test_user_01.id
+
+    frey_ranch = _frey_ranch()
+    frey_ranch.user_id = test_user_01.id
+
+    ironroot_republic = _ironroot_republic()
+    ironroot_republic.user_id = test_user_01.id
+
+    still_austin = _still_austin()
+    still_austin.user_id = test_user_01.id
+
+    db.session.add(boulder_spirits)
+    db.session.add(frey_ranch)
+    db.session.add(ironroot_republic)
+    db.session.add(still_austin)
     db.session.commit()
 
-    # this bottler has no bottles. We should be able to delete it.
-    bottler = Bottler(
-        name="Crowded Barrel Whiskey Co.",
-        description="The world's first crowdsourced whiskey distillery.",
-        region_1="Austin",
-        region_2="TX",
-        url="https://crowdedbarrelwhiskey.com",
-        user_id=user.id,
-    )
-    db.session.add(bottler)
+    # create user's bottlers
+    lost_lantern = _lost_lantern()
+    lost_lantern.user_id = test_user_01.id
+
+    crowded_barrel = _crowded_barrel()
+    crowded_barrel.user_id = test_user_01.id
+
+    db.session.add(lost_lantern)
+    db.session.add(crowded_barrel)
     db.session.commit()
 
-    # incorrect information below. will fix later when testing edit a distillery.
-    distillery = Distillery(
-        name="Frey Ranh",
-        description="A distillery in Nevda.",
-        region_1="Nevada",
-        region_2="USA",
-        url="https://frey.com",
-        user_id=user.id,
-    )
-    db.session.add(distillery)
+    # create user's bottles
+    far_flung_bourbon = _far_flung_bourbon()
+    far_flung_bourbon.bottler_id = lost_lantern.id
+    far_flung_bourbon.distilleries = [frey_ranch, still_austin]
+    far_flung_bourbon.user_id = test_user_01.id
+
+    frey_ranch_straight_rye = _frey_ranch_straight_rye()
+    frey_ranch_straight_rye.distilleries = [frey_ranch]
+    frey_ranch_straight_rye.user_id = test_user_01.id
+
+    db.session.add(far_flung_bourbon)
+    db.session.add(frey_ranch_straight_rye)
     db.session.commit()
 
-    bottle = Bottle(
-        name="Frey Ranch Straight Rye Whiskey",
-        type="rye",
-        year_barrelled=2018,
-        year_bottled=2024,
-        abv=68.8,
-        cost=114.00,
-        stars="5",
-        description="100% Fallon-grown rye goodness",
-        user_id=user.id,
-        distilleries=[distillery],
-        bottler_id=bottler.id,
-    )
-    db.session.add(bottle)
-    db.session.commit()
-
-    # this distillery has no bottles. We should be able to delete it.
-    distillery = Distillery(
-        name="Ironroot Republic",
-        description="A family-owned Texas distillery.",
-        region_1="Denison",
-        region_2="TX",
-        url="https://ironrootrepublic.com",
-        user_id=user.id,
-    )
-    db.session.add(distillery)
-    db.session.commit()
-
-    return user
+    return test_user_01
 
 
 @pytest.fixture
 def test_user_02() -> User:
-    """Create a test user for testing how logged in users interact with other users' data."""
-    user = User(
+    """
+    Create a test user (test_user_02) with associated objects:
+        - 2 Distilleries: Frey Ranch and Ironroot Republic
+        - 1 Bottler: Crowded Barrel Whiskey Co.
+        - 1 Bottle: Frey Ranch Straight Rye Whiskey
+
+    Expectations:
+        - test_user_01 should _not_ be able to manipulate any of these objects.
+    """
+    test_user_02 = User(
         username="test_user_02",
         email="test_user_02@example.com",
         email_confirmed=True,
     )
-    user.set_password("TestUser0002")
-    db.session.add(user)
+    test_user_02.set_password("TestUser0002")
+    db.session.add(test_user_02)
     db.session.commit()
 
-    bottler = Bottler(
-        name="Lost Lantern",
-        description="The best independent bottler.",
-        region_1="Vergennes",
-        region_2="VT",
-        url="https://lostlanternwhiskey.com",
-        user_id=user.id,
-    )
-    db.session.add(bottler)
+    # create user's distilleries
+    frey_ranch = _frey_ranch()
+    frey_ranch.user_id = test_user_02.id
+
+    ironroot_republic = _ironroot_republic()
+    ironroot_republic.user_id = test_user_02.id
+
+    # create user's bottlers
+    crowded_barrel = _crowded_barrel()
+    crowded_barrel.user_id = test_user_02.id
+
+    db.session.add(frey_ranch)
+    db.session.add(ironroot_republic)
+    db.session.add(crowded_barrel)
     db.session.commit()
 
-    distillery = Distillery(
-        name="Frey Ranch",
-        description="A distillery in Nevda.",
-        region_1="Fallon",
-        region_2="NV",
-        url="https://freyranch.com",
-        user_id=user.id,
-    )
-    db.session.add(distillery)
+    # create user's bottles
+    frey_ranch_straight_rye = _frey_ranch_straight_rye()
+    frey_ranch_straight_rye.distilleries = [frey_ranch]
+    frey_ranch_straight_rye.user_id = test_user_02.id
+
+    db.session.add(frey_ranch_straight_rye)
     db.session.commit()
 
-    bottle = Bottle(
-        name="Frey Ranch Straight Rye Whiskey",
-        type="rye",
-        year_barrelled=2018,
-        year_bottled=2024,
-        abv=68.8,
-        cost=114.00,
-        stars="5",
-        description="100% Fallon-grown rye goodness",
-        user_id=user.id,
-        distilleries=[distillery],
-    )
-    db.session.add(bottle)
-    db.session.commit()
-
-    return user
+    return test_user_02
 
 
 @pytest.fixture
@@ -230,4 +211,92 @@ def html_encode(text: str) -> str:
         .replace(">", "&gt;")
         .replace('"', "&quot;")
         .replace("'", "&#39;")
+    )
+
+
+# ***** Helper functions to create objects for testing *****
+
+
+# Distilleries
+def _boulder_spirits() -> Distillery:
+    return Distillery(
+        name="Boulder Spirits",
+        description="A distillery in Colorado.",
+        region_1="Boulder",
+        region_2="CO",
+    )
+
+
+def _frey_ranch() -> Distillery:
+    return Distillery(
+        name="Frey Ranch",
+        description="A distillery in Nevda.",
+        region_1="Fallon",
+        region_2="NV",
+        url="https://freyranch.com",
+    )
+
+
+def _ironroot_republic() -> Distillery:
+    return Distillery(
+        name="Ironroot Republic",
+        description="A family-owned Texas distillery.",
+        region_1="Denison",
+        region_2="TX",
+        url="https://ironrootrepublic.com",
+    )
+
+
+def _still_austin() -> Distillery:
+    return Distillery(
+        name="Still Austin",
+        description="A distillery in Texas.",
+        region_1="Austin",
+        region_2="TX",
+        url="https://www.stillaustin.com",
+    )
+
+
+#  Bottlers
+def _crowded_barrel() -> Bottler:
+    return Bottler(
+        name="Crowded Barrel Whiskey Co.",
+        description="The world's first crowdsourced whiskey distillery.",
+        region_1="Austin",
+        region_2="TX",
+        url="https://crowdedbarrelwhiskey.com",
+    )
+
+
+def _lost_lantern() -> Bottler:
+    return Bottler(
+        name="Lost Lantern",
+        description="The best independent bottler.",
+        region_1="Vergennes",
+        region_2="VT",
+        url="https://lostlanternwhiskey.com",
+    )
+
+
+# Bottles
+def _far_flung_bourbon() -> Bottle:
+    return Bottle(
+        name="Far-Flung Bourbon I",
+        type="bourbon",
+        abv=68.4,
+        description="A blend of straight bourbons from different distilleries.",
+    )
+
+
+def _frey_ranch_straight_rye() -> Bottle:
+    return Bottle(
+        name="Frey Ranch Straight Rye Whiskey",
+        type="rye",
+        year_barrelled=2018,
+        year_bottled=2024,
+        abv=68.8,
+        cost=114.00,
+        stars="5",
+        description="100% Fallon-grown rye goodness",
+        bottler_id="0",
     )
