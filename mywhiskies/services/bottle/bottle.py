@@ -133,7 +133,6 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
     bottle.date_purchased = form.date_purchased.data
     bottle.date_opened = form.date_opened.data
     bottle.date_killed = form.date_killed.data
-
     edit_bottle_images(form, bottle)
     image_upload_success = add_bottle_images(form, bottle)
 
