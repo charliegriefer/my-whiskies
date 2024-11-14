@@ -75,6 +75,7 @@ def bottle_edit(bottle_id: str):
         edit_bottle(form, _bottle)
         return redirect(url_for("core.home", username=current_user.username))
     else:
+        form.type.data = _bottle.type.name
         form.distilleries.data = [d.id for d in _bottle.distilleries]
 
     return render_template(
