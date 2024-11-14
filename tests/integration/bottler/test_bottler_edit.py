@@ -27,10 +27,10 @@ def test_valid_bottler_edit_form(
 
     formdata = {
         "name": "Lost Lantern UPDATED",
-        "description": "The BEST independent bottler.",
-        "region_1": "Vergennes",
-        "region_2": "VT",
-        "url": "https://www.lostlanternwhiskey.com",
+        "description": "An independent bottler UPDATED.",
+        "region_1": "Vergennes UPDATED",
+        "region_2": "VT UPDATED",
+        "url": "https://www.lostlanternwhiskey.com/UPDATED",
     }
 
     response = client.post(
