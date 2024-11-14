@@ -1,11 +1,10 @@
+import os
 from datetime import datetime
-from typing import Type
 
 from dotenv import load_dotenv
 from flask import Flask
-from flask.config import Config
 
-from config import BaseConfig
+from config import DevConfig, ProdConfig
 from mywhiskies.blueprints.auth import auth
 from mywhiskies.blueprints.bottle import bottle_bp
 from mywhiskies.blueprints.bottler import bottler_bp
@@ -17,9 +16,10 @@ from mywhiskies.extensions import register_extensions
 load_dotenv()
 
 
-def create_app(
-    config_class: Type[Config] = BaseConfig, settings_override: dict = None
-) -> Flask:
+def create_app(settings_override: dict = None) -> Flask:
+    config_type = os.getenv("CONFIG_TYPE", "config.DevConfig")
+    config_class = DevConfig if config_type == "config.DevConfig" else ProdConfig
+
     app = Flask(__name__, instance_relative_config=True)
 
     app.config.from_object(config_class)
