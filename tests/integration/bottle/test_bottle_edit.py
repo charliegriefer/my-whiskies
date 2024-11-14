@@ -1,4 +1,5 @@
 import copy
+from typing import List
 from unittest.mock import MagicMock, patch
 
 from flask import url_for
@@ -6,10 +7,11 @@ from flask.testing import FlaskClient
 from werkzeug.datastructures import FileStorage, MultiDict
 
 from mywhiskies.blueprints.bottle.forms import BottleEditForm
+from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 from mywhiskies.services.bottle.bottle import edit_bottle
-from mywhiskies.services.bottle.form import prepare_bottle_form
+from mywhiskies.services.bottle.form import prep_bottle_form
 
 
 def test_edit_bottle_requires_login(client: FlaskClient, test_user_01: User) -> None:
@@ -37,7 +39,9 @@ def test_edit_bottle_requires_login(client: FlaskClient, test_user_01: User) -> 
 
 def test_valid_bottle_edit_form(test_user_01: User, mock_image: str) -> None:
     """Test the validation of a valid bottle edit form with image upload."""
-    bottle_to_edit = test_user_01.bottles[0]
+    bottle_to_edit = _get_bottle_by_name(
+        test_user_01.bottles, "Frey Ranch Straight Rye Whiskey"
+    )
     bottle_orig = copy.deepcopy(bottle_to_edit.__dict__)
 
     # Create a FileStorage object from a mock image
@@ -64,7 +68,7 @@ def test_valid_bottle_edit_form(test_user_01: User, mock_image: str) -> None:
         )
         # Create and process the form
         form = BottleEditForm()
-        prepare_bottle_form(test_user_01, form)
+        prep_bottle_form(test_user_01, form)
         form.process(formdata)
 
         assert form.validate(), f"Form validation failed: {form.errors}"
@@ -81,7 +85,7 @@ def test_valid_bottle_edit_form(test_user_01: User, mock_image: str) -> None:
             mock_boto_client.return_value = mock_s3_client
 
             # Ensure the distillery object is attached to the session
-            test_user_01.bottles[0].distilleries = [
+            bottle_to_edit.distilleries = [
                 db.session.merge(d) for d in bottle_to_edit.distilleries
             ]
 
@@ -96,3 +100,7 @@ def test_valid_bottle_edit_form(test_user_01: User, mock_image: str) -> None:
         assert bottle_orig.get("stars") != bottle_to_edit.stars
         assert bottle_orig.get("description") != bottle_to_edit.description
         assert bottle_orig.get("review") != bottle_to_edit.review
+
+
+def _get_bottle_by_name(bottles: List[Bottle], name: str) -> Bottle:
+    return next((b for b in bottles if b.name == name), None)

@@ -15,7 +15,7 @@ from mywhiskies.services.bottle.bottle import (
     edit_bottle,
     list_bottles,
 )
-from mywhiskies.services.bottle.form import prepare_bottle_form
+from mywhiskies.services.bottle.form import prep_bottle_form
 from mywhiskies.services.bottle.image import get_s3_config
 
 
@@ -54,7 +54,7 @@ def bottle_detail(bottle_id: str):
 @bottle_bp.route("/bottle/add", methods=["GET", "POST"])
 @login_required
 def bottle_add():
-    form = prepare_bottle_form(current_user, BottleAddForm())
+    form = prep_bottle_form(current_user, BottleAddForm())
     if form.validate_on_submit():
         add_bottle(form, current_user)
         return redirect(url_for("core.home", username=current_user.username))
@@ -68,15 +68,14 @@ def bottle_add():
 @bottle_bp.route("/bottle/edit/<string:bottle_id>", methods=["GET", "POST"])
 @login_required
 def bottle_edit(bottle_id: str):
-    _, _, img_s3_url = get_s3_config()
     _bottle = db.get_or_404(Bottle, bottle_id)
-    form = prepare_bottle_form(current_user, BottleEditForm(obj=_bottle))
-    form.type.data = _bottle.type.name
-    form.distilleries.data = [d.id for d in _bottle.distilleries]
-
+    _, _, img_s3_url = get_s3_config()
+    form = prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
     if form.validate_on_submit():
         edit_bottle(form, _bottle)
         return redirect(url_for("core.home", username=current_user.username))
+    else:
+        form.distilleries.data = [d.id for d in _bottle.distilleries]
 
     return render_template(
         "bottle/bottle_edit.html",
