@@ -48,6 +48,7 @@ class Bottle(db.Model):
     date_opened: Mapped[Optional[datetime]]
     date_killed: Mapped[Optional[datetime]]
     image_count: Mapped[int] = mapped_column(default=0)
+    is_private: Mapped[bool] = mapped_column(default=False)
 
     # foreign keys
     user_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
