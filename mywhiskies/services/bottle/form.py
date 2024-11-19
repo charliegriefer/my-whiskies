@@ -32,8 +32,6 @@ def _set_up_distilleries(
     distilleries = user.distilleries
     distilleries.sort(key=lambda d: d.name)
     form.distilleries.choices = [(d.id, d.name) for d in distilleries]
-    form.distilleries.choices.insert(0, ("", "Choose One or More Distilleries"))
-    form.distilleries.choices.insert(1, ("", " "))
 
 
 def _set_up_bottlers(form: Union[BottleAddForm, BottleEditForm], user: User) -> None:
