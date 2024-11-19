@@ -25,8 +25,6 @@ TEST_USER_PASSWORD = "testpass"
 @pytest.fixture(scope="session")
 def app() -> Flask:
     app = create_app(config_class=TestConfig)
-    app.teardown_bkp = app.teardown_appcontext_funcs
-    app.teardown_appcontext_funcs = []
     with app.app_context():
         db.create_all()
         yield app
