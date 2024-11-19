@@ -20,10 +20,7 @@ from mywhiskies.services.bottle.image import get_s3_config
 
 
 @bottle_bp.route(
-    "/<username>/bottles",
-    methods=["GET", "POST"],
-    endpoint="list_bottles",
-    strict_slashes=False,
+    "/<username>/bottles", methods=["GET", "POST"], endpoint="list_bottles"
 )
 def bottles(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
