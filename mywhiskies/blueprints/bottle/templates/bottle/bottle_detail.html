@@ -47,6 +47,18 @@
                     {% endif %}
                   </div>
                 </div>
+                {% if is_my_bottle %}
+                <div class="row flex-nowrap">
+                  <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Is Private:</div>
+                  <div class="col-9 ps-4 ps-sm-2">
+                  {% if bottle.is_private %}
+                    Yes
+                  {% else %}
+                    No
+                  {% endif %}
+                  </div>
+                </div>
+                {% endif %}
                 <div class="row flex-nowrap">
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Type:</div>
                   <div class="col-9 ps-4 ps-sm-2">

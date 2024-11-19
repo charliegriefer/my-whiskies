@@ -3,6 +3,7 @@ import datetime
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from wtforms import (
+    BooleanField,
     DateField,
     DecimalField,
     HiddenField,
@@ -89,6 +90,7 @@ class BottleAddForm(FlaskForm):
         render_kw={"placeholder": "00.00"},
     )
 
+    is_private = BooleanField("Private Bottle?")
     cost = DecimalField(
         "Cost:",
         places=2,
