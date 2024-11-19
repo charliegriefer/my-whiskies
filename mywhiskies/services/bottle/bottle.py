@@ -38,7 +38,12 @@ def list_bottles(user: User, request: request, current_user: User) -> Response:
             bottles_to_list = []
     else:
         active_bottle_types = [bt.name for bt in BottleTypes]
-        bottles_to_list = all_bottles
+        if user == current_user:
+            bottles_to_list = all_bottles
+        else:
+            bottles_to_list = [
+                bottle for bottle in all_bottles if not bottle.is_private
+            ]
 
     page_title = f"{user.username}'{'' if user.username.endswith('s') else 's'} Whiskies: Bottles"
 
@@ -66,7 +71,6 @@ def add_bottle(form: BottleAddForm, user: User) -> None:
         distilleries.append(db.session.get(Distillery, distillery_id))
 
     bottler_id = form.bottler_id.data if form.bottler_id.data != "0" else None
-
     bottle_in = Bottle(
         user_id=user.id,
         name=form.name.data,
@@ -85,6 +89,7 @@ def add_bottle(form: BottleAddForm, user: User) -> None:
         date_purchased=form.date_purchased.data,
         date_opened=form.date_opened.data,
         date_killed=form.date_killed.data,
+        is_private=form.is_private.data,
     )
 
     db.session.add(bottle_in)
