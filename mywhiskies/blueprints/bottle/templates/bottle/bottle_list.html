@@ -86,6 +86,9 @@
             {% endif %}
             <td class="pb-0 me-0">
               <a href="{{ url_for("bottle.bottle_detail", bottle_id=bottle.id) }}" class="{{ opacity }}">{{ bottle.name |replace("\n", "<br />") |safe }}</a>
+              {% if bottle.is_private %}
+                <i class="bi bi-incognito ms-1 {{ opacity }}" title="Private Bottle"></i>
+              {% endif %}
               {% if bottle.image_count %}
                 {% if bottle.image_count == 1 %}
                   <i class="bi bi-image ms-1 {{ opacity }}" title="Has Image"></i>

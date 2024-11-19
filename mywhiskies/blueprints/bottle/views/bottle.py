@@ -1,6 +1,6 @@
 import time
 
-from flask import redirect, render_template, request, url_for
+from flask import abort, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.bottle import bottle_bp
@@ -36,7 +36,9 @@ def bottle_detail(bottle_id: str):
     _bottle = db.get_or_404(Bottle, bottle_id)
     _, _, img_s3_url = get_s3_config()
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
-
+    # 404 if this is a private bottle and the requesting user is not the owner
+    if _bottle.is_private and not is_my_bottle:
+        abort(404)
     return render_template(
         "bottle/bottle_detail.html",
         title=f"{_bottle.user.username}'s Whiskies: {_bottle.name}",
