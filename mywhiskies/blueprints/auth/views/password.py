@@ -14,7 +14,7 @@ from mywhiskies.services.auth.password import (
 )
 
 
-@auth.route("/reset_password_request", methods=["GET", "POST"], strict_slashes=False)
+@auth.route("/reset_password_request", methods=["GET", "POST"])
 def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for("core.home", username=current_user.username))
@@ -39,7 +39,7 @@ def reset_password_request():
     )
 
 
-@auth.route("/reset_password/<token>", methods=["GET", "POST"], strict_slashes=False)
+@auth.route("/reset_password/<token>", methods=["GET", "POST"])
 def reset_password(token: str):
     if current_user.is_authenticated:
         return redirect(url_for("core.home", username=current_user.username))

@@ -16,9 +16,7 @@ from mywhiskies.services.bottler.bottler import (
 )
 
 
-@bottler_bp.route(
-    "/<username>/bottlers", endpoint="bottlers_list", strict_slashes=False
-)
+@bottler_bp.route("/<username>/bottlers", endpoint="bottlers_list")
 def bottlers(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     response = list_bottlers(user, current_user)

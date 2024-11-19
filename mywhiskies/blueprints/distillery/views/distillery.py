@@ -68,9 +68,7 @@ def bulk_distillery_add():
     return redirect(url_for("core.home", username=current_user.username))
 
 
-@distillery_bp.route(
-    "/<username>/distilleries", endpoint="distilleries_list", strict_slashes=False
-)
+@distillery_bp.route("/<username>/distilleries", endpoint="distilleries_list")
 def distilleries(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     response = list_distilleries(user, current_user)

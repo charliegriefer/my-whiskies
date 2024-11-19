@@ -12,7 +12,7 @@ from mywhiskies.services.core.core import (
 
 
 @core_bp.route("/")
-@core_bp.route("/index", strict_slashes=False)
+@core_bp.route("/index")
 def index():
     counts = get_index_counts()
 
