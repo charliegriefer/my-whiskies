@@ -42,7 +42,8 @@
             <div class="mb-3">
               {{ form.distilleries.label(class="form-label") }}
               {% if form.distilleries.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.distilleries(class="form-select") }}
+              <br />
+              {{ form.distilleries() }}
               {% if form.distilleries.errors %}
                 {% for error in form.distilleries.errors %}
                   <span class="error">{{ error }}</span>
