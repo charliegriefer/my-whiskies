@@ -12,7 +12,7 @@ from mywhiskies.services.core.core import (
 
 
 @core_bp.route("/")
-@core_bp.route("/index", strict_slashes=False)
+@core_bp.route("/index")
 def index():
     counts = get_index_counts()
 
@@ -29,6 +29,7 @@ def index():
 
 
 @core_bp.route("/<string:username>", endpoint="home")
+@core_bp.route("/<string:username>/", endpoint="home")
 def home(username: str):
     cookie_exists = request.cookies.get("my-whiskies-user", None)
     user = get_user_by_username(username)
