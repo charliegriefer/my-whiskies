@@ -62,6 +62,7 @@ def bottle_add():
         "bottle/bottle_add.html",
         title=f"{current_user.username}'s Whiskies: Add Bottle",
         form=form,
+        has_select2_widget=True,
     )
 
 
@@ -83,6 +84,7 @@ def bottle_edit(bottle_id: str):
         title=f"{current_user.username}'s Whiskies: Edit Bottle",
         bottle=_bottle,
         form=form,
+        has_select2_widget=True,
         img_s3_url=img_s3_url,
     )
 

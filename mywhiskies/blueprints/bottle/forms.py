@@ -8,12 +8,13 @@ from wtforms import (
     HiddenField,
     IntegerField,
     SelectField,
-    SelectMultipleField,
     StringField,
     SubmitField,
     TextAreaField,
 )
 from wtforms.validators import URL, InputRequired, Length, NumberRange, Optional
+
+from .widgets import Select2Field
 
 IMG_MESSAGE = "Permitted file types: jpg/jpeg, png"
 
@@ -38,7 +39,12 @@ class BottleAddForm(FlaskForm):
         render_kw={"placeholder": "URL"},
     )
     type = SelectField("Bottle Type:", validators=[InputRequired()])
-    distilleries = SelectMultipleField("Distiller:", validators=[InputRequired()])
+    distilleries = Select2Field(
+        "Distilleries",
+        choices=[],
+        validators=[InputRequired()],
+        render_kw={"placeholder": " Choose One or More Distilleries"},
+    )
     bottler_id = SelectField("Bottler:")
     size = IntegerField(
         "Size (ml):",
