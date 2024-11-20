@@ -41,6 +41,7 @@ def test_add_bottle(
     form.year_bottled.data = 2024
     form.url.data = "http://example.com"
     form.description.data = "A test bottle"
+    form.personal_note.data = "This one is in my nighstand for safe keeping."
     form.review.data = "Great!"
     form.stars.data = 4.5
     form.cost.data = 50.0
@@ -75,6 +76,7 @@ def test_edit_bottle(
     form.year_bottled.data = 2024
     form.url.data = "http://example.com"
     form.description.data = "A test bottle"
+    form.personal_note.data = "Moved to under the bed."
     form.review.data = "Great!"
     form.stars.data = 4.5
     form.cost.data = 50.0
