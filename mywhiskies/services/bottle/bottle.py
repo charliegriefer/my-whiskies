@@ -52,6 +52,12 @@ def list_bottles(user: User, request: request, current_user: User) -> Response:
         dk_column += 1
         if len(private_bottles):
             dk_column += 1
+    order_col = 0
+    if is_my_list:
+        order_col += 1
+        if len(private_bottles):
+            order_col += 1
+
     page_title = f"{user.username}'{'' if user.username.endswith('s') else 's'} Whiskies: Bottles"
 
     response = make_response(
@@ -68,6 +74,7 @@ def list_bottles(user: User, request: request, current_user: User) -> Response:
             show_privates=is_my_list and len(private_bottles),
             is_my_list=is_my_list,
             dk_column=dk_column,
+            order_col=order_col,
         )
     )
 

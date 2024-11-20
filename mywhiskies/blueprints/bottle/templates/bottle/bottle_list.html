@@ -195,7 +195,7 @@
             visible: false,
           }
         ],
-        order: [[{% if is_my_list %}2{% else %}1{% endif %}, "asc"]],
+        order: [[{{ order_col }}, "asc"]],
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "pageLength": {{ dt_list_length }}
       });
