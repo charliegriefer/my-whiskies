@@ -29,9 +29,9 @@ def test_valid_bottler_form() -> None:
     assert form.validate(), f"Form validation failed: {form.errors}"
 
 
-def test_add_bottler(logged_in_user: FlaskClient, test_user_01: User) -> None:
+def test_add_bottler(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     """Test that a logged-in user can add a bottler."""
-    client = logged_in_user
+    client = logged_in_user_01
     user_bottlers_count = len(test_user_01.bottlers)
 
     response = client.post(

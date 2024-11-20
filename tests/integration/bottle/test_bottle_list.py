@@ -27,12 +27,12 @@ def test_bottle_list(client: FlaskClient, test_user_01: User) -> None:
 
 
 def test_bottle_list_logged_in_elements(
-    logged_in_user: FlaskClient, test_user_01: User, test_user_02: User
+    logged_in_user_01: FlaskClient, test_user_01: User, test_user_02: User
 ) -> None:
 
     # get the bottle list page for another user.
     # even though we're logged in, we shouldn't see edit or delete icons in another user's list.
-    response = logged_in_user.get(
+    response = logged_in_user_01.get(
         url_for("bottle.list_bottles", username=test_user_02.username)
     )
     response_data = response.get_data(as_text=True)
@@ -47,7 +47,7 @@ def test_bottle_list_logged_in_elements(
 
     # get the bottle list page the current user.
     # now we should see the edit and delete iconss, as well as the "random" button.
-    response = logged_in_user.get(
+    response = logged_in_user_01.get(
         url_for("bottle.list_bottles", username=test_user_01.username)
     )
     response_data = response.get_data(as_text=True)

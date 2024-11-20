@@ -20,9 +20,9 @@ def test_edit_distillery_requires_login(
 
 
 def test_valid_distillery_edit_form(
-    logged_in_user: FlaskClient, test_user_01: User
+    logged_in_user_01: FlaskClient, test_user_01: User
 ) -> None:
-    client = logged_in_user
+    client = logged_in_user_01
 
     formdata = {
         "name": "Frey Ranch UPDATED",

@@ -24,9 +24,9 @@ def test_distillery_list(client: FlaskClient, test_user_01: User) -> None:
 
 
 def distillery_list_logged_in_elements(
-    logged_in_user: FlaskClient, test_user_01: User, test_user_02: User
+    logged_in_user_01: FlaskClient, test_user_01: User, test_user_02: User
 ) -> None:
-    client = logged_in_user
+    client = logged_in_user_01
 
     # get the distillery list page for another user.
     # even though we're logged in, we shouldn't see edit or delete icons in another user's list.
