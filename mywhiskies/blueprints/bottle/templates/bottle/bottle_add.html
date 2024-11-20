@@ -123,7 +123,7 @@
             <div class="mb-3">
               {{ form.personal_note.label(class="form-label") }}
               {% if form.personal_note.flags.required %}<span class="text-danger">*</span>{% endif %}
-              <a tabindex="0" href="" class="float-end pe-1" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="right" data-bs-html="true" data-bs-title="<i class='bi bi-question-circle pe-1'></i> Personal Note" data-bs-content="<p>Anything entered into this field will only be visible to you when logged in.</p><p>Perhaps it's the location of the bottle (e.g. 'Main Cabinet' or 'Bedroom Closet'), for example. </p><p>Anything that is relevant to you, but wouldn't necessarily be relevant to others, could go here.</p>" onclick="return false;"><i class="bi bi-question-circle-fill"></i></a>
+              <a tabindex="-1" href="" class="float-end pe-1" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="right" data-bs-html="true" data-bs-title="<i class='bi bi-question-circle pe-1'></i> Personal Note" data-bs-content="<p>Anything entered into this field will only be visible to you when logged in.</p><p>Perhaps it's the location of the bottle (e.g. 'Main Cabinet' or 'Bedroom Closet'), for example. </p><p>Anything that is relevant to you, but wouldn't necessarily be relevant to others, could go here.</p>" onclick="return false;"><i class="bi bi-question-circle-fill"></i></a>
               {{ form.personal_note(class="form-control") }}
               {% if form.personal_note.errors %}
                 {% for error in form.personal_note.errors %}
@@ -160,7 +160,7 @@
           <div class="col">
             <div class="mb-3">
               {{ form.is_private(class="form-check-input") }}&nbsp;&nbsp;{{ form.is_private.label(class="form-label") }}
-              <a tabindex="0" href="" class="pe-1" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="right" data-bs-html="true" data-bs-title="<i class='bi bi-question-circle pe-1'></i> Private Bottle" data-bs-content="If marked as a &quot;Private Bottle&quot;, this bottle will only show in your list when you're logged in.<br /><br />Other users will not be able to see it." onclick="return false;"><i class="bi bi-question-circle-fill"></i></a>
+              <a tabindex="-1" href="" class="pe-1" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="right" data-bs-html="true" data-bs-title="<i class='bi bi-question-circle pe-1'></i> Private Bottle" data-bs-content="If marked as a &quot;Private Bottle&quot;, this bottle will only show in your list when you're logged in.<br /><br />Other users will not be able to see it." onclick="return false;"><i class="bi bi-question-circle-fill"></i></a>
             </div>
             <div class="mb-3">
               {{ form.cost.label(class="form-label") }}
