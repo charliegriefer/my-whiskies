@@ -100,6 +100,7 @@ class BottleAddForm(FlaskForm):
     stars = SelectField("Stars:", validators=[Optional()], validate_choice=False)
 
     description = TextAreaField("Description:", validators=[Length(0, 65000)])
+    personal_note = TextAreaField("Personal Note:", validators=[Length(0, 65000)])
     review = TextAreaField("Review:", validators=[Length(0, 65000)])
 
     date_purchased = DateField("Date Purchased:", validators=[Optional()])
