@@ -148,6 +148,10 @@
 
           <div class="col">
             <div class="mb-3">
+              {{ form.is_private(class="form-check-input") }}&nbsp;&nbsp;{{ form.is_private.label(class="form-label") }}
+              <a tabindex="0" href="" class="pe-1" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="right" data-bs-html="true" data-bs-title="<i class='bi bi-question-circle pe-1'></i> Private Bottle" data-bs-content="If marked as a &quot;Private Bottle&quot;, this bottle will only show in your list when you're logged in.<br /><br />Other users will not be able to see it." onclick="return false;"><i class="bi bi-question-circle-fill"></i></a>
+            </div>
+            <div class="mb-3">
               {{ form.cost.label(class="form-label") }}
               {% if form.cost.flags.required %}<span class="text-danger">*</span>{% endif %}
               {{ form.cost(class="form-control") }}
@@ -268,6 +272,11 @@
 
 {% block scripts %}
   {{ super() }}
+
+  <script type="text/javascript">
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+  </script>
 
   <script type="text/javascript">
     function clearField(id_input) {
