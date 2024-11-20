@@ -18,9 +18,9 @@ def test_edit_bottler_requires_login(client: FlaskClient, test_user_01: User) ->
 
 
 def test_valid_bottler_edit_form(
-    logged_in_user: FlaskClient, test_user_01: User
+    logged_in_user_01: FlaskClient, test_user_01: User
 ) -> None:
-    client = logged_in_user
+    client = logged_in_user_01
 
     bottler_to_edit = test_user_01.bottlers[0]
     bottler_orig = copy.deepcopy(bottler_to_edit.__dict__)
