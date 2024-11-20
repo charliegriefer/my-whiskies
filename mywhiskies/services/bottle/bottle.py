@@ -22,6 +22,7 @@ from mywhiskies.services.bottle.image import (
 def list_bottles(user: User, request: request, current_user: User) -> Response:
     all_bottles = user.bottles
     killed_bottles = [b for b in all_bottles if b.date_killed]
+    private_bottles = [b for b in all_bottles if b.is_private]
 
     if request.method == "POST":
         active_bottle_types = request.form.getlist("bottle_type")
@@ -45,6 +46,12 @@ def list_bottles(user: User, request: request, current_user: User) -> Response:
                 bottle for bottle in all_bottles if not bottle.is_private
             ]
 
+    is_my_list = utils.is_my_list(user.username, current_user)
+    dk_column = 5
+    if is_my_list:
+        dk_column += 1
+        if len(private_bottles):
+            dk_column += 1
     page_title = f"{user.username}'{'' if user.username.endswith('s') else 's'} Whiskies: Bottles"
 
     response = make_response(
@@ -58,7 +65,9 @@ def list_bottles(user: User, request: request, current_user: User) -> Response:
             bottle_types=BottleTypes,
             active_filters=active_bottle_types,
             dt_list_length=request.cookies.get("dt-list-length", "50"),
-            is_my_list=utils.is_my_list(user.username, current_user),
+            show_privates=is_my_list and len(private_bottles),
+            is_my_list=is_my_list,
+            dk_column=dk_column,
         )
     )
 
@@ -138,6 +147,7 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
     bottle.date_purchased = form.date_purchased.data
     bottle.date_opened = form.date_opened.data
     bottle.date_killed = form.date_killed.data
+    bottle.is_private = form.is_private.data
     edit_bottle_images(form, bottle)
     image_upload_success = add_bottle_images(form, bottle)
 
