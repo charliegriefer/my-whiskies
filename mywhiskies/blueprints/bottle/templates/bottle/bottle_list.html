@@ -60,6 +60,9 @@
         <tr>
           {% if is_my_list %}
             <th scope="col" class="me-0 pe-0" style="width:4%;">&nbsp;</th>
+            {% if show_privates %}
+            <th scope="col" class="me-9 pe-0" style="width:4%;"><i class="bi bi-incognito"></i></th>
+            {% endif %}
           {% endif %}
           <th scope="col" style="width:30%;">Name</th>
           <th scope="col" style="width:30%;">Description</th>
@@ -83,6 +86,15 @@
                 <a href="{{ url_for("bottle.bottle_edit", bottle_id=bottle.id) }}"><i class="bi bi-pencil"></i></a>
                 <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for("bottle.bottle_delete", bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
               </td>
+              {% if show_privates %}
+              <td>
+              {% if bottle.is_private %}
+                <i class="bi bi-incognito opacity-50"></i>
+              {% else %}
+                &nbsp;
+              {% endif %}
+              </td>
+              {% endif %}
             {% endif %}
             <td class="pb-0 me-0">
               <a href="{{ url_for("bottle.bottle_detail", bottle_id=bottle.id) }}" class="{{ opacity }}">{{ bottle.name |replace("\n", "<br />") |safe }}</a>
@@ -163,7 +175,7 @@
 
       $('[data-bs-toggle="tooltip"]').tooltip();
 
-      let dk_column = {% if is_my_list %}6{% else %}5{% endif %};
+      let dk_column = {{ dk_column }};
 
       let table = $("#bottles").DataTable({
         language: {
@@ -183,7 +195,7 @@
             visible: false,
           }
         ],
-        order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
+        order: [[{% if is_my_list %}2{% else %}1{% endif %}, "asc"]],
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "pageLength": {{ dt_list_length }}
       });

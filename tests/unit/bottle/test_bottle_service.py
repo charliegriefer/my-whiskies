@@ -47,6 +47,7 @@ def test_add_bottle(
     form.date_purchased.data = datetime(2024, 1, 1)
     form.date_opened.data = datetime(2024, 2, 1)
     form.date_killed.data = datetime(2024, 3, 1)
+    form.is_private.data = False
     add_bottle(form, test_user_01)
     mock_flash.assert_called_once_with(
         '"Test Bottle" has been successfully added.', "success"
@@ -80,6 +81,7 @@ def test_edit_bottle(
     form.date_purchased.data = datetime(2024, 1, 1)
     form.date_opened.data = datetime(2024, 2, 1)
     form.date_killed.data = datetime(2024, 3, 1)
+    form.is_private.data = True
     edit_bottle(form, test_bottle)
     mock_flash.assert_called_once_with(
         '"Test Bottle" has been successfully updated.', "success"

@@ -122,8 +122,13 @@ def test_user_01() -> User:
     frey_ranch_straight_rye.distilleries = [frey_ranch]
     frey_ranch_straight_rye.user_id = test_user_01.id
 
+    ironroot_hubris_hazmat = _ironroot_hubris_hazmat_private()
+    ironroot_hubris_hazmat.distilleries = [ironroot_republic]
+    ironroot_hubris_hazmat.user_id = test_user_01.id
+
     db.session.add(far_flung_bourbon)
     db.session.add(frey_ranch_straight_rye)
+    db.session.add(ironroot_hubris_hazmat)
     db.session.commit()
 
     return test_user_01
@@ -170,7 +175,12 @@ def test_user_02() -> User:
     frey_ranch_straight_rye.distilleries = [frey_ranch]
     frey_ranch_straight_rye.user_id = test_user_02.id
 
+    frey_ranch_hazmat = _frey_ranch_hazmat_private()
+    frey_ranch_hazmat.distilleries = [frey_ranch]
+    frey_ranch_hazmat.user_id = test_user_02.id
+
     db.session.add(frey_ranch_straight_rye)
+    db.session.add(frey_ranch_hazmat)
     db.session.commit()
 
     return test_user_02
@@ -297,4 +307,22 @@ def _frey_ranch_straight_rye() -> Bottle:
         stars="5",
         description="100% Fallon-grown rye goodness",
         bottler_id="0",
+    )
+
+
+def _frey_ranch_hazmat_private() -> Bottle:
+    return Bottle(
+        name="Frey Ranch Straight Bourbon Whiskey",
+        type="bourbon",
+        bottler_id="0",
+        is_private=True,
+    )
+
+
+def _ironroot_hubris_hazmat_private() -> Bottle:
+    return Bottle(
+        name="Ironroot Republic Hubris Hazmat",
+        type="american_whiskey",
+        bottler_id="0",
+        is_private=True,
     )
