@@ -29,6 +29,7 @@ def create_bottle_formdata(
             "review": "This bottle can go toe-to-toe with most Frey Ranch SiB offerings",
             "distilleries": [str(test_user.distilleries[0].id)],
             "bottler_id": "0",
+            "is_private": False,
         }
     )
     if file_storage:
