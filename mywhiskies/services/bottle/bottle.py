@@ -106,6 +106,7 @@ def add_bottle(form: BottleAddForm, user: User) -> None:
         date_opened=form.date_opened.data,
         date_killed=form.date_killed.data,
         is_private=form.is_private.data,
+        personal_note=form.personal_note.data,
     )
 
     db.session.add(bottle_in)
@@ -155,6 +156,7 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
     bottle.date_opened = form.date_opened.data
     bottle.date_killed = form.date_killed.data
     bottle.is_private = form.is_private.data
+    bottle.personal_note = form.personal_note.data
     edit_bottle_images(form, bottle)
     image_upload_success = add_bottle_images(form, bottle)
 

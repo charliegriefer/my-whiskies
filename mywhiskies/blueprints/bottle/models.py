@@ -52,6 +52,7 @@ class Bottle(db.Model):
     is_private: Mapped[bool] = mapped_column(
         default=False, server_default=sa.text("false"), nullable=False
     )
+    personal_note: Mapped[Optional[str]] = mapped_column(Text)
 
     # foreign keys
     user_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
