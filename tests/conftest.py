@@ -150,7 +150,7 @@ def test_user_02() -> User:
         email="test_user_02@example.com",
         email_confirmed=True,
     )
-    test_user_02.set_password("TestUser0002")
+    test_user_02.set_password(TEST_USER_PASSWORD)
     db.session.add(test_user_02)
     db.session.commit()
 
@@ -187,12 +187,25 @@ def test_user_02() -> User:
 
 
 @pytest.fixture
-def logged_in_user(client: FlaskClient, test_user_01: User) -> FlaskClient:
-    """Log in the test user and return the logged-in client."""
+def logged_in_user_01(client: FlaskClient, test_user_01: User) -> FlaskClient:
+    """Log in test_user_01 and return the logged-in client."""
     client.post(
         url_for("auth.login"),
         data={
             "username": test_user_01.username,
+            "password": TEST_USER_PASSWORD,
+        },
+    )
+    return client
+
+
+@pytest.fixture
+def logged_in_user_02(client: FlaskClient, test_user_02: User) -> FlaskClient:
+    """Log in test_user_02 and return the logged-in client."""
+    client.post(
+        url_for("auth.login"),
+        data={
+            "username": test_user_02.username,
             "password": TEST_USER_PASSWORD,
         },
     )
@@ -306,6 +319,7 @@ def _frey_ranch_straight_rye() -> Bottle:
         cost=114.00,
         stars="5",
         description="100% Fallon-grown rye goodness",
+        personal_note="This bottle is in my office desk drawer.",
         bottler_id="0",
     )
 

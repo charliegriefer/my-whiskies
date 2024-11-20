@@ -29,9 +29,9 @@ def test_valid_distillery_form(client: FlaskClient) -> None:
     assert form.validate(), f"Form validation failed: {form.errors}"
 
 
-def test_add_distillery(logged_in_user: FlaskClient, test_user_01: User) -> None:
+def test_add_distillery(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     """Test that a logged-in user can add a distillery."""
-    client = logged_in_user
+    client = logged_in_user_01
     user_distilleries_count = len(test_user_01.distilleries)
 
     response = client.post(

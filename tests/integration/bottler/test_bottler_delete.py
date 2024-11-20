@@ -15,10 +15,10 @@ def test_delete_bottler_not_logged_in(client: FlaskClient, test_user_01: User) -
 
 
 def test_delete_not_my_bottler(
-    logged_in_user: FlaskClient, test_user_01: User, test_user_02: User
+    logged_in_user_01: FlaskClient, test_user_01: User, test_user_02: User
 ) -> None:
     """Test that even if logged in, a user cannot delete another user's bottler."""
-    client = logged_in_user
+    client = logged_in_user_01
     response = client.get(
         url_for("bottler.bottler_delete", bottler_id=test_user_02.bottlers[0].id),
         follow_redirects=True,
@@ -28,9 +28,9 @@ def test_delete_not_my_bottler(
 
 
 def test_delete_my_bottler_has_bottles(
-    logged_in_user: FlaskClient, test_user_01: User
+    logged_in_user_01: FlaskClient, test_user_01: User
 ) -> None:
-    client = logged_in_user
+    client = logged_in_user_01
     # the test user should have two bottlers. One with a bottle associated, and one without.
     for bottler in test_user_01.bottlers:
         response = client.get(
