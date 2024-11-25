@@ -63,9 +63,8 @@ def get_distillery_detail(
 ) -> dict:
     distillery = db.get_or_404(Distillery, distillery_id)
     bottles = distillery.bottles
-
+    live_bottles = [bottle for bottle in bottles if bottle.date_killed is None]
     if request.method == "POST" and bool(int(request.form.get("random_toggle"))):
-        live_bottles = [bottle for bottle in bottles if bottle.date_killed is None]
         bottles_to_list = [random.choice(live_bottles)] if live_bottles else []
         has_killed_bottles = False
     else:
@@ -79,6 +78,7 @@ def get_distillery_detail(
         "is_my_list": utils.is_my_list(distillery.user.username, current_user),
         "distillery": distillery,
         "bottles": bottles_to_list,
+        "live_bottles": live_bottles,
         "has_killed_bottles": has_killed_bottles,
         "dt_list_length": request.cookies.get("dt-list-length", "50"),
     }
