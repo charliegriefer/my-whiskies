@@ -20,7 +20,7 @@
         {% endif %}
 
         <div class="d-grid gap-1 d-md-block">
-          {% if is_my_list %}
+          {% if is_my_list and live_bottles|length > 1 %}
             <button type="button" class="btn btn-primary text-nowrap" id="do_random"><i class="bi bi-question-circle mr-2"></i> Random Bottle</button>
           {% endif %}
         </div>
