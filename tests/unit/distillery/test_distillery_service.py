@@ -117,7 +117,7 @@ def test_get_distillery_detail(
     # assertions for GET request
     assert (
         context["title"]
-        == f"{test_distillery.user.username}'s Whiskies: {test_distillery.name}"
+        == f"{test_distillery.user.username}'s Whiskies &raquo; Distilleries: {test_distillery.name}"
     )
     assert context["bottles"] == test_distillery.bottles
     assert context["has_killed_bottles"] is True
