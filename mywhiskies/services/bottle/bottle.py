@@ -58,12 +58,17 @@ def list_bottles(user: User, request: request, current_user: User) -> Response:
         if len(private_bottles):
             order_col += 1
 
-    page_title = f"{user.username}'{'' if user.username.endswith('s') else 's'} Whiskies: Bottles"
+    heading_01 = (
+        f"{user.username}'{'' if user.username.endswith('s') else 's'} Whiskies"
+    )
+    heading_02 = "Bottles"
 
     response = make_response(
         render_template(
             "bottle/bottle_list.html",
-            title=page_title,
+            title=f"{heading_01}: {heading_02}",
+            heading_01=heading_01,
+            heading_02=heading_02,
             has_datatable=True,
             user=user,
             bottles=bottles_to_list,

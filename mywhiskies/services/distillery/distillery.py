@@ -2,6 +2,7 @@ import random
 
 from flask import flash, make_response, render_template, request
 from flask.wrappers import Response
+from markupsafe import Markup
 
 from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryForm
 from mywhiskies.blueprints.distillery.models import Distillery
@@ -71,8 +72,16 @@ def get_distillery_detail(
         bottles_to_list = bottles
         has_killed_bottles = any(b.date_killed for b in bottles)
 
+    user = distillery.user
+    heading_01 = Markup(
+        f"{user.username}'{'' if user.username.endswith('s') else 's'} Whiskies &raquo; Distilleries"
+    )
+    heading_02 = distillery.name
+
     context = {
-        "title": f"{distillery.user.username}'s Whiskies: {distillery.name}",
+        "title": f"{heading_01}: {heading_02}",
+        "heading_01": heading_01,
+        "heading_02": heading_02,
         "has_datatable": True,
         "user": distillery.user,
         "is_my_list": utils.is_my_list(distillery.user.username, current_user),
