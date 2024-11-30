@@ -65,10 +65,11 @@ def test_bottler_detail_no_bottles_my_bottler(
         url_for("bottler.bottler_detail", bottler_id=bottler_id)
     )
     response_data = response.get_data(as_text=True)
+
     assert response.status_code == 200
     assert "Crowded Barrel Whiskey Co." in response_data
     assert "has no bottles from Crowded Barrel Whiskey Co.. Yet." in response_data
-    assert "Random Bottle" in response_data
+    assert "Random Bottle" not in response_data
 
 
 def test_bottler_detail_bottles_my_bottler(
@@ -90,10 +91,11 @@ def test_bottler_detail_bottles_my_bottler(
         url_for("bottler.bottler_detail", bottler_id=bottler_id)
     )
     response_data = response.get_data(as_text=True)
+
     assert response.status_code == 200
     assert "Lost Lantern" in response_data
     assert "Far-Flung Bourbon I" in response_data
-    assert "Random Bottle" in response_data
+    assert "Random Bottle" not in response_data
 
 
 def _get_crowded_barrel(test_user_02: User) -> str:
