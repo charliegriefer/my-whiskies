@@ -9,7 +9,7 @@
     {% endif %}
   {% endif %}
   {% if title %}
-  <meta data-rh="true" property="og:title" content="{{ title }}" />
+  <meta data-rh="true" property="og:title" content="{{ title | replace(' &raquo;', ':') }}" />
   {% endif %}
 
   {% if has_captcha %}
@@ -42,7 +42,7 @@
 
   <title>
     {% if title %}
-      {{ title }}
+      {{ title | replace(' &raquo;', ':') }}
     {% else %}
       My Whiskies
     {% endif %}
