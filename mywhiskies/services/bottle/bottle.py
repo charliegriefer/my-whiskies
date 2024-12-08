@@ -1,11 +1,9 @@
-import random
-
 import boto3
-from flask import flash, make_response, render_template, request
+from flask import flash, request
 from flask.wrappers import Response
 
 from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
-from mywhiskies.blueprints.bottle.models import Bottle, BottleTypes
+from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
@@ -20,70 +18,7 @@ from mywhiskies.services.bottle.image import (
 
 
 def list_bottles(user: User, request: request, current_user: User) -> Response:
-    all_bottles = user.bottles
-    killed_bottles = [b for b in all_bottles if b.date_killed]
-    private_bottles = [b for b in all_bottles if b.is_private]
-
-    if request.method == "POST":
-        active_bottle_types = request.form.getlist("bottle_type")
-
-        if len(active_bottle_types):
-            bottles_to_list = [
-                b for b in all_bottles if b.type.name in active_bottle_types
-            ]
-            if bool(int(request.form.get("random_toggle"))):
-                if len(bottles_to_list) > 0:
-                    unkilled_bottles = [b for b in bottles_to_list if not b.date_killed]
-                    bottles_to_list = [random.choice(unkilled_bottles)]
-        else:
-            bottles_to_list = []
-    else:
-        active_bottle_types = [bt.name for bt in BottleTypes]
-        if user == current_user:
-            bottles_to_list = all_bottles
-        else:
-            bottles_to_list = [
-                bottle for bottle in all_bottles if not bottle.is_private
-            ]
-
-    is_my_list = utils.is_my_list(user.username, current_user)
-    dk_column = 5
-    if is_my_list:
-        dk_column += 1
-        if len(private_bottles):
-            dk_column += 1
-    order_col = 0
-    if is_my_list:
-        order_col += 1
-        if len(private_bottles):
-            order_col += 1
-
-    heading_01 = (
-        f"{user.username}'{'' if user.username.endswith('s') else 's'} Whiskies"
-    )
-    heading_02 = "Bottles"
-
-    response = make_response(
-        render_template(
-            "bottle/bottle_list.html",
-            title=f"{heading_01}: {heading_02}",
-            heading_01=heading_01,
-            heading_02=heading_02,
-            has_datatable=True,
-            user=user,
-            bottles=bottles_to_list,
-            has_killed_bottles=bool(len(killed_bottles)),
-            bottle_types=BottleTypes,
-            active_filters=active_bottle_types,
-            dt_list_length=request.cookies.get("dt-list-length", "50"),
-            show_privates=is_my_list and len(private_bottles),
-            is_my_list=is_my_list,
-            dk_column=dk_column,
-            order_col=order_col,
-        )
-    )
-
-    return response
+    return utils.prep_datatables(user, current_user, request)
 
 
 def add_bottle(form: BottleAddForm, user: User) -> None:

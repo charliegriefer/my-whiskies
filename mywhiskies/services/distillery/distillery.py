@@ -1,8 +1,5 @@
-import random
-
 from flask import flash, make_response, render_template, request
 from flask.wrappers import Response
-from markupsafe import Markup
 
 from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryForm
 from mywhiskies.blueprints.distillery.models import Distillery
@@ -60,36 +57,38 @@ def delete_distillery(distillery_id: str, current_user: User) -> None:
 
 
 def get_distillery_detail(
-    distillery_id: str, request: request, current_user: User
-) -> dict:
-    distillery = db.get_or_404(Distillery, distillery_id)
-    bottles = distillery.bottles
-    live_bottles = [bottle for bottle in bottles if bottle.date_killed is None]
-    if request.method == "POST" and bool(int(request.form.get("random_toggle"))):
-        bottles_to_list = [random.choice(live_bottles)] if live_bottles else []
-        has_killed_bottles = False
-    else:
-        bottles_to_list = bottles
-        has_killed_bottles = any(b.date_killed for b in bottles)
+    distillery: Distillery, request: request, current_user: User
+) -> Response:
+    return utils.prep_datatables(distillery, current_user, request)
 
-    user = distillery.user
-    heading_01 = Markup(
-        f"{user.username}'{'' if user.username.endswith('s') else 's'} Whiskies &raquo; Distilleries"
-    )
-    heading_02 = distillery.name
+    # distillery = db.get_or_404(Distillery, distillery_id)
+    # bottles = distillery.bottles
+    # live_bottles = [bottle for bottle in bottles if bottle.date_killed is None]
+    # if request.method == "POST" and bool(int(request.form.get("random_toggle"))):
+    #     bottles_to_list = [random.choice(live_bottles)] if live_bottles else []
+    #     has_killed_bottles = False
+    # else:
+    #     bottles_to_list = bottles
+    #     has_killed_bottles = any(b.date_killed for b in bottles)
 
-    context = {
-        "title": f"{heading_01}: {heading_02}",
-        "heading_01": heading_01,
-        "heading_02": heading_02,
-        "has_datatable": True,
-        "user": distillery.user,
-        "is_my_list": utils.is_my_list(distillery.user.username, current_user),
-        "distillery": distillery,
-        "bottles": bottles_to_list,
-        "live_bottles": live_bottles,
-        "has_killed_bottles": has_killed_bottles,
-        "dt_list_length": request.cookies.get("dt-list-length", "50"),
-    }
+    # user = distillery.user
+    # heading_01 = Markup(
+    #     f"{user.username}'{'' if user.username.endswith('s') else 's'} Whiskies &raquo; Distilleries"
+    # )
+    # heading_02 = distillery.name
 
-    return context
+    # context = {
+    #     "title": f"{heading_01}: {heading_02}",
+    #     "heading_01": heading_01,
+    #     "heading_02": heading_02,
+    #     "has_datatable": True,
+    #     "user": distillery.user,
+    #     "is_my_list": utils.is_my_list(distillery.user.username, current_user),
+    #     "distillery": distillery,
+    #     "bottles": bottles_to_list,
+    #     "live_bottles": live_bottles,
+    #     "has_killed_bottles": has_killed_bottles,
+    #     "dt_list_length": request.cookies.get("dt-list-length", "50"),
+    # }
+
+    # return context
