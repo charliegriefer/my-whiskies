@@ -1,0 +1,40 @@
+$(function () {
+  let table = $("#entities").DataTable({
+    language: {
+      "emptyTable": "There's nothing to see here."
+    },
+    {% if is_my_list %}
+      columnDefs: [
+        {
+          searchable: false,
+          orderable: false,
+          targets: [0]
+        }
+      ],
+    {% endif %}
+    order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
+    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    "pageLength": {{ dt_list_length }}
+  });
+  
+  table
+    .columns()
+    .search("None", true, false)
+    .draw()
+  ;
+
+  /* set cookie when length dropdown is changed */
+  $("select[name='bottlers_length']").on("change", function() {
+    let next_year = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+    document.cookie = "dt-list-length=" + this.value + "; expires=" + next_year + "; path=/";
+  });
+
+  /* confirm delete modal window */
+  const myModal = document.getElementById("confirmDelete");
+  myModal.addEventListener("shown.bs.modal", (e) => {
+    let btn = $(e.target).find(".btn-ok");
+    $(btn).on("click", function() {
+      location.href = $(e.relatedTarget).data("bs-href");
+    });
+  });
+});
