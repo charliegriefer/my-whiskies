@@ -7,6 +7,7 @@ from flask import Markup, flash, make_response, render_template, request
 from flask.wrappers import Response
 
 from mywhiskies.blueprints.bottle.models import BottleTypes
+from mywhiskies.blueprints.bottler.models import Bottler
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
 
@@ -52,6 +53,9 @@ def prep_datatables(
     entity: Union[Distillery, User], current_user: User, request: request
 ) -> Response:
     if type(entity) is Distillery:
+        user = entity.user
+        all_bottles = entity.bottles
+    elif type(entity) is Bottler:
         user = entity.user
         all_bottles = entity.bottles
     else:
@@ -100,6 +104,9 @@ def prep_datatables(
     if type(entity) is Distillery:
         heading_01 += ": Distilleries"
         heading_02 = entity.name
+    elif type(entity) is Bottler:
+        heading_01 += ": Bottlers"
+        heading_02 = entity.name
 
     response = make_response(
         render_template(
@@ -114,7 +121,7 @@ def prep_datatables(
             bottle_types=BottleTypes,
             active_filters=active_bottle_types,
             dt_list_length=request.cookies.get("dt-list-length", "50"),
-            show_privates=is_my_list and len(private_bottles),
+            show_privates=_is_my_list and len(private_bottles),
             is_my_list=_is_my_list,
             dk_column=dk_column,
             order_col=order_col,
