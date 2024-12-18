@@ -1,6 +1,6 @@
 import random
 from datetime import datetime
-from typing import Union
+from typing import Tuple, Union
 
 from dateutil.relativedelta import relativedelta
 from flask import Markup, flash, make_response, render_template, request
@@ -13,6 +13,7 @@ from mywhiskies.blueprints.user.models import User
 
 
 def is_my_list(username, current_user) -> bool:
+    # is the current user logged in and viewing their own bottles?
     return (
         current_user.is_authenticated
         and current_user.username.lower() == username.lower()
@@ -50,21 +51,22 @@ def set_cookie_expiration(response, cookie_name, value, years=1):
 
 
 def prep_datatables(
-    entity: Union[Distillery, User], current_user: User, request: request
+    entity: Union[Bottler, Distillery, User], current_user: User, request: request
 ) -> Response:
-    if type(entity) is Distillery:
+    # The same template is used for distilleries, bottlers, and users. Prep the request accordingly.
+    if type(entity) in [Distillery, Bottler]:
         user = entity.user
-        all_bottles = entity.bottles
-    elif type(entity) is Bottler:
-        user = entity.user
-        all_bottles = entity.bottles
     else:
         user = entity
-        all_bottles = user.bottles
 
+    all_bottles = entity.bottles
     killed_bottles = [b for b in all_bottles if b.date_killed]
     private_bottles = [b for b in all_bottles if b.is_private]
+
+    _is_my_list = is_my_list(user.username, current_user)
+
     if request.method == "POST":
+        # user has either filtered on a bottle type or requested a random bottle
         active_bottle_types = request.form.getlist("bottle_type")
 
         if len(active_bottle_types):
@@ -79,34 +81,15 @@ def prep_datatables(
             bottles_to_list = []
     else:
         active_bottle_types = [bt.name for bt in BottleTypes]
-        if user == current_user:
+        if _is_my_list:
             bottles_to_list = all_bottles
         else:
             bottles_to_list = [
                 bottle for bottle in all_bottles if not bottle.is_private
             ]
 
-    _is_my_list = is_my_list(user.username, current_user)
-    dk_column = 5
-    order_col = 0
-    if _is_my_list:
-        dk_column += 1
-        order_col += 1
-        if len(private_bottles):
-            dk_column += 1
-            order_col += 1
-
-    heading_01 = (
-        f"{user.username}'{'' if user.username.endswith('s') else 's'} Whiskies"
-    )
-    heading_02 = "Bottles"
-
-    if type(entity) is Distillery:
-        heading_01 += ": Distilleries"
-        heading_02 = entity.name
-    elif type(entity) is Bottler:
-        heading_01 += ": Bottlers"
-        heading_02 = entity.name
+    dk_column, order_col = _set_columns(_is_my_list, len(private_bottles))
+    heading_01, heading_02 = _set_headings(user.username, entity)
 
     response = make_response(
         render_template(
@@ -129,3 +112,33 @@ def prep_datatables(
     )
 
     return response
+
+
+def _set_columns(_is_my_list: bool, private_bottles: int) -> Tuple[int, int]:
+    # Convenience method to determine the index of the date_killed column and the initial ordered column.
+    dk_column = 5
+    order_col = 0
+    if _is_my_list:
+        dk_column += 1
+        order_col += 1
+        if private_bottles:
+            dk_column += 1
+            order_col += 1
+    return dk_column, order_col
+
+
+def _set_headings(
+    username: str, entity: Union[Bottler, Distillery, User]
+) -> Tuple[str, str]:
+    # Convenience method to set the appropriate headings for the datatable.
+    heading_01 = f"{username}'{'' if username.endswith('s') else 's'} Whiskies"
+    heading_02 = "Bottles"
+
+    if type(entity) is Distillery:
+        heading_01 += ": Distilleries"
+        heading_02 = entity.name
+    elif type(entity) is Bottler:
+        heading_01 += ": Bottlers"
+        heading_02 = entity.name
+
+    return heading_01, heading_02
