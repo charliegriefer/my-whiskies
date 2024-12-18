@@ -50,6 +50,20 @@ def set_cookie_expiration(response, cookie_name, value, years=1):
     )
 
 
+def prep_dt2(user, current_user, request):
+    response = make_response(
+        render_template(
+            "shared/datatable/entities/list.html",
+            title=f"{user.username}'s Whiskies: Bottlers",
+            has_datatable=True,
+            is_my_list=is_my_list(user.username, current_user),
+            user=user,
+            dt_list_length=50,
+        )
+    )
+    return response
+
+
 def prep_datatables(
     entity: Union[Bottler, Distillery, User], current_user: User, request: request
 ) -> Response:
