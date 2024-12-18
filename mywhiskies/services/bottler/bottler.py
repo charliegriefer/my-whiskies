@@ -1,5 +1,3 @@
-import random
-
 from flask import flash, make_response, render_template
 from flask.wrappers import Response
 from werkzeug.local import LocalProxy
@@ -58,28 +56,30 @@ def delete_bottler(user: User, bottler_id: str) -> None:
 
 
 def get_bottler_detail(
-    bottler_id: str, request: LocalProxy, current_user: User
-) -> dict:
-    bottler = db.get_or_404(Bottler, bottler_id)
-    bottles = bottler.bottles
-    live_bottles = [bottle for bottle in bottles if bottle.date_killed is None]
-    if request.method == "POST" and bool(int(request.form.get("random_toggle"))):
-        bottles_to_list = [random.choice(live_bottles)] if live_bottles else []
-        has_killed_bottles = False
-    else:
-        bottles_to_list = bottles
-        has_killed_bottles = any(b.date_killed for b in bottles)
+    bottler: Bottler, request: LocalProxy, current_user: User
+) -> Response:
+    return utils.prep_datatables(bottler, current_user, request)
 
-    context = {
-        "title": f"{bottler.user.username}'s Whiskies: {bottler.name}",
-        "has_datatable": True,
-        "user": bottler.user,
-        "is_my_list": utils.is_my_list(bottler.user.username, current_user),
-        "bottler": bottler,
-        "bottles": bottles_to_list,
-        "live_bottles": live_bottles,
-        "has_killed_bottles": has_killed_bottles,
-        "dt_list_length": request.cookies.get("dt-list-length", "50"),
-    }
+    # bottler = db.get_or_404(Bottler, bottler_id)
+    # bottles = bottler.bottles
+    # live_bottles = [bottle for bottle in bottles if bottle.date_killed is None]
+    # if request.method == "POST" and bool(int(request.form.get("random_toggle"))):
+    #     bottles_to_list = [random.choice(live_bottles)] if live_bottles else []
+    #     has_killed_bottles = False
+    # else:
+    #     bottles_to_list = bottles
+    #     has_killed_bottles = any(b.date_killed for b in bottles)
 
-    return context
+    # context = {
+    #     "title": f"{bottler.user.username}'s Whiskies: {bottler.name}",
+    #     "has_datatable": True,
+    #     "user": bottler.user,
+    #     "is_my_list": utils.is_my_list(bottler.user.username, current_user),
+    #     "bottler": bottler,
+    #     "bottles": bottles_to_list,
+    #     "live_bottles": live_bottles,
+    #     "has_killed_bottles": has_killed_bottles,
+    #     "dt_list_length": request.cookies.get("dt-list-length", "50"),
+    # }
+
+    # return context
