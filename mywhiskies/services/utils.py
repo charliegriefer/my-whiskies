@@ -93,7 +93,7 @@ def prep_datatables(
 
     response = make_response(
         render_template(
-            "shared/bottle_list.html",
+            "shared/datatable/bottles/list.html",
             title=f"{heading_01}: {heading_02}",
             heading_01=heading_01,
             heading_02=heading_02,
