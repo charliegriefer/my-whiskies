@@ -11,9 +11,11 @@
     {% include "footer.html" %}
   {% endblock %}
 
-  {% block scripts %}
-    {% include "scripts.html" %}
-  {% endblock %}
+  {%- block scripts -%}
+    {% filter indent(2, first=False) -%}
+      {% include "scripts.html" %}
+    {% endfilter %}
+  {%- endblock -%}
 
 </body>
 </html>
