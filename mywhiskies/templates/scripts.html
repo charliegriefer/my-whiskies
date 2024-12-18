@@ -20,9 +20,9 @@
   function delete_flash(flash){
     $(flash).parent().remove();
   }
-  {% if has_datatable %}
-    {% filter indent(2, first=False) -%}
-      {% include "shared/datatable/bottles/js.html" %}
+  {%- if has_datatable %}
+    {% filter indent(2, first=False) %}
+{% include "shared/datatable/bottles/js.html" %}
     {%- endfilter %}
   {%- endif %}
 </script>
