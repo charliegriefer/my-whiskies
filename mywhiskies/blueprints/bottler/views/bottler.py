@@ -1,4 +1,4 @@
-from flask import make_response, redirect, render_template, request, url_for
+from flask import redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.bottler import bottler_bp
@@ -28,9 +28,11 @@ def bottlers(username: str):
 
 @bottler_bp.route("/bottler/<string:bottler_id>", methods=["GET", "POST"])
 def bottler_detail(bottler_id: str):
-    context = get_bottler_detail(bottler_id, request, current_user)
-    response = make_response(render_template("bottler/bottler_detail.html", **context))
-    utils.set_cookie_expiration(response, "dt-list-length", context["dt_list_length"])
+    bottler = db.one_or_404(db.select(Bottler).filter_by(id=bottler_id))
+    response = get_bottler_detail(bottler, request, current_user)
+    utils.set_cookie_expiration(
+        response, "dt-list-length", request.cookies.get("dt-list-length", "50")
+    )
     return response
 
 
