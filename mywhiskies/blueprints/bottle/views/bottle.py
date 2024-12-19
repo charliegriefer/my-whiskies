@@ -39,7 +39,7 @@ def bottle_detail(bottle_id: str):
 
     if not is_my_bottle:
         _bottle.personal_note = None
-        if _bottle.is_orivate:
+        if _bottle.is_private:
             abort(404)
 
     return render_template(
