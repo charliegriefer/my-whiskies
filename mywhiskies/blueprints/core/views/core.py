@@ -19,7 +19,6 @@ def index():
     return render_template(
         "core/index.html",
         title="My Whiskies Online",
-        has_datatable=True,
         user_count=counts.get("user_count", 0),
         distillery_count=counts.get("distillery_count", 0),
         bottle_count=counts.get("bottle_count", 0),
@@ -42,7 +41,6 @@ def home(username: str):
         render_template(
             "core/home.html",
             title=f"{user.username}'s Whiskies",
-            has_datatable=False,
             user=user,
             live_bottles=live_bottles,
             is_my_home=is_my_home,
