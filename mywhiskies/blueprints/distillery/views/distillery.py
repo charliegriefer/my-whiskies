@@ -63,7 +63,7 @@ def bulk_distillery_add():
 @distillery_bp.route("/<username>/distilleries", endpoint="distilleries_list")
 def distilleries(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
-    response = list_distilleries(user, current_user)
+    response = list_distilleries(user, current_user, request, "distilleries")
     utils.set_cookie_expiration(
         response, "dt_list_length", request.cookies.get("bt-list-length", "50")
     )

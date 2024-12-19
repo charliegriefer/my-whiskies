@@ -19,7 +19,7 @@ from mywhiskies.services.bottler.bottler import (
 @bottler_bp.route("/<username>/bottlers", endpoint="bottlers_list")
 def bottlers(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
-    response = list_bottlers(user, current_user, request)
+    response = list_bottlers(user, current_user, request, "bottlers")
     utils.set_cookie_expiration(
         response, "dt_list_length", request.cookies.get("bt-list-length", "50")
     )
