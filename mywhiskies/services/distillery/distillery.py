@@ -1,4 +1,4 @@
-from flask import flash, make_response, render_template, request
+from flask import flash, request
 from flask.wrappers import Response
 
 from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryForm
@@ -9,17 +9,7 @@ from mywhiskies.services import utils
 
 
 def list_distilleries(user: User, current_user: User) -> Response:
-    response = make_response(
-        render_template(
-            "distillery/distillery_list.html",
-            title=f"{user.username}'s Whiskies: Distilleries",
-            has_datatable=True,
-            is_my_list=utils.is_my_list(user.username, current_user),
-            user=user,
-            dt_list_length=50,
-        )
-    )
-    return response
+    return utils.prep_datatable_entities(user, current_user, request)
 
 
 def add_distillery(form: DistilleryForm, user: User) -> None:
@@ -59,4 +49,4 @@ def delete_distillery(distillery_id: str, current_user: User) -> None:
 def get_distillery_detail(
     distillery: Distillery, request: request, current_user: User
 ) -> Response:
-    return utils.prep_datatables(distillery, current_user, request)
+    return utils.prep_datatable_bottles(distillery, current_user, request)

@@ -18,7 +18,7 @@ from mywhiskies.services.bottle.image import (
 
 
 def list_bottles(user: User, request: request, current_user: User) -> Response:
-    return utils.prep_datatables(user, current_user, request)
+    return utils.prep_datatable_bottles(user, current_user, request)
 
 
 def add_bottle(form: BottleAddForm, user: User) -> None:
