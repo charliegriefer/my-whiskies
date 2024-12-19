@@ -8,8 +8,10 @@ from mywhiskies.extensions import db
 from mywhiskies.services import utils
 
 
-def list_distilleries(user: User, current_user: User) -> Response:
-    return utils.prep_datatable_entities(user, current_user, request)
+def list_distilleries(
+    user: User, current_user: User, request: request, entity_type: str
+) -> Response:
+    return utils.prep_datatable_entities(user, current_user, request, entity_type)
 
 
 def add_distillery(form: DistilleryForm, user: User) -> None:

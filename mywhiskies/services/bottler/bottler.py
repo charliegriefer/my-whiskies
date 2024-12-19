@@ -1,6 +1,5 @@
 from flask import flash, request
 from flask.wrappers import Response
-from werkzeug.local import LocalProxy
 
 from mywhiskies.blueprints.bottler.forms import BottlerAddForm, BottlerEditForm
 from mywhiskies.blueprints.bottler.models import Bottler
@@ -9,8 +8,10 @@ from mywhiskies.extensions import db
 from mywhiskies.services import utils
 
 
-def list_bottlers(user: User, current_user: User, request: request) -> Response:
-    return utils.prep_datatable_entities(user, current_user, request)
+def list_bottlers(
+    user: User, current_user: User, request: request, entity_type: str
+) -> Response:
+    return utils.prep_datatable_entities(user, current_user, request, entity_type)
 
 
 def add_bottler(form: BottlerAddForm, user: User) -> None:
@@ -46,6 +47,6 @@ def delete_bottler(user: User, bottler_id: str) -> None:
 
 
 def get_bottler_detail(
-    bottler: Bottler, request: LocalProxy, current_user: User
+    bottler: Bottler, request: request, current_user: User
 ) -> Response:
     return utils.prep_datatable_bottles(bottler, current_user, request)
