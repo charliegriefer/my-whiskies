@@ -15,7 +15,7 @@ from mywhiskies.services.bottle.bottle import (
 )
 
 
-@patch("mywhiskies.services.bottle.bottle.render_template")
+@patch("mywhiskies.services.utils.render_template")
 def test_list_bottles(
     mock_render_template: MagicMock, test_user_01: User, client: FlaskClient
 ) -> None:
