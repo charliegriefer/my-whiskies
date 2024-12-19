@@ -1,15 +1,7 @@
 import json
 import os
 
-from flask import (
-    current_app,
-    flash,
-    make_response,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import insert
 
@@ -71,7 +63,7 @@ def bulk_distillery_add():
 @distillery_bp.route("/<username>/distilleries", endpoint="distilleries_list")
 def distilleries(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
-    response = list_distilleries(user, current_user)
+    response = list_distilleries(user, current_user, request, "distilleries")
     utils.set_cookie_expiration(
         response, "dt_list_length", request.cookies.get("bt-list-length", "50")
     )
@@ -80,11 +72,11 @@ def distilleries(username: str):
 
 @distillery_bp.route("/distillery/<string:distillery_id>", methods=["GET", "POST"])
 def distillery_detail(distillery_id: str):
-    context = get_distillery_detail(distillery_id, request, current_user)
-    response = make_response(
-        render_template("distillery/distillery_detail.html", **context)
+    distillery = db.one_or_404(db.select(Distillery).filter_by(id=distillery_id))
+    response = get_distillery_detail(distillery, request, current_user)
+    utils.set_cookie_expiration(
+        response, "dt-list-length", request.cookies.get("dt-list-length", "50")
     )
-    utils.set_cookie_expiration(response, "dt-list-length", context["dt_list_length"])
     return response
 
 

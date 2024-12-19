@@ -1,0 +1,24 @@
+$(function () {
+  let table = $("#entities").DataTable({
+    language: {
+      "emptyTable": "There's nothing to see here."
+    },
+    {% if is_my_list %}
+      columnDefs: [
+        {
+          searchable: false,
+          orderable: false,
+          targets: [0]
+        }
+      ],
+    {% endif %}
+    order: [[{% if is_my_list %}1{% else %}0{% endif %}, "asc"]],
+    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    "pageLength": {{ dt_list_length }}
+  });
+  
+  table
+    .draw()
+  ;
+
+});

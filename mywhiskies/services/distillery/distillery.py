@@ -1,6 +1,4 @@
-import random
-
-from flask import flash, make_response, render_template, request
+from flask import flash, request
 from flask.wrappers import Response
 
 from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryForm
@@ -10,18 +8,10 @@ from mywhiskies.extensions import db
 from mywhiskies.services import utils
 
 
-def list_distilleries(user: User, current_user: User) -> Response:
-    response = make_response(
-        render_template(
-            "distillery/distillery_list.html",
-            title=f"{user.username}'s Whiskies: Distilleries",
-            has_datatable=True,
-            is_my_list=utils.is_my_list(user.username, current_user),
-            user=user,
-            dt_list_length=50,
-        )
-    )
-    return response
+def list_distilleries(
+    user: User, current_user: User, request: request, entity_type: str
+) -> Response:
+    return utils.prep_datatable_entities(user, current_user, request, entity_type)
 
 
 def add_distillery(form: DistilleryForm, user: User) -> None:
@@ -59,28 +49,6 @@ def delete_distillery(distillery_id: str, current_user: User) -> None:
 
 
 def get_distillery_detail(
-    distillery_id: str, request: request, current_user: User
-) -> dict:
-    distillery = db.get_or_404(Distillery, distillery_id)
-    bottles = distillery.bottles
-    live_bottles = [bottle for bottle in bottles if bottle.date_killed is None]
-    if request.method == "POST" and bool(int(request.form.get("random_toggle"))):
-        bottles_to_list = [random.choice(live_bottles)] if live_bottles else []
-        has_killed_bottles = False
-    else:
-        bottles_to_list = bottles
-        has_killed_bottles = any(b.date_killed for b in bottles)
-
-    context = {
-        "title": f"{distillery.user.username}'s Whiskies: {distillery.name}",
-        "has_datatable": True,
-        "user": distillery.user,
-        "is_my_list": utils.is_my_list(distillery.user.username, current_user),
-        "distillery": distillery,
-        "bottles": bottles_to_list,
-        "live_bottles": live_bottles,
-        "has_killed_bottles": has_killed_bottles,
-        "dt_list_length": request.cookies.get("dt-list-length", "50"),
-    }
-
-    return context
+    distillery: Distillery, request: request, current_user: User
+) -> Response:
+    return utils.prep_datatable_bottles(distillery, current_user, request)

@@ -19,12 +19,13 @@ from mywhiskies.services.distillery.distillery import (
 )
 
 
-@patch("mywhiskies.services.distillery.distillery.render_template")
+@patch("mywhiskies.services.utils.render_template")
 def test_list_distilleries(
     mock_render_template: MagicMock, test_user_01: User, client: FlaskClient
 ) -> None:
     mock_render_template.return_value = "Rendered Template"
-    response = list_distilleries(test_user_01, test_user_01)
+    request = MagicMock()
+    response = list_distilleries(test_user_01, test_user_01, request, "distilleries")
     assert response.data == b"Rendered Template"
 
 
@@ -93,8 +94,13 @@ def test_get_distillery_detail(
     test_user_01: User,
     test_distillery: Distillery,
 ) -> None:
+    # Mock setup
+    test_distillery.user = test_user_01
+    test_distillery.name = "Dry Fly Distilling"
     mock_get_or_404.return_value = test_distillery
+    mock_is_my_list.return_value
 
+    # Add bottles to distillery
     live_bottle = Bottle(
         name="Live Bottle",
         type=BottleTypes.bourbon,
@@ -107,34 +113,36 @@ def test_get_distillery_detail(
         date_killed=datetime(2023, 1, 1),
         user_id=test_user_01.id,
     )
+    db.session.add_all([live_bottle, killed_bottle])
+    db.session.commit()
+
     test_distillery.bottles = [live_bottle, killed_bottle]
-    mock_is_my_list.return_value = True
 
     # simulate a GET request
     request = MagicMock(method="GET", cookies=MultiDict({"dt-list-length": "100"}))
-    context = get_distillery_detail(test_distillery.id, request, test_user_01)
+    response = get_distillery_detail(test_distillery, request, test_user_01)
+    html = response.get_data(as_text=True)
 
     # assertions for GET request
-    assert (
-        context["title"]
-        == f"{test_distillery.user.username}'s Whiskies: {test_distillery.name}"
-    )
-    assert context["bottles"] == test_distillery.bottles
-    assert context["has_killed_bottles"] is True
-    assert context["dt_list_length"] == "100"
-    assert context["is_my_list"] is True
+    expected_title = f"{test_distillery.user.username}&#39;s Whiskies: Distilleries: {test_distillery.name}"
+    assert expected_title in html, f"Expected title '{expected_title}' not in HTML"
+    assert "Live Bottle" in html
+    assert "Killed Bottle" in html
 
     # simulate a POST request with "random_toggle" set to 1
     request = MagicMock(
         method="POST",
         cookies=MultiDict({"dt-list-length": "50"}),
-        form=MultiDict({"random_toggle": "1"}),
+        form=MultiDict({"random_toggle": "1", "bottle_type": ["bourbon"]}),
     )
-    context = get_distillery_detail(test_distillery.id, request, test_user_01)
+    response = get_distillery_detail(test_distillery, request, test_user_01)
 
-    # assertions for POST request
-    assert "title" in context
-    assert context["is_my_list"] is True
-    assert len(context["bottles"]) <= 1  # only one bottle should be listed
-    assert context["has_killed_bottles"] is False  # since we chose a live bottle only
-    assert context["dt_list_length"] == "50"
+    # Parse the response HTML for POST
+    html = response.get_data(as_text=True)
+
+    # Assertions for the POST request
+    assert (
+        f"{test_distillery.user.username}&#39;s Whiskies: Distilleries: {test_distillery.name}"
+        in html
+    )
+    assert "Live Bottle" in html

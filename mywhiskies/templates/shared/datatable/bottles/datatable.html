@@ -1,13 +1,10 @@
-{% extends "_base.html" %}
-
-{% block app_content %}
   <main class="flex-shrink-0">
     <div class="container ps-0">
 
       <div class="row mt-4">
         <div class="col">
-          <h3 class="mb-0" style="color:#696969;">{{ title.split(":")[0] }}</h3>
-          <h1 class="mb-0">Bottles</h1>
+          <h3 class="mb-0" style="color:#696969;">{{ heading_01 }}</h3>
+          <h1 class="mb-0">{{ heading_02 }}</h1>
         </div>
 
         <div class="col d-flex align-items-end justify-content-end pb-2">
@@ -17,7 +14,8 @@
               <label class="form-check-label" for="show_killed">Show Killed Bottles</label>
             </div>
           {% endif %}
-
+          
+          {% if bottles|length > 1 %}
           <div class="d-grid gap-1 d-md-block">
             {% if is_my_list %}
               <button type="button" class="btn btn-primary text-nowrap" id="do_random"><i class="bi bi-question-circle mr-2"></i> Random Bottle</button>
@@ -50,13 +48,14 @@
               <button type="button" class="btn btn-primary mt-4" id="selectAll">Select All</button>
             </form>
           </div>
+          {% endif %}
         </div>
       </div> <!-- end row -->
 
       <hr />
 
       <table id="bottles" class="table table-striped" style="width:100%;">
-      <thead>
+      <thead style="border-bottom:1px solid #696969;">
         <tr>
           {% if is_my_list %}
             <th scope="col" class="me-0 pe-0" style="width:4%;">&nbsp;</th>
@@ -166,99 +165,3 @@
       </div>
     </div>
   </div>
-{% endblock %}
-
-{% block scripts %}
-  {{ super() }}
-  <script type="text/javascript">
-    $(function () {
-
-      $('[data-bs-toggle="tooltip"]').tooltip();
-
-      let dk_column = {{ dk_column }};
-
-      let table = $("#bottles").DataTable({
-        language: {
-            "emptyTable": "There's nothing to see here."
-        },
-        columnDefs: [
-          {% if is_my_list %}
-          {
-            target: 0,
-            searchable: false,
-            orderable: false,
-          },
-          {% endif %}
-          {
-            target: dk_column,
-            orderable: false,
-            visible: false,
-          }
-        ],
-        order: [[{{ order_col }}, "asc"]],
-        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        "pageLength": {{ dt_list_length }}
-      });
-
-      table
-        .columns(dk_column)
-        .search("None", true, false)
-        .draw();
-
-      $("#show_killed").on("click", function() {
-        if (this.checked) {
-          table
-            .columns()
-            .search("")
-            .draw();
-        } else {
-          table
-            .columns(dk_column)
-            .search("None", true, false)
-            .draw();
-        }
-      });
-
-      /* submit form on click of random button */
-      $("#do_random").on("click", function() {
-        $("#random_toggle").val("1");
-        $("#type_filter").submit();
-      });
-
-      /* set cookie when length dropdown is changed */
-      $("select[name='bottles_length']").on("change", function() {
-        let next_year = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
-        document.cookie = "dt-list-length=" + this.value + "; expires=" + next_year + "; path=/";
-      });
-
-      let selectAll = $("#selectAll")
-      let filterCheckboxes = $("input.type-filter");
-      handleSelectAll();
-
-      function handleSelectAll() {
-        let totalCheckboxes = filterCheckboxes.length;
-        let numberOfChecked = $("input.type-filter:checked").length;
-
-        selectAll.prop("disabled", numberOfChecked===totalCheckboxes);
-      }
-
-      filterCheckboxes.on("click", function() {
-        handleSelectAll();
-      });
-
-      selectAll.on("click", function(){
-        filterCheckboxes.prop("checked", true);
-        $(this).prop("disabled", true);
-      });
-
-      /* confirm delete modal window */
-      const myModal = document.getElementById("confirmDelete");
-      myModal.addEventListener("shown.bs.modal", (e) => {
-        let btn = $(e.target).find(".btn-ok");
-        $(btn).on("click", function() {
-          location.href = $(e.relatedTarget).data("bs-href");
-        });
-      });
-    });
-  </script>
-{% endblock %}

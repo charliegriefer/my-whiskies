@@ -130,23 +130,18 @@ ul.terms li {
 
 
 /* tidying up the data tables */
-
 #bottles_wrapper div.row:first-child,
-#distilleries_wrapper div.row:first-child {
+#entities_wrapper div.row:first-child {
   padding-top:8px;
   margin-bottom:12px;
 }
 #bottles_wrapper div.row:last-child,
-#distilleries_wrapper div.row:last-child {
+#entities_wrapper div.row:last-child {
   margin-top:12px;
   padding-bottom:24px;
 }
 
-/* the distillery page datatable *//* dataTable on distillery page */
-#distillery-bottles_wrapper div.row:first-child,
-#distillery-bottles_wrapper div.row:last-child {
-  display:none;
-}
+
 
 .tooltip-arrow:before {
     /* border-top-color: #0d6efd !important; */

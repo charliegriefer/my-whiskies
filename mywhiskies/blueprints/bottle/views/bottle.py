@@ -37,13 +37,10 @@ def bottle_detail(bottle_id: str):
     _, _, img_s3_url = get_s3_config()
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
 
-    # 404 if this is a private bottle and the requesting user is not the owner
-    if _bottle.is_private and not is_my_bottle:
-        abort(404)
-
-    # clear out the personal_note value if this bottle does not belong to the current user
     if not is_my_bottle:
         _bottle.personal_note = None
+        if _bottle.is_private:
+            abort(404)
 
     return render_template(
         "bottle/bottle_detail.html",

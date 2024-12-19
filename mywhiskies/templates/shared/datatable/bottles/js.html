@@ -1,0 +1,75 @@
+$(function () {
+  let dk_column = {{ dk_column }};
+
+  let table = $("#bottles").DataTable({
+    language: {
+      "emptyTable": "{{ user.username}} has no bottles from {{ entity.name }}. Yet."
+    },
+    columnDefs: [
+      {%- if is_my_list %}
+      {
+        target: 0,
+        searchable: false,
+        orderable: false,
+      },
+      {%- endif %}
+      {
+        target: dk_column,
+        orderable: false,
+        visible: false,
+      }
+    ],
+    order: [[{{ order_col }}, "asc"]],
+    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    "pageLength": {{ dt_list_length }}
+  });
+
+  table
+    .columns(dk_column)
+    .search("None", true, false)
+    .draw()
+  ;
+
+  $("#show_killed").on("click", function() {
+    if (this.checked) {
+      table
+        .columns()
+        .search("")
+        .draw()
+      ;
+    } else {
+      table
+        .columns(dk_column)
+        .search("None", true, false)
+        .draw()
+      ;
+    }
+  });
+
+  /* submit form on click of random button */
+  $("#do_random").on("click", function() {
+    $("#random_toggle").val("1");
+    $("#type_filter").submit();
+  });
+
+  let selectAll = $("#selectAll")
+  let filterCheckboxes = $("input.type-filter");
+  handleSelectAll();
+
+  function handleSelectAll() {
+    let totalCheckboxes = filterCheckboxes.length;
+    let numberOfChecked = $("input.type-filter:checked").length;
+
+    selectAll.prop("disabled", numberOfChecked===totalCheckboxes);
+  }
+
+  filterCheckboxes.on("click", function() {
+    handleSelectAll();
+  });
+
+  selectAll.on("click", function() {
+    filterCheckboxes.prop("checked", true);
+    $(this).prop("disabled", true);
+  });
+
+});
