@@ -7,11 +7,6 @@ from flask.testing import FlaskClient
 from flask_login import logout_user
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from mywhiskies.blueprints.bottle.models import Bottle
-from mywhiskies.blueprints.bottler.models import Bottler
-from mywhiskies.blueprints.distillery.models import Distillery
-from mywhiskies.blueprints.user.models import User
-
 # Ensure the parent directory is added to the system path before imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -57,7 +52,7 @@ def test_client(app: Flask) -> FlaskClient:
 
 
 @pytest.fixture
-def test_user_01() -> User:
+def test_user_01() -> "User":  # noqa: F821
     """
     Create a test user (test_user_01) with associated objects:
         - 4 Distilleries: Frey Ranch, Still Austin, Ironroot Republic, and Boulder Spirits
@@ -73,6 +68,8 @@ def test_user_01() -> User:
             - Edit to add a third (Boulder Spirits) and ensure that the bottle now has 3 distilleries.
             - Edit to remove one distillery (Frey Ranch) and ensure that there is only one distillery.
     """
+    from mywhiskies.blueprints.user.models import User
+
     test_user_01 = User(
         username="test_user_01",
         email="test_user_01@example.com",
@@ -135,7 +132,7 @@ def test_user_01() -> User:
 
 
 @pytest.fixture
-def test_user_02() -> User:
+def test_user_02() -> "User":  # noqa: F821
     """
     Create a test user (test_user_02) with associated objects:
         - 2 Distilleries: Frey Ranch and Ironroot Republic
@@ -145,6 +142,8 @@ def test_user_02() -> User:
     Expectations:
         - test_user_01 should _not_ be able to manipulate any of these objects.
     """
+    from mywhiskies.blueprints.user.models import User
+
     test_user_02 = User(
         username="test_user_02",
         email="test_user_02@example.com",
@@ -187,7 +186,9 @@ def test_user_02() -> User:
 
 
 @pytest.fixture
-def logged_in_user_01(client: FlaskClient, test_user_01: User) -> FlaskClient:
+def logged_in_user_01(
+    client: FlaskClient, test_user_01: "User"  # noqa: F821
+) -> FlaskClient:
     """Log in test_user_01 and return the logged-in client."""
     client.post(
         url_for("auth.login"),
@@ -200,7 +201,9 @@ def logged_in_user_01(client: FlaskClient, test_user_01: User) -> FlaskClient:
 
 
 @pytest.fixture
-def logged_in_user_02(client: FlaskClient, test_user_02: User) -> FlaskClient:
+def logged_in_user_02(
+    client: FlaskClient, test_user_02: "User"  # noqa: F821
+) -> FlaskClient:
     """Log in test_user_02 and return the logged-in client."""
     client.post(
         url_for("auth.login"),
@@ -239,7 +242,9 @@ def html_encode(text: str) -> str:
 
 
 # Distilleries
-def _boulder_spirits() -> Distillery:
+def _boulder_spirits() -> "Distillery":  # noqa: F821
+    from mywhiskies.blueprints.distillery.models import Distillery
+
     return Distillery(
         name="Boulder Spirits",
         description="A distillery in Colorado.",
@@ -248,7 +253,9 @@ def _boulder_spirits() -> Distillery:
     )
 
 
-def _frey_ranch() -> Distillery:
+def _frey_ranch() -> "Distillery":  # noqa: F821
+    from mywhiskies.blueprints.distillery.models import Distillery
+
     return Distillery(
         name="Frey Ranch",
         description="A distillery in Nevda.",
@@ -258,7 +265,9 @@ def _frey_ranch() -> Distillery:
     )
 
 
-def _ironroot_republic() -> Distillery:
+def _ironroot_republic() -> "Distillery":  # noqa: F821
+    from mywhiskies.blueprints.distillery.models import Distillery
+
     return Distillery(
         name="Ironroot Republic",
         description="A family-owned Texas distillery.",
@@ -268,7 +277,9 @@ def _ironroot_republic() -> Distillery:
     )
 
 
-def _still_austin() -> Distillery:
+def _still_austin() -> "Distillery":  # noqa: F821
+    from mywhiskies.blueprints.distillery.models import Distillery
+
     return Distillery(
         name="Still Austin",
         description="A distillery in Texas.",
@@ -279,7 +290,9 @@ def _still_austin() -> Distillery:
 
 
 #  Bottlers
-def _crowded_barrel() -> Bottler:
+def _crowded_barrel() -> "Bottler":  # noqa: F821
+    from mywhiskies.blueprints.bottler.models import Bottler
+
     return Bottler(
         name="Crowded Barrel Whiskey Co.",
         description="The world's first crowdsourced whiskey distillery.",
@@ -289,7 +302,9 @@ def _crowded_barrel() -> Bottler:
     )
 
 
-def _lost_lantern() -> Bottler:
+def _lost_lantern() -> "Bottler":  # noqa: F821
+    from mywhiskies.blueprints.bottler.models import Bottler
+
     return Bottler(
         name="Lost Lantern",
         description="The best independent bottler.",
@@ -300,7 +315,9 @@ def _lost_lantern() -> Bottler:
 
 
 # Bottles
-def _far_flung_bourbon() -> Bottle:
+def _far_flung_bourbon() -> "Bottle":  # noqa: F821
+    from mywhiskies.blueprints.bottle.models import Bottle
+
     return Bottle(
         name="Far-Flung Bourbon I",
         type="bourbon",
@@ -309,7 +326,9 @@ def _far_flung_bourbon() -> Bottle:
     )
 
 
-def _frey_ranch_straight_rye() -> Bottle:
+def _frey_ranch_straight_rye() -> "Bottle":  # noqa: F821
+    from mywhiskies.blueprints.bottle.models import Bottle
+
     return Bottle(
         name="Frey Ranch Straight Rye Whiskey",
         type="rye",
@@ -324,7 +343,9 @@ def _frey_ranch_straight_rye() -> Bottle:
     )
 
 
-def _frey_ranch_hazmat_private() -> Bottle:
+def _frey_ranch_hazmat_private() -> "Bottle":  # noqa: F821
+    from mywhiskies.blueprints.bottle.models import Bottle
+
     return Bottle(
         name="Frey Ranch Straight Bourbon Whiskey",
         type="bourbon",
@@ -333,7 +354,9 @@ def _frey_ranch_hazmat_private() -> Bottle:
     )
 
 
-def _ironroot_hubris_hazmat_private() -> Bottle:
+def _ironroot_hubris_hazmat_private() -> "Bottle":  # noqa: F821
+    from mywhiskies.blueprints.bottle.models import Bottle
+
     return Bottle(
         name="Ironroot Republic Hubris Hazmat",
         type="american_whiskey",
