@@ -11,17 +11,6 @@ from mywhiskies.services import utils
 
 def list_bottlers(user: User, current_user: User, request: request) -> Response:
     return utils.prep_dt2(user, current_user, request)
-    # response = make_response(
-    #     render_template(
-    #         "shared/entities/list.html",
-    #         title=f"{user.username}'s Whiskies: Bottlers",
-    #         has_datatable=True,
-    #         is_my_list=utils.is_my_list(user.username, current_user),
-    #         user=user,
-    #         dt_list_length=50,
-    #     )
-    # )
-    # return response
 
 
 def add_bottler(form: BottlerAddForm, user: User) -> None:

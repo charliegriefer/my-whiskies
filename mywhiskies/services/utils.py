@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Tuple, Union
 
 from dateutil.relativedelta import relativedelta
-from flask import Markup, flash, make_response, render_template, request
+from flask import Markup, abort, flash, make_response, render_template, request
 from flask.wrappers import Response
 
 from mywhiskies.blueprints.bottle.models import BottleTypes
@@ -50,15 +50,24 @@ def set_cookie_expiration(response, cookie_name, value, years=1):
     )
 
 
-def prep_dt2(user, current_user, request):
+def prep_dt2(user: User, current_user: User, request: request) -> Response:
+    entity_type = request.url.split("/")[-1]
+    if entity_type not in ["bottlers", "distilleries"]:
+        abort(404)
+
     response = make_response(
         render_template(
-            "shared/datatable/entities/list.html",
-            title=f"{user.username}'s Whiskies: Bottlers",
+            "shared/datatable/non_bottles/list.html",
+            location="non_bottles",
+            title=f"{user.username}'s Whiskies: {entity_type.title()}",
+            heading_01=f"{user.username}'s Whiskies",
+            heading_02=entity_type.title(),
             has_datatable=True,
-            is_my_list=is_my_list(user.username, current_user),
             user=user,
-            dt_list_length=50,
+            entities=getattr(user, entity_type),
+            dt_list_length=request.cookies.get("dt-list-length", "50"),
+            is_my_list=is_my_list(user.username, current_user),
+            entity_type=entity_type,
         )
     )
     return response
@@ -108,6 +117,7 @@ def prep_datatables(
     response = make_response(
         render_template(
             "shared/datatable/bottles/list.html",
+            location="bottles",
             title=f"{heading_01}: {heading_02}",
             heading_01=heading_01,
             heading_02=heading_02,

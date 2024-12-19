@@ -22,7 +22,8 @@
   }
   {%- if has_datatable %}
     {% filter indent(2, first=False) %}
-{% include "shared/datatable/bottles/js.html" %}
+{% include "shared/datatable/" + location + "/js.html" %}
+{% include "shared/datatable/shared_js.html" %}
     {%- endfilter %}
   {%- endif %}
 </script>

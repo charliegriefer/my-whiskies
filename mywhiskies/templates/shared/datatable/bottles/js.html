@@ -27,19 +27,22 @@ $(function () {
   table
     .columns(dk_column)
     .search("None", true, false)
-    .draw();
+    .draw()
+  ;
 
   $("#show_killed").on("click", function() {
     if (this.checked) {
       table
         .columns()
         .search("")
-        .draw();
+        .draw()
+      ;
     } else {
       table
         .columns(dk_column)
         .search("None", true, false)
-        .draw();
+        .draw()
+      ;
     }
   });
 
@@ -47,12 +50,6 @@ $(function () {
   $("#do_random").on("click", function() {
     $("#random_toggle").val("1");
     $("#type_filter").submit();
-  });
-
-  /* set cookie when length dropdown is changed */
-  $("select[name='bottles_length']").on("change", function() {
-    let next_year = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
-    document.cookie = "dt-list-length=" + this.value + "; expires=" + next_year + "; path=/";
   });
 
   let selectAll = $("#selectAll")
@@ -75,12 +72,4 @@ $(function () {
     $(this).prop("disabled", true);
   });
 
-  /* confirm delete modal window */
-  const myModal = document.getElementById("confirmDelete");
-  myModal.addEventListener("shown.bs.modal", (e) => {
-    let btn = $(e.target).find(".btn-ok");
-    $(btn).on("click", function() {
-      location.href = $(e.relatedTarget).data("bs-href");
-    });
-  });
 });
