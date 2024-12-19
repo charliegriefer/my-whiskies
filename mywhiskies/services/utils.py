@@ -109,6 +109,7 @@ def prep_datatable_bottles(
             is_my_list=_is_my_list,
             dk_column=dk_column,
             order_col=order_col,
+            entity=entity,
         )
     )
 

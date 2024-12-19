@@ -3,7 +3,7 @@ $(function () {
 
   let table = $("#bottles").DataTable({
     language: {
-      "emptyTable": "There's nothing to see here."
+      "emptyTable": "{{ user.username}} has no bottles from {{ entity.name }}. Yet."
     },
     columnDefs: [
       {%- if is_my_list %}
