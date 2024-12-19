@@ -14,7 +14,8 @@
               <label class="form-check-label" for="show_killed">Show Killed Bottles</label>
             </div>
           {% endif %}
-
+          
+          {% if bottles|length > 1 %}
           <div class="d-grid gap-1 d-md-block">
             {% if is_my_list %}
               <button type="button" class="btn btn-primary text-nowrap" id="do_random"><i class="bi bi-question-circle mr-2"></i> Random Bottle</button>
@@ -47,6 +48,7 @@
               <button type="button" class="btn btn-primary mt-4" id="selectAll">Select All</button>
             </form>
           </div>
+          {% endif %}
         </div>
       </div> <!-- end row -->
 
