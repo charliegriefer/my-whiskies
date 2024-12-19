@@ -117,10 +117,13 @@ def prep_datatable_bottles(
 
 
 def prep_datatable_entities(
-    user: User, current_user: User, request: request
+    user: User, current_user: User, request: request, entity_type: str
 ) -> Response:
-    entity_type = request.url.split("/")[-1]
     if entity_type not in ["bottlers", "distilleries"]:
+        abort(404)
+
+    entities = getattr(user, entity_type, None)
+    if entities is None:
         abort(404)
 
     response = make_response(
@@ -132,7 +135,7 @@ def prep_datatable_entities(
             heading_02=entity_type.title(),
             has_datatable=True,
             user=user,
-            entities=getattr(user, entity_type),
+            entities=entities,
             dt_list_length=request.cookies.get("dt-list-length", "50"),
             is_my_list=is_my_list(user.username, current_user),
             entity_type=entity_type,
