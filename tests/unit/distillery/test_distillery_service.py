@@ -120,6 +120,8 @@ def test_get_distillery_detail(
 
     # simulate a GET request
     request = MagicMock(method="GET", cookies=MultiDict({"dt-list-length": "100"}))
+    request.form.getlist.return_value = []
+    request.form.get.return_value = 0
     response = get_distillery_detail(test_distillery, request, test_user_01)
     html = response.get_data(as_text=True)
 
