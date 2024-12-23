@@ -1,12 +1,12 @@
 import random
 from datetime import datetime
-from typing import Tuple, Union
+from typing import List, Tuple, Union
 
 from dateutil.relativedelta import relativedelta
 from flask import Markup, abort, flash, make_response, render_template, request
 from flask.wrappers import Response
 
-from mywhiskies.blueprints.bottle.models import BottleTypes
+from mywhiskies.blueprints.bottle.models import Bottle, BottleTypes
 from mywhiskies.blueprints.bottler.models import Bottler
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
@@ -59,36 +59,31 @@ def prep_datatable_bottles(
     else:
         user = entity
 
-    all_bottles = entity.bottles
-    killed_bottles = [b for b in all_bottles if b.date_killed]
-    private_bottles = [b for b in all_bottles if b.is_private]
-
     _is_my_list = is_my_list(user.username, current_user)
 
-    if request.method == "POST":
-        # user has either filtered on a bottle type or requested a random bottle
-        active_bottle_types = request.form.getlist("bottle_type")
+    # set the bottle filter types. If none are selected (on a GET, for example), default to all types.
+    active_bottle_types = request.form.getlist("filter_bottle_type") or [
+        b.name for b in BottleTypes
+    ]
+    bottles = [b for b in entity.bottles if b.type.name in active_bottle_types]
 
-        if len(active_bottle_types):
-            bottles_to_list = [
-                b for b in all_bottles if b.type.name in active_bottle_types
-            ]
-            if bool(int(request.form.get("random_toggle"))):
-                if len(bottles_to_list) > 0:
-                    unkilled_bottles = [b for b in bottles_to_list if not b.date_killed]
-                    bottles_to_list = [random.choice(unkilled_bottles)]
-        else:
-            bottles_to_list = []
-    else:
-        active_bottle_types = [bt.name for bt in BottleTypes]
-        if _is_my_list:
-            bottles_to_list = all_bottles
-        else:
-            bottles_to_list = [
-                bottle for bottle in all_bottles if not bottle.is_private
-            ]
+    if not _is_my_list:
+        bottles = [b for b in bottles if not b.is_private]
 
-    dk_column, order_col = _set_columns(_is_my_list, len(private_bottles))
+    show_filters = True
+    show_random_btn = _is_my_list
+    show_all_btn = False
+    show_killed_toggle = any(b.date_killed for b in bottles)
+
+    if request.form.get("random_toggle", 0, type=int):
+        bottles = _get_random_bottle(bottles)
+        show_filters = False
+        show_random_btn = False
+        show_all_btn = True
+        show_killed_toggle = False
+
+    has_privates = any(b.is_private for b in bottles)
+    date_killed_column, order_column = _set_columns(_is_my_list, has_privates)
     heading_01, heading_02 = _set_headings(user.username, entity)
 
     response = make_response(
@@ -100,16 +95,20 @@ def prep_datatable_bottles(
             heading_02=heading_02,
             has_datatable=True,
             user=user,
-            bottles=bottles_to_list,
-            has_killed_bottles=bool(len(killed_bottles)),
+            bottles=bottles,
             bottle_types=BottleTypes,
-            active_filters=active_bottle_types,
+            active_bottle_types=active_bottle_types,
             dt_list_length=request.cookies.get("dt-list-length", "50"),
-            show_privates=_is_my_list and len(private_bottles),
             is_my_list=_is_my_list,
-            dk_column=dk_column,
-            order_col=order_col,
+            show_privates=_is_my_list and has_privates,
+            date_killed_column=date_killed_column,
+            order_column=order_column,
+            empty_text=_set_empty_text(entity, user, active_bottle_types),
             entity=entity,
+            show_killed_toggle=show_killed_toggle,
+            show_filters=show_filters,
+            show_random_btn=show_random_btn,
+            show_all_btn=show_all_btn,
         )
     )
 
@@ -144,17 +143,17 @@ def prep_datatable_entities(
     return response
 
 
-def _set_columns(_is_my_list: bool, private_bottles: int) -> Tuple[int, int]:
+def _set_columns(_is_my_list: bool, has_privates: bool) -> Tuple[int, int]:
     # Convenience method to determine the index of the date_killed column and the initial ordered column.
-    dk_column = 5
-    order_col = 0
+    date_killed_column = 5
+    order_column = 0
     if _is_my_list:
-        dk_column += 1
-        order_col += 1
-        if private_bottles:
-            dk_column += 1
-            order_col += 1
-    return dk_column, order_col
+        date_killed_column += 1
+        order_column += 1
+        if has_privates:
+            date_killed_column += 1
+            order_column += 1
+    return date_killed_column, order_column
 
 
 def _set_headings(
@@ -172,3 +171,36 @@ def _set_headings(
         heading_02 = entity.name
 
     return heading_01, heading_02
+
+
+def _set_empty_text(
+    entity: Union[Bottler, Distillery, User], user: User, active_bottle_types: List[str]
+) -> str:
+    # Convenience method to set the empty table text for the datatable.
+    if type(entity) in [Distillery, Bottler]:
+        empty_text = (
+            f"{ entity.user.username} has no bottles from { entity.name }. Yet."
+        )
+    elif type(entity) is User:
+        empty_text = f"{ entity.username} has no bottles. Yet."
+    else:
+        return "No bottles found."
+
+    if len(active_bottle_types) < len(BottleTypes):
+        if len(active_bottle_types) == 1:
+            empty_text = f"{user.username} has no {BottleTypes[active_bottle_types[0]].value} bottles. Yet."
+        else:
+            empty_text = f"{user.username} has no bottles of the selected types. Yet."
+
+    return empty_text
+
+
+def _get_random_bottle(bottles: List[Bottle]) -> List[Bottle]:
+    """
+    Selects a random bottle from the provided list.
+    Only non-killed bottles are considered.
+
+    Returns an empty list if no active bottles exist.
+    """
+    active_bottles = [b for b in bottles if not b.date_killed]
+    return [random.choice(active_bottles)] if active_bottles else []
