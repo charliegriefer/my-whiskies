@@ -1,0 +1,12 @@
+{% macro cancel_button(current_user, request) %}
+  {% if request.referrer %}
+    {% set cancel_link = request.referrer %}
+  {% else %}
+    {% if current_user.is_authenticated %}
+      {% set cancel_link = url_for("core.home", username=current_user.username) %}
+    {% else %}
+      {% set cancel_link = url_for("core.index") %}
+    {% endif %}
+  {% endif %}
+  <a href="{{ cancel_link }}" class="btn btn-secondary">Cancel</a>
+{% endmacro %}
