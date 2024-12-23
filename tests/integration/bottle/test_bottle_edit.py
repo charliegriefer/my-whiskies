@@ -53,7 +53,7 @@ def test_valid_bottle_edit_form(test_user_01: User, mock_image: str) -> None:
         formdata = MultiDict(
             {
                 "name": "Frey Ranch Straight Rye Whiskey EDITED",
-                "type": "rye",
+                "type": "RYE",
                 "year_barrelled": 2017,
                 "year_bottled": 2023,
                 "abv": 69.8,

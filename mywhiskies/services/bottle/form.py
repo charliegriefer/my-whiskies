@@ -21,7 +21,7 @@ def _set_up_bottle_type(form: Union[BottleAddForm, BottleEditForm]) -> None:
     form.type.choices = [(t.name, t.value) for t in BottleTypes]
     form.type.choices.sort()
     form.type.choices.append(
-        form.type.choices.pop(form.type.choices.index(("other", "Other")))
+        form.type.choices.pop(form.type.choices.index(("OTHER", "Other")))
     )
     form.type.choices.insert(0, ("", "Choose a Bottle Type"))
 

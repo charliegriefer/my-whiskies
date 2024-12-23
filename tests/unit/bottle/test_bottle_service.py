@@ -33,7 +33,7 @@ def test_add_bottle(
     form = MagicMock(spec=BottleAddForm)
     form.distilleries.data = []
     form.bottler_id.data = "0"
-    form.type.data = BottleTypes.bourbon
+    form.type.data = BottleTypes.BOURBON
     form.name.data = "Test Bottle"
     form.abv.data = 45.0
     form.size.data = 750
@@ -69,7 +69,7 @@ def test_edit_bottle(
     form = MagicMock(spec=BottleEditForm)
     form.distilleries.data = []
     form.bottler_id.data = "0"
-    form.type.data = BottleTypes.bourbon
+    form.type.data = BottleTypes.BOURBON
     form.name.data = "Test Bottle"
     form.abv.data = 45.0
     form.size.data = 750
