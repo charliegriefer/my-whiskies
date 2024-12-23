@@ -10,7 +10,7 @@ from mywhiskies.extensions import db
 def test_bottle(app: Flask, test_user_01: User) -> Bottle:
     bottle = Bottle(
         name="Four Roses Single Barrel",
-        type=BottleTypes.bourbon,
+        type=BottleTypes.BOURBON,
         abv=56.10,
         user_id=test_user_01.id,
     )

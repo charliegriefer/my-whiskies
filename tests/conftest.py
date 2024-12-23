@@ -320,7 +320,7 @@ def _far_flung_bourbon() -> "Bottle":  # noqa: F821
 
     return Bottle(
         name="Far-Flung Bourbon I",
-        type="bourbon",
+        type="BOURBON",
         abv=68.4,
         description="A blend of straight bourbons from different distilleries.",
     )
@@ -331,7 +331,7 @@ def _frey_ranch_straight_rye() -> "Bottle":  # noqa: F821
 
     return Bottle(
         name="Frey Ranch Straight Rye Whiskey",
-        type="rye",
+        type="RYE",
         year_barrelled=2018,
         year_bottled=2024,
         abv=68.8,
@@ -348,7 +348,7 @@ def _frey_ranch_hazmat_private() -> "Bottle":  # noqa: F821
 
     return Bottle(
         name="Frey Ranch Straight Bourbon Whiskey",
-        type="bourbon",
+        type="BOURBON",
         bottler_id="0",
         is_private=True,
     )
@@ -359,7 +359,7 @@ def _ironroot_hubris_hazmat_private() -> "Bottle":  # noqa: F821
 
     return Bottle(
         name="Ironroot Republic Hubris Hazmat",
-        type="american_whiskey",
+        type="AMERICAN_WHISKEY",
         bottler_id="0",
         is_private=True,
     )

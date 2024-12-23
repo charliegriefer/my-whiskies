@@ -19,7 +19,7 @@ def create_bottle_formdata(
     formdata = MultiDict(
         {
             "name": "Frey Ranch " "Farm Strength" "",
-            "type": "bourbon",
+            "type": "BOURBON",
             "year_barrelled": 2018,
             "year_bottled": 2023,
             "abv": 62.15,

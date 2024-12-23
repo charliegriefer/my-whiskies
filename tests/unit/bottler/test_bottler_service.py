@@ -99,13 +99,13 @@ def test_get_bottler_detail(
     # Add bottles to bottler
     live_bottle = Bottle(
         name="Live Bottle",
-        type=BottleTypes.bourbon,
+        type=BottleTypes.BOURBON,
         date_killed=None,
         user_id=test_user_01.id,
     )
     killed_bottle = Bottle(
         name="Killed Bottle",
-        type=BottleTypes.bourbon,
+        type=BottleTypes.BOURBON,
         date_killed=datetime(2023, 1, 1),
         user_id=test_user_01.id,
     )
@@ -133,7 +133,7 @@ def test_get_bottler_detail(
     request = MagicMock(
         method="POST",
         cookies=MultiDict({"dt-list-length": "50"}),
-        form=MultiDict({"random_toggle": "1", "bottle_type": ["bourbon"]}),
+        form=MultiDict({"random_toggle": "1", "bottle_type": ["BOURBON"]}),
     )
     response = get_bottler_detail(test_bottler, request, test_user_01)
 
