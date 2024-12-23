@@ -1,9 +1,9 @@
 $(function () {
-  let dk_column = {{ dk_column }};
+  let dk_column = {{ date_killed_column }};
 
   let table = $("#bottles").DataTable({
     language: {
-      "emptyTable": "{{ user.username}} has no bottles from {{ entity.name }}. Yet."
+      "emptyTable": "{{ empty_text }}"
     },
     columnDefs: [
       {%- if is_my_list %}
@@ -19,7 +19,7 @@ $(function () {
         visible: false,
       }
     ],
-    order: [[{{ order_col }}, "asc"]],
+    order: [[{{ order_column }}, "asc"]],
     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
     "pageLength": {{ dt_list_length }}
   });
@@ -46,29 +46,38 @@ $(function () {
     }
   });
 
-  /* submit form on click of random button */
+  /* submit form on click of random button or show all button */
   $("#do_random").on("click", function() {
-    $("#random_toggle").val("1");
+    $("#random_toggle").val(1);
+    $("#show_all_toggle").val(0);
     $("#type_filter").submit();
   });
+  $("#do_show_all").on("click", function() {
+    $("#random_toggle").val(0);
+    $("#show_all_toggle").val(1);
+    $("#type_filter").submit();
+  })
 
   let selectAll = $("#selectAll")
+  let applyFilters = $("#applyFilter");
   let filterCheckboxes = $("input.type-filter");
-  handleSelectAll();
+  handleFilterButtons();
 
-  function handleSelectAll() {
+  function handleFilterButtons() {
     let totalCheckboxes = filterCheckboxes.length;
     let numberOfChecked = $("input.type-filter:checked").length;
 
     selectAll.prop("disabled", numberOfChecked===totalCheckboxes);
+    applyFilters.prop("disabled", numberOfChecked===0);
   }
 
   filterCheckboxes.on("click", function() {
-    handleSelectAll();
+    handleFilterButtons();
   });
 
   selectAll.on("click", function() {
     filterCheckboxes.prop("checked", true);
+    applyFilters.prop("disabled", false);
     $(this).prop("disabled", true);
   });
 

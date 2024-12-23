@@ -8,25 +8,30 @@
         </div>
 
         <div class="col d-flex align-items-end justify-content-end pb-2">
-          {% if has_killed_bottles %}
+          {% if show_killed_toggle %}
             <div class="form-check form-switch pe-5">
               <input class="form-check-input" type="checkbox" role="switch" id="show_killed">
               <label class="form-check-label" for="show_killed">Show Killed Bottles</label>
             </div>
           {% endif %}
           
-          {% if bottles|length > 1 %}
           <div class="d-grid gap-1 d-md-block">
-            {% if is_my_list %}
+            {% if show_random_btn and bottles|length > 1 %}
               <button type="button" class="btn btn-primary text-nowrap" id="do_random"><i class="bi bi-question-circle mr-2"></i> Random Bottle</button>
             {% endif %}
+            {% if show_all_btn %}
+              <button type="button" class="btn btn-primary text-nowrap" id="do_show_all"><i class="bi bi-list-columns-reverse"></i> Show All Bottles</button>
+            {% endif %}
 
+            {% if show_filters %}
             <button type="button" class="btn btn-primary text-nowrap dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-              <i class="bi bi-filter mr-2"></i> Filter List
+              <i class="bi bi-funnel mr-2"></i> Filter List
             </button>
+            {% endif %}
             <form method="post" id="type_filter" class="dropdown-menu p-4">
               <input type="hidden" name="bottle_length" id="bottle_length" />
               <input type="hidden" name="random_toggle" id="random_toggle" value="0" />
+              <input type="hidden" name="show_all_toggle" id="show_all_toggle" value="0" />
               {% for bottle_type in bottle_types %}
                 <div class="mb-1 my-0 py-0">
                   <div class="form-check my-0 py-0">
@@ -35,8 +40,8 @@
                       class="form-check-input type-filter"
                       id="{{ bottle_type.name }}"
                       value="{{ bottle_type.name }}"
-                      name="bottle_type"
-                      {% if bottle_type.name in active_filters %} checked{% endif %}
+                      name="filter_bottle_type"
+                      {% if bottle_type.name in active_bottle_types %} checked{% endif %}
                     />
                     <label class="form-check-label" for="{{ bottle_type.name }}">
                       {{ bottle_type.value }}
@@ -44,11 +49,10 @@
                   </div>
                 </div>
               {% endfor %}
-              <button type="submit" class="btn btn-primary mt-4">Apply Filter(s)</button>
+              <button type="submit" class="btn btn-primary mt-4" id="applyFilter">Apply Filter(s)</button>
               <button type="button" class="btn btn-primary mt-4" id="selectAll">Select All</button>
             </form>
           </div>
-          {% endif %}
         </div>
       </div> <!-- end row -->
 
@@ -82,8 +86,8 @@
           <tr>
             {% if is_my_list %}
               <td class="me-0 pe-0">
-                <a href="{{ url_for("bottle.bottle_edit", bottle_id=bottle.id) }}"><i class="bi bi-pencil"></i></a>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for("bottle.bottle_delete", bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
+                <a href="{{ url_for('bottle.bottle_edit', bottle_id=bottle.id) }}"><i class="bi bi-pencil"></i></a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for('bottle.bottle_delete', bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
               </td>
               {% if show_privates %}
               <td>
@@ -96,7 +100,7 @@
               {% endif %}
             {% endif %}
             <td class="pb-0 me-0">
-              <a href="{{ url_for("bottle.bottle_detail", bottle_id=bottle.id) }}" class="{{ opacity }}">{{ bottle.name |replace("\n", "<br />") |safe }}</a>
+              <a href="{{ url_for('bottle.bottle_detail', bottle_id=bottle.id) }}" class="{{ opacity }}">{{ bottle.name |replace("\n", "<br />") |safe }}</a>
               {% if bottle.image_count %}
                 {% if bottle.image_count == 1 %}
                   <i class="bi bi-image ms-1 {{ opacity }}" title="Has Image"></i>
