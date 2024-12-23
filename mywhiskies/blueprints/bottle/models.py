@@ -18,14 +18,15 @@ if TYPE_CHECKING:  # avoid circular imports
 
 
 class BottleTypes(enum.Enum):
-    american_whiskey = "American Whiskey"
-    bourbon = "Bourbon"
-    canadian_whiskey = "Canadian Whiskey"
-    irish_whiskey = "Irish Whiskey"
-    rye = "Rye"
-    scotch = "Scotch"
-    world_whiskey = "World Whisk(e)y"
-    other = "Other"
+    AMERICAN_WHISKEY = "American Whiskey"
+    BOURBON = "Bourbon"
+    CANADIAN_WHISKEY = "Canadian Whiskey"
+    IRISH_WHISKEY = "Irish Whiskey"
+    RYE = "Rye"
+    SCOTCH = "Scotch"
+    TENNESSEE_WHISKEY = "Tennessee Whiskey"
+    WORLD_WHISKEY = "World Whisk(e)y"
+    OTHER = "Other"
 
 
 class Bottle(db.Model):
