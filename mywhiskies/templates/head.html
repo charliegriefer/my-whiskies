@@ -3,10 +3,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  {% if bottle %}
-    {% if bottle.image_count %}
+  {% if bottle and bottle.image_count %}
   <meta data-rh="true" property="og:image" content="https://my-whiskies-pics.s3-us-west-1.amazonaws.com/{{ bottle.id }}_1.png" />
-    {% endif %}
   {% endif %}
   {% if title %}
   <meta data-rh="true" property="og:title" content="{{ title | replace(' &raquo;', ':') }}" />
