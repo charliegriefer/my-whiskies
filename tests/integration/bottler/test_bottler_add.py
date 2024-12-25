@@ -16,7 +16,9 @@ new_bottler_formdata = MultiDict(
 
 
 def test_add_bottler_requires_login(client: FlaskClient) -> None:
-    response = client.get(url_for("bottler.bottler_add"), follow_redirects=False)
+    response = client.get(
+        url_for("bottler.bottler_add", username="skibidi"), follow_redirects=False
+    )
     assert response.status_code == 302
     assert url_for("auth.login", _external=False) in response.headers["Location"]
 
@@ -35,7 +37,9 @@ def test_add_bottler(logged_in_user_01: FlaskClient, test_user_01: User) -> None
     user_bottlers_count = len(test_user_01.bottlers)
 
     response = client.post(
-        url_for("bottler.bottler_add"), data=new_bottler_formdata, follow_redirects=True
+        url_for("bottler.bottler_add", username=test_user_01.username),
+        data=new_bottler_formdata,
+        follow_redirects=True,
     )
 
     # Check that the user is redirected to the home page
