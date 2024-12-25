@@ -1,0 +1,21 @@
+{% extends "_base.html" %}
+
+{% block app_content %}
+
+  <main class="flex-shrink-0">
+    <div class="container">
+      <h1>Access Denied!</h1>
+      <hr />
+
+        <p>You do not have permission to access this resource.</p>
+        <p>If you believe that this is incorrect, please contact <a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a> with some details about how you got here, and we'll check into it.</p>
+        <p><a href="{{ url_for('core.index') }}">Home</a></p>
+
+    </div>
+  </main>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+{% endblock %}
