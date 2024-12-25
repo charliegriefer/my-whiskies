@@ -47,7 +47,7 @@ def test_add_distillery(mock_flash: MagicMock, test_user_01: User) -> None:
     add_distillery(form, test_user_01)
 
     mock_flash.assert_called_once_with(
-        '"Jack Daniel\'s" has been successfully added.', "success"
+        'Distillery "Jack Daniel\'s" has been successfully added.', "success"
     )
 
 
@@ -67,7 +67,7 @@ def test_edit_distillery(mock_flash: MagicMock, test_distillery: Distillery) -> 
     form = DistilleryEditForm(form_data)
     edit_distillery(form, test_distillery)
     mock_flash.assert_called_once_with(
-        '"Jack Daniel\'s UPDATED" has been successfully updated.', "success"
+        'Distillery "Jack Daniel\'s UPDATED" has been successfully updated.', "success"
     )
 
     assert original_distillery.get("name") != test_distillery.name
@@ -82,7 +82,7 @@ def test_delete_distillery(
 ) -> None:
     delete_distillery(test_distillery.id, test_user_01)
     mock_flash.assert_called_once_with(
-        '"Whiskey Del Bac" has been successfully deleted.', "success"
+        'Distillery "Whiskey Del Bac" has been successfully deleted.', "success"
     )
 
 
