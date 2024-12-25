@@ -92,7 +92,9 @@ def distillery_add(username: str):
 
     if form.validate_on_submit():
         add_distillery(form, current_user)
-        return redirect(url_for("core.home", username=current_user.username))
+        return redirect(
+            url_for("distillery.distillery_list", username=current_user.username)
+        )
 
     return render_template(
         "distillery/distillery_add.html",
