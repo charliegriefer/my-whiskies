@@ -34,7 +34,7 @@
               Bottles
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              {% if is_my_list %}<a class="dropdown-item" href="{{ url_for('bottle.bottle_add') }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottle</a>{% endif %}
+              {% if is_my_list %}<a class="dropdown-item" href="{{ url_for('bottle.bottle_add', username=username) }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottle</a>{% endif %}
               <a class="dropdown-item" href="{{ url_for('bottle.list_bottles', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Bottles</a>
             </div>
           </li>

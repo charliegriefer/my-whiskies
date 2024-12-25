@@ -24,7 +24,7 @@
                   <i class="bi bi-exclamation-circle pe-1" style="color:red;"></i> You won't be able to add any new bottles until you <a href="{{ url_for('distillery.distillery_add', username=username) }}">add at least one distillery</a>.
                   <br />
                 {% else %}
-                  <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('bottle.bottle_add') }}">Add a bottle</a>
+                  <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('bottle.bottle_add', username=username) }}">Add a bottle</a>
                   <br />
                 {% endif %}
               {% endif %}

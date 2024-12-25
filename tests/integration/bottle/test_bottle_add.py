@@ -41,7 +41,10 @@ def test_add_bottle_requires_login(
     app: Flask, client: FlaskClient, test_user_01: User
 ) -> None:
     # loading the form should fail.
-    response = client.get(url_for("bottle.bottle_add"), follow_redirects=False)
+    response = client.get(
+        url_for("bottle.bottle_add", username=test_user_01.username),
+        follow_redirects=False,
+    )
     assert response.status_code == 302
     assert url_for("auth.login", _external=False) in response.headers["Location"]
 
@@ -49,7 +52,7 @@ def test_add_bottle_requires_login(
     test_user_bottle_count = len(test_user_01.bottles)
     formdata = create_bottle_formdata(test_user_01)
     response = client.post(
-        url_for("bottle.bottle_add"),
+        url_for("bottle.bottle_add", username=test_user_01.username),
         data=formdata,
         follow_redirects=True,
     )
