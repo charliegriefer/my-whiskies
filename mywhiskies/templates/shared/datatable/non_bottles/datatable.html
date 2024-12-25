@@ -9,7 +9,7 @@
 
         {% if is_my_list %}
           <div class="col d-flex align-items-end justify-content-end pb-2">
-            <a class="btn btn-primary" href="{{ url_for('bottler.bottler_add') }}" role="button"><i class="bi bi-plus-circle pe-1"></i> Add Bottler</a>
+            <a class="btn btn-primary" href="{{ url_for('bottler.bottler_add', username=username) }}" role="button"><i class="bi bi-plus-circle pe-1"></i> Add Bottler</a>
           </div>
         {% endif %}
       </div>
@@ -34,7 +34,7 @@
             <tr>
               {% if is_my_list %}
                 <td class="me-0 pe-0">
-                  <a href="{{ links.create_link(entity_type, 'edit', entity.id) }}"><i class="bi bi-pencil"></i></a>
+                  <a href="{{ links.create_link(entity_type, 'edit', username, entity.id) }}"><i class="bi bi-pencil"></i></a>
                   {% if entity.bottles|length %}
                     <a href="#" data-bs-toggle="modal" data-bs-target="#cannotDelete"><i class="bi bi-trash"></i></a>
                   {% else %}
