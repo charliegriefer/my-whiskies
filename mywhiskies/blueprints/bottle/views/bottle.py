@@ -83,7 +83,9 @@ def bottle_edit(username: str, bottle_id: str):
         edit_bottle(form, _bottle)
         return redirect(
             url_for(
-                "bottle.detail", username=current_user.username, bottle_id=bottle_id
+                "bottle.bottle_detail",
+                username=current_user.username,
+                bottle_id=bottle_id,
             )
         )
     else:
