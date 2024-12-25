@@ -134,13 +134,12 @@
             <td class="text-end pe-4" data-order="{{bottle.abv}}">
               <span class="{{ opacity }}">
                 {% if bottle.abv %}
-                    <span style="cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="<b>{{ '%.2f' |format(bottle.abv*2) ~ 'º' }}</b>">{{ "%.2f" |format(bottle.abv) }}</span>
+                    {{ "%.2f" |format(bottle.abv) }}
                 {% else %}
                   -
                 {% endif %}
               </span>
             </td>
-
             <td>{{ bottle.date_killed }}</td>
           </tr>
         {% endfor %}
