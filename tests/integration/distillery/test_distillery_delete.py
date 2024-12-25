@@ -11,6 +11,7 @@ def test_delete_distillery_not_logged_in(
     response = client.get(
         url_for(
             "distillery.distillery_delete",
+            username=test_user_01.username,
             distillery_id=test_user_01.distilleries[0].id,
         ),
         follow_redirects=True,
@@ -20,13 +21,14 @@ def test_delete_distillery_not_logged_in(
 
 
 def test_delete_not_my_distillery(
-    logged_in_user_01: FlaskClient, test_user_02: User
+    logged_in_user_01: FlaskClient, test_user_01: User, test_user_02: User
 ) -> None:
     """Test that even if logged in, a user cannot delete another user's bottler."""
     client = logged_in_user_01
     response = client.get(
         url_for(
             "distillery.distillery_delete",
+            username=test_user_01.username,
             distillery_id=test_user_02.distilleries[0].id,
         ),
         follow_redirects=True,
@@ -44,7 +46,11 @@ def test_delete_my_distillery_has_bottles(
     # the test user should have two distilleries. One with a bottle associated, and one without.
     for distillery in test_user_01.distilleries:
         response = client.get(
-            url_for("distillery.distillery_delete", distillery_id=distillery.id),
+            url_for(
+                "distillery.distillery_delete",
+                username=test_user_01.username,
+                distillery_id=distillery.id,
+            ),
             follow_redirects=True,
         )
         if distillery.bottles:
