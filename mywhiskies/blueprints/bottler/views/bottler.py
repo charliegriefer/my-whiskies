@@ -17,7 +17,7 @@ from mywhiskies.services.bottler.bottler import (
 )
 
 
-@bottler_bp.route("/<username>/bottlers", endpoint="bottler_list")
+@bottler_bp.route("/<string:username>/bottlers", endpoint="bottler_list")
 def bottlers(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     response = list_bottlers(user, current_user, request, "bottlers")
@@ -27,8 +27,10 @@ def bottlers(username: str):
     return response
 
 
-@bottler_bp.route("/bottler/<string:bottler_id>", methods=["GET", "POST"])
-def bottler_detail(bottler_id: str):
+@bottler_bp.route(
+    "/<string:username>/bottler/<string:bottler_id>", methods=["GET", "POST"]
+)
+def bottler_detail(username: str, bottler_id: str):
     bottler = db.one_or_404(db.select(Bottler).filter_by(id=bottler_id))
     response = get_bottler_detail(bottler, request, current_user)
     utils.set_cookie_expiration(
