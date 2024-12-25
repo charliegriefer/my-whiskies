@@ -5,6 +5,7 @@ from mywhiskies.blueprints.bottler import bottler_bp
 from mywhiskies.blueprints.bottler.forms import BottlerAddForm, BottlerEditForm
 from mywhiskies.blueprints.bottler.models import Bottler
 from mywhiskies.blueprints.user.models import User
+from mywhiskies.common.decorators import validate_username
 from mywhiskies.extensions import db
 from mywhiskies.services import utils
 from mywhiskies.services.bottler.bottler import (
@@ -16,7 +17,7 @@ from mywhiskies.services.bottler.bottler import (
 )
 
 
-@bottler_bp.route("/<username>/bottlers", endpoint="bottlers_list")
+@bottler_bp.route("/<username>/bottlers", endpoint="bottler_list")
 def bottlers(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     response = list_bottlers(user, current_user, request, "bottlers")
@@ -36,9 +37,10 @@ def bottler_detail(bottler_id: str):
     return response
 
 
-@bottler_bp.route("/bottler/add", methods=["GET", "POST"])
+@bottler_bp.route("/<string:username>/bottler/add", methods=["GET", "POST"])
 @login_required
-def bottler_add():
+@validate_username
+def bottler_add(username: str):
     form = BottlerAddForm()
 
     if form.validate_on_submit():
@@ -53,17 +55,18 @@ def bottler_add():
     )
 
 
-@bottler_bp.route("/bottler/edit/<string:bottler_id>", methods=["GET", "POST"])
+@bottler_bp.route(
+    "/<string:username>/bottler/edit/<string:bottler_id>", methods=["GET", "POST"]
+)
 @login_required
-def bottler_edit(bottler_id: str):
+@validate_username
+def bottler_edit(username: str, bottler_id: str):
     bottler = db.get_or_404(Bottler, bottler_id)
     form = BottlerEditForm(obj=bottler)
 
     if form.validate_on_submit():
         edit_bottler(form, bottler)
-        return redirect(
-            url_for("bottler.bottlers_list", username=current_user.username)
-        )
+        return redirect(url_for("bottler.bottler_list", username=current_user.username))
 
     return render_template(
         "bottler/bottler_edit.html",
@@ -73,8 +76,9 @@ def bottler_edit(bottler_id: str):
     )
 
 
-@bottler_bp.route("/bottler/delete/<string:bottler_id>")
+@bottler_bp.route("/<string:username>/bottler/delete/<string:bottler_id>")
 @login_required
-def bottler_delete(bottler_id: str):
+@validate_username
+def bottler_delete(username: str, bottler_id: str):
     delete_bottler(current_user, bottler_id)
-    return redirect(url_for("bottler.bottlers_list", username=current_user.username))
+    return redirect(url_for("bottler.bottler_list", username=current_user.username))
