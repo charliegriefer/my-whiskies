@@ -7,6 +7,7 @@ from mywhiskies.blueprints.bottle import bottle_bp
 from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
 from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.user.models import User
+from mywhiskies.common.decorators import validate_username
 from mywhiskies.extensions import db
 from mywhiskies.services import utils
 from mywhiskies.services.bottle.bottle import (
@@ -20,7 +21,7 @@ from mywhiskies.services.bottle.image import get_s3_config
 
 
 @bottle_bp.route(
-    "/<username>/bottles", methods=["GET", "POST"], endpoint="list_bottles"
+    "/<string:username>/bottles", methods=["GET", "POST"], endpoint="list_bottles"
 )
 def bottles(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
@@ -31,8 +32,8 @@ def bottles(username: str):
     return response
 
 
-@bottle_bp.route("/bottle/<bottle_id>")
-def bottle_detail(bottle_id: str):
+@bottle_bp.route("/<string:username>/bottle/<bottle_id>")
+def bottle_detail(username: str, bottle_id: str):
     _bottle = db.get_or_404(Bottle, bottle_id)
     _, _, img_s3_url = get_s3_config()
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
@@ -53,13 +54,14 @@ def bottle_detail(bottle_id: str):
     )
 
 
-@bottle_bp.route("/bottle/add", methods=["GET", "POST"])
+@bottle_bp.route("/<string:username>/bottle/add", methods=["GET", "POST"])
 @login_required
-def bottle_add():
+@validate_username
+def bottle_add(username: str):
     form = prep_bottle_form(current_user, BottleAddForm())
     if form.validate_on_submit():
         add_bottle(form, current_user)
-        return redirect(url_for("core.home", username=current_user.username))
+        return redirect(url_for("bottle.list_bottles", username=current_user.username))
     return render_template(
         "bottle/bottle_add.html",
         title=f"{current_user.username}'s Whiskies: Add Bottle",
@@ -68,15 +70,24 @@ def bottle_add():
     )
 
 
-@bottle_bp.route("/bottle/edit/<string:bottle_id>", methods=["GET", "POST"])
+@bottle_bp.route(
+    "/<string:username>/bottle/edit/<string:bottle_id>", methods=["GET", "POST"]
+)
 @login_required
-def bottle_edit(bottle_id: str):
+@validate_username
+def bottle_edit(username: str, bottle_id: str):
     _bottle = db.get_or_404(Bottle, bottle_id)
     _, _, img_s3_url = get_s3_config()
     form = prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
     if form.validate_on_submit():
         edit_bottle(form, _bottle)
-        return redirect(url_for("core.home", username=current_user.username))
+        return redirect(
+            url_for(
+                "bottle.bottle_detail",
+                username=current_user.username,
+                bottle_id=bottle_id,
+            )
+        )
     else:
         form.type.data = _bottle.type.name
         form.distilleries.data = [d.id for d in _bottle.distilleries]
@@ -91,8 +102,9 @@ def bottle_edit(bottle_id: str):
     )
 
 
-@bottle_bp.route("/bottle/delete/<string:bottle_id>")
+@bottle_bp.route("/<string:username>/bottle/delete/<string:bottle_id>")
 @login_required
-def bottle_delete(bottle_id: str):
+@validate_username
+def bottle_delete(username: str, bottle_id: str):
     delete_bottle(current_user, bottle_id)
     return redirect(url_for("bottle.list_bottles", username=current_user.username))

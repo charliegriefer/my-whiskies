@@ -7,7 +7,11 @@ from mywhiskies.blueprints.user.models import User
 def test_delete_bottler_not_logged_in(client: FlaskClient, test_user_01: User) -> None:
     """Test that a user must be logged in to delete a bottler."""
     response = client.get(
-        url_for("bottler.bottler_delete", bottler_id=test_user_01.bottlers[0].id),
+        url_for(
+            "bottler.bottler_delete",
+            username="skibidi",
+            bottler_id=test_user_01.bottlers[0].id,
+        ),
         follow_redirects=True,
     )
     assert response.status_code == 200
@@ -20,11 +24,14 @@ def test_delete_not_my_bottler(
     """Test that even if logged in, a user cannot delete another user's bottler."""
     client = logged_in_user_01
     response = client.get(
-        url_for("bottler.bottler_delete", bottler_id=test_user_02.bottlers[0].id),
+        url_for(
+            "bottler.bottler_delete",
+            username=test_user_02.username,
+            bottler_id=test_user_02.bottlers[0].id,
+        ),
         follow_redirects=True,
     )
-    assert response.status_code == 200
-    assert "There was an issue deleting this bottler" in response.get_data(as_text=True)
+    assert response.status_code == 403
 
 
 def test_delete_my_bottler_has_bottles(
@@ -34,7 +41,11 @@ def test_delete_my_bottler_has_bottles(
     # the test user should have two bottlers. One with a bottle associated, and one without.
     for bottler in test_user_01.bottlers:
         response = client.get(
-            url_for("bottler.bottler_delete", bottler_id=bottler.id),
+            url_for(
+                "bottler.bottler_delete",
+                username=test_user_01.username,
+                bottler_id=bottler.id,
+            ),
             follow_redirects=True,
         )
         if bottler.bottles:

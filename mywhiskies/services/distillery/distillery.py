@@ -19,14 +19,14 @@ def add_distillery(form: DistilleryForm, user: User) -> None:
     form.populate_obj(distillery_in)
     db.session.add(distillery_in)
     db.session.commit()
-    flash(f'"{distillery_in.name}" has been successfully added.', "success")
+    flash(f'Distillery "{distillery_in.name}" has been successfully added.', "success")
 
 
 def edit_distillery(form: DistilleryEditForm, distillery: Distillery) -> None:
     form.populate_obj(distillery)
     db.session.add(distillery)
     db.session.commit()
-    flash(f'"{distillery.name}" has been successfully updated.', "success")
+    flash(f'Distillery "{distillery.name}" has been successfully updated.', "success")
 
 
 def delete_distillery(distillery_id: str, current_user: User) -> None:
@@ -45,7 +45,9 @@ def delete_distillery(distillery_id: str, current_user: User) -> None:
     else:
         db.session.delete(distillery)
         db.session.commit()
-        flash(f'"{distillery.name}" has been successfully deleted.', "success")
+        flash(
+            f'Distillery "{distillery.name}" has been successfully deleted.', "success"
+        )
 
 
 def get_distillery_detail(

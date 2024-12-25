@@ -10,7 +10,11 @@ from mywhiskies.extensions import db
 
 def test_edit_bottler_requires_login(client: FlaskClient, test_user_01: User) -> None:
     response = client.get(
-        url_for("bottler.bottler_edit", bottler_id=test_user_01.bottlers[0].id),
+        url_for(
+            "bottler.bottler_edit",
+            username=test_user_01.username,
+            bottler_id=test_user_01.bottlers[0].id,
+        ),
         follow_redirects=False,
     )
     assert response.status_code == 302
@@ -34,14 +38,18 @@ def test_valid_bottler_edit_form(
     }
 
     response = client.post(
-        url_for("bottler.bottler_edit", bottler_id=test_user_01.bottlers[0].id),
+        url_for(
+            "bottler.bottler_edit",
+            username=test_user_01.username,
+            bottler_id=test_user_01.bottlers[0].id,
+        ),
         data=formdata,
         follow_redirects=True,
     )
 
     assert response.status_code == 200
     assert (
-        url_for("bottler.bottlers_list", username=test_user_01.username)
+        url_for("bottler.bottler_list", username=test_user_01.username)
         in response.request.url
     )
 

@@ -21,10 +21,10 @@
             <div>
               {% if is_my_home %}
                 {% if user.distilleries|length == 0 %}
-                  <i class="bi bi-exclamation-circle pe-1" style="color:red;"></i> You won't be able to add any new bottles until you <a href="{{ url_for('distillery.distillery_add') }}">add at least one distillery</a>.
+                  <i class="bi bi-exclamation-circle pe-1" style="color:red;"></i> You won't be able to add any new bottles until you <a href="{{ url_for('distillery.distillery_add', username=username) }}">add at least one distillery</a>.
                   <br />
                 {% else %}
-                  <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('bottle.bottle_add') }}">Add a bottle</a>
+                  <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('bottle.bottle_add', username=username) }}">Add a bottle</a>
                   <br />
                 {% endif %}
               {% endif %}
@@ -44,11 +44,11 @@
               <h3>Bottlers</h3>
               <div>
                 {% if is_my_home %}
-                  <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('bottler.bottler_add') }}">Add a bottler</a>
+                  <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('bottler.bottler_add', username=username) }}">Add a bottler</a>
                   <br />
                 {% endif %}
                 {% if user.bottlers|length > 0 %}
-                  <i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('bottler.bottlers_list', username=username) }}">List bottlers</a> ({{ user.bottlers|length }})
+                  <i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('bottler.bottler_list', username=username) }}">List bottlers</a> ({{ user.bottlers|length }})
                   <br />
                 {% endif %}
               </div>
@@ -62,15 +62,15 @@
               <h3>Distilleries</h3>
               <div>
                 {% if is_my_home and user.distilleries|length == 0 %}
-                  <i class="bi bi-info-circle pe-1" style="color:blue;"></i> You haven't entered any distilleries. If you'd like us to add some for you, <a href="{{ url_for('distillery.bulk_distillery_add') }}">click here</a>.
+                  <i class="bi bi-info-circle pe-1" style="color:blue;"></i> You haven't entered any distilleries. If you'd like us to add some for you, <a href="{{ url_for('distillery.bulk_distillery_add', username=username) }}">click here</a>.
                   <br />
                 {% endif %}
                 {% if is_my_home %}
-                  <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('distillery.distillery_add') }}">Add a distillery</a>
+                  <i class="bi bi-plus-circle pe-1"></i> <a href="{{ url_for('distillery.distillery_add', username=username) }}">Add a distillery</a>
                   <br />
                 {% endif %}
                 {% if user.distilleries|length > 0 %}
-                  <i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('distillery.distilleries_list', username=username) }}">List distilleries</a> ({{ user.distilleries|length }})
+                  <i class="bi bi-list-ul pe-1"></i> <a href="{{ url_for('distillery.distillery_list', username=username) }}">List distilleries</a> ({{ user.distilleries|length }})
                   <br />
                 {% endif %}
               </div>

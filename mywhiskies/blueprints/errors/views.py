@@ -6,6 +6,13 @@ from mywhiskies.services.email.email import send_email
 errors = Blueprint("errors", __name__, template_folder="templates")
 
 
+@errors.app_errorhandler(403)
+def forbidden_error(error):
+    msg = f"{error} | {request.path}"
+    current_app.logger.debug(msg)
+    return render_template("errors/403.html"), 403
+
+
 @errors.app_errorhandler(404)
 def not_found_error(error):
     msg = f"{error} | {request.path}"
