@@ -46,6 +46,7 @@
               {% if is_my_list %}<a class="dropdown-item" href="{{ url_for('bottler.bottler_add', username=username) }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottler</a>{% endif %}
               <a class="dropdown-item" href="{{ url_for('bottler.bottler_list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Bottlers</a>
             </div>
+          </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Distilleries
@@ -64,15 +65,22 @@
           {% endif %}
         {% endif %}
       </ul>
-      <span class="navbar-text">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <span class="navbar-text me-5">
+        <ul class="navbar-nav mb-2 mb-lg-0">
           {% if current_user.is_anonymous %}
             <li class="nav-item">
               <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white" role="button" id="nav_login">Log In</a>
             </li>
           {% else %}
-            <li class="nav-item">
-              <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-secondary" role="button" id="nav_logout">Log Out {{ current_user.username }}</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="bi bi-check-square"></i> Charlie
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{{ url_for('user.account') }}"><i class="bi bi-gear pe-1"></i> My Account</a></li>
+                <li><hr class="dropdown-divider mt-2"></li>
+                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}"><i class="bi bi-x-square pe-1"></i> Log Out {{ current_user.username }}</a></li>
+              </ul>
             </li>
           {% endif %}
         </ul>
