@@ -11,6 +11,7 @@ from mywhiskies.blueprints.bottler import bottler_bp
 from mywhiskies.blueprints.core import core_bp
 from mywhiskies.blueprints.distillery import distillery_bp
 from mywhiskies.blueprints.errors.views import errors
+from mywhiskies.blueprints.user import user_bp
 from mywhiskies.extensions import register_extensions
 
 load_dotenv()
@@ -39,6 +40,7 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
     app.register_blueprint(bottler_bp)
     app.register_blueprint(distillery_bp)
     app.register_blueprint(errors)
+    app.register_blueprint(user_bp)
     register_extensions(app)
 
     return app
