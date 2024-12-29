@@ -18,6 +18,7 @@ if TYPE_CHECKING:  # avoid circular imports
 
 
 class BottleTypes(enum.Enum):
+    AMERICAN_SINGLE_MALT = "American Single Malt"
     AMERICAN_WHISKEY = "American Whiskey"
     BOURBON = "Bourbon"
     CANADIAN_WHISKEY = "Canadian Whiskey"
