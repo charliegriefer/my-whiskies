@@ -45,7 +45,7 @@ def test_add_distillery(logged_in_user_01: FlaskClient, test_user_01: User) -> N
 
     # Check that the user is redirected to the home page
     assert response.status_code == 200
-    assert url_for("core.home", username=test_user_01.username) in response.request.url
+    assert url_for("core.main") in response.request.url
 
     # Check that the flash message is in the response data
     distillery_name = new_distillery_formdata["name"]

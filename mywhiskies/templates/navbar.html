@@ -14,21 +14,22 @@
         {% set username = distillery.user.username %}
       {% endif %}
     {% endif %}
-    {% if request.endpoint == "core.index" %}
+    {% if request.endpoint == "core.main" %}
       <div class="navbar-brand">My Whiskies Online</div>
     {% else %}
-        <a class="navbar-brand" href="{{ url_for('core.index') }}">My Whiskies Online</a>
+        <a class="navbar-brand" href="{{ url_for('core.main') }}">My Whiskies Online</a>
     {% endif %}
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        {% if request.endpoint != "core.index" %}
-          <li class="nav-item">
-            <a class="nav-link" id="nav_home" href="{{ url_for('core.home', username=username) }}">Home</a>
-          </li>
+
+
           {% if current_user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" id="nav_home" href="{{ url_for('core.main') }}">Home</a>
+          </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Bottles
@@ -56,11 +57,11 @@
               <a class="dropdown-item" href="{{ url_for('distillery.distillery_list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Distilleries</a>
             </div>
           </li>
-          {% endif %}
+
         {% else %}
           {% if current_user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" id="nav_home" href="{{ url_for('core.home', username=username) }}">Home</a>
+              <a class="nav-link" id="nav_home" href="{{ url_for('core.main') }}">Home</a>
             </li>
           {% endif %}
         {% endif %}
@@ -68,9 +69,11 @@
       <span class="navbar-text me-5">
         <ul class="navbar-nav mb-2 mb-lg-0">
           {% if current_user.is_anonymous %}
-            <li class="nav-item">
-              <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white" role="button" id="nav_login">Log In</a>
-            </li>
+            {% if request.endpoint != "auth.login" %}
+              <li class="nav-item">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white" role="button" id="nav_login">Log In</a>
+              </li>
+            {% endif %}
           {% else %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

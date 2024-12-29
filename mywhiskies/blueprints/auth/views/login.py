@@ -18,7 +18,7 @@ from mywhiskies.services.auth.login import (
 @auth.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("core.home", username=current_user.username))
+        return redirect(url_for("core.main"))
 
     form = LoginForm()
 
@@ -54,4 +54,4 @@ def login():
 @auth.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for("core.index"))
+    return redirect(url_for("core.main"))

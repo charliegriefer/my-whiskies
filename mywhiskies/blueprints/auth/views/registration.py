@@ -20,7 +20,7 @@ from mywhiskies.services.auth.registration import (
 @auth.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for("core.home", username=current_user.username))
+        return redirect(url_for("core.main"))
 
     form = initialize_registration_form(RegistrationForm())
 
@@ -49,7 +49,7 @@ def register():
 @auth.route("/confirm_register/<token>", methods=["GET", "POST"])
 def confirm_register(token: str):
     if current_user.is_authenticated:
-        return redirect(url_for("core.home", username=current_user.username))
+        return redirect(url_for("core.main"))
 
     user = verify_confirmation_token(token)
     if not user:
@@ -64,7 +64,7 @@ def confirm_register(token: str):
 @auth.route("/resend_register", methods=["GET", "POST"])
 def resend_register():
     if current_user.is_authenticated:
-        return redirect(url_for("core.home", username=current_user.username))
+        return redirect(url_for("core.main"))
 
     form = ResendRegEmailForm()
     if form.validate_on_submit():

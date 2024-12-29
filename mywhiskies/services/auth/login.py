@@ -41,5 +41,5 @@ def log_in_user(user, remember_me):
 
 def determine_next_page(user, next_page_param):
     if not next_page_param or url_parse(next_page_param).netloc != "":
-        return url_for("core.home", username=user.username)
+        return url_for("core.main")
     return next_page_param
