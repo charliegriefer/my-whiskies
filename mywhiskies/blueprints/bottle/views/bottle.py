@@ -54,10 +54,9 @@ def bottle_detail(username: str, bottle_id: str):
     )
 
 
-@bottle_bp.route("/<string:username>/bottle/add", methods=["GET", "POST"])
+@bottle_bp.route("/bottle/add", methods=["GET", "POST"])
 @login_required
-@validate_username
-def bottle_add(username: str):
+def bottle_add():
     if not current_user.distilleries:
         return redirect(
             url_for("distillery.no_distilleries", username=current_user.username)
