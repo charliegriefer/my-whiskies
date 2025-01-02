@@ -8,8 +8,16 @@
         </div>
 
         {% if is_my_list %}
+          {{ entity_type }}
+          {% if entity_type == "distilleries" %}
+            {% set target = url_for("distillery.distillery_add", username=user.username )%}
+            {% set btn_text = "Add Distillery" %}
+          {% elif entity_type == "bottlers" %}
+            {% set target = url_for("bottler.bottler_add", username=user.username )%}
+            {% set btn_text = "Add Bottler" %}
+          {% endif %}
           <div class="col d-flex align-items-end justify-content-end pb-2">
-            <a class="btn btn-primary" href="{{ url_for('bottler.bottler_add', username=user.username) }}" role="button"><i class="bi bi-plus-circle pe-1"></i> Add Bottler</a>
+            <a class="btn btn-primary" href="{{ target }}" role="button"><i class="bi bi-plus-circle pe-1"></i> {{ btn_text }}</a>
           </div>
         {% endif %}
       </div>
