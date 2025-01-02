@@ -1,13 +1,8 @@
 <div class="container">
-  <footer class="d-flex flex-wrap justify-content-between align-items-center my-4 border-top">
+  <footer class="d-flex flex-wrap justify-content-between align-items-center my-4 border-top text-muted" style="font-size:smaller;">
     <div class="hstack gap-3">
-      <div class="text-muted">&copy; {{ current_date.strftime("%Y") }} My Whiskies Online</div>
-      {% if current_user.is_authenticated %}<div class="text-muted"><a href="{{ url_for('core.main') }}" class="nav-link px-2 text-muted">Home</a></div>{% endif %}
+      <div>&copy; {{ current_date.strftime("%Y") }} My Whiskies Online &amp; Good Grief! LLC</div>
     </div>
-
-{#    <a href="{{ url_for("core.main") }}" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">#}
-{#      <img src="{{ url_for('static', filename='cheers.png') }}" style="height:64px;" />#}
-{#    </a>#}
 
     <ul class="nav col-md-4 justify-content-end">
       <li class="nav-item"><a href="{{ url_for('core.terms') }}" class="nav-link px-2 text-muted">Terms &amp; Conditions</a></li>
