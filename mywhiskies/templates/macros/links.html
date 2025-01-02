@@ -1,8 +1,0 @@
-{% macro create_link(entity_type, action, username, id) -%}
-  {%- if entity_type == "bottlers" %}
-    {%- set entity = "bottler" %}
-  {%- elif entity_type == "distilleries" %}
-    {%- set entity = "distillery" %}
-  {%- endif %}
-  {{- url_for(entity ~ "." ~ entity ~ "_" ~ action, **{"username": username, entity ~ "_id": id}) -}}
-{%- endmacro %}
