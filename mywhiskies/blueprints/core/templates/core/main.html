@@ -55,9 +55,11 @@
                 </ul>
               </li>
             </ul>
+            {% if not current_user.is_authenticated %}
             <p class="pt-3 ms-2">
               Not a member yet? <a href="{{ url_for('auth.register') }}" class="btn btn-primary ms-1 text-decoration-none" role="button">Join Us!</a>
             </p>
+            {% endif %}
           </div>
         </div>
       </div>
