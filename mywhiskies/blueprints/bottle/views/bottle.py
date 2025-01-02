@@ -73,12 +73,9 @@ def bottle_add():
     )
 
 
-@bottle_bp.route(
-    "/<string:username>/bottle/edit/<string:bottle_id>", methods=["GET", "POST"]
-)
+@bottle_bp.route("/bottle/edit/<string:bottle_id>", methods=["GET", "POST"])
 @login_required
-@validate_username
-def bottle_edit(username: str, bottle_id: str):
+def bottle_edit(bottle_id: str):
     _bottle = db.get_or_404(Bottle, bottle_id)
     _, _, img_s3_url = get_s3_config()
     form = prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
