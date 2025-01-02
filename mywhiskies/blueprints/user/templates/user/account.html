@@ -1,0 +1,53 @@
+{% extends "_base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container ps-0">
+      <div class="row mt-4">
+        <div class="col">
+          <h3 class="mb-0" style="color:#696969;">{{ current_user.username }}'s Whiskies:</h3>
+          <h1>My Account</h1>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="container">
+        <div class="row">
+          <div class="col-md-1 g-0 text-nowrap me-4">Username:</div>
+          <div class="col-md">{{ current_user.username }}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-1 g-0 text-nowrap me-4">E-Mail:</div>
+          <div class="col-md">{{ current_user.email }}</div>
+        </div>
+        
+        <div class="row">&nbsp;</div>
+
+        <div class="row">
+          <div class="col-md-1 g-0 text-nowrap me-4">Date Registered:</div>
+          <div class="col-md">{{ current_user.date_registered.strftime("%Y-%m-%d") }}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-1 g-0 text-nowrap me-4">E-Mail Confirmed:</div>
+          <div class="col-md">{{ current_user.email_confirm_date.strftime("%Y-%m-%d") }}</div>
+        </div>
+
+        <div class="row">&nbsp;</div>
+
+        <div class="row">
+          <div class="col-md-1 g-0 text-nowrap me-4">Bottles:</div>
+          <div class="col-md">{{ current_user.bottles|length }}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-1 g-0 text-nowrap me-4">Bottlers:</div>
+          <div class="col-md">{{ current_user.bottlers|length }}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-1 g-0 text-nowrap me-4">Distilleries:</div>
+          <div class="col-md">{{ current_user.distilleries|length }}</div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}

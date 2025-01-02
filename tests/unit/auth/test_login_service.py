@@ -38,8 +38,8 @@ def test_log_in_user(mock_login_user: MagicMock, test_user_01: User) -> None:
 
 def test_determine_next_page(test_user_01: User) -> None:
     next_page = determine_next_page(test_user_01, None)
-    assert next_page == url_for("core.home", username=test_user_01.username)
+    assert next_page == url_for("core.main")
     next_page = determine_next_page(test_user_01, "http://example.com/next")
-    assert next_page == url_for("core.home", username=test_user_01.username)
+    assert next_page == url_for("core.main")
     next_page = determine_next_page(test_user_01, "/next")
     assert next_page == "/next"

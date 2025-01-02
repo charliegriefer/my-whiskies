@@ -21,6 +21,17 @@ from mywhiskies.services.distillery.distillery import (
 )
 
 
+@distillery_bp.route("/<string:username>/no_distilleries")
+@login_required
+@validate_username
+def no_distilleries(username: str):
+    return render_template(
+        "distillery/no_distilleries.html",
+        title=f"{current_user.username}'s Whiskies: Add Distilleries",
+        user=current_user,
+    )
+
+
 @distillery_bp.route("/<string:username>/bulk_distillery_add")
 @login_required
 @validate_username
@@ -40,10 +51,10 @@ def bulk_distillery_add(username: str):
                 description: Distilleries are added, user is redirected to home page.
     """
     if len(current_user.distilleries) > 0:
-        return redirect(url_for("core.home", username=current_user.username))
+        return redirect(url_for("core.main"))
 
     if not request.referrer:
-        return redirect(url_for("core.home", username=current_user.username))
+        return redirect(url_for("core.main"))
 
     json_file = os.path.join(
         current_app.static_folder, "data", "base_distilleries.json"
@@ -59,7 +70,7 @@ def bulk_distillery_add(username: str):
         db.session.commit()
 
     flash(f"{len(base_distilleries)} distilleries have been added to your account.")
-    return redirect(url_for("core.home", username=current_user.username))
+    return redirect(url_for("core.main", username=current_user.username))
 
 
 @distillery_bp.route("/<username>/distilleries", endpoint="distillery_list")

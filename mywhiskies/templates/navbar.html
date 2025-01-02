@@ -14,27 +14,26 @@
         {% set username = distillery.user.username %}
       {% endif %}
     {% endif %}
-    {% if request.endpoint == "core.index" %}
+    {% if request.endpoint == "core.main" %}
       <div class="navbar-brand">My Whiskies Online</div>
     {% else %}
-        <a class="navbar-brand" href="{{ url_for('core.index') }}">My Whiskies Online</a>
+        <a class="navbar-brand" href="{{ url_for('core.main') }}">My Whiskies Online</a>
     {% endif %}
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        {% if request.endpoint != "core.index" %}
+        {% if current_user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" id="nav_home" href="{{ url_for('core.home', username=username) }}">Home</a>
+            <a class="nav-link" id="nav_home" href="{{ url_for('core.main') }}">Home</a>
           </li>
-          {% if current_user.is_authenticated %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Bottles
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              {% if is_my_list %}<a class="dropdown-item" href="{{ url_for('bottle.bottle_add', username=username) }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottle</a>{% endif %}
+              <a class="dropdown-item" href="{{ url_for('bottle.bottle_add', username=username) }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottle</a>
               <a class="dropdown-item" href="{{ url_for('bottle.list_bottles', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Bottles</a>
             </div>
           </li>
@@ -43,36 +42,39 @@
               Bottlers
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              {% if is_my_list %}<a class="dropdown-item" href="{{ url_for('bottler.bottler_add', username=username) }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottler</a>{% endif %}
+              <a class="dropdown-item" href="{{ url_for('bottler.bottler_add', username=username) }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottler</a>
               <a class="dropdown-item" href="{{ url_for('bottler.bottler_list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Bottlers</a>
             </div>
+          </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Distilleries
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              {% if is_my_list %}<a class="dropdown-item" href="{{ url_for('distillery.distillery_add', username=username) }}"><i class="bi bi-plus-circle pe-1"></i> Add Distillery</a>{% endif %}
+              <a class="dropdown-item" href="{{ url_for('distillery.distillery_add', username=username) }}"><i class="bi bi-plus-circle pe-1"></i> Add Distillery</a>
               <a class="dropdown-item" href="{{ url_for('distillery.distillery_list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Distilleries</a>
             </div>
           </li>
-          {% endif %}
-        {% else %}
-          {% if current_user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" id="nav_home" href="{{ url_for('core.home', username=username) }}">Home</a>
-            </li>
-          {% endif %}
         {% endif %}
       </ul>
-      <span class="navbar-text">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <span class="navbar-text me-5">
+        <ul class="navbar-nav mb-2 mb-lg-0">
           {% if current_user.is_anonymous %}
-            <li class="nav-item">
-              <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white" role="button" id="nav_login">Log In</a>
-            </li>
+            {% if request.endpoint != "auth.login" %}
+              <li class="nav-item">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white" role="button" id="nav_login">Log In</a>
+              </li>
+            {% endif %}
           {% else %}
-            <li class="nav-item">
-              <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-secondary" role="button" id="nav_logout">Log Out {{ current_user.username }}</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="bi bi-check-square"></i> Charlie
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{{ url_for('user.account') }}"><i class="bi bi-gear pe-1"></i> My Account</a></li>
+                <li><hr class="dropdown-divider mt-2"></li>
+                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}"><i class="bi bi-x-square pe-1"></i> Log Out {{ current_user.username }}</a></li>
+              </ul>
             </li>
           {% endif %}
         </ul>
