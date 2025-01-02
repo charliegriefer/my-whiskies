@@ -1,0 +1,28 @@
+{% extends "_base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container ps-0">
+
+      <div class="row mt-4">
+        <div class="col">
+          <h3 class="mb-0" style="color:#696969;">{{ user.username }}'s Whiskies: Distilleries</h3>
+          <h1>Add Distilleries</h1>
+        </div>
+      </div>
+
+      <hr />
+      <div class="mb-3">
+        You can't add a bottle until you add one or more distilleries.
+      </div>
+      <div>
+        There are two options:
+        <ul>
+            <li class="mt-2">You can <a href="{{ url_for('distillery.bulk_distillery_add', username=user.username) }}">bulk add</a> a pre-defined list of distilleries.</li>
+            <li>You can <a href="{{ url_for('distillery.distillery_add', username=user.username) }}">add your own distilleries</a> one at a time.</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+{% endblock %}

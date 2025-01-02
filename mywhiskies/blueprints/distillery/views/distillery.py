@@ -21,6 +21,17 @@ from mywhiskies.services.distillery.distillery import (
 )
 
 
+@distillery_bp.route("/<string:username>/no_distilleries")
+@login_required
+@validate_username
+def no_distilleries(username: str):
+    return render_template(
+        "distillery/no_distilleries.html",
+        title=f"{current_user.username}'s Whiskies: Add Distilleries",
+        user=current_user,
+    )
+
+
 @distillery_bp.route("/<string:username>/bulk_distillery_add")
 @login_required
 @validate_username

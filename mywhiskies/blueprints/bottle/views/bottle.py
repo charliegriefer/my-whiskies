@@ -58,6 +58,10 @@ def bottle_detail(username: str, bottle_id: str):
 @login_required
 @validate_username
 def bottle_add(username: str):
+    if not current_user.distilleries:
+        return redirect(
+            url_for("distillery.no_distilleries", username=current_user.username)
+        )
     form = prep_bottle_form(current_user, BottleAddForm())
     if form.validate_on_submit():
         add_bottle(form, current_user)
