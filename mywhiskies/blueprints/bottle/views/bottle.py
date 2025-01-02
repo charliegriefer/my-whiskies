@@ -7,7 +7,6 @@ from mywhiskies.blueprints.bottle import bottle_bp
 from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
 from mywhiskies.blueprints.bottle.models import Bottle
 from mywhiskies.blueprints.user.models import User
-from mywhiskies.common.decorators import validate_username
 from mywhiskies.extensions import db
 from mywhiskies.services import utils
 from mywhiskies.services.bottle.bottle import (
@@ -102,9 +101,8 @@ def bottle_edit(bottle_id: str):
     )
 
 
-@bottle_bp.route("/<string:username>/bottle/delete/<string:bottle_id>")
+@bottle_bp.route("/bottle/delete/<string:bottle_id>")
 @login_required
-@validate_username
-def bottle_delete(username: str, bottle_id: str):
+def bottle_delete(bottle_id: str):
     delete_bottle(current_user, bottle_id)
     return redirect(url_for("bottle.list_bottles", username=current_user.username))

@@ -87,7 +87,7 @@
             {% if is_my_list %}
               <td class="me-0 pe-0">
                 <a href="{{ url_for('bottle.bottle_edit', bottle_id=bottle.id) }}"><i class="bi bi-pencil"></i></a>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for('bottle.bottle_delete', username=bottle.user.username, bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for('bottle.bottle_delete', bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
               </td>
               {% if show_privates %}
               <td>
