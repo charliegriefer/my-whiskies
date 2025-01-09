@@ -5,7 +5,6 @@ from mywhiskies.blueprints.bottler import bottler_bp
 from mywhiskies.blueprints.bottler.forms import BottlerAddForm, BottlerEditForm
 from mywhiskies.blueprints.bottler.models import Bottler
 from mywhiskies.blueprints.user.models import User
-from mywhiskies.common.decorators import validate_username
 from mywhiskies.extensions import db
 from mywhiskies.services import utils
 from mywhiskies.services.bottler.bottler import (
@@ -27,10 +26,8 @@ def bottlers(username: str):
     return response
 
 
-@bottler_bp.route(
-    "/<string:username>/bottler/<string:bottler_id>", methods=["GET", "POST"]
-)
-def bottler_detail(username: str, bottler_id: str):
+@bottler_bp.route("/bottler/<string:bottler_id>", methods=["GET", "POST"])
+def bottler_detail(bottler_id: str):
     bottler = db.one_or_404(db.select(Bottler).filter_by(id=bottler_id))
     response = get_bottler_detail(bottler, request, current_user)
     utils.set_cookie_expiration(
@@ -39,10 +36,9 @@ def bottler_detail(username: str, bottler_id: str):
     return response
 
 
-@bottler_bp.route("/<string:username>/bottler/add", methods=["GET", "POST"])
+@bottler_bp.route("/bottler/add", methods=["GET", "POST"])
 @login_required
-@validate_username
-def bottler_add(username: str):
+def bottler_add():
     form = BottlerAddForm()
 
     if form.validate_on_submit():
@@ -57,12 +53,9 @@ def bottler_add(username: str):
     )
 
 
-@bottler_bp.route(
-    "/<string:username>/bottler/edit/<string:bottler_id>", methods=["GET", "POST"]
-)
+@bottler_bp.route("/bottler/edit/<string:bottler_id>", methods=["GET", "POST"])
 @login_required
-@validate_username
-def bottler_edit(username: str, bottler_id: str):
+def bottler_edit(bottler_id: str):
     bottler = db.get_or_404(Bottler, bottler_id)
     form = BottlerEditForm(obj=bottler)
 
@@ -78,9 +71,8 @@ def bottler_edit(username: str, bottler_id: str):
     )
 
 
-@bottler_bp.route("/<string:username>/bottler/delete/<string:bottler_id>")
+@bottler_bp.route("/bottler/delete/<string:bottler_id>")
 @login_required
-@validate_username
-def bottler_delete(username: str, bottler_id: str):
+def bottler_delete(bottler_id: str):
     delete_bottler(current_user, bottler_id)
     return redirect(url_for("bottler.bottler_list", username=current_user.username))

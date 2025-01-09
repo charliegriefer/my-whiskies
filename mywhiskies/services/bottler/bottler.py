@@ -29,12 +29,11 @@ def edit_bottler(form: BottlerEditForm, bottler: Bottler) -> None:
 
 
 def delete_bottler(user: User, bottler_id: str) -> None:
-    user_bottlers = [b.id for b in user.bottlers]
-    if bottler_id not in user_bottlers:
+    bottler = db.get_or_404(Bottler, bottler_id)
+    if bottler.user.id != user.id:
         flash("There was an issue deleting this bottler.", "danger")
         return
 
-    bottler = db.get_or_404(Bottler, bottler_id)
     if bottler.bottles:
         flash(
             f'Cannot delete "{bottler.name}", it has bottles associated.',

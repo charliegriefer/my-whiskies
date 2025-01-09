@@ -30,12 +30,11 @@ def edit_distillery(form: DistilleryEditForm, distillery: Distillery) -> None:
 
 
 def delete_distillery(distillery_id: str, current_user: User) -> None:
-    user_distilleries = [d.id for d in current_user.distilleries]
-    if distillery_id not in user_distilleries:
+    distillery = db.get_or_404(Distillery, distillery_id)
+
+    if distillery.user.id != current_user.id:
         flash("There was an issue deleting this distillery.", "danger")
         return
-
-    distillery = db.get_or_404(Distillery, distillery_id)
 
     if distillery.bottles:
         flash(

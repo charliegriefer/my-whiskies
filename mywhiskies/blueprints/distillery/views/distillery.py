@@ -9,7 +9,6 @@ from mywhiskies.blueprints.distillery import distillery_bp
 from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryForm
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
-from mywhiskies.common.decorators import validate_username
 from mywhiskies.extensions import db
 from mywhiskies.services import utils
 from mywhiskies.services.distillery.distillery import (
@@ -21,10 +20,9 @@ from mywhiskies.services.distillery.distillery import (
 )
 
 
-@distillery_bp.route("/<string:username>/no_distilleries")
+@distillery_bp.route("/no_distilleries")
 @login_required
-@validate_username
-def no_distilleries(username: str):
+def no_distilleries():
     return render_template(
         "distillery/no_distilleries.html",
         title=f"{current_user.username}'s Whiskies: Add Distilleries",
@@ -32,10 +30,9 @@ def no_distilleries(username: str):
     )
 
 
-@distillery_bp.route("/<string:username>/bulk_distillery_add")
+@distillery_bp.route("/bulk_distillery_add")
 @login_required
-@validate_username
-def bulk_distillery_add(username: str):
+def bulk_distillery_add():
     """
     Bulk add distilleries.
     ---
@@ -83,10 +80,8 @@ def distilleries(username: str):
     return response
 
 
-@distillery_bp.route(
-    "/<string:username>/distillery/<string:distillery_id>", methods=["GET", "POST"]
-)
-def distillery_detail(username: str, distillery_id: str):
+@distillery_bp.route("/distillery/<string:distillery_id>", methods=["GET", "POST"])
+def distillery_detail(distillery_id: str):
     distillery = db.one_or_404(db.select(Distillery).filter_by(id=distillery_id))
     response = get_distillery_detail(distillery, request, current_user)
     utils.set_cookie_expiration(
@@ -95,10 +90,9 @@ def distillery_detail(username: str, distillery_id: str):
     return response
 
 
-@distillery_bp.route("/<string:username>/distillery_add", methods=["GET", "POST"])
+@distillery_bp.route("/distillery_add", methods=["GET", "POST"])
 @login_required
-@validate_username
-def distillery_add(username: str):
+def distillery_add():
     form = DistilleryForm()
 
     if form.validate_on_submit():
@@ -115,12 +109,9 @@ def distillery_add(username: str):
     )
 
 
-@distillery_bp.route(
-    "/<string:username>/distillery_edit/<string:distillery_id>", methods=["GET", "POST"]
-)
+@distillery_bp.route("/distillery_edit/<string:distillery_id>", methods=["GET", "POST"])
 @login_required
-@validate_username
-def distillery_edit(username: str, distillery_id: str):
+def distillery_edit(distillery_id: str):
     distillery = db.get_or_404(Distillery, distillery_id)
     form = DistilleryEditForm(obj=distillery if request.method != "POST" else None)
 
@@ -138,10 +129,9 @@ def distillery_edit(username: str, distillery_id: str):
     )
 
 
-@distillery_bp.route("/<string:username>/distillery_delete/<string:distillery_id>")
+@distillery_bp.route("/distillery_delete/<string:distillery_id>")
 @login_required
-@validate_username
-def distillery_delete(username: str, distillery_id: str):
+def distillery_delete(distillery_id: str):
     delete_distillery(distillery_id, current_user)
     return redirect(
         url_for("distillery.distillery_list", username=current_user.username)

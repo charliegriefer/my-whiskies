@@ -9,10 +9,10 @@
 
         {% if is_my_list %}
           {% if entity_type == "distilleries" %}
-            {% set target = url_for("distillery.distillery_add", username=user.username )%}
+            {% set target = url_for("distillery.distillery_add")%}
             {% set btn_text = "Add Distillery" %}
           {% elif entity_type == "bottlers" %}
-            {% set target = url_for("bottler.bottler_add", username=user.username )%}
+            {% set target = url_for("bottler.bottler_add")%}
             {% set btn_text = "Add Bottler" %}
           {% endif %}
           <div class="col d-flex align-items-end justify-content-end pb-2">
@@ -42,7 +42,7 @@
               {% if is_my_list %}
                 <td class="me-0 pe-0">
                   {{ username }}
-                  <a href="{{ entity_utils.create_link(entity_type, 'edit', user.username, entity.id) }}"><i class="bi bi-pencil"></i></a>
+                  <a href="{{ entity_utils.create_link(entity_type, 'edit', entity.id) }}"><i class="bi bi-pencil"></i></a>
                   {% if entity.bottles|length %}
                     <a href="#" data-bs-toggle="modal" data-bs-target="#cannotDelete"><i class="bi bi-trash"></i></a>
                   {% else %}
@@ -50,7 +50,7 @@
                   {% endif %}
                 </td>
               {% endif %}
-              <td><a href="{{ entity_utils.create_link(entity_type, 'detail', user.username, entity.id) }}">{{ entity.name }}</a></td>
+              <td><a href="{{ entity_utils.create_link(entity_type, 'detail', entity.id) }}">{{ entity.name }}</a></td>
               <td class="text-end">
                 <span class="pe-4">{{ entity.bottles|length }}</span>
               </td>

@@ -18,7 +18,7 @@
 
         <div class="col d-flex align-items-end justify-content-end pb-2">
           {% if is_my_bottle %}
-            <a class="btn btn-primary me-2" href="{{ url_for('bottle.bottle_edit', username=bottle.user.username, bottle_id=bottle.id) }}" role="button"><i class="bi bi-pencil"></i> Edit Bottle</a>
+            <a class="btn btn-primary me-2" href="{{ url_for('bottle.bottle_edit', bottle_id=bottle.id) }}" role="button"><i class="bi bi-pencil"></i> Edit Bottle</a>
           {% endif %}
           <a class="btn btn-primary" href="{{ url_for('bottle.list_bottles', username=bottle.user.username) }}" role="button"><i class="bi bi-list-ul"></i> {{ btn_label }}</a>
         </div>
@@ -85,7 +85,7 @@
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">Bottler:</div>
                   <div class="col-9 ps-4 ps-sm-2">
                     {% if bottle.bottler_id %}
-                      <a href="{{ url_for('bottler.bottler_detail', username=bottle.user.username, bottler_id=bottle.bottler.id) }}">{{ bottle.bottler.name }}</a>
+                      <a href="{{ url_for('bottler.bottler_detail', bottler_id=bottle.bottler.id) }}">{{ bottle.bottler.name }}</a>
                     {% else %}
                       Distillery Bottling
                     {% endif %}
