@@ -38,10 +38,8 @@ def test_bottler_list_logged_in_elements(
     response_data = response.get_data(as_text=True)
 
     # looking for the "Add Bottler" button
-    assert (
-        f'<a class="btn btn-primary" href="/{test_user_02.username}/bottler/add"'
-        not in response_data
-    )
+    assert '<a class="btn btn-primary" href="/bottler/add"' not in response_data
+
     assert "bi-pencil" not in response_data
     assert "bi-trash" not in response_data
 
@@ -55,11 +53,8 @@ def test_bottler_list_logged_in_elements(
     assert response.status_code == 200
 
     # looking for the "Add Bottler" button
+    assert '<a class="btn btn-primary" href="/bottler/add"' in response_data
 
-    assert (
-        f'<a class="btn btn-primary" href="/{test_user_01.username}/bottler/add"'
-        in response_data
-    )
     assert "bi-pencil" in response_data
     assert "bi-trash" in response_data
 
