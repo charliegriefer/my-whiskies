@@ -47,6 +47,14 @@
           <div class="col-md-1 g-0 text-nowrap me-4">Distilleries:</div>
           <div class="col-md">{{ current_user.distilleries|length }}</div>
         </div>
+
+        <div class="row">&nbsp;</div>
+
+        <div class="row">
+          <div class="col-md-1 g-0 text-nowrap me-4">
+            <i class="bi bi-filetype-csv"></i> <a href="{{ url_for('user.export_data') }}">Export my data (CSV)</a>
+          </div>
+          
       </div>
     </div>
   </main>
