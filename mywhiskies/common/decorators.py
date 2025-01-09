@@ -3,6 +3,8 @@ from functools import wraps
 from flask import abort
 from flask_login import current_user
 
+# NOTE: not currently in use, but saving the file in case new decorators are needed later.
+
 
 def validate_username(func):
     @wraps(func)
