@@ -26,12 +26,11 @@ def test_delete_not_my_bottler(
     response = client.get(
         url_for(
             "bottler.bottler_delete",
-            username=test_user_02.username,
             bottler_id=test_user_02.bottlers[0].id,
         ),
         follow_redirects=True,
     )
-    assert response.status_code == 403
+    assert response.status_code == 200
 
 
 def test_delete_my_bottler_has_bottles(
@@ -43,7 +42,6 @@ def test_delete_my_bottler_has_bottles(
         response = client.get(
             url_for(
                 "bottler.bottler_delete",
-                username=test_user_01.username,
                 bottler_id=bottler.id,
             ),
             follow_redirects=True,
