@@ -1,11 +1,30 @@
+import json
+import os
+
 from flask import flash, request
 from flask.wrappers import Response
+from sqlalchemy import insert
+from werkzeug import werkzeug
 
 from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryForm
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 from mywhiskies.services import utils
+
+
+def bulk_distillery_add(user: User, app: werkzeug.local.LocalProxy) -> None:
+    json_file = os.path.join(app.static_folder, "data", "base_distilleries.json")
+
+    with open(json_file, mode="r", encoding="utf-8") as f:
+        data = json.load(f)
+
+        base_distilleries = data.get("distilleries")
+        for distillery in base_distilleries:
+            distillery["user_id"] = user.id
+
+        db.session.execute(insert(Distillery), base_distilleries)
+        db.session.commit()
 
 
 def list_distilleries(

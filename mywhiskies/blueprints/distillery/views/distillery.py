@@ -1,9 +1,5 @@
-import json
-import os
-
 from flask import current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
-from sqlalchemy import insert
 
 from mywhiskies.blueprints.distillery import distillery_bp
 from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryForm
@@ -33,40 +29,15 @@ def no_distilleries():
 @distillery_bp.route("/bulk_distillery_add")
 @login_required
 def bulk_distillery_add():
-    """
-    Bulk add distilleries.
-    ---
-    get:
-        summary: For users with no distilleries listed yet, bulk adds distilleries.
-        description: JSON file in static holds the base distilleries to add.
-                     This page will redirect user home if the user already has distilleries.
-                     Likewise, will redirect the user home if they access the page directly (no referrer).
-        parameters:
-            - na/
-        responses:
-            200:
-                description: Distilleries are added, user is redirected to home page.
-    """
     if len(current_user.distilleries) > 0:
         return redirect(url_for("core.main"))
 
     if not request.referrer:
         return redirect(url_for("core.main"))
 
-    json_file = os.path.join(
-        current_app.static_folder, "data", "base_distilleries.json"
-    )
-    with open(json_file, mode="r", encoding="utf-8") as f:
-        data = json.load(f)
+    utils.bulk_distillery_add(current_user, current_app)
 
-        base_distilleries = data.get("distilleries")
-        for distillery in base_distilleries:
-            distillery["user_id"] = current_user.id
-
-        db.session.execute(insert(Distillery), base_distilleries)
-        db.session.commit()
-
-    flash(f"{len(base_distilleries)} distilleries have been added to your account.")
+    flash("New distilleries have been added to your account.")
     return redirect(url_for("core.main", username=current_user.username))
 
 
