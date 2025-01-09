@@ -34,7 +34,16 @@ class Distillery(db.Model):
 
 
 @event.listens_for(Distillery, "before_insert")
-def clean_distillery_data(mapper, connect, target):
+def distillery_before_insert(mapper, connect, target) -> None:
+    clean_distillery_data(target)
+
+
+@event.listens_for(Distillery, "before_update")
+def distillery_before_update(mapper, connect, target) -> None:
+    clean_distillery_data(target)
+
+
+def clean_distillery_data(target) -> None:
     target.name = target.name.strip()
     target.region_1 = target.region_1.strip()
     target.region_2 = target.region_2.strip()

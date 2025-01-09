@@ -1,7 +1,7 @@
 import uuid
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import String, Text
+from sqlalchemy import String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from mywhiskies.blueprints.user.models import User
@@ -29,3 +29,19 @@ class Bottler(db.Model):
     # relationships
     user: Mapped["User"] = relationship(back_populates="bottlers")
     bottles: Mapped[List["Bottle"]] = relationship(back_populates="bottler")
+
+
+@event.listens_for(Bottler, "before_insert")
+def bottle_before_insert(mapper, connect, target) -> None:
+    clean_bottler_data(target)
+
+
+@event.listens_for(Bottler, "before_update")
+def bottle_before_update(mapper, connect, target) -> None:
+    clean_bottler_data(target)
+
+
+def clean_bottler_data(target) -> None:
+    target.name = target.name.strip()
+    target.description = target.description.strip() if target.description else None
+    target.url = target.url.strip() if target.url else None

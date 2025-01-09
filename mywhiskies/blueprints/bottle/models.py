@@ -74,16 +74,16 @@ class Bottle(db.Model):
 
 
 @event.listens_for(Bottle, "before_insert")
-def bottle_before_insert(mapper, connect, target):
+def bottle_before_insert(mapper, connect, target) -> None:
     clean_bottle_data(target)
 
 
 @event.listens_for(Bottle, "before_update")
-def bottle_before_update(mapper, connect, target):
+def bottle_before_update(mapper, connect, target) -> None:
     clean_bottle_data(target)
 
 
-def clean_bottle_data(target):
+def clean_bottle_data(target) -> None:
     target.name = target.name.strip()
     target.size = target.size if target.size else None
     target.year_barrelled = target.year_barrelled if target.year_barrelled else None
