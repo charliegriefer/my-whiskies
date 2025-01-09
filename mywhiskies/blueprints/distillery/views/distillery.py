@@ -9,6 +9,7 @@ from mywhiskies.extensions import db
 from mywhiskies.services import utils
 from mywhiskies.services.distillery.distillery import (
     add_distillery,
+    bulk_add_distillery,
     delete_distillery,
     edit_distillery,
     get_distillery_detail,
@@ -35,7 +36,7 @@ def bulk_distillery_add():
     if not request.referrer:
         return redirect(url_for("core.main"))
 
-    utils.bulk_distillery_add(current_user, current_app)
+    bulk_add_distillery(current_user, current_app)
 
     flash("New distilleries have been added to your account.")
     return redirect(url_for("core.main", username=current_user.username))

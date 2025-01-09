@@ -13,7 +13,7 @@ from mywhiskies.extensions import db
 from mywhiskies.services import utils
 
 
-def bulk_distillery_add(user: User, current_app: app) -> None:
+def bulk_add_distillery(user: User, current_app: app) -> None:
     json_file = os.path.join(
         current_app.static_folder, "data", "base_distilleries.json"
     )
