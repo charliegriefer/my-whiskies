@@ -106,7 +106,7 @@ def prep_datatable_bottles(
             empty_text=_set_empty_text(entity, user, active_bottle_types),
             entity=entity,
             show_killed_toggle=show_killed_toggle,
-            show_filters=show_filters,
+            show_filters=show_filters and len(bottles),
             show_random_btn=show_random_btn,
             show_all_btn=show_all_btn,
         )
