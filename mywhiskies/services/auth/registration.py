@@ -18,7 +18,7 @@ def find_user_by_email(email):
 
 def initialize_registration_form(form):
     terms_label = Markup(
-        f"I agree to the terms of <a href=\"{url_for('core.terms')}\">Terms of Service</a>."
+        f"I agree to the terms of <a href=\"{url_for('core.terms')}\">Terms of Service</a>"
     )
     form.agree_terms.label = Label("agree_terms", terms_label)
     return form
