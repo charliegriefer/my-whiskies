@@ -1,12 +1,20 @@
-{% macro render_field(field) %}
-  <dt>{{ field.label }}
-  <dd>{{ field(**kwargs)|safe }}
-  {% if field.errors %}
-    <ul class=errors>
-    {% for error in field.errors %}
-      <li>{{ error }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-  </dd>
+{% macro render_field(field, popover_text) %}
+  <div class="mb-3">
+    {{ field.label(class="form-label") }}
+    {% if field.flags.required %}<span class="text-danger">*</span>{% endif %}
+    
+    {% if popover_text %}
+      {% set popover_title = "<i class='bi bi-question-circle pe-1'></i> " ~ field.label.text %}
+      <a tabindex="-1" href="" class="float-end pe-1" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="right" data-bs-html="true" data-bs-title="{{ popover_title }}" data-bs-content="{{ popover_text }}" onclick="return false;"><i class="bi bi-question-circle-fill"></i></a>
+    {% endif %}
+  
+    {{ field(class="form-control" + (" is-invalid" if field.errors else ""))|safe }}
+    {% if field.errors %}
+      
+        {% for error in field.errors %}
+          <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+      
+    {% endif %}
+  </div>
 {% endmacro %}
