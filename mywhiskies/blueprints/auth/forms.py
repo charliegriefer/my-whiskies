@@ -5,7 +5,14 @@ from flask import current_app, request
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, HiddenField, PasswordField, StringField, SubmitField
 from wtforms.fields import EmailField
-from wtforms.validators import Email, EqualTo, InputRequired, Length, ValidationError
+from wtforms.validators import (
+    DataRequired,
+    Email,
+    EqualTo,
+    InputRequired,
+    Length,
+    ValidationError,
+)
 
 from mywhiskies.blueprints.user.models import User
 
@@ -97,10 +104,14 @@ class ReCaptchaV3:
 
 class LoginForm(FlaskForm):
     username = StringField(
-        "Username:", validators=[InputRequired()], render_kw={"placeholder": "Username"}
+        "Username:",
+        validators=[InputRequired("Username is required.")],
+        render_kw={"placeholder": "Username"},
     )
     password = PasswordField(
-        "Password:", validators=[InputRequired()], render_kw={"placeholder": "Password"}
+        "Password:",
+        validators=[InputRequired("Password is required.")],
+        render_kw={"placeholder": "Password"},
     )
     remember_me = BooleanField("Remember Me")
     submit = SubmitField("Log In")
@@ -139,30 +150,32 @@ class RegistrationForm(PasswordValidatorMixin, FlaskForm):
     form_name = HiddenField("form_name", default="registration")
     username = StringField(
         "Username:",
-        validators=[InputRequired(), Length(min=4, max=24)],
+        validators=[InputRequired("Username is required."), Length(min=4, max=24)],
         render_kw={"placeholder": "Username"},
         description=USERNAME_DESCRIPTION,
     )
     email = StringField(
         "Email Address:",
-        validators=[InputRequired(), Email()],
+        validators=[InputRequired("Email address is required."), Email()],
         render_kw={"placeholder": "Email Address"},
     )
     password = PasswordField(
         "Password:",
-        validators=[InputRequired(), Length(min=8, max=24)],
+        validators=[InputRequired("Password is required."), Length(min=8, max=24)],
         render_kw={"placeholder": "Password"},
         description=PW_DESCRIPTION,
     )
     password2 = PasswordField(
         "Repeat Password:",
         validators=[
-            InputRequired(),
+            InputRequired("Verifying the password is required."),
             EqualTo("password", message="Passwords do not match."),
         ],
         render_kw={"placeholder": "Repeat Password"},
     )
-    agree_terms = BooleanField("", validators=[InputRequired()])
+    agree_terms = BooleanField(
+        "", validators=[DataRequired("You must agree to the Terms of Service.")]
+    )
     recaptcha = SubmitField(validators=[ReCaptchaV3(action="submit", threshold=0.5)])
     submit = SubmitField("Register")
 
