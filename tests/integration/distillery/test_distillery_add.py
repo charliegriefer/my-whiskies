@@ -2,7 +2,7 @@ from flask import url_for
 from flask.testing import FlaskClient
 from werkzeug.datastructures import MultiDict
 
-from mywhiskies.blueprints.distillery.forms import DistilleryForm
+from mywhiskies.blueprints.distillery.forms import DistilleryAddForm
 from mywhiskies.blueprints.user.models import User
 
 new_distillery_formdata = MultiDict(
@@ -26,7 +26,7 @@ def test_add_distillery_requires_login(client: FlaskClient, test_user_01: User) 
 
 def test_valid_distillery_form(client: FlaskClient) -> None:
     """Test that a valid distillery form passes validation."""
-    form = DistilleryForm()
+    form = DistilleryAddForm()
     form.process(new_distillery_formdata)
 
     assert form.validate(), f"Form validation failed: {form.errors}"
