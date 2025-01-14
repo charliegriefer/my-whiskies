@@ -5,17 +5,19 @@
     {% if field.flags.required %}<span class="text-danger">*</span>{% endif %}
     {{ field(class="form-control" + (" is-invalid" if field.errors else ""))|safe }}
     {{ render_errors(field) }}
+    {{ render_description(field) }}
   </div>
 {% endmacro %}
 
 {% macro render_checkbox(field, popover_text) %}
   <div class="mb-3">
-    {{ field(class="form-check-imput") }}
-    {% if field.flags.required %}<span class="text-danger">*</span>{% endif %}
+    {{ field(class="form-check-input" + (" is-invalid" if field.errors else ""))|safe }}
     &nbsp;&nbsp;
     {{ field.label(class="form-label")}}
+    {% if field.flags.required %}<span class="text-danger">*</span>{% endif %}
     {{ render_popover(field, popover_text, "ps-1") }}
     {{ render_errors(field) }}
+    {{ render_description(field) }}
   </div>
 {% endmacro %}
 
@@ -32,5 +34,11 @@
     {% for error in field.errors %}
       <div class="invalid-feedback">{{ error }}</div>
     {% endfor %}
+  {% endif %}
+{% endmacro %}
+
+{% macro render_description(field) %}
+  {% if field.description %}
+    <div class="form-text">{{ field.description|safe }}</div>
   {% endif %}
 {% endmacro %}
