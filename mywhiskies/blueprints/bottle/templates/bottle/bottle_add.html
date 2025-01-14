@@ -14,249 +14,60 @@
 
     <hr />
 
-    <div class="container">
-      <form method="post" novalidate enctype="multipart/form-data">
-        {{ form.csrf_token }}
-        <div class="row">
-          <div class="col ms-0 ps-0 me-4 pe-4">
-            <div class="mb-3">
-              {{ form.name.label(class="form-label") }}
-              {% if form.name.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.name(class="form-control") }}
-              {% if form.name.errors %}
-                {% for error in form.name.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.url.label(class="form-label") }}
-              {% if form.url.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.url(class="form-control") }}
-              {% if form.url.errors %}
-                {% for error in form.url.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.distilleries.label(class="form-label") }}
-              {% if form.distilleries.flags.required %}<span class="text-danger">*</span>{% endif %}
-              <br />
-              {{ form.distilleries() }}
-              {% if form.distilleries.errors %}
-                {% for error in form.distilleries.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.bottler_id.label(class="form-label") }}
-              {% if form.bottler_id.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.bottler_id(class="form-select") }}
-              {% if form.bottler_id.errors %}
-                {% for error in form.bottler_id.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.type.label(class="form-label") }}
-              {% if form.type.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.type(class="form-select") }}
-              {% if form.type.errors %}
-                {% for error in form.type.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.size.label(class="form-label") }}
-              {% if form.size.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.size(class="form-control") }}
-              {% if form.size.errors %}
-                {% for error in form.size.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.year_barrelled.label(class="form-label") }}
-              {% if form.year_barrelled.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.year_barrelled(class="form-control") }}
-              {% if form.year_barrelled.errors %}
-                {% for error in form.year_barrelled.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.year_bottled.label(class="form-label") }}
-              {% if form.year_bottled.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.year_bottled(class="form-control") }}
-              {% if form.year_bottled.errors %}
-                {% for error in form.year_bottled.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.abv.label(class="form-label") }}
-              {% if form.abv.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.abv(class="form-control") }}
-              {% if form.abv.errors %}
-                {% for error in form.abv.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.description.label(class="form-label") }}
-              {% if form.description.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.description(class="form-control") }}
-              {% if form.description.errors %}
-                {% for error in form.description.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.personal_note.label(class="form-label") }}
-              {% if form.personal_note.flags.required %}<span class="text-danger">*</span>{% endif %}
-              <a tabindex="-1" href="" class="float-end pe-1" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="right" data-bs-html="true" data-bs-title="<i class='bi bi-question-circle pe-1'></i> Personal Note" data-bs-content="<p>Anything entered into this field will only be visible to you when logged in.</p><p>Perhaps it's the location of the bottle (e.g. 'Main Cabinet' or 'Bedroom Closet'), for example. </p><p>Anything that is relevant to you, but wouldn't necessarily be relevant to others, could go here.</p>" onclick="return false;"><i class="bi bi-question-circle-fill"></i></a>
-              {{ form.personal_note(class="form-control") }}
-              {% if form.personal_note.errors %}
-                {% for error in form.personal_note.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.stars.label(class="form-label") }}
-              {% if form.stars.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.stars(class="form-select") }}
-              {% if form.stars.errors %}
-                {% for error in form.stars.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.review.label(class="form-label") }}
-              {% if form.review.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.review(class="form-control") }}
-              {% if form.review.errors %}
-                {% for error in form.review.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
+    <div class="row">
+      <div class="col-md-4">
+        <form method="post" novalidate enctype="multipart/form-data">
+          {% set popover_personal_note = "<p>Anything entered into this field will only be visible to you when logged in.</p><p>Perhaps it's the location of the bottle (e.g. 'Main Cabinet' or 'Bedroom Closet'), for example. </p><p>Anything that is relevant to you, but wouldn't necessarily be relevant to others, could go here.</p>" %}
+          {% set popover_private_bottle = "If marked as a &quot;Private Bottle&quot;, this bottle will only show in your list when you're logged in.<br /><br />Other users will not be able to see it." %}
 
-            <div class="mt-3 pt-3">
-              {{ form.submit(class="btn btn-primary") }}
-              {{ buttons.cancel_button(current_user, request) }}
-            </div>
+          {{ form.csrf_token }}
+          
+          {{ form_utils.render_field(form.name) }}
+          {{ form_utils.render_field(form.url) }}
+          {{ form_utils.render_field(form.distilleries) }}
+          {{ form_utils.render_field(form.bottler_id) }}
+          {{ form_utils.render_field(form.type) }}
+          {{ form_utils.render_field(form.size) }}
+          {{ form_utils.render_field(form.year_barrelled) }}
+          {{ form_utils.render_field(form.year_bottled) }}
+          {{ form_utils.render_field(form.abv) }}
+          {{ form_utils.render_field(form.description) }}
+          {{ form_utils.render_field(form.personal_note, popover_text=popover_personal_note) }}
+          {{ form_utils.render_field(form.stars) }}
+          {{ form_utils.render_field(form.review) }}
+          {{ form_utils.render_field(form.is_private, popover_text=popover_private_bottle) }}
+          {{ form_utils.render_field(form.cost) }}
+          {{ form_utils.render_field(form.date_purchased) }}
+          {{ form_utils.render_field(form.date_opened) }}
+          {{ form_utils.render_field(form.date_killed) }}
+
+          <hr class="my-4" />
+
+          <div class="mb-2 pb-2 text-nowrap">
+            Upload up to 3 images. Portrait-oriented images are preferred. <i class="bi bi-file-image"></i>
+            <br />
+            By uploading images I agree to the <a href="" data-bs-toggle="modal" data-bs-target="#imageTerms">Image Terms and Conditions.</a>
           </div>
 
-          <div class="col">
-            <div class="mb-3">
-              {{ form.is_private(class="form-check-input") }}&nbsp;&nbsp;{{ form.is_private.label(class="form-label") }}
-              <a tabindex="-1" href="" class="pe-1" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="right" data-bs-html="true" data-bs-title="<i class='bi bi-question-circle pe-1'></i> Private Bottle" data-bs-content="If marked as a &quot;Private Bottle&quot;, this bottle will only show in your list when you're logged in.<br /><br />Other users will not be able to see it." onclick="return false;"><i class="bi bi-question-circle-fill"></i></a>
-            </div>
-            <div class="mb-3">
-              {{ form.cost.label(class="form-label") }}
-              {% if form.cost.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.cost(class="form-control") }}
-              {% if form.cost.errors %}
-                {% for error in form.cost.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.date_purchased.label(class="form-label") }}
-              {% if form.date_purchased.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.date_purchased(class="form-control") }}
-              {% if form.date_purchased.errors %}
-                {% for error in form.date_purchased.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.date_opened.label(class="form-label") }}
-              {% if form.date_opened.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.date_opened(class="form-control") }}
-              {% if form.date_opened.errors %}
-                {% for error in form.date_opened.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mb-3">
-              {{ form.date_killed.label(class="form-label") }}
-              {% if form.date_killed.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.date_killed(class="form-control") }}
-              {% if form.date_killed.errors %}
-                {% for error in form.date_killed.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="mt-2 pt-2">
-              <hr />
-            </div>
+          {{ form_utils.render_field(form.bottle_image_1) }}
+          {{ form_utils.render_field(form.bottle_image_2) }}
+          {{ form_utils.render_field(form.bottle_image_3) }}
 
-            <div class="mb-2 pb-2">
-              Upload up to 3 images. Portrait-oriented images are preferred. <i class="bi bi-file-image"></i>
-              <br />
-              By uploading images I agree to the <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal">Image Terms and Conditions.</a>
-            </div>
-
-            <div class="mb-3">
-              {{ form.bottle_image_1.label(class="form-label") }}
-              {% if form.bottle_image_1.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.bottle_image_1(class="form-control") }}
-              {% if form.bottle_image_1.errors %}
-                {% for error in form.bottle_image_1.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="row mb-3">
-              <div class="col">
-              {{ form.bottle_image_2.label(class="form-label") }}
-              {% if form.bottle_image_2.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.bottle_image_2(class="form-control") }}
-              {% if form.bottle_image_2.errors %}
-                {% for error in form.bottle_image_2.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-              </div>
-            </div>
-            <div class="mb-3">
-              {{ form.bottle_image_3.label(class="form-label") }}
-              {% if form.bottle_image_3.flags.required %}<span class="text-danger">*</span>{% endif %}
-              {{ form.bottle_image_3(class="form-control") }}
-              {% if form.bottle_image_3.errors %}
-                {% for error in form.bottle_image_3.errors %}
-                  <span class="error">{{ error }}</span>
-                {% endfor %}
-              {% endif %}
-            </div>
+          <div class="pt-3 mb-3">
+            {{ form.submit(class="btn btn-primary") }}
+            {{ buttons.cancel_button(current_user, request) }}
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </main>
 
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="imageTerms" tabindex="-1" aria-labelledby="imageTermsLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Image Terms and Conditions</h1>
+          <h1 class="modal-title fs-5" id="imageTermsLabel">Image Terms and Conditions</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -280,21 +91,4 @@
       </div>
     </div>
   </div>
-{% endblock %}
-
-{% block scripts %}
-  {{ super() }}
-
-  <script type="text/javascript">
-    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
-    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
-  </script>
-
-  <script type="text/javascript">
-    function clearField(id_input) {
-      let fileInput = document.getElementById(id_input)
-      fileInput.value = ""
-      fileInput.dispatchEvent(new Event("change"));
-    }
-  </script>
 {% endblock %}
