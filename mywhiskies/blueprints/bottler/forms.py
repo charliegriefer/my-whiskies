@@ -26,7 +26,11 @@ class BottlerAddForm(FlaskForm):
     )
     url = StringField(
         "URL:",
-        validators=[Length(max=64), URL(message="Invalid URL"), Optional()],
+        validators=[
+            Length(max=64),
+            URL(message="Please enter a valid URL."),
+            Optional(),
+        ],
         render_kw={"placeholder": "URL"},
     )
     submit = SubmitField("Add Bottler")
