@@ -9,6 +9,8 @@
   <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
 {% endif %}
 <script>
+  const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+  const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
   $(document).ready(function() {
     {% if has_select2_widget %}
       $(".js-select2").select2({
