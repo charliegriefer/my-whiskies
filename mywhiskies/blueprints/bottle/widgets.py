@@ -9,7 +9,7 @@ class Select2Widget:
     def __call__(self, field, **kwargs):
         kwargs.setdefault("id", field.id)
         classes = kwargs.pop("class", "")
-        kwargs["class"] = f"js-select2 form-control {classes}".strip()
+        kwargs["class"] = f"js-select2 {classes}".strip()
         # Add data-placeholder if placeholder is specified in render_kw
         if "placeholder" in kwargs:
             kwargs["data-placeholder"] = kwargs.pop("placeholder")
