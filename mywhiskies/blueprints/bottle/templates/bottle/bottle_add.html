@@ -35,7 +35,7 @@
           {{ form_utils.render_field(form.personal_note, popover_text=popover_personal_note) }}
           {{ form_utils.render_field(form.stars) }}
           {{ form_utils.render_field(form.review) }}
-          {{ form_utils.render_field(form.is_private, popover_text=popover_private_bottle) }}
+          {{ form_utils.render_checkbox(form.is_private, popover_text=popover_private_bottle) }}
           {{ form_utils.render_field(form.cost) }}
           {{ form_utils.render_field(form.date_purchased) }}
           {{ form_utils.render_field(form.date_opened) }}
