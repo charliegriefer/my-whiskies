@@ -11,7 +11,6 @@ from mywhiskies.services.auth.registration import (
     flash_email_verification_error,
     flash_email_verification_success,
     flash_registration_instructions,
-    initialize_registration_form,
     register_user,
     verify_confirmation_token,
 )
@@ -22,7 +21,7 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for("core.main"))
 
-    form = initialize_registration_form(RegistrationForm())
+    form = RegistrationForm()
 
     if form.validate_on_submit():
         user = register_user(
