@@ -137,6 +137,7 @@ class LoginForm(FlaskForm):
 
 class ResetPasswordRequestForm(FlaskForm):
     form_name = HiddenField("form_name", default="reset_pw_request")
+    g_recaptcha_response = HiddenField("g-recaptcha-response")
     email = EmailField(
         "Email Address:",
         validators=[
