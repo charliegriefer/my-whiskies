@@ -12,6 +12,12 @@
   const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
   const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
   $(document).ready(function() {
+    // registration form script
+    $("#register_form #submit").prop("disabled", true);
+    $("#register_form #agree_terms").change(function() {
+      $("#register_form #submit").prop("disabled", !this.checked);
+    });
+    
     {% if has_select2_widget %}
       $(".js-select2").select2({
         allowClear: true
