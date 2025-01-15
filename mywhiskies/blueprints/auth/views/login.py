@@ -36,7 +36,7 @@ def login():
         )
 
         if user is None or not validate_password(user, form.password.data):
-            flash("Incorrect username or password!", "danger")
+            flash("The username and password combination is not recognized.", "danger")
             return redirect(url_for("auth.login"))
 
         if not check_email_confirmation(user):
