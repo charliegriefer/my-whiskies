@@ -17,7 +17,7 @@
         <div class="row">
           <div class="col-md-4 pt-4">
 
-            <form method="post" novalidate>
+            <form method="post" id="register_form" novalidate>
               {{ form.csrf_token }}
 
               {{ form_utils.render_field(form.username) }}
@@ -37,8 +37,4 @@
       </div>
     </div>
   </main>
-{% endblock %}
-
-{% block scripts %}
-  {{ super() }}
 {% endblock %}
