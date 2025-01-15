@@ -41,7 +41,10 @@ def test_invalid_login(client: FlaskClient, test_user_01: User) -> None:
         follow_redirects=True,
     )
     assert response.status_code == 200
-    assert "Incorrect username or password!" in response.get_data(as_text=True)
+    assert (
+        "The username and password combination is not recognized"
+        in response.get_data(as_text=True)
+    )
 
 
 def test_valid_login(client: FlaskClient, test_user_01: User) -> None:
