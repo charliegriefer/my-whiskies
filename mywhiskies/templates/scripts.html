@@ -13,11 +13,12 @@
   const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
   $(document).ready(function() {
     // registration form script
-    $("#register_form #submit").prop("disabled", true);
+    const terms_checkbox = $("#register_form #agree_terms");
+    $("#register_form #submit").prop("disabled", !terms_checkbox.is(":checked"));
     $("#register_form #agree_terms").change(function() {
       $("#register_form #submit").prop("disabled", !this.checked);
     });
-    
+
     {% if has_select2_widget %}
       $(".js-select2").select2({
         allowClear: true
