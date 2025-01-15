@@ -13,7 +13,7 @@
   <div class="mb-3">
     {{ field(class="form-check-input" + (" is-invalid" if field.errors else ""))|safe }}
     &nbsp;&nbsp;
-    {{ field.label(class="form-label")}}
+    {{ field.label(class="form-label fw-normal")}}
     {% if field.flags.required %}<span class="text-danger">*</span>{% endif %}
     {{ render_popover(field, popover_text, "ps-1") }}
     {{ render_errors(field) }}
@@ -32,7 +32,7 @@
 {% macro render_errors(field) %}
   {% if field.errors %}
     {% for error in field.errors %}
-      <div class="invalid-feedback">{{ error }}</div>
+      <div class="invalid-feedback"><i class="bi bi-exclamation-circle"></i> {{ error }}</div>
     {% endfor %}
   {% endif %}
 {% endmacro %}
