@@ -18,6 +18,7 @@
           <div class="col-md-4 pt-4">
             <form method="post" novalidate>
               {{ form.csrf_token }}
+              {{ form.form_name }}
               {{ form.g_recaptcha_response }}
 
               {{ form_utils.render_field(form.email) }}

@@ -19,9 +19,9 @@
 
             <form method="post" novalidate>
               {{ form.csrf_token }}
+              {{ form.form_name }}
               {{ form.g_recaptcha_response }}
 
-              {{ form_utils.render_hidden(form.form_name)}}
               {{ form_utils.render_field(form.username) }}
               {{ form_utils.render_field(form.password) }}
               {{ form_utils.render_checkbox(form.remember_me) }}

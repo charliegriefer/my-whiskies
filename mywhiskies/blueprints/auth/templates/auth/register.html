@@ -19,6 +19,7 @@
 
             <form method="post" id="register_form" novalidate>
               {{ form.csrf_token }}
+              {{ form.form_name }}
               {{ form.g_recaptcha_response }}
 
               {{ form_utils.render_field(form.username) }}
