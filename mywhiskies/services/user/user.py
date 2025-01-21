@@ -1,6 +1,14 @@
+from typing import Optional
+
 import pandas as pd
 
 from mywhiskies.blueprints.user.models import User
+from mywhiskies.extensions import db
+
+
+def get_user_by_email(email: str) -> Optional[User]:
+    stmt = db.select(User).filter(User.email == email.strip())
+    return db.session.execute(stmt).first()
 
 
 def create_export_csv(current_user: User):
