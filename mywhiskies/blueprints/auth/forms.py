@@ -31,17 +31,14 @@ PW_DESCRIPTION = (
     "<li>Spaces are not allowed.</li></ul>"
 )
 
-REG_CAPTCHA_MESSAGE = (
-    "There was an issue processing your registration. Please try again later."
-    "<br />If this problem persists, please contact us us at "
-    '<a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a>.'
-)
-
-RESET_CAPTCHA_MESSAGE = (
+# TODO: break this out into individual messages for login, registration, etc.
+CAPTCHA_MESSAGE = (
     "There was an issue processing your request. Please try again later."
     "<br />If this problem persists, please contact us us at "
     '<a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a>.'
 )
+
+CAPTCHA_THRESHOLD = 0.5
 
 
 class UsernameValidatorMixin:
@@ -72,7 +69,7 @@ class PasswordValidatorMixin:
 
 
 class ReCaptchaV3:
-    def __init__(self, action="form", threshold=0.5):
+    def __init__(self, action="form", threshold=CAPTCHA_THRESHOLD):
         self.action = action
         self.threshold = threshold
 
@@ -86,9 +83,11 @@ class ReCaptchaV3:
 
         error_msg = ""
         if form.form_name.data == "reset_pw_request":
-            error_msg = RESET_CAPTCHA_MESSAGE
+            error_msg = CAPTCHA_MESSAGE
         elif form.form_name.data == "registration":
-            error_msg = REG_CAPTCHA_MESSAGE
+            error_msg = CAPTCHA_MESSAGE
+        elif form.form_name.data == "login":
+            error_msg = CAPTCHA_MESSAGE
 
         if not recaptcha_response:
             raise ValidationError(
@@ -121,6 +120,7 @@ class ReCaptchaV3:
 
 
 class LoginForm(FlaskForm):
+    form_name = HiddenField("form_name", default="login")
     username = StringField(
         "Username:",
         validators=[InputRequired("Username is required.")],
@@ -132,6 +132,10 @@ class LoginForm(FlaskForm):
         render_kw={"placeholder": "Password"},
     )
     remember_me = BooleanField("Remember Me")
+    g_recaptcha_response = HiddenField("", id="g-recaptcha-response")
+    recaptcha = SubmitField(
+        validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)]
+    )
     submit = SubmitField("Log In")
 
 
@@ -148,7 +152,9 @@ class ResetPasswordRequestForm(FlaskForm):
         ],
         render_kw={"placeholder": "E-Mail Address"},
     )
-    recaptcha = SubmitField(validators=[ReCaptchaV3(action="submit", threshold=0.5)])
+    recaptcha = SubmitField(
+        validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)]
+    )
     submit = SubmitField("Submit")
 
 
@@ -204,7 +210,10 @@ class RegistrationForm(UsernameValidatorMixin, PasswordValidatorMixin, FlaskForm
         "",
         validators=[DataRequired("You must agree to the Terms of Service.")],
     )
-    recaptcha = SubmitField(validators=[ReCaptchaV3(action="submit", threshold=0.5)])
+    g_recaptcha_response = HiddenField("", id="g-recaptcha-response")
+    recaptcha = SubmitField(
+        validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)]
+    )
     submit = SubmitField("Register")
 
     def __init__(self, *args, **kwargs):
@@ -223,5 +232,10 @@ class RegistrationForm(UsernameValidatorMixin, PasswordValidatorMixin, FlaskForm
 
 
 class ResendRegEmailForm(FlaskForm):
+    form_name = HiddenField("form_name", default="resend_reg_email")
     email = StringField("Email", validators=[InputRequired(), Email()])
+    g_recaptcha_response = HiddenField("", id="g-recaptcha-response")
+    recaptcha = SubmitField(
+        validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)]
+    )
     submit = SubmitField("Resend Verification E-Mail")
