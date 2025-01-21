@@ -140,7 +140,7 @@ class LoginForm(FlaskForm):
 
 
 class ResetPasswordRequestForm(FlaskForm):
-    form_name = HiddenField("form_name", default="reset_pw_request")
+    form_name = HiddenField("form_name", default="reset_password_request")
     g_recaptcha_response = HiddenField(
         "g-recaptcha-response", id="g-recaptcha-response"
     )
@@ -159,6 +159,10 @@ class ResetPasswordRequestForm(FlaskForm):
 
 
 class ResetPWForm(PasswordValidatorMixin, FlaskForm):
+    form_name = HiddenField("form_name", default="reset_pw")
+    g_recaptcha_response = HiddenField(
+        "g-recaptcha-response", id="g-recaptcha-response"
+    )
     password = PasswordField(
         "Password:",
         validators=[InputRequired("Password is required.")],
@@ -172,6 +176,9 @@ class ResetPWForm(PasswordValidatorMixin, FlaskForm):
             EqualTo("password", message="Passwords do not match."),
         ],
         render_kw={"placeholder": "Repeat Password"},
+    )
+    recaptcha = SubmitField(
+        validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)]
     )
     submit = SubmitField("Reset My Password ")
 
