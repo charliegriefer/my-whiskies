@@ -30,8 +30,8 @@ def reset_password_request():
     return render_template(
         "auth/reset_password_request.html",
         title="My Whiskies Online: Forgot Password",
-        has_captcha=True,
         form=form,
+        has_captcha=True,
         recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"],
     )
 
@@ -55,4 +55,6 @@ def reset_password(token: str):
         "auth/reset_password.html",
         title="My Whiskies Online: Reset Password",
         form=form,
+        has_captcha=True,
+        recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"],
     )
