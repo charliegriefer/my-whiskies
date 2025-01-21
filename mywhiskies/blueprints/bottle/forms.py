@@ -12,6 +12,7 @@ from wtforms import (
     StringField,
     SubmitField,
     TextAreaField,
+    ValidationError,
 )
 from wtforms.validators import URL, InputRequired, Length, NumberRange, Optional
 
@@ -22,6 +23,36 @@ IMG_MESSAGE = "Permitted file types: jpg/jpeg, png"
 
 def get_current_year() -> int:
     return datetime.date.today().year
+
+
+def validate_bottle_purchased_date(form, field):
+    if field.data and field.data > datetime.date.today():
+        raise ValidationError("Date Purchased cannot be in the future.")
+
+
+def validate_bottle_opened_date(form, field):
+    if (
+        field.data
+        and form.date_purchased.data
+        and field.data < form.date_purchased.data
+    ):
+        raise ValidationError("Date Opened cannot precede Date Purchased.")
+
+
+def validate_bottle_killed_date(form, field):
+    if field.data and form.date_opened.data and field.data < form.date_opened.data:
+        raise ValidationError("Date Killed cannot precede Date Opened.")
+    if field.data > datetime.date.today():
+        raise ValidationError("Date Killed cannot be in the future.")
+
+
+def validate_year_bottled_date(form, field):
+    if (
+        field.data
+        and form.year_barrelled.data
+        and field.data < form.year_barrelled.data
+    ):
+        raise ValidationError("Year Bottled cannot precede Year Barrelled.")
 
 
 class BottleAddForm(FlaskForm):
@@ -79,6 +110,7 @@ class BottleAddForm(FlaskForm):
                 max=get_current_year(),
                 message=f"Year Bottled must be between 1900 and {get_current_year()}.",
             ),
+            validate_year_bottled_date,
         ],
         render_kw={"placeholder": "Year Bottled"},
     )
@@ -107,9 +139,15 @@ class BottleAddForm(FlaskForm):
     personal_note = TextAreaField("Personal Note:", validators=[Length(0, 65000)])
     review = TextAreaField("Review:", validators=[Length(0, 65000)])
 
-    date_purchased = DateField("Date Purchased:", validators=[Optional()])
-    date_opened = DateField("Date Opened:", validators=[Optional()])
-    date_killed = DateField("Date Killed:", validators=[Optional()])
+    date_purchased = DateField(
+        "Date Purchased:", validators=[Optional(), validate_bottle_purchased_date]
+    )
+    date_opened = DateField(
+        "Date Opened:", validators=[Optional(), validate_bottle_opened_date]
+    )
+    date_killed = DateField(
+        "Date Killed:", validators=[Optional(), validate_bottle_killed_date]
+    )
 
     bottle_image_1 = FileField(
         "Image 1:", validators=[FileAllowed(["jpg", "jpeg", "png"], IMG_MESSAGE)]
