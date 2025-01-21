@@ -63,5 +63,5 @@ def get_live_bottles_for_user(user: User) -> List["Bottle"]:
     return [bottle for bottle in user.bottles if bottle.date_killed is None]
 
 
-def _get_bottle_table():
+def _get_bottle_table() -> Any:
     return db.Model.metadata.tables["bottle"]

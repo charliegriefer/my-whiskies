@@ -7,7 +7,7 @@ from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 
 
-def verify_confirmation_token(token):
+def verify_confirmation_token(token: str) -> Optional[User]:
     return User.verify_mail_confirm_token(token)
 
 
@@ -16,7 +16,7 @@ def find_user_by_email(email: str) -> Optional[User]:
     return db.session.execute(stmt).first()
 
 
-def register_user(username, email, password):
+def register_user(username: str, email: str, password: str) -> User:
     user = User(username=username.strip(), email=email.strip(), email_confirmed=False)
     user.set_password(password)
     db.session.add(user)
@@ -24,7 +24,7 @@ def register_user(username, email, password):
     return user
 
 
-def flash_registration_instructions():
+def flash_registration_instructions() -> None:
     flash(
         Markup(
             """<p>Check your e-mail for further instructions.</p>
@@ -35,7 +35,7 @@ def flash_registration_instructions():
     )
 
 
-def flash_email_verification_error():
+def flash_email_verification_error() -> None:
     link = f"<a href=\"{url_for('auth.resend_register')}\">click here</a>"
     flash(
         Markup(
@@ -45,12 +45,12 @@ def flash_email_verification_error():
     )
 
 
-def flash_email_verification_success():
+def flash_email_verification_success() -> None:
     # Flash a success message when email is confirmed
     flash("Your email has been verified. You can now login to your account", "success")
 
 
-def confirm_user_email(user):
+def confirm_user_email(user: User) -> None:
     user.email_confirmed = True
     user.email_confirm_date = datetime.utcnow()
     db.session.add(user)

@@ -1,9 +1,10 @@
 from flask import abort, current_app, flash, render_template
 
+from mywhiskies.blueprints.user.models import User
 from mywhiskies.services.email.email import send_email
 
 
-def send_registration_confirmation_email(user, is_resend=False) -> None:
+def send_registration_confirmation_email(user: User, is_resend=False) -> None:
     token = user.get_mail_confirm_token()
     send_email(
         "Please Confirm Your Email",
@@ -23,7 +24,7 @@ def send_registration_confirmation_email(user, is_resend=False) -> None:
         )
 
 
-def send_password_reset_email(user) -> None:
+def send_password_reset_email(user: User) -> None:
     token = user.get_reset_password_token()
     try:
         send_email(

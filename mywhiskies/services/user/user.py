@@ -11,7 +11,7 @@ def get_user_by_email(email: str) -> Optional[User]:
     return db.session.execute(stmt).first()
 
 
-def create_export_csv(current_user: User):
+def create_export_csv(current_user: User) -> None:
     fieldnames = [
         "Bottle Name",
         "Bottle Type",

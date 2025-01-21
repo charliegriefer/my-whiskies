@@ -7,7 +7,7 @@ from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 
 
-def find_user_for_password_reset(email) -> Optional[User]:
+def find_user_for_password_reset(email: str) -> Optional[User]:
     return (
         db.session.execute(db.select(User).filter_by(email=email, is_deleted=False))
         .scalars()
@@ -15,12 +15,12 @@ def find_user_for_password_reset(email) -> Optional[User]:
     )
 
 
-def verify_reset_password_token(token) -> Optional[User]:
+def verify_reset_password_token(token: str) -> Optional[User]:
     # Verifies the password reset token and returns the user if valid
     return User.verify_reset_password_token(token)
 
 
-def reset_user_password(user, new_password) -> None:
+def reset_user_password(user: User, new_password: str) -> None:
     # Sets the new password for the user and commits the change
     user.set_password(new_password)
     db.session.commit()
