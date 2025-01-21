@@ -40,9 +40,9 @@
   {%- if has_datatable %}
     {% filter indent(2, first=False) %}
 {% include "shared/datatable/" + location + "/js.html" %}
-{% include "shared/datatable/shared_js.html" %}
-    {%- endfilter %}
-  {%- endif %}
+{% include "shared/datatable/shared_js.html" -%}
+    {%- endfilter -%}
+  {%- endif -%}
 {% if has_captcha %}
   // google recaptcha
   grecaptcha.ready(function() {
