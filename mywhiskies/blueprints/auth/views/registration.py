@@ -83,4 +83,6 @@ def resend_register():
         "auth/resend_register.html",
         title="My Whiskies Online: Re-Send Registration Confirmation",
         form=form,
+        has_captcha=True,
+        recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"],
     )
