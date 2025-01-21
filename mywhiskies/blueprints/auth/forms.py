@@ -82,7 +82,7 @@ class ReCaptchaV3:
             field.data = 1.0
             return
 
-        recaptcha_response = request.form.get("g-recaptcha-response")
+        recaptcha_response = form.g_recaptcha_response.data
 
         error_msg = ""
         if form.form_name.data == "reset_pw_request":
@@ -137,7 +137,9 @@ class LoginForm(FlaskForm):
 
 class ResetPasswordRequestForm(FlaskForm):
     form_name = HiddenField("form_name", default="reset_pw_request")
-    g_recaptcha_response = HiddenField("g-recaptcha-response")
+    g_recaptcha_response = HiddenField(
+        "g-recaptcha-response", id="g-recaptcha-response"
+    )
     email = EmailField(
         "Email Address:",
         validators=[
