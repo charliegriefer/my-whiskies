@@ -1,20 +1,29 @@
+{% filter indent(0, first=False) %}
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-{% if has_datatable -%}
-  <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
-{%- endif %}
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-{% if has_select2_widget -%}
-  <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
-{% endif %}
-{% if has_captcha %}
-  <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_public_key }}"></script>
-{% endif %}
+<script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
+<script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_public_key }}"></script>
+{% endfilter %}
 <script>
   const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
   const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+  function delete_flash(flash) {
+    $(flash).parent().remove();
+  }
+
   $(document).ready(function() {
+    // image uploads on bottle edit
+    $("button.remove-image").on("click", function() {
+      $("#remove_image_" + this.value).val("YES");
+      $("#bottle-image-" + this.value).addClass("d-none");
+      let how_many_are_showing = $("div.bottle-images:visible").length + 1;
+      $("#upload-image-" + how_many_are_showing).removeClass("d-none");
+    });
+
     // registration form script
     const terms_checkbox = $("#register_form #agree_terms");
     $("#register_form #submit").prop("disabled", !terms_checkbox.is(":checked"));
@@ -22,27 +31,25 @@
       $("#register_form #submit").prop("disabled", !this.checked);
     });
 
-    {% if has_select2_widget %}
-      $(".js-select2").select2({
-        allowClear: true
-      });
-    {% endif -%}
+    // bottle add/edit formn (distilleries)
+    $(".js-select2").select2({
+      allowClear: true
+    });
   });
-  function delete_flash(flash){
-    $(flash).parent().remove();
-  }
+  
   {%- if has_datatable %}
     {% filter indent(2, first=False) %}
 {% include "shared/datatable/" + location + "/js.html" %}
-{% include "shared/datatable/shared_js.html" %}
-    {%- endfilter %}
-  {%- endif %}
+{% include "shared/datatable/shared_js.html" -%}
+    {%- endfilter -%}
+  {%- endif -%}
 {% if has_captcha %}
+  // google recaptcha
   grecaptcha.ready(function() {
     grecaptcha.execute("{{ recaptcha_public_key }}", {action: "submit"}).then(function(token) {
-          var recaptchaResponse = document.getElementById("g-recaptcha-response");
-          recaptchaResponse.value = token;
-      });
+      var recaptchaResponse = document.getElementById("g-recaptcha-response");
+      recaptchaResponse.value = token;
     });
-    {% endif %}
+  });
+{%- endif %}
 </script>
