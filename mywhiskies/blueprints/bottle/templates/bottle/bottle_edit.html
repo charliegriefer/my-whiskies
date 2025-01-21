@@ -119,19 +119,3 @@
     </div>
   </div>
 {% endblock %}
-
-{% block scripts %}
-  {{ super() }}
-  
-  <script type="text/javascript">
-    $( document ).ready(function() {
-      $("button.remove-image").on("click", function() {
-
-        $("#remove_image_" + this.value).val("YES");
-        $("#bottle-image-" + this.value).addClass("d-none");
-        let how_many_are_showing = $("div.bottle-images:visible").length + 1;
-        $("#upload-image-" + how_many_are_showing).removeClass("d-none");
-      });
-    });
-  </script>
-{% endblock %}
