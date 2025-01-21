@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, request, url_for
+from flask import current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, logout_user
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
@@ -36,7 +36,7 @@ def login():
         )
 
         if user is None or not validate_password(user, form.password.data):
-            flash("Incorrect username or password!", "danger")
+            flash("The username and password combination is not recognized.", "danger")
             return redirect(url_for("auth.login"))
 
         if not check_email_confirmation(user):
@@ -47,7 +47,11 @@ def login():
         return redirect(next_page)
 
     return render_template(
-        "auth/login.html", title="My Whiskies Online: Log In", form=form
+        "auth/login.html",
+        title="My Whiskies Online: Log In",
+        has_captcha=True,
+        form=form,
+        recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"],
     )
 
 

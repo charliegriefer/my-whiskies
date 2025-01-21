@@ -2,7 +2,7 @@ from flask import current_app, flash, redirect, render_template, request, url_fo
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.distillery import distillery_bp
-from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryForm
+from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryAddForm
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
@@ -65,7 +65,7 @@ def distillery_detail(distillery_id: str):
 @distillery_bp.route("/distillery_add", methods=["GET", "POST"])
 @login_required
 def distillery_add():
-    form = DistilleryForm()
+    form = DistilleryAddForm()
 
     if form.validate_on_submit():
         add_distillery(form, current_user)

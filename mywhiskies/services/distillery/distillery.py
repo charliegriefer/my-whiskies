@@ -6,7 +6,7 @@ from flask import flash, request
 from flask.wrappers import Response
 from sqlalchemy import insert
 
-from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryForm
+from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryAddForm
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
@@ -35,7 +35,7 @@ def list_distilleries(
     return utils.prep_datatable_entities(user, current_user, request, entity_type)
 
 
-def add_distillery(form: DistilleryForm, user: User) -> None:
+def add_distillery(form: DistilleryAddForm, user: User) -> None:
     distillery_in = Distillery(user_id=user.id)
     form.populate_obj(distillery_in)
     db.session.add(distillery_in)

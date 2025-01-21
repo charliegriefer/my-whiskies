@@ -6,7 +6,7 @@ from wtforms.validators import URL, InputRequired, Length, Optional
 class BottlerAddForm(FlaskForm):
     name = StringField(
         "Name:",
-        validators=[InputRequired(), Length(1, 65)],
+        validators=[InputRequired("Bottler Name is required."), Length(1, 65)],
         render_kw={"placeholder": "Name"},
     )
     description = TextAreaField(
@@ -16,17 +16,21 @@ class BottlerAddForm(FlaskForm):
     )
     region_1 = StringField(
         "Location 1:",
-        validators=[InputRequired(), Length(max=36)],
+        validators=[InputRequired("Location 1 is required."), Length(max=36)],
         render_kw={"placeholder": "Location 1"},
     )
     region_2 = StringField(
         "Location 2:",
-        validators=[InputRequired(), Length(max=36)],
+        validators=[InputRequired("Location 2 is required."), Length(max=36)],
         render_kw={"placeholder": "Location 2"},
     )
     url = StringField(
         "URL:",
-        validators=[Length(max=64), URL(message="Invalid URL"), Optional()],
+        validators=[
+            Length(max=64),
+            URL(message="Please enter a valid URL."),
+            Optional(),
+        ],
         render_kw={"placeholder": "URL"},
     )
     submit = SubmitField("Add Bottler")

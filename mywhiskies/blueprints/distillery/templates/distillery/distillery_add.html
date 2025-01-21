@@ -16,28 +16,17 @@
       <div class="row">
         <div class="col-md-4">
           <form method="post" novalidate>
+            {% set popover_location_1 = "<p>The first part of the distillery's location.</p><p>If the distillery is in Bardstown, KY, the value for &quot;Location 1&quot; would be <b>Bardstown</b>.</p><p>If the distillery is in Islay, Scotland, the value for &quot;Location 1&quot; would be <b>Islay</b>.</p>" %}
+            {% set popover_location_2 = "<p>The second part of the distillery's location.</p><p>If the distillery is in Bardstown, KY, the value for &quot;Location 1&quot; would be <b>KY</b>.</p><p>If the distillery is in Islay, Scotland, the value for &quot;Location 1&quot; would be <b>Scotland</b>.</p>" %}
+
             {{ form.csrf_token }}
 
-            {% for field in form %}
-              {% if field.type != "SubmitField" and field.type != "CSRFTokenField" %}
-                <div class="mb-3">
-                  {{ field.label(class="form-label") }}
-                  {% if field.flags.required %}<span class="text-danger">*</span>{% endif %}
-                  {% if field.name == "region_1" %}
-                    <a tabindex="-1" href="" class="float-end pe-1" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="right" data-bs-html="true" data-bs-title="<i class='bi bi-question-circle pe-1'></i> Region 1" data-bs-content="<p>The first part of the distillery's location.</p><p>If the distillery is in Bardstown, KY, the value for &quot;Region 1&quot; would be <b>Bardstown</b>.</p><p>If the distillery is in Islay, Scotland, the value for &quot;Region 1&quot; would be <b>Islay</b>.</p>" onclick="return false;"><i class="bi bi-question-circle-fill"></i></a>
-                  {% endif %}
-                  {% if field.name == "region_2" %}
-                    <a tabindex="-1" href="" class="float-end pe-1" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="right" data-bs-html="true" data-bs-title="<i class='bi bi-question-circle pe-1'></i> Region 2" data-bs-content="<p>The second part of the distillery's location.</p><p>If the distillery is in Bardstown, KY, the value for &quot;Region 2&quot; would be <b>KY</b>.</p><p>If the distillery is in Islay, Scotland, the value for &quot;Region 2&quot; would be <b>Scotland</b>.</p>" onclick="return false;"><i class="bi bi-question-circle-fill"></i></a>
-                  {% endif %}
-                  {{ field(class="form-control") }}
-                  {% if field.errors %}
-                    {% for error in field.errors %}
-                      <span class="error">{{ error }}</span>
-                    {% endfor %}
-                  {% endif %}
-                </div>
-              {% endif %}
-            {% endfor %}
+            {{ form_utils.render_field(form.name) }}
+            {{ form_utils.render_field(form.description) }}
+            {{ form_utils.render_field(form.region_1, popover_text=popover_location_1) }}
+            {{ form_utils.render_field(form.region_2, popover_text=popover_location_2) }}
+            {{ form_utils.render_field(form.url) }}
+            
             <div class="pt-3 mb-3">
               {{ form.submit(class="btn btn-primary") }}
               {{ buttons.cancel_button(current_user, request) }}
@@ -47,12 +36,4 @@
       </div>
     </div>
   </main>
-{% endblock %}
-
-{% block scripts %}
-  {{ super() }}
-  <script type="text/javascript">
-    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
-    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
-  </script>
 {% endblock %}

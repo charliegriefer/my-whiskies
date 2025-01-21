@@ -62,7 +62,7 @@ def test_invalid_password_reset_password_too_short() -> None:
     assert_invalid_password_reset(
         "Short1",
         "Short1",
-        "Field must be between 8 and 24 characters long.",
+        "Password does not meet the defined requirements.",
         "password",
     )
 
@@ -71,7 +71,7 @@ def test_invalid_password_reset_password_contains_space() -> None:
     assert_invalid_password_reset(
         "Password 1234",
         "Password 1234",
-        "Password is invalid.",
+        "Password does not meet the defined requirements.",
         "password",
     )
 
@@ -80,7 +80,7 @@ def test_invalid_password_reset_password_no_lowercase() -> None:
     assert_invalid_password_reset(
         "PASSWORD1234",
         "PASSWORD1234",
-        "Password is invalid.",
+        "Password does not meet the defined requirements.",
         "password",
     )
 
@@ -89,7 +89,7 @@ def test_invalid_password_reset_password_no_uppercase() -> None:
     assert_invalid_password_reset(
         "password1234",
         "password1234",
-        "Password is invalid.",
+        "Password does not meet the defined requirements.",
         "password",
     )
 
@@ -98,6 +98,6 @@ def test_invalid_password_reset_password_no_numbers() -> None:
     assert_invalid_password_reset(
         "PasswordABC",
         "PasswordABC",
-        "Password is invalid.",
+        "Password does not meet the defined requirements.",
         "password",
     )

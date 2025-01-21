@@ -27,23 +27,25 @@ def get_current_year() -> int:
 class BottleAddForm(FlaskForm):
     name = TextAreaField(
         "Name:",
-        validators=[InputRequired(), Length(max=100)],
+        validators=[InputRequired("Bottle name is required."), Length(max=100)],
         render_kw={"placeholder": "Name"},
     )
     url = StringField(
         "URL:",
         validators=[
             Length(max=140),
-            URL(message="Please Enter a Valid URL"),
+            URL(message="Please enter a valid URL"),
             Optional(),
         ],
         render_kw={"placeholder": "URL"},
     )
-    type = SelectField("Bottle Type:", validators=[InputRequired()])
+    type = SelectField(
+        "Bottle Type:", validators=[InputRequired("Bottle Type is required.")]
+    )
     distilleries = Select2Field(
         "Distilleries",
         choices=[],
-        validators=[InputRequired()],
+        validators=[InputRequired("Distilleries is required.")],
         render_kw={"placeholder": " Choose One or More Distilleries"},
     )
     bottler_id = SelectField("Bottler:")
@@ -63,7 +65,7 @@ class BottleAddForm(FlaskForm):
             NumberRange(
                 min=1900,
                 max=get_current_year(),
-                message=f"Year Barrlled must be between 1900 and {get_current_year()}.",
+                message=f"Year Barrelled must be between 1900 and {get_current_year()}.",
             ),
         ],
         render_kw={"placeholder": "Year Barrelled"},
@@ -89,12 +91,14 @@ class BottleAddForm(FlaskForm):
         ],
         render_kw={"placeholder": "00.00"},
     )
-
     is_private = BooleanField("Private Bottle?")
     cost = DecimalField(
         "Cost:",
         places=2,
-        validators=[Optional(), NumberRange(min=0)],
+        validators=[
+            Optional(),
+            NumberRange(min=0, message="Cost must be greater than zero."),
+        ],
         render_kw={"placeholder": "00.00"},
     )
     stars = SelectField("Stars:", validators=[Optional()], validate_choice=False)

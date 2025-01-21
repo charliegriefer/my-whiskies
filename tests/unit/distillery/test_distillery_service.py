@@ -6,7 +6,7 @@ from flask.testing import FlaskClient
 from werkzeug.datastructures import MultiDict
 
 from mywhiskies.blueprints.bottle.models import Bottle, BottleTypes
-from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryForm
+from mywhiskies.blueprints.distillery.forms import DistilleryAddForm, DistilleryEditForm
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
@@ -43,7 +43,7 @@ def test_add_distillery(mock_flash: MagicMock, test_user_01: User) -> None:
             "url": "https://www.jackdaniels.com",
         }
     )
-    form = DistilleryForm(form_data)
+    form = DistilleryAddForm(form_data)
     add_distillery(form, test_user_01)
 
     mock_flash.assert_called_once_with(

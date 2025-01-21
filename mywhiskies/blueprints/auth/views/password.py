@@ -3,7 +3,6 @@ from flask_login import current_user
 
 from mywhiskies.blueprints.auth import auth
 from mywhiskies.blueprints.auth.forms import ResetPasswordRequestForm, ResetPWForm
-from mywhiskies.services import utils
 from mywhiskies.services.auth.email import send_password_reset_email
 from mywhiskies.services.auth.password import (
     find_user_for_password_reset,
@@ -25,16 +24,14 @@ def reset_password_request():
         user = find_user_for_password_reset(form.email.data)
         if user:
             send_password_reset_email(user)
-            flash_password_reset_instructions()
-            return redirect(url_for("auth.login"))
-
-        utils.handle_form_errors(form)
+        flash_password_reset_instructions()
+        return redirect(url_for("auth.login"))
 
     return render_template(
         "auth/reset_password_request.html",
         title="My Whiskies Online: Forgot Password",
-        has_captcha=True,
         form=form,
+        has_captcha=True,
         recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"],
     )
 
@@ -58,4 +55,6 @@ def reset_password(token: str):
         "auth/reset_password.html",
         title="My Whiskies Online: Reset Password",
         form=form,
+        has_captcha=True,
+        recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"],
     )

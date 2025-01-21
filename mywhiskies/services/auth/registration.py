@@ -1,7 +1,7 @@
 from datetime import datetime
+from typing import Optional
 
 from flask import Markup, flash, url_for
-from wtforms.fields import Label
 
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
@@ -11,17 +11,9 @@ def verify_confirmation_token(token):
     return User.verify_mail_confirm_token(token)
 
 
-def find_user_by_email(email):
-    # Finds a user by email
-    return db.session.execute(db.select(User).filter(User.email == email)).scalar()
-
-
-def initialize_registration_form(form):
-    terms_label = Markup(
-        f"I agree to the terms of <a href=\"{url_for('core.terms')}\">Terms of Service</a>."
-    )
-    form.agree_terms.label = Label("agree_terms", terms_label)
-    return form
+def find_user_by_email(email: str) -> Optional[User]:
+    stmt = db.select(User).filter(User.email == email.strip())
+    return db.session.execute(stmt).first()
 
 
 def register_user(username, email, password):
