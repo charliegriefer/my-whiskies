@@ -10,7 +10,7 @@ from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
 from mywhiskies.blueprints.bottle.models import Bottle
 
 
-def get_s3_config():
+def get_s3_config() -> tuple:
     return (
         current_app.config["BOTTLE_IMAGE_S3_BUCKET"],
         current_app.config["BOTTLE_IMAGE_S3_KEY"],
@@ -67,7 +67,7 @@ def add_bottle_images(
     return True
 
 
-def edit_bottle_images(form: BottleEditForm, bottle: Bottle):
+def edit_bottle_images(form: BottleEditForm, bottle: Bottle) -> None:
     s3_client = boto3.client("s3")
     img_s3_bucket, img_s3_key, _ = get_s3_config()
 
@@ -103,7 +103,7 @@ def edit_bottle_images(form: BottleEditForm, bottle: Bottle):
             )
 
 
-def delete_bottle_images(bottle: Bottle):
+def delete_bottle_images(bottle: Bottle) -> None:
     s3_client = boto3.client("s3")
     img_s3_bucket, img_s3_key, _ = get_s3_config()
     for i in range(1, 4):
