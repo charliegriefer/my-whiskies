@@ -19,6 +19,7 @@
 
             <form method="post" id="register_form" novalidate>
               {{ form.csrf_token }}
+              {{ form.g_recaptcha_response }}
 
               {{ form_utils.render_field(form.username) }}
               {{ form_utils.render_field(form.email) }}
@@ -26,7 +27,6 @@
               {{ form_utils.render_field(form.password2) }}
               {{ form_utils.render_checkbox(form.agree_terms) }}
               
-              <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
               <div class="mb-3 pt-3">
                 {{ form.submit(class="btn btn-primary") }}
                 {{ buttons.cancel_button(current_user, request) }}

@@ -3,18 +3,25 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container">
-      <h1>Re-Send Registration Confirmation E-Mail</h1>
+
+      <div class="row mt-4">
+        <div class="col">
+          <h3 class="mb-0" style="color:#696969;">My Whiskies Online</h3>
+          <h1>Re-Send Registration Confirmation E-Mail</h1>
+        </div>
+      </div>
+      
       <hr />
 
       <div class="container ms-0 ps-0">
         <div class="row">
           <div class="col-md-4 pt-4">
-            <form method="post">
+            <form method="post" novalidate>
               {{ form.csrf_token }}
-              <div class="mb-3">
-                {{ form.email.label(class="form-label") }}
-                {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
-              </div>
+              {{ form.g_recaptcha_response }}
+
+              {{ form_utils.render_field(form.email) }}
+              
               <div class="mb-3">
                 {{ form.submit(class="btn btn-primary") }}
                 {{ buttons.cancel_button(current_user, request) }}
@@ -25,8 +32,4 @@
       </div>
     </div>
   </main>
-{% endblock %}
-
-{% block scripts %}
-  {{ super() }}
 {% endblock %}
