@@ -45,6 +45,7 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
     app.register_blueprint(distillery_bp)
     app.register_blueprint(errors)
     app.register_blueprint(user_bp)
+
     register_extensions(app)
     register_signals(app)
 
