@@ -52,7 +52,9 @@ def distilleries(username: str):
     return response
 
 
-@distillery_bp.route("/distillery/<string:distillery_id>", methods=["GET", "POST"])
+@distillery_bp.route(
+    "/distillery/<string:distillery_id>", methods=["GET", "POST"], endpoint="detail"
+)
 def distillery_detail(distillery_id: str):
     distillery = db.one_or_404(db.select(Distillery).filter_by(id=distillery_id))
     response = get_distillery_detail(distillery, request, current_user)

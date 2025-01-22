@@ -75,7 +75,7 @@
                   <div class="col-3 text-nowrap fw-bold me-4 me-sm-0">{{ label }}:</div>
                   <div class="col-9 ps-4 ps-sm-2">
                     {% for distillery in bottle.distilleries %}
-                      <a href="{{ url_for('distillery.distillery_detail', username=bottle.user.username, distillery_id=distillery.id) }}">{{ distillery.name }}</a>
+                      <a href="{{ url_for('distillery.detail', username=bottle.user.username, distillery_id=distillery.id) }}">{{ distillery.name }}</a>
                       {% if not loop.last %}<br /> {% endif %}
                     {% endfor %}
                   </div>
