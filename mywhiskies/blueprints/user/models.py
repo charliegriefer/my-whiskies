@@ -81,6 +81,15 @@ class User(UserMixin, db.Model):
             return None
 
 
+class UserLogin(db.Model):
+    __tablename__ = "user_login"
+    user_id: Mapped[str] = mapped_column(db.ForeignKey("user.id"), primary_key=True)
+    login_date: Mapped[datetime] = mapped_column(
+        default=datetime.utcnow, primary_key=True
+    )
+    ip_address: Mapped[str] = mapped_column(String(15))
+
+
 @login_manager.user_loader
 def load_user(user_id: str) -> User:
     return db.get_or_404(User, user_id)

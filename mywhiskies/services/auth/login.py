@@ -1,5 +1,4 @@
 from flask import flash, url_for
-from flask_login import login_user
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
 from werkzeug.urls import url_parse
@@ -33,10 +32,6 @@ def check_email_confirmation(user: User) -> bool:
         flash(message, "danger")
         return False
     return True
-
-
-def log_in_user(user: User, remember_me: bool) -> None:
-    login_user(user, remember=remember_me)
 
 
 def determine_next_page(user: User, next_page_param: str) -> str:

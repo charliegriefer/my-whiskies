@@ -1,5 +1,5 @@
 from flask import current_app, flash, redirect, render_template, request, url_for
-from flask_login import current_user, logout_user
+from flask_login import current_user, login_user, logout_user
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
@@ -10,7 +10,6 @@ from mywhiskies.extensions import db
 from mywhiskies.services.auth.login import (
     check_email_confirmation,
     determine_next_page,
-    log_in_user,
     validate_password,
 )
 
@@ -42,7 +41,8 @@ def login():
         if not check_email_confirmation(user):
             return redirect(url_for("auth.login"))
 
-        log_in_user(user, form.remember_me.data)
+        login_user(user, remember=form.remember_me.data)
+
         next_page = determine_next_page(user, request.args.get("next"))
         return redirect(next_page)
 
