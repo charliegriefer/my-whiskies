@@ -69,7 +69,9 @@ def bottle_add():
     )
 
 
-@bottle_bp.route("/bottle/edit/<string:bottle_id>", methods=["GET", "POST"])
+@bottle_bp.route(
+    "/bottle/edit/<string:bottle_id>", methods=["GET", "POST"], endpoint="edit"
+)
 @login_required
 def bottle_edit(bottle_id: str):
     _bottle = db.get_or_404(Bottle, bottle_id)
@@ -89,7 +91,7 @@ def bottle_edit(bottle_id: str):
         form.distilleries.data = [d.id for d in _bottle.distilleries]
 
     return render_template(
-        "bottle/bottle_edit.html",
+        "bottle/edit.html",
         title=f"{current_user.username}'s Whiskies: Edit Bottle",
         bottle=_bottle,
         form=form,
