@@ -42,7 +42,7 @@ def test_add_bottle_requires_login(
 ) -> None:
     # loading the form should fail.
     response = client.get(
-        url_for("bottle.bottle_add"),
+        url_for("bottle.add"),
         follow_redirects=False,
     )
     assert response.status_code == 302
@@ -52,7 +52,7 @@ def test_add_bottle_requires_login(
     test_user_bottle_count = len(test_user_01.bottles)
     formdata = create_bottle_formdata(test_user_01)
     response = client.post(
-        url_for("bottle.bottle_add"),
+        url_for("bottle.add"),
         data=formdata,
         follow_redirects=True,
     )

@@ -51,7 +51,7 @@ def bottle(username: str, bottle_id: str):
     )
 
 
-@bottle_bp.route("/bottle/add", methods=["GET", "POST"])
+@bottle_bp.route("/bottle/add", methods=["GET", "POST"], endpoint="add")
 @login_required
 def bottle_add():
     if not current_user.distilleries:
@@ -63,7 +63,7 @@ def bottle_add():
         add_bottle(form, current_user)
         return redirect(url_for("bottle.bottles", username=current_user.username))
     return render_template(
-        "bottle/bottle_add.html",
+        "bottle/add.html",
         title=f"{current_user.username}'s Whiskies: Add Bottle",
         form=form,
     )
