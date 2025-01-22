@@ -100,7 +100,7 @@
               {% endif %}
             {% endif %}
             <td class="pb-0 me-0">
-              <a href="{{ url_for('bottle.bottle', bottle_id=bottle.id, username=bottle.user.username) }}" class="{{ opacity }}">{{ bottle.name |replace("\n", "<br />") |safe }}</a>
+              <a href="{{ url_for('bottle.detail', bottle_id=bottle.id, username=bottle.user.username) }}" class="{{ opacity }}">{{ bottle.name |replace("\n", "<br />") |safe }}</a>
               {% if bottle.image_count %}
                 {% if bottle.image_count == 1 %}
                   <i class="bi bi-image ms-1 {{ opacity }}" title="Has Image"></i>

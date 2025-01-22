@@ -29,7 +29,7 @@ def bottles(username: str):
     return response
 
 
-@bottle_bp.route("/<string:username>/bottle/<bottle_id>")
+@bottle_bp.route("/<string:username>/bottle/<bottle_id>", endpoint="detail")
 def bottle(username: str, bottle_id: str):
     _bottle = db.get_or_404(Bottle, bottle_id)
     _, _, img_s3_url = get_s3_config()
@@ -81,7 +81,7 @@ def bottle_edit(bottle_id: str):
         edit_bottle(form, _bottle)
         return redirect(
             url_for(
-                "bottle.bottle",
+                "bottle.detail",
                 bottle_id=bottle_id,
                 username=current_user.username,
             )
