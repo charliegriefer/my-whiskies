@@ -11,7 +11,7 @@ from mywhiskies.extensions import db
 def test_edit_bottler_requires_login(client: FlaskClient, test_user_01: User) -> None:
     response = client.get(
         url_for(
-            "bottler.bottler_edit",
+            "bottler.edit",
             username=test_user_01.username,
             bottler_id=test_user_01.bottlers[0].id,
         ),
@@ -39,7 +39,7 @@ def test_valid_bottler_edit_form(
 
     response = client.post(
         url_for(
-            "bottler.bottler_edit",
+            "bottler.edit",
             username=test_user_01.username,
             bottler_id=test_user_01.bottlers[0].id,
         ),

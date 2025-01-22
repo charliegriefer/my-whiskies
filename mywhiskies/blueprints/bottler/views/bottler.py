@@ -55,7 +55,9 @@ def bottler_add():
     )
 
 
-@bottler_bp.route("/bottler/edit/<string:bottler_id>", methods=["GET", "POST"])
+@bottler_bp.route(
+    "/bottler/edit/<string:bottler_id>", methods=["GET", "POST"], endpoint="edit"
+)
 @login_required
 def bottler_edit(bottler_id: str):
     bottler = db.get_or_404(Bottler, bottler_id)
@@ -66,7 +68,7 @@ def bottler_edit(bottler_id: str):
         return redirect(url_for("bottler.list", username=current_user.username))
 
     return render_template(
-        "bottler/bottler_edit.html",
+        "bottler/edit.html",
         title=f"{current_user.username}'s Whiskies: Edit Bottler",
         bottler=bottler,
         form=form,
