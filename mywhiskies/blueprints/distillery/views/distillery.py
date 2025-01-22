@@ -101,7 +101,7 @@ def distillery_edit(distillery_id: str):
     )
 
 
-@distillery_bp.route("/distillery_delete/<string:distillery_id>")
+@distillery_bp.route("/distillery_delete/<string:distillery_id>", endpoint="delete")
 @login_required
 def distillery_delete(distillery_id: str):
     delete_distillery(distillery_id, current_user)
