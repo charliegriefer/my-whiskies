@@ -30,7 +30,7 @@
     <a href="https://github.com/charliegriefer/my-whiskies"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://www.my-whiskies.online/charlie/">See it Live</a>
+    <a href="https://www.my-whiskies.online/">See it Live</a>
     ·
     <a href="https://github.com/charliegriefer/my-whiskies/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
