@@ -49,8 +49,7 @@ def test_valid_bottler_edit_form(
 
     assert response.status_code == 200
     assert (
-        url_for("bottler.bottler_list", username=test_user_01.username)
-        in response.request.url
+        url_for("bottler.list", username=test_user_01.username) in response.request.url
     )
 
     assert f'"{formdata["name"]}" has been successfully updated.' in response.get_data(

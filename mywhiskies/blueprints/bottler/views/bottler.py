@@ -16,7 +16,7 @@ from mywhiskies.services.bottler.bottler import (
 )
 
 
-@bottler_bp.route("/<string:username>/bottlers", endpoint="bottler_list")
+@bottler_bp.route("/<string:username>/bottlers", endpoint="list")
 def bottlers(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     response = list_bottlers(user, current_user, request, "bottlers")
@@ -61,7 +61,7 @@ def bottler_edit(bottler_id: str):
 
     if form.validate_on_submit():
         edit_bottler(form, bottler)
-        return redirect(url_for("bottler.bottler_list", username=current_user.username))
+        return redirect(url_for("bottler.list", username=current_user.username))
 
     return render_template(
         "bottler/bottler_edit.html",
@@ -75,4 +75,4 @@ def bottler_edit(bottler_id: str):
 @login_required
 def bottler_delete(bottler_id: str):
     delete_bottler(current_user, bottler_id)
-    return redirect(url_for("bottler.bottler_list", username=current_user.username))
+    return redirect(url_for("bottler.list", username=current_user.username))
