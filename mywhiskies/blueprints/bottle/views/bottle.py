@@ -19,7 +19,7 @@ from mywhiskies.services.bottle.form import prep_bottle_form
 from mywhiskies.services.bottle.image import get_s3_config
 
 
-@bottle_bp.route("/<string:username>/bottles", methods=["GET", "POST"])
+@bottle_bp.route("/<string:username>/bottles", methods=["GET", "POST"], endpoint="list")
 def bottles(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     response = list_bottles_by_user(user, request, current_user)
@@ -61,7 +61,7 @@ def bottle_add():
     form = prep_bottle_form(current_user, BottleAddForm())
     if form.validate_on_submit():
         add_bottle(form, current_user)
-        return redirect(url_for("bottle.bottles", username=current_user.username))
+        return redirect(url_for("bottle.list", username=current_user.username))
     return render_template(
         "bottle/add.html",
         title=f"{current_user.username}'s Whiskies: Add Bottle",
@@ -103,4 +103,4 @@ def bottle_edit(bottle_id: str):
 @login_required
 def bottle_delete(bottle_id: str):
     delete_bottle(current_user, bottle_id)
-    return redirect(url_for("bottle.bottles", username=current_user.username))
+    return redirect(url_for("bottle.list", username=current_user.username))
