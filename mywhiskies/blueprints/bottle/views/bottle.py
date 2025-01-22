@@ -19,9 +19,7 @@ from mywhiskies.services.bottle.form import prep_bottle_form
 from mywhiskies.services.bottle.image import get_s3_config
 
 
-@bottle_bp.route(
-    "/<string:username>/bottles", methods=["GET", "POST"], endpoint="bottles"
-)
+@bottle_bp.route("/<string:username>/bottles", methods=["GET", "POST"])
 def bottles(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     response = list_bottles_by_user(user, request, current_user)
