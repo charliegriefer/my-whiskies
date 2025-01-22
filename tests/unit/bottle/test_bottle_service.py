@@ -11,7 +11,7 @@ from mywhiskies.services.bottle.bottle import (
     add_bottle,
     delete_bottle,
     edit_bottle,
-    list_bottles,
+    list_bottles_by_user,
 )
 
 
@@ -20,7 +20,7 @@ def test_list_bottles(
     mock_render_template: MagicMock, test_user_01: User, client: FlaskClient
 ) -> None:
     mock_render_template.return_value = "Rendered Template"
-    response = list_bottles(test_user_01, request, test_user_01)
+    response = list_bottles_by_user(test_user_01, request, test_user_01)
     assert response.data == b"Rendered Template"
 
 

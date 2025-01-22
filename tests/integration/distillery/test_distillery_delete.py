@@ -10,7 +10,7 @@ def test_delete_distillery_not_logged_in(
     """Test that a user must be logged in to delete a bottler."""
     response = client.get(
         url_for(
-            "distillery.distillery_delete",
+            "distillery.delete",
             username=test_user_01.username,
             distillery_id=test_user_01.distilleries[0].id,
         ),
@@ -27,7 +27,7 @@ def test_delete_not_my_distillery(
     client = logged_in_user_01
     response = client.get(
         url_for(
-            "distillery.distillery_delete",
+            "distillery.delete",
             username=test_user_01.username,
             distillery_id=test_user_02.distilleries[0].id,
         ),
@@ -47,7 +47,7 @@ def test_delete_my_distillery_has_bottles(
     for distillery in test_user_01.distilleries:
         response = client.get(
             url_for(
-                "distillery.distillery_delete",
+                "distillery.delete",
                 username=test_user_01.username,
                 distillery_id=distillery.id,
             ),

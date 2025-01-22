@@ -8,9 +8,7 @@ from tests.conftest import expected_page_title
 def test_distillery_list(client: FlaskClient, test_user_01: User) -> None:
     expected_title = expected_page_title(test_user_01.username)
 
-    response = client.get(
-        url_for("distillery.distillery_list", username=test_user_01.username)
-    )
+    response = client.get(url_for("distillery.list", username=test_user_01.username))
     response_data = response.get_data(as_text=True)
 
     assert response.status_code == 200
@@ -30,9 +28,7 @@ def distillery_list_logged_in_elements(
 
     # get the distillery list page for another user.
     # even though we're logged in, we shouldn't see edit or delete icons in another user's list.
-    response = client.get(
-        url_for("distillery.distillery_list", username=test_user_02.username)
-    )
+    response = client.get(url_for("distillery.list", username=test_user_02.username))
     assert response.status_code == 200
 
     response_data = response.get_data(as_text=True)
@@ -43,9 +39,7 @@ def distillery_list_logged_in_elements(
 
     # get the distillery  list page the current user.
     # now we should see the edit and delete iconss, as well as the "Add" button.
-    response = client.get(
-        url_for("distillery.distillery_list", username=test_user_01.username)
-    )
+    response = client.get(url_for("distillery.list", username=test_user_01.username))
     response_data = response.get_data(as_text=True)
 
     assert response.status_code == 200
@@ -57,13 +51,13 @@ def distillery_list_logged_in_elements(
 
 def test_distillery_list_logged_out_elements(client: FlaskClient):
     # not logged in, so we shouldn't see the add bottler button, or any edit or delete icons in any lists.
-    response = client.get(url_for("distillery.distillery_list", username="testuser"))
+    response = client.get(url_for("distillery.list", username="testuser"))
     response_data = response.get_data(as_text=True)
     assert "Add Distillery" not in response_data
     assert "bi-pencil" not in response_data
     assert "bi-trash" not in response_data
 
-    response = client.get(url_for("distillery.distillery_list", username="testuser"))
+    response = client.get(url_for("distillery.list", username="testuser"))
     response_data = response.get_data(as_text=True)
     assert "Add Distillery" not in response_data
     assert "bi-pencil" not in response_data

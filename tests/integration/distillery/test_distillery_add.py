@@ -17,7 +17,7 @@ new_distillery_formdata = MultiDict(
 
 def test_add_distillery_requires_login(client: FlaskClient, test_user_01: User) -> None:
     response = client.get(
-        url_for("distillery.distillery_add", username=test_user_01.username),
+        url_for("distillery.add", username=test_user_01.username),
         follow_redirects=False,
     )
     assert response.status_code == 302
@@ -38,7 +38,7 @@ def test_add_distillery(logged_in_user_01: FlaskClient, test_user_01: User) -> N
     user_distilleries_count = len(test_user_01.distilleries)
 
     response = client.post(
-        url_for("distillery.distillery_add", username=test_user_01.username),
+        url_for("distillery.add", username=test_user_01.username),
         data=new_distillery_formdata,
         follow_redirects=True,
     )
@@ -46,7 +46,7 @@ def test_add_distillery(logged_in_user_01: FlaskClient, test_user_01: User) -> N
     # Check that the user is redirected to the home page
     assert response.status_code == 200
     assert (
-        url_for("distillery.distillery_list", username=test_user_01.username)
+        url_for("distillery.list", username=test_user_01.username)
         in response.request.url
     )
 

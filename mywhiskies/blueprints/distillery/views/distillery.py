@@ -2,7 +2,7 @@ from flask import current_app, flash, redirect, render_template, request, url_fo
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.distillery import distillery_bp
-from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryAddForm
+from mywhiskies.blueprints.distillery.forms import DistilleryAddForm, DistilleryEditForm
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
@@ -42,7 +42,7 @@ def bulk_distillery_add():
     return redirect(url_for("core.main", username=current_user.username))
 
 
-@distillery_bp.route("/<username>/distilleries", endpoint="distillery_list")
+@distillery_bp.route("/<username>/distilleries", endpoint="list")
 def distilleries(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     response = list_distilleries(user, current_user, request, "distilleries")
@@ -52,7 +52,9 @@ def distilleries(username: str):
     return response
 
 
-@distillery_bp.route("/distillery/<string:distillery_id>", methods=["GET", "POST"])
+@distillery_bp.route(
+    "/distillery/<string:distillery_id>", methods=["GET", "POST"], endpoint="detail"
+)
 def distillery_detail(distillery_id: str):
     distillery = db.one_or_404(db.select(Distillery).filter_by(id=distillery_id))
     response = get_distillery_detail(distillery, request, current_user)
@@ -62,26 +64,26 @@ def distillery_detail(distillery_id: str):
     return response
 
 
-@distillery_bp.route("/distillery_add", methods=["GET", "POST"])
+@distillery_bp.route("/distillery_add", methods=["GET", "POST"], endpoint="add")
 @login_required
 def distillery_add():
     form = DistilleryAddForm()
 
     if form.validate_on_submit():
         add_distillery(form, current_user)
-        return redirect(
-            url_for("distillery.distillery_list", username=current_user.username)
-        )
+        return redirect(url_for("distillery.list", username=current_user.username))
 
     return render_template(
-        "distillery/distillery_add.html",
+        "distillery/add.html",
         title=f"{current_user.username}'s Whiskies: Add Distillery",
         user=current_user,
         form=form,
     )
 
 
-@distillery_bp.route("/distillery_edit/<string:distillery_id>", methods=["GET", "POST"])
+@distillery_bp.route(
+    "/distillery_edit/<string:distillery_id>", methods=["GET", "POST"], endpoint="edit"
+)
 @login_required
 def distillery_edit(distillery_id: str):
     distillery = db.get_or_404(Distillery, distillery_id)
@@ -89,22 +91,18 @@ def distillery_edit(distillery_id: str):
 
     if form.validate_on_submit():
         edit_distillery(form, distillery)
-        return redirect(
-            url_for("distillery.distillery_list", username=current_user.username)
-        )
+        return redirect(url_for("distillery.list", username=current_user.username))
 
     return render_template(
-        "distillery/distillery_edit.html",
+        "distillery/edit.html",
         title=f"{current_user.username}'s Whiskies: Edit Distillery",
         distillery=distillery,
         form=form,
     )
 
 
-@distillery_bp.route("/distillery_delete/<string:distillery_id>")
+@distillery_bp.route("/distillery_delete/<string:distillery_id>", endpoint="delete")
 @login_required
 def distillery_delete(distillery_id: str):
     delete_distillery(distillery_id, current_user)
-    return redirect(
-        url_for("distillery.distillery_list", username=current_user.username)
-    )
+    return redirect(url_for("distillery.list", username=current_user.username))

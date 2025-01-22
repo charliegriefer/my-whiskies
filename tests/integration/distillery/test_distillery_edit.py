@@ -11,7 +11,7 @@ def test_edit_distillery_requires_login(
 ) -> None:
     response = client.get(
         url_for(
-            "distillery.distillery_edit",
+            "distillery.edit",
             username=test_user_01.username,
             distillery_id=test_user_01.bottlers[0].id,
         ),
@@ -36,7 +36,7 @@ def test_valid_distillery_edit_form(
 
     response = client.post(
         url_for(
-            "distillery.distillery_edit",
+            "distillery.edit",
             username=test_user_01.username,
             distillery_id=test_user_01.distilleries[0].id,
         ),
@@ -46,7 +46,7 @@ def test_valid_distillery_edit_form(
 
     assert response.status_code == 200
     assert (
-        url_for("distillery.distillery_list", username=test_user_01.username)
+        url_for("distillery.list", username=test_user_01.username)
         in response.request.url
     )
 

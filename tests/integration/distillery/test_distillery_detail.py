@@ -19,7 +19,7 @@ def test_distillery_detail_no_bottles(client: FlaskClient, test_user_02: User) -
 
     response = client.get(
         url_for(
-            "distillery.distillery_detail",
+            "distillery.detail",
             username=test_user_02.username,
             distillery_id=distillery_id,
         )
@@ -46,7 +46,7 @@ def test_distillery_detail_has_bottle(client: FlaskClient, test_user_01: User) -
 
     response = client.get(
         url_for(
-            "distillery.distillery_detail",
+            "distillery.detail",
             username=test_user_01.username,
             distillery_id=distillery_id,
         )
@@ -75,7 +75,7 @@ def test_distillery_detail_no_bottles_my_distillery(
 
     response = logged_in_user_02.get(
         url_for(
-            "distillery.distillery_detail",
+            "distillery.detail",
             username=test_user_02.username,
             distillery_id=distillery_id,
         )
@@ -107,7 +107,7 @@ def test_distillery_detail_bottles_my_distillery(
 
     response = logged_in_user_01.get(
         url_for(
-            "distillery.distillery_detail",
+            "distillery.detail",
             username=test_user_01.username,
             distillery_id=distillery_id,
         )
