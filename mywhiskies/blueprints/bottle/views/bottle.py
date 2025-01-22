@@ -99,7 +99,7 @@ def bottle_edit(bottle_id: str):
     )
 
 
-@bottle_bp.route("/bottle/delete/<string:bottle_id>")
+@bottle_bp.route("/bottle/delete/<string:bottle_id>", endpoint="delete")
 @login_required
 def bottle_delete(bottle_id: str):
     delete_bottle(current_user, bottle_id)
