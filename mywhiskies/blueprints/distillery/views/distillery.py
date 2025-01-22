@@ -64,7 +64,7 @@ def distillery_detail(distillery_id: str):
     return response
 
 
-@distillery_bp.route("/distillery_add", methods=["GET", "POST"])
+@distillery_bp.route("/distillery_add", methods=["GET", "POST"], endpoint="add")
 @login_required
 def distillery_add():
     form = DistilleryAddForm()
@@ -74,7 +74,7 @@ def distillery_add():
         return redirect(url_for("distillery.list", username=current_user.username))
 
     return render_template(
-        "distillery/distillery_add.html",
+        "distillery/add.html",
         title=f"{current_user.username}'s Whiskies: Add Distillery",
         user=current_user,
         form=form,

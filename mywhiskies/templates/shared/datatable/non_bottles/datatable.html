@@ -9,7 +9,7 @@
 
         {% if is_my_list %}
           {% if entity_type == "distilleries" %}
-            {% set target = url_for("distillery.distillery_add")%}
+            {% set target = url_for("distillery.add")%}
             {% set btn_text = "Add Distillery" %}
           {% elif entity_type == "bottlers" %}
             {% set target = url_for("bottler.add")%}
