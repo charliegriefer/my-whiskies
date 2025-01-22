@@ -30,7 +30,7 @@ def bottles(username: str):
 
 
 @bottle_bp.route("/<string:username>/bottle/<bottle_id>")
-def bottle_detail(username: str, bottle_id: str):
+def bottle(username: str, bottle_id: str):
     _bottle = db.get_or_404(Bottle, bottle_id)
     _, _, img_s3_url = get_s3_config()
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
@@ -79,9 +79,9 @@ def bottle_edit(bottle_id: str):
         edit_bottle(form, _bottle)
         return redirect(
             url_for(
-                "bottle.bottle_detail",
-                username=current_user.username,
+                "bottle.bottle",
                 bottle_id=bottle_id,
+                username=current_user.username,
             )
         )
     else:
