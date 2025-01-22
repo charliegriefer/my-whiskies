@@ -81,7 +81,9 @@ def distillery_add():
     )
 
 
-@distillery_bp.route("/distillery_edit/<string:distillery_id>", methods=["GET", "POST"])
+@distillery_bp.route(
+    "/distillery_edit/<string:distillery_id>", methods=["GET", "POST"], endpoint="edit"
+)
 @login_required
 def distillery_edit(distillery_id: str):
     distillery = db.get_or_404(Distillery, distillery_id)
@@ -92,7 +94,7 @@ def distillery_edit(distillery_id: str):
         return redirect(url_for("distillery.list", username=current_user.username))
 
     return render_template(
-        "distillery/distillery_edit.html",
+        "distillery/edit.html",
         title=f"{current_user.username}'s Whiskies: Edit Distillery",
         distillery=distillery,
         form=form,
