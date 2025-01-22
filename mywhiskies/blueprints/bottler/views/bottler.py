@@ -38,7 +38,7 @@ def bottler(bottler_id: str):
     return response
 
 
-@bottler_bp.route("/bottler/add", methods=["GET", "POST"])
+@bottler_bp.route("/bottler/add", methods=["GET", "POST"], endpoint="add")
 @login_required
 def bottler_add():
     form = BottlerAddForm()
@@ -48,7 +48,7 @@ def bottler_add():
         return redirect(url_for("core.main"))
 
     return render_template(
-        "bottler/bottler_add.html",
+        "bottler/add.html",
         title=f"{current_user.username}'s Whiskies: Add Bottler",
         user=current_user,
         form=form,
