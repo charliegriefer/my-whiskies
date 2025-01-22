@@ -9,5 +9,5 @@
 
 {% macro create_link(entity_type, action, id) -%}
   {%- set entity = set_entity(entity_type) -%}
-  {{- url_for(entity ~ "." ~ entity ~ "_" ~ action, **{entity ~ "_id": id}) -}}
+  {{- url_for(entity ~ "." ~ action, **{entity ~ "_id": id}) -}}
 {%- endmacro %}

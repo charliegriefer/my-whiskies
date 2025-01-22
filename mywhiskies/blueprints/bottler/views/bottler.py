@@ -26,8 +26,10 @@ def bottlers(username: str):
     return response
 
 
-@bottler_bp.route("/bottler/<string:bottler_id>", methods=["GET", "POST"])
-def bottler_detail(bottler_id: str):
+@bottler_bp.route(
+    "/bottler/<string:bottler_id>", methods=["GET", "POST"], endpoint="detail"
+)
+def bottler(bottler_id: str):
     bottler = db.one_or_404(db.select(Bottler).filter_by(id=bottler_id))
     response = get_bottler_detail(bottler, request, current_user)
     utils.set_cookie_expiration(

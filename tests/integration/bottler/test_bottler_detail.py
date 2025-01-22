@@ -17,7 +17,7 @@ def test_distillery_detail_no_bottles(client: FlaskClient, test_user_02: User) -
     """
     bottler_id = _get_crowded_barrel(test_user_02)
 
-    response = client.get(url_for("bottler.bottler_detail", bottler_id=bottler_id))
+    response = client.get(url_for("bottler.detail", bottler_id=bottler_id))
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "Crowded Barrel Whiskey Co." in response_data
@@ -38,7 +38,7 @@ def test_bottler_detail_has_bottle(client: FlaskClient, test_user_01: User) -> N
     """
     bottler_id = _get_lost_lantern(test_user_01)
 
-    response = client.get(url_for("bottler.bottler_detail", bottler_id=bottler_id))
+    response = client.get(url_for("bottler.detail", bottler_id=bottler_id))
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "Lost Lantern" in response_data
@@ -61,9 +61,7 @@ def test_bottler_detail_no_bottles_my_bottler(
     """
     bottler_id = _get_crowded_barrel(test_user_02)
 
-    response = logged_in_user_02.get(
-        url_for("bottler.bottler_detail", bottler_id=bottler_id)
-    )
+    response = logged_in_user_02.get(url_for("bottler.detail", bottler_id=bottler_id))
     response_data = response.get_data(as_text=True)
 
     assert response.status_code == 200
@@ -87,9 +85,7 @@ def test_bottler_detail_bottles_my_bottler(
     """
     bottler_id = _get_lost_lantern(test_user_01)
 
-    response = logged_in_user_01.get(
-        url_for("bottler.bottler_detail", bottler_id=bottler_id)
-    )
+    response = logged_in_user_01.get(url_for("bottler.detail", bottler_id=bottler_id))
     response_data = response.get_data(as_text=True)
 
     assert response.status_code == 200
