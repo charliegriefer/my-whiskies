@@ -46,7 +46,7 @@ def test_add_distillery(logged_in_user_01: FlaskClient, test_user_01: User) -> N
     # Check that the user is redirected to the home page
     assert response.status_code == 200
     assert (
-        url_for("distillery.distillery_list", username=test_user_01.username)
+        url_for("distillery.list", username=test_user_01.username)
         in response.request.url
     )
 

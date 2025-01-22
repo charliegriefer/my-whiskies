@@ -46,7 +46,7 @@ def test_valid_distillery_edit_form(
 
     assert response.status_code == 200
     assert (
-        url_for("distillery.distillery_list", username=test_user_01.username)
+        url_for("distillery.list", username=test_user_01.username)
         in response.request.url
     )
 
