@@ -1,5 +1,4 @@
 from flask import request
-from flask_login import user_logged_in
 
 from mywhiskies.blueprints.user.models import UserLogin
 from mywhiskies.extensions import db
@@ -15,9 +14,3 @@ def log_user_login(sender, user):
     )
     db.session.add(login_entry)
     db.session.commit()
-
-
-def register_signals(app):
-    """Registers signals with the Flask app."""
-    with app.app_context():
-        user_logged_in.connect(log_user_login, app)
