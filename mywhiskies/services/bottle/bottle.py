@@ -17,7 +17,7 @@ from mywhiskies.services.bottle.image import (
 )
 
 
-def list_bottles(user: User, request: request, current_user: User) -> Response:
+def list_bottles_by_user(user: User, request: request, current_user: User) -> Response:
     return utils.prep_datatable_bottles(user, current_user, request)
 
 

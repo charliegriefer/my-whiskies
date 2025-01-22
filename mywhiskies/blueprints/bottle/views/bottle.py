@@ -13,18 +13,18 @@ from mywhiskies.services.bottle.bottle import (
     add_bottle,
     delete_bottle,
     edit_bottle,
-    list_bottles,
+    list_bottles_by_user,
 )
 from mywhiskies.services.bottle.form import prep_bottle_form
 from mywhiskies.services.bottle.image import get_s3_config
 
 
 @bottle_bp.route(
-    "/<string:username>/bottles", methods=["GET", "POST"], endpoint="list_bottles"
+    "/<string:username>/bottles", methods=["GET", "POST"], endpoint="bottles"
 )
 def bottles(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
-    response = list_bottles(user, request, current_user)
+    response = list_bottles_by_user(user, request, current_user)
     utils.set_cookie_expiration(
         response, "dt_list_length", request.cookies.get("dt-list-length", "50")
     )
@@ -43,7 +43,7 @@ def bottle_detail(username: str, bottle_id: str):
             abort(404)
 
     return render_template(
-        "bottle/bottle_detail.html",
+        "bottle/bottle.html",
         title=f"{_bottle.user.username}'s Whiskies: {_bottle.name}",
         bottle=_bottle,
         user=_bottle.user,
@@ -63,7 +63,7 @@ def bottle_add():
     form = prep_bottle_form(current_user, BottleAddForm())
     if form.validate_on_submit():
         add_bottle(form, current_user)
-        return redirect(url_for("bottle.list_bottles", username=current_user.username))
+        return redirect(url_for("bottle.bottles", username=current_user.username))
     return render_template(
         "bottle/bottle_add.html",
         title=f"{current_user.username}'s Whiskies: Add Bottle",
@@ -103,4 +103,4 @@ def bottle_edit(bottle_id: str):
 @login_required
 def bottle_delete(bottle_id: str):
     delete_bottle(current_user, bottle_id)
-    return redirect(url_for("bottle.list_bottles", username=current_user.username))
+    return redirect(url_for("bottle.bottles", username=current_user.username))

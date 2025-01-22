@@ -20,7 +20,7 @@
           {% if is_my_bottle %}
             <a class="btn btn-primary me-2" href="{{ url_for('bottle.bottle_edit', bottle_id=bottle.id) }}" role="button"><i class="bi bi-pencil"></i> Edit Bottle</a>
           {% endif %}
-          <a class="btn btn-primary" href="{{ url_for('bottle.list_bottles', username=bottle.user.username) }}" role="button"><i class="bi bi-list-ul"></i> {{ btn_label }}</a>
+          <a class="btn btn-primary" href="{{ url_for('bottle.bottles', username=bottle.user.username) }}" role="button"><i class="bi bi-list-ul"></i> {{ btn_label }}</a>
         </div>
       </div>
 
