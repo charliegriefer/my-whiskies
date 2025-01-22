@@ -3,6 +3,7 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 from flask import Flask
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import DevConfig, ProdConfig
 from mywhiskies.blueprints.auth import auth
@@ -30,6 +31,8 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
 
     if settings_override:
         app.config.update(settings_override)
+
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_host=1)
 
     @app.context_processor
     def inject_today_date():
