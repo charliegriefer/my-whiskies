@@ -35,6 +35,10 @@ def login():
         )
 
         if user is None or not validate_password(user, form.password.data):
+            current_app.logger.warning(
+                f"Invalid login attempt for username '{form.username.data}' "
+                f"from IP {request.remote_addr}"
+            )
             flash("The username and password combination is not recognized.", "danger")
             return redirect(url_for("auth.login"))
 
@@ -57,5 +61,6 @@ def login():
 
 @auth.route("/logout")
 def logout():
+    current_app.logger.info(f"User {current_user.username} logged out")
     logout_user()
     return redirect(url_for("core.main"))
