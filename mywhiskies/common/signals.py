@@ -1,4 +1,4 @@
-from flask import request
+from flask import current_app, request
 
 from mywhiskies.blueprints.user.models import UserLogin
 from mywhiskies.extensions import db
@@ -14,3 +14,5 @@ def log_user_login(sender, user):
     )
     db.session.add(login_entry)
     db.session.commit()
+
+    current_app.logger.info(f"User {user.username} logged in from {ip_address}")
