@@ -1,5 +1,5 @@
 import boto3
-from flask import flash, request
+from flask import current_app, flash, request
 from flask.wrappers import Response
 
 from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
@@ -69,6 +69,9 @@ def add_bottle(form: BottleAddForm, user: User) -> None:
     bottle_in.image_count = get_bottle_image_count(bottle_in.id)
     db.session.commit()
 
+    current_app.logger.info(
+        f"{user.username} added bottle {form.name.data} successfully."
+    )
     flash(flash_message, flash_category)
 
 
@@ -111,6 +114,9 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
         flash_message = f'An error occurred while updating "{bottle.name}".'
         flash_category = "danger"
 
+    current_app.logger.info(
+        f"{bottle.user.username} edited bottle {bottle.name} successfully."
+    )
     flash(flash_message, flash_category)
 
 
@@ -134,4 +140,7 @@ def delete_bottle(user: User, bottle_id: str) -> None:
 
     db.session.delete(bottle_to_delete)
     db.session.commit()
+    current_app.logger.info(
+        f"{user.username} deleted bottle {bottle_to_delete.name} successfully."
+    )
     flash("Bottle deleted successfully", "success")
