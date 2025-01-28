@@ -12,7 +12,7 @@ def register_logging(app):
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
-    if not app.testing and os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+    if not app.testing and os.environ.get("WERKZEUG_RUN_MAIN", "true") == "true":
         log_file = os.path.join(log_dir, "my-whiskies.log")
         file_handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1)
         file_handler.setLevel(app.config["LOG_LEVEL"])
