@@ -1,19 +1,18 @@
 import json
 import os
 
-from flask import current_app as app
-from flask import flash, request
+from flask import current_app, flash, request
 from flask.wrappers import Response
 from sqlalchemy import insert
 
-from mywhiskies.blueprints.distillery.forms import DistilleryEditForm, DistilleryAddForm
+from mywhiskies.blueprints.distillery.forms import DistilleryAddForm, DistilleryEditForm
 from mywhiskies.blueprints.distillery.models import Distillery
 from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
 from mywhiskies.services import utils
 
 
-def bulk_add_distillery(user: User, current_app: app) -> None:
+def bulk_add_distillery(user: User, current_app: current_app) -> None:
     json_file = os.path.join(
         current_app.static_folder, "data", "base_distilleries.json"
     )
@@ -40,6 +39,9 @@ def add_distillery(form: DistilleryAddForm, user: User) -> None:
     form.populate_obj(distillery_in)
     db.session.add(distillery_in)
     db.session.commit()
+    current_app.logger.info(
+        f"{user.username} added distillery {distillery_in.name} successfully."
+    )
     flash(f'Distillery "{distillery_in.name}" has been successfully added.', "success")
 
 
@@ -47,13 +49,15 @@ def edit_distillery(form: DistilleryEditForm, distillery: Distillery) -> None:
     form.populate_obj(distillery)
     db.session.add(distillery)
     db.session.commit()
+    current_app.logger.info(
+        f"{distillery.user.username} edited distillery {distillery.name} successfully."
+    )
     flash(f'Distillery "{distillery.name}" has been successfully updated.', "success")
 
 
-def delete_distillery(distillery_id: str, current_user: User) -> None:
+def delete_distillery(user: User, distillery_id: str) -> None:
     distillery = db.get_or_404(Distillery, distillery_id)
-
-    if distillery.user.id != current_user.id:
+    if distillery.user.id != user.id:
         flash("There was an issue deleting this distillery.", "danger")
         return
 
@@ -65,6 +69,9 @@ def delete_distillery(distillery_id: str, current_user: User) -> None:
     else:
         db.session.delete(distillery)
         db.session.commit()
+        current_app.logger.info(
+            f"{user.username} deleted distillery {distillery.name} successfully."
+        )
         flash(
             f'Distillery "{distillery.name}" has been successfully deleted.', "success"
         )

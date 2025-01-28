@@ -1,5 +1,5 @@
 import boto3
-from flask import flash, request
+from flask import current_app, flash, request
 from flask.wrappers import Response
 
 from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
@@ -69,6 +69,9 @@ def add_bottle(form: BottleAddForm, user: User) -> None:
     bottle_in.image_count = get_bottle_image_count(bottle_in.id)
     db.session.commit()
 
+    current_app.logger.info(
+        f"{user.username} added bottle {form.name.data} successfully."
+    )
     flash(flash_message, flash_category)
 
 
@@ -111,27 +114,31 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
         flash_message = f'An error occurred while updating "{bottle.name}".'
         flash_category = "danger"
 
+    current_app.logger.info(
+        f"{bottle.user.username} edited bottle {bottle.name} successfully."
+    )
     flash(flash_message, flash_category)
 
 
 def delete_bottle(user: User, bottle_id: str) -> None:
-    # Fetch the bottle directly and check ownership
-    bottle_to_delete = db.session.get(Bottle, bottle_id)
-
-    if not bottle_to_delete or bottle_to_delete.user_id != user.id:
+    bottle = db.get_or_404(Bottle, bottle_id)
+    if bottle.user_id != user.id:
         flash("There was an issue deleting this bottle.", "danger")
         return
 
     img_s3_bucket, img_s3_key, _ = get_s3_config()
 
-    if bottle_to_delete.image_count:
+    if bottle.image_count:
         s3_client = boto3.client("s3")
-        for i in range(1, bottle_to_delete.image_count + 1):
+        for i in range(1, bottle.image_count + 1):
             s3_client.delete_object(
                 Bucket=f"{img_s3_bucket}",
-                Key=f"{img_s3_key}/{bottle_to_delete.id}_{i}.png",
+                Key=f"{img_s3_key}/{bottle.id}_{i}.png",
             )
 
-    db.session.delete(bottle_to_delete)
+    db.session.delete(bottle)
     db.session.commit()
+    current_app.logger.info(
+        f"{user.username} deleted bottle {bottle.name} successfully."
+    )
     flash("Bottle deleted successfully", "success")

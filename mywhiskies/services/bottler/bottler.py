@@ -1,4 +1,4 @@
-from flask import flash, request
+from flask import current_app, flash, request
 from flask.wrappers import Response
 
 from mywhiskies.blueprints.bottler.forms import BottlerAddForm, BottlerEditForm
@@ -19,12 +19,18 @@ def add_bottler(form: BottlerAddForm, user: User) -> None:
     form.populate_obj(bottler_in)
     db.session.add(bottler_in)
     db.session.commit()
+    current_app.logger.info(
+        f"{user.username} added bottler {bottler_in.name} successfully."
+    )
     flash(f'"{bottler_in.name}" has been successfully added.', "success")
 
 
 def edit_bottler(form: BottlerEditForm, bottler: Bottler) -> None:
     form.populate_obj(bottler)
     db.session.commit()
+    current_app.logger.info(
+        f"{bottler.user.username} edited bottler {bottler.name} successfully."
+    )
     flash(f'"{bottler.name}" has been successfully updated.', "success")
 
 
@@ -42,6 +48,9 @@ def delete_bottler(user: User, bottler_id: str) -> None:
     else:
         db.session.delete(bottler)
         db.session.commit()
+        current_app.logger.info(
+            f"{user.username} deleted bottle {bottler.name} successfully."
+        )
         flash(f'"{bottler.name}" has been successfully deleted.', "success")
 
 

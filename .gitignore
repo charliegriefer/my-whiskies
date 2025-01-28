@@ -190,6 +190,10 @@ fabric.properties
 /logs/*
 logs/
 logs/*
+/log/
+/log/*
+log/
+log/*
 
 # vscode
 .vscode/
