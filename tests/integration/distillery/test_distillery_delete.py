@@ -7,7 +7,7 @@ from mywhiskies.blueprints.user.models import User
 def test_delete_distillery_not_logged_in(
     client: FlaskClient, test_user_01: User
 ) -> None:
-    """Test that a user must be logged in to delete a bottler."""
+    """Test that a user must be logged in to delete a distillery."""
     response = client.get(
         url_for(
             "distillery.delete",
@@ -23,7 +23,7 @@ def test_delete_distillery_not_logged_in(
 def test_delete_not_my_distillery(
     logged_in_user_01: FlaskClient, test_user_01: User, test_user_02: User
 ) -> None:
-    """Test that even if logged in, a user cannot delete another user's bottler."""
+    """Test that even if logged in, a user cannot delete another user's distillery."""
     client = logged_in_user_01
     response = client.get(
         url_for(

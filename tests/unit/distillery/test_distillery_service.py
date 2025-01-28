@@ -80,7 +80,7 @@ def test_edit_distillery(mock_flash: MagicMock, test_distillery: Distillery) -> 
 def test_delete_distillery(
     mock_flash: MagicMock, test_user_01: User, test_distillery: Distillery
 ) -> None:
-    delete_distillery(test_distillery.id, test_user_01)
+    delete_distillery(test_user_01, test_distillery.id)
     mock_flash.assert_called_once_with(
         'Distillery "Whiskey Del Bac" has been successfully deleted.', "success"
     )
