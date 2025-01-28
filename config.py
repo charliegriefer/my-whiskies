@@ -34,7 +34,7 @@ class BaseConfig:
     MAIL_DEBUG = 1
 
     # LOGGING
-    LOG_LEVEL = logging.DEBUG
+    LOG_LEVEL = os.environ["LOG_LEVEL"]
     LOG_BACKTRACE = False
 
     # RECAPTCHA
