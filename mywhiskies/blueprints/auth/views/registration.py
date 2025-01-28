@@ -31,9 +31,10 @@ def register():
         )
         send_registration_confirmation_email(user)
         flash_registration_instructions()
+        current_app.logger.info(f"User {user.username} registered successfully.")
         return redirect(url_for("auth.login"))
 
-        current_app.logger.info(f"Form validation errors: {form.errors}")
+        current_app.logger.info(f"Registration form validation errors: {form.errors}")
         utils.handle_form_errors(form)
 
     return render_template(
