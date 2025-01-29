@@ -17,19 +17,18 @@ def register_logging(app):
         return
 
     # only log from main Gunicorn worker in prod
-    if not app.debug and os.environ.get("GUNICORN_WORKER_ID", "0") != 0:
-        return
+    # remove the worker id check since we want all workers to log
+    if not app.debug:
+        log_dir = app.config.get("LOG_DIR")
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
 
-    log_dir = app.config.get("LOG_DIR")
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-
-    # file logging
-    log_file = os.path.join(log_dir, "my-whiskies.log")
-    file_handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1)
-    file_handler.setLevel(app.config["LOG_LEVEL"])
-    file_handler.setFormatter(logging.Formatter(LOG_FORMAT))
-    app.logger.addHandler(file_handler)
+        # file logging
+        log_file = os.path.join(log_dir, "my-whiskies.log")
+        file_handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1)
+        file_handler.setLevel(app.config["LOG_LEVEL"])
+        file_handler.setFormatter(logging.Formatter(LOG_FORMAT))
+        app.logger.addHandler(file_handler)
 
     # email error notifications
     if app.config["MAIL_ADMINS"]:
