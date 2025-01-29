@@ -12,26 +12,22 @@ def register_logging(app):
     if app.testing:
         return
 
-    # only log the main process in development
+    # only log the main process in development or main worker in prod
     if app.debug and os.environ.get("WERKZEUG_RUN_MAIN") != "true":
         return
+    elif not app.debug and os.environ.get("GUNICORN_WORKER_NUM", "0") != "0":
+        return
 
-    # only log from main Gunicorn worker (worker 0) in prod
-    if not app.debug:
-        worker_num = os.environ.get("GUNICORN_WORKER_NUM", "0")
-        if worker_num != "0":
-            return
+    # file logging
+    log_dir = app.config.get("LOG_DIR")
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
 
-        log_dir = app.config.get("LOG_DIR")
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-
-        # file logging
-        log_file = os.path.join(log_dir, "my-whiskies.log")
-        file_handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1)
-        file_handler.setLevel(app.config["LOG_LEVEL"])
-        file_handler.setFormatter(logging.Formatter(LOG_FORMAT))
-        app.logger.addHandler(file_handler)
+    log_file = os.path.join(log_dir, "my-whiskies.log")
+    file_handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1)
+    file_handler.setLevel(app.config["LOG_LEVEL"])
+    file_handler.setFormatter(logging.Formatter(LOG_FORMAT))
+    app.logger.addHandler(file_handler)
 
     # email error notifications
     if app.config["MAIL_ADMINS"]:
