@@ -8,6 +8,14 @@ LOG_FORMAT = "%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d
 
 
 def register_logging(app):
+    # Add temporary debug prints
+    import sys
+
+    print(
+        f"DEBUG: Worker info - process_num={os.environ.get('process_num')}",
+        file=sys.stderr,
+    )
+
     # don't log tests
     if app.testing:
         return
