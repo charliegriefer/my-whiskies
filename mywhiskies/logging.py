@@ -12,15 +12,15 @@ def register_logging(app):
     if app.testing:
         return
 
-    # only log the main process in development
+    # development: only log main process
     if app.debug and os.environ.get("WERKZEUG_RUN_MAIN") != "true":
         return
 
-    # only log from master process in prod
-    if not app.debug and os.environ.get("GUNICORN_ARBITER", "false") != "true":
+    # production: only log from master process
+    if not app.debug and os.getenv("GUNICORN_PARENT_PID") is not None:
         return
 
-    # file logging
+    # file logging setup (will only happen for master process)
     log_dir = app.config.get("LOG_DIR")
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
