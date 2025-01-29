@@ -36,6 +36,7 @@ class BaseConfig:
     # LOGGING
     LOG_LEVEL = os.environ["LOG_LEVEL"]
     LOG_BACKTRACE = False
+    LOG_DIR = os.environ["LOG_DIR"]
 
     # RECAPTCHA
     RECAPTCHA_PUBLIC_KEY = os.environ["RECAPTCHA_PUBLIC_KEY"]
