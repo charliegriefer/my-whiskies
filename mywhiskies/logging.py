@@ -16,9 +16,12 @@ def register_logging(app):
     if app.debug and os.environ.get("WERKZEUG_RUN_MAIN") != "true":
         return
 
-    # only log from main Gunicorn worker in prod
-    # remove the worker id check since we want all workers to log
+    # only log from main Gunicorn worker (worker 0) in prod
     if not app.debug:
+        worker_num = os.environ.get("GUNICORN_WORKER_NUM", "0")
+        if worker_num != "0":
+            return
+
         log_dir = app.config.get("LOG_DIR")
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
