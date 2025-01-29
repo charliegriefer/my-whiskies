@@ -15,7 +15,9 @@ def register_logging(app):
     # only log the main process in development or main worker in prod
     if app.debug and os.environ.get("WERKZEUG_RUN_MAIN") != "true":
         return
-    elif not app.debug and os.environ.get("GUNICORN_WORKER_NUM", "0") != "0":
+    elif (
+        not app.debug and os.environ.get("process_num", "0") != "0"
+    ):  # Changed from GUNICORN_WORKER_NUM
         return
 
     # file logging
