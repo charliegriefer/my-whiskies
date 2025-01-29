@@ -8,24 +8,16 @@ LOG_FORMAT = "%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d
 
 
 def register_logging(app):
-    # Add temporary debug prints
-    import sys
-
-    print(
-        f"DEBUG: Worker info - process_num={os.environ.get('process_num')}",
-        file=sys.stderr,
-    )
-
     # don't log tests
     if app.testing:
         return
 
-    # only log the main process in development or main worker in prod
+    # only log the main process in development
     if app.debug and os.environ.get("WERKZEUG_RUN_MAIN") != "true":
         return
-    elif (
-        not app.debug and os.environ.get("process_num", "0") != "0"
-    ):  # Changed from GUNICORN_WORKER_NUM
+
+    # only log from master process in prod
+    if not app.debug and os.environ.get("GUNICORN_ARBITER", "false") != "true":
         return
 
     # file logging
