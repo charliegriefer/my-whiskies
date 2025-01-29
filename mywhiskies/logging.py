@@ -11,11 +11,15 @@ def register_logging(app):
     # don't log tests
     if app.testing:
         return
-    
+
     # only log the main process in development
     if app.debug and os.environ.get("WERKZEUG_RUN_MAIN") != "true":
         return
-    
+
+    # only log from main Gunicorn worker in prod
+    if not app.debug and os.environ.get("GUNICORN_WORKER_ID", "0") != 0:
+        return
+
     log_dir = app.config.get("LOG_DIR")
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
