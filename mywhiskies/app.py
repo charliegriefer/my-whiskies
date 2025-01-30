@@ -1,8 +1,11 @@
 import os
+import time
+import uuid
 from datetime import datetime
 
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, g, request
+from flask_login import current_user
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import DevConfig, ProdConfig
@@ -35,9 +38,34 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
 
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_host=1)
 
-    @app.context_processor
-    def inject_today_date():
-        return {"current_date": datetime.today()}
+    # add datetime to template context
+    app.jinja_env.globals["datetime"] = datetime
+
+    @app.before_request
+    def before_request():
+        g.start_time = time.time()
+        g.request_id = str(uuid.uuid4())
+
+    @app.after_request
+    def after_request(response):
+        if not app.testing:
+            # Skip logging for static files
+            if not request.path.startswith("/static/"):
+                duration_ms = int((time.time() - g.start_time) * 1000)
+                extra = {
+                    "duration_ms": duration_ms,
+                    "request_id": g.request_id,
+                    "ip": request.remote_addr,
+                    "status_code": response.status_code,
+                }
+                if current_user.is_authenticated:
+                    extra["user"] = current_user.email
+
+                app.logger.info(
+                    f"{request.method} {request.path} [{response.status_code}]",
+                    extra=extra,
+                )
+        return response
 
     app.register_blueprint(auth)
     app.register_blueprint(core_bp)

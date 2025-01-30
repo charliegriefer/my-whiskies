@@ -1,4 +1,4 @@
-from flask import current_app, redirect, render_template, url_for
+from flask import current_app, redirect, render_template, request, url_for
 from flask_login import current_user
 
 from mywhiskies.blueprints.auth import auth
@@ -24,6 +24,10 @@ def reset_password_request():
         user = find_user_for_password_reset(form.email.data)
         if user:
             send_password_reset_email(user)
+            current_app.logger.info(
+                "Password reset requested",
+                extra={"user": user.email, "ip": request.remote_addr},
+            )
         flash_password_reset_instructions()
         return redirect(url_for("auth.login"))
 
