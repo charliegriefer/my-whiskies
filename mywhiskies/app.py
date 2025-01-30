@@ -5,6 +5,7 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 from flask import Flask, g, request
+from flask_login import current_user
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import DevConfig, ProdConfig
@@ -57,8 +58,8 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
                     "ip": request.remote_addr,
                     "status_code": response.status_code,
                 }
-                if hasattr(g, "user"):
-                    extra["user"] = g.user
+                if current_user.is_authenticated:
+                    extra["user"] = current_user.email
 
                 app.logger.info(
                     f"{request.method} {request.path} [{response.status_code}]",
