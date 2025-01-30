@@ -30,6 +30,22 @@ class BottleTypes(enum.Enum):
     OTHER = "Other"
 
 
+class BottleImage(db.Model):
+    __tablename__ = "bottle_image"
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    bottle_id: Mapped[str] = mapped_column(ForeignKey("bottle.id"))
+    sequence: Mapped[int]
+    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+
+    bottle: Mapped["Bottle"] = relationship("Bottle", back_populates="images")
+
+    __table_args__ = (
+        sa.UniqueConstraint("bottle_id", "sequence", name="_bottle_sequence_uc"),
+    )
+
+
 class Bottle(db.Model):
     __tablename__ = "bottle"
     id: Mapped[str] = mapped_column(
@@ -50,7 +66,6 @@ class Bottle(db.Model):
     date_purchased: Mapped[Optional[datetime]]
     date_opened: Mapped[Optional[datetime]]
     date_killed: Mapped[Optional[datetime]]
-    image_count: Mapped[int] = mapped_column(default=0)
     is_private: Mapped[bool] = mapped_column(
         default=False, server_default=sa.text("false"), nullable=False
     )
@@ -71,6 +86,22 @@ class Bottle(db.Model):
     bottler: Mapped["Bottler"] = relationship(
         foreign_keys=[bottler_id], back_populates="bottles"
     )
+    images: Mapped[List["BottleImage"]] = relationship(
+        "BottleImage",
+        back_populates="bottle",
+        order_by="BottleImage.sequence",
+        cascade="all, delete-orphan",
+    )
+
+    @property
+    def image_count(self) -> int:
+        return len(self.images)
+
+    def next_image_sequence(self) -> int:
+        """Return next available image sequence number."""
+        if not self.images:
+            return 1
+        return max(img.sequence for img in self.images) + 1
 
 
 @event.listens_for(Bottle, "before_insert")
