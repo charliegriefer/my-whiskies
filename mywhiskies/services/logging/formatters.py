@@ -22,5 +22,7 @@ class JsonFormatter(logging.Formatter):
             log_object["ip"] = record.ip
         if hasattr(record, "request_id"):
             log_object["request_id"] = record.request_id
+        if hasattr(record, "duration_ms"):
+            log_object["duration_ms"] = record.duration_ms
 
         return json.dumps(log_object)
