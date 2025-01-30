@@ -37,6 +37,9 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
 
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_host=1)
 
+    # add datetime to template context
+    app.jinja_env.globals["datetime"] = datetime
+
     @app.before_request
     def before_request():
         g.start_time = time.time()
@@ -62,10 +65,6 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
                     extra=extra,
                 )
         return response
-
-    @app.context_processor
-    def inject_today_date():
-        return {"current_date": datetime.today()}
 
     app.register_blueprint(auth)
     app.register_blueprint(core_bp)
