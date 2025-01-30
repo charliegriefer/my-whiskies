@@ -2,6 +2,7 @@ import logging
 import os
 from logging.handlers import TimedRotatingFileHandler
 
+from mywhiskies.services.logging.formatters import JsonFormatter
 from mywhiskies.services.logging.handlers import CustomSMTPHandler
 
 LOG_FORMAT = "%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]"
@@ -11,18 +12,30 @@ def register_logging(app):
     if app.testing:
         return
 
-    # Set up file logging
+    # set up file logging
     log_dir = app.config.get("LOG_DIR")
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
-    log_file = os.path.join(log_dir, "my-whiskies.log")
-    file_handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1)
-    file_handler.setLevel(app.config["LOG_LEVEL"])
-    file_handler.setFormatter(logging.Formatter(LOG_FORMAT))
-    app.logger.addHandler(file_handler)
+    # text logging
+    text_log = os.path.join(log_dir, "my-whiskies.log")
+    text_handler = TimedRotatingFileHandler(
+        text_log, when="midnight", interval=1, backupCount=30, encoding="utf-8"
+    )
+    text_handler.setLevel(app.config["LOG_LEVEL"])
+    text_handler.setFormatter(logging.Formatter(LOG_FORMAT))
+    app.logger.addHandler(text_handler)
 
-    # Set up email notifications
+    # JSON structured logging
+    json_log = os.path.join(log_dir, "my-whiskies.json.log")
+    json_handler = TimedRotatingFileHandler(
+        json_log, when="midnight", interval=1, backupCount=30, encoding="utf-8"
+    )
+    json_handler.setLevel(app.config["LOG_LEVEL"])
+    json_handler.setFormatter(JsonFormatter())
+    app.logger.addHandler(json_handler)
+
+    # email handler
     if app.config["MAIL_ADMINS"]:
         mail_handler = CustomSMTPHandler(
             mailhost=(app.config["MAIL_SERVER"], app.config["MAIL_PORT"]),
