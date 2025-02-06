@@ -11,8 +11,6 @@ from mywhiskies.services import utils
 from mywhiskies.services.bottle.image import (
     add_bottle_images,
     delete_bottle_images,
-    edit_bottle_images,
-    get_bottle_image_count,
     get_s3_config,
 )
 
@@ -68,10 +66,13 @@ def add_bottle(form: BottleAddForm, user: User) -> Bottle:
 
 
 def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
-    distilleries = []
-    for distillery_id in form.distilleries.data:
-        distilleries.append(db.session.get(Distillery, distillery_id))
+    """Updates a bottle's details and manages its images properly."""
 
+    # Update bottle details
+    distilleries = [
+        db.session.get(Distillery, distillery_id)
+        for distillery_id in form.distilleries.data
+    ]
     bottler_id = form.bottler_id.data if form.bottler_id.data != "0" else None
 
     bottle.name = form.name.data
@@ -92,24 +93,41 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
     bottle.date_killed = form.date_killed.data
     bottle.is_private = form.is_private.data
     bottle.personal_note = form.personal_note.data
-    edit_bottle_images(form, bottle)
-    image_upload_success = add_bottle_images(form, bottle)
 
-    if image_upload_success:
-        delete_bottle_images(bottle)
-        flash_message = f'"{bottle.name}" has been successfully updated.'
-        flash_category = "success"
-        bottle.image_count = get_bottle_image_count(bottle.id)
-        db.session.add(bottle)
-        db.session.commit()
-    else:
-        flash_message = f'An error occurred while updating "{bottle.name}".'
-        flash_category = "danger"
+    db.session.add(bottle)
+    db.session.commit()
 
+    # Handle image updates for individual fields
+    images = [
+        form.bottle_image_1.data,
+        form.bottle_image_2.data,
+        form.bottle_image_3.data,
+    ]
+
+    for idx, image in enumerate(images, start=1):
+        if image:
+            # Remove the old image for this sequence (if it exists)
+            existing_image = next(
+                (img for img in bottle.images if img.sequence == idx), None
+            )
+            if existing_image:
+                delete_bottle_images(bottle, [existing_image.id])  # Delete old image
+                db.session.delete(existing_image)
+
+            # Add the new image
+            add_bottle_images(form, bottle, idx=idx)
+
+    # Reorder image sequences to avoid duplication
+    images = sorted(bottle.images, key=lambda img: img.sequence)
+    for idx, img in enumerate(images, start=1):
+        img.sequence = idx  # Reorder to avoid gaps
+
+    db.session.commit()
+
+    flash(f'"{bottle.name}" has been successfully updated.', "success")
     current_app.logger.info(
         f"{bottle.user.username} edited bottle {bottle.name} successfully."
     )
-    flash(flash_message, flash_category)
 
 
 def delete_bottle(user: User, bottle_id: str) -> None:

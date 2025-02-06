@@ -80,6 +80,10 @@ def bottle_add():
 def bottle_edit(bottle_id: str):
     _bottle = db.get_or_404(Bottle, bottle_id)
     _, _, img_s3_url = get_s3_config()
+
+    # Ensure images are passed to the template
+    images = sorted(_bottle.images, key=lambda img: img.sequence)
+
     form = prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
     if form.validate_on_submit():
         edit_bottle(form, _bottle)
@@ -100,6 +104,7 @@ def bottle_edit(bottle_id: str):
         bottle=_bottle,
         form=form,
         img_s3_url=img_s3_url,
+        images=images,
     )
 
 

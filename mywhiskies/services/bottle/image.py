@@ -5,7 +5,7 @@ from botocore.exceptions import ClientError
 from flask import current_app
 from PIL import Image
 
-from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
+from mywhiskies.blueprints.bottle.forms import BottleAddForm
 from mywhiskies.blueprints.bottle.models import Bottle, BottleImage
 from mywhiskies.extensions import db
 
@@ -19,17 +19,7 @@ def get_s3_config():
     )
 
 
-def get_bottle_image_count(bottle_id: str) -> int:
-    """Returns the number of images stored in S3 for a given bottle."""
-    s3_client = boto3.client("s3")
-    img_s3_bucket, img_s3_key, _ = get_s3_config()
-    images = s3_client.list_objects(
-        Bucket=img_s3_bucket, Prefix=f"{img_s3_key}/{bottle_id}"
-    ).get("Contents", [])
-    return len(images)
-
-
-def add_bottle_images(form: BottleAddForm, bottle: Bottle) -> bool:
+def add_bottle_images(form: BottleAddForm, bottle: Bottle, idx: int = None) -> bool:
     """Processes image uploads and stores metadata in the database."""
     uploaded_images = []
 
@@ -83,43 +73,22 @@ def add_bottle_images(form: BottleAddForm, bottle: Bottle) -> bool:
     return True
 
 
-def edit_bottle_images(form: BottleEditForm, bottle: Bottle) -> None:
-    """Handles image modifications and renumbering for edited bottles."""
-    s3_client = boto3.client("s3")
-    img_s3_bucket, img_s3_key, _ = get_s3_config()
+def delete_bottle_images(bottle, image_ids=None):
+    """Delete specific images or all images for a bottle."""
+    images_to_delete = bottle.images
+    if image_ids:
+        images_to_delete = [img for img in bottle.images if img.id in image_ids]
+        s3_client = boto3.client("s3")
+        img_s3_bucket, img_s3_key, _ = get_s3_config()
 
-    # Handle image deletions
-    for i in range(1, 4):
-        if form[f"remove_image_{i}"].data:
-            s3_client.delete_object(
-                Bucket=img_s3_bucket, Key=f"{img_s3_key}/{bottle.id}_{i}.png"
-            )
-
-    # Fetch remaining images and renumber them
-    images = s3_client.list_objects(
-        Bucket=img_s3_bucket, Prefix=f"{img_s3_key}/{bottle.id}"
-    ).get("Contents", [])
-
-    images.sort(key=lambda obj: obj["Key"])  # Ensure order
-    for idx, img in enumerate(images, 1):
-        img_num = int(img["Key"].split("_")[-1].split(".")[0])
-
-        if idx != img_num:  # If numbering is incorrect, rename
-            s3_client.copy_object(
-                Bucket=img_s3_bucket,
-                CopySource=f"{img_s3_bucket}/{img['Key']}",
-                Key=f"{img_s3_key}/{bottle.id}_{idx}.png",
-                ContentType="image/png",
-            )
-            s3_client.delete_object(Bucket=img_s3_bucket, Key=img["Key"])
-
-
-def delete_bottle_images(bottle: Bottle) -> None:
-    """Deletes all images for a given bottle."""
-    s3_client = boto3.client("s3")
-    img_s3_bucket, img_s3_key, _ = get_s3_config()
-
-    for i in range(1, 4):
+    for img in images_to_delete:
+        # Delete from S3
         s3_client.delete_object(
-            Bucket=img_s3_bucket, Key=f"{img_s3_key}/{bottle.id}_{i}.png"
+            Bucket=f"{img_s3_bucket}",
+            Key=f"{img_s3_key}/{bottle.id}_{img.sequence}.png",
         )
+
+    # Remove from database
+    for img in images_to_delete:
+        db.session.delete(img)
+    db.session.commit()

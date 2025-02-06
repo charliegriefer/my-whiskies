@@ -12,31 +12,61 @@
   const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 
   document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll('input[type="file"]').forEach((input) => {
-      const clearBtn = document.querySelector(`button[data-target="${input.id}"]`);
-      const preview = document.querySelector(`#${input.id}-preview`);
-      const placeholder = document.querySelector(`#${input.id}-placeholder`);
+    for (let n = 1; n <= 3; n++) {
+      const input = document.querySelector(`#bottle_image_${n}`);
+      const preview = document.querySelector(`#image-preview-${n}`);
+      const placeholder = document.querySelector(`#placeholder-${n}`);
+      const clearBtn = document.querySelector(`#clear-image-${n}`);
+      const removeInput = document.querySelector(`#remove_image_${n}`); // Hidden field
 
-      input.addEventListener("change", function () {
-        if (this.files && this.files[0]) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            preview.src = e.target.result; // Set preview to selected image
-            preview.classList.remove("d-none"); // Show preview
-            placeholder.classList.add("d-none"); // Hide placeholder
-          };
-          reader.readAsDataURL(this.files[0]);
-          clearBtn.style.display = "inline-block"; // Show remove button
-        }
-      });
+      // Show remove button if the image exists on load
+      if (removeInput && removeInput.value === "" && preview && !preview.classList.contains("d-none")) {
+        clearBtn.classList.remove("d-none");
+      }
 
+      // Handle new image uploads
+      if (input) {
+        input.addEventListener("change", function () {
+          if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              if (preview) {
+                preview.src = e.target.result; // Update image preview
+                preview.classList.remove("d-none");
+              }
+              if (placeholder) placeholder.classList.add("d-none");
+              if (clearBtn) clearBtn.classList.remove("d-none");
+              if (removeInput) removeInput.value = ""; // Clear removal flag
+            };
+            reader.readAsDataURL(this.files[0]);
+          } else {
+            // Reset if no file is selected
+            if (preview) preview.classList.add("d-none");
+            if (placeholder) placeholder.classList.remove("d-none");
+            if (clearBtn) clearBtn.classList.add("d-none");
+          }
+        });
+      }
+
+    // Handle image removal
+    if (clearBtn) {
       clearBtn.addEventListener("click", function () {
-        input.value = ""; // Clear input field
-        preview.classList.add("d-none"); // Hide preview
-        placeholder.classList.remove("d-none"); // Show placeholder
-        clearBtn.style.display = "none"; // Hide remove button
-      });
-    });
+        if (input) input.value = ""; // Clear the file input
+          if (preview) {
+            preview.src = ""; // Clear the preview image
+            preview.classList.add("d-none"); // Hide the preview
+          }
+          if (placeholder) {
+            placeholder.classList.remove("d-none"); // Show the placeholder
+          } else {
+          }
+          clearBtn.classList.add("d-none"); // Hide remove button
+          if (removeInput) {
+            removeInput.value = "YES"; // Mark for removal
+          }
+        });
+      }
+    }
   });
 
   function delete_flash(flash) {

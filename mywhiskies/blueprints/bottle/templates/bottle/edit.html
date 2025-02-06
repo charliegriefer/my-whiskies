@@ -20,10 +20,6 @@
           
           {{ form.csrf_token }}
         
-          {{ form.remove_image_1 }}
-          {{ form.remove_image_2 }}
-          {{ form.remove_image_3 }}
-        
           {{ form_utils.render_field(form.name) }}
           {{ form_utils.render_field(form.url) }}
           {{ form_utils.render_field(form.distilleries) }}
@@ -45,41 +41,48 @@
 
           <hr class="my-4" />
 
-          <div class="mb-2 pb-2 text-nowrap">
-            Upload up to 3 images. Portrait-oriented images are preferred. <i class="bi bi-file-image"></i>
-            <br />
-            By uploading images I agree to the <a href="" data-bs-toggle="modal" data-bs-target="#imageTerms">Image Terms and Conditions.</a>
+          <div class="mb-2 pb-2">
+            <p class="text-nowrap">
+              Upload up to 3 images. Portrait-oriented images are preferred. <i class="bi bi-file-image"></i>
+            </p>
+            <small>
+              By uploading images I agree to the <a href="" data-bs-toggle="modal" data-bs-target="#imageTerms">Image Terms and Conditions.</a>
+            </small>
           </div>
 
-          {% if bottle.image_count %}
-            {% set num_images = bottle.image_count %}
-          {% else %}
-            {% set num_images = 0 %}
-          {% endif %}
+          {# Hidden fields for image removal tracking #}
+          {{ form.remove_image_1() }}
+          {{ form.remove_image_2() }}
+          {{ form.remove_image_3() }}
 
-          {% if num_images %}
-            <div class="mb-2 pb-2">
-              <div class="container text-center">
-                <div class="row">
-                  {% for n in range(1, bottle.image_count + 1) %}
-                    <div class="col-4 ps-0 ms-0 bottle-images" id="bottle-image-{{ n }}">
-                      <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="w-100" src="{{img_s3_url}}/{{ bottle.id }}_{{ n }}.png?r={{ ts }}" />
-                      <br />
-                      <button type="button" class="btn btn-danger btn-sm mt-2 remove-image" value="{{ n }}">Remove Image</button>
-                    </div>
-                  {% endfor %}
-                </div>
+          {% for n in range(1, 4) %}
+
+          {# Hidden fields for removal tracking #}
+          {{ form.remove_image_1() }}
+          {{ form.remove_image_2() }}
+          {{ form.remove_image_3() }}
+
+          {% for n in range(1, 4) %}
+          <div class="d-flex mb-3">
+            <div>
+              <!-- image preview -->
+              <img id="image-preview-{{ n }}" src="{% if images[n - 1] %}{{ img_s3_url }}/{{ bottle.id }}_{{ n }}.png{% endif %}" alt="Preview" class="image-preview {% if not images[n - 1] %}d-none{% endif %}" />
+              <!-- placeholder -->
+              <div class="placeholder-thumbnail d-flex flex-column justify-content-center align-items-center {% if images[n - 1] %}d-none{% endif %}" id="placeholder-{{ n }}" style="width: 200px; height: 150px; border: 2px dashed #ccc; border-radius: 5px; text-align: center;">
+                <i class="bi bi-card-image" style="font-size: 24px; color: #aaa;"></i>
+                <span class="mt-2 text-muted">Image {{ n }}</span>
               </div>
             </div>
-          {% endif %}
-
-          {% for i in range(1, 4) %}
-            {% set img_field = "bottle_image_" ~ i %}
-            <div class="mb-3 {% if num_images >= i %} d-none{% endif %}" id="upload-image-{{ i }}">
-            {{ form[img_field].label(class="form-label") }}
-            {{ form[img_field](class="form-control") }}
+            <div class="ms-3">
+              {{ form["bottle_image_" ~ n].label(class="form-label") }}
+              {{ form["bottle_image_" ~ n](class="form-control") }}
+              <button type="button" id="clear-image-{{ n }}" class="btn btn-danger btn-sm mt-2 clear-image-btn {% if not images[n - 1] %}d-none{% endif %}">
+                Remove
+              </button>
             </div>
+          </div>
           {% endfor %}
+
           <div class="pt-3 mb-3">
             {{ form.submit(class="btn btn-primary") }}
             {{ buttons.cancel_button(current_user, request) }}
