@@ -11,6 +11,34 @@
   const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
   const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('input[type="file"]').forEach((input) => {
+      const clearBtn = document.querySelector(`button[data-target="${input.id}"]`);
+      const preview = document.querySelector(`#${input.id}-preview`);
+      const placeholder = document.querySelector(`#${input.id}-placeholder`);
+
+      input.addEventListener("change", function () {
+        if (this.files && this.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            preview.src = e.target.result; // Set preview to selected image
+            preview.classList.remove("d-none"); // Show preview
+            placeholder.classList.add("d-none"); // Hide placeholder
+          };
+          reader.readAsDataURL(this.files[0]);
+          clearBtn.style.display = "inline-block"; // Show remove button
+        }
+      });
+
+      clearBtn.addEventListener("click", function () {
+        input.value = ""; // Clear input field
+        preview.classList.add("d-none"); // Hide preview
+        placeholder.classList.remove("d-none"); // Show placeholder
+        clearBtn.style.display = "none"; // Hide remove button
+      });
+    });
+  });
+
   function delete_flash(flash) {
     $(flash).parent().remove();
   }

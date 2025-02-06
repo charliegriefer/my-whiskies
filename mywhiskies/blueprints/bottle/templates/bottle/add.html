@@ -49,9 +49,9 @@
             By uploading images I agree to the <a href="" data-bs-toggle="modal" data-bs-target="#imageTerms">Image Terms and Conditions.</a>
           </div>
 
-          {{ form_utils.render_field(form.bottle_image_1) }}
-          {{ form_utils.render_field(form.bottle_image_2) }}
-          {{ form_utils.render_field(form.bottle_image_3) }}
+          {{ form_utils.render_filefield(form.bottle_image_1, 1) }}
+          {{ form_utils.render_filefield(form.bottle_image_2, 2) }}
+          {{ form_utils.render_filefield(form.bottle_image_3, 3) }}
 
           <div class="pt-3 mb-3">
             {{ form.submit(class="btn btn-primary") }}
