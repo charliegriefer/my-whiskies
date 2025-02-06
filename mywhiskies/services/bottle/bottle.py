@@ -21,13 +21,15 @@ def list_bottles_by_user(user: User, request: request, current_user: User) -> Re
     return utils.prep_datatable_bottles(user, current_user, request)
 
 
-def add_bottle(form: BottleAddForm, user: User) -> None:
-    distilleries = []
-    for distillery_id in form.distilleries.data:
-        distilleries.append(db.session.get(Distillery, distillery_id))
+def add_bottle(form: BottleAddForm, user: User) -> Bottle:
+    """Creates a new bottle record and uploads images if provided."""
+    distilleries = [
+        db.session.get(Distillery, distillery_id)
+        for distillery_id in form.distilleries.data
+    ]
 
     bottler_id = form.bottler_id.data if form.bottler_id.data != "0" else None
-    bottle_in = Bottle(
+    bottle = Bottle(
         user_id=user.id,
         name=form.name.data,
         url=form.url.data,
@@ -49,30 +51,20 @@ def add_bottle(form: BottleAddForm, user: User) -> None:
         personal_note=form.personal_note.data,
     )
 
-    db.session.add(bottle_in)
+    db.session.add(bottle)
     db.session.commit()
 
-    db.session.flush()
-    flash_message = f'"{bottle_in.name}" has been successfully added.'
-    flash_category = "success"
-
-    image_upload_success = add_bottle_images(form, bottle_in)
-
-    if image_upload_success:
-        pass
+    # Upload images
+    if add_bottle_images(form, bottle):
+        flash(f'"{bottle.name}" has been successfully added.', "success")
     else:
-        flash_message = f'An error occurred while creating "{bottle_in.name}".'
-        flash_category = "danger"
-        db.session.delete(bottle_in)
+        db.session.delete(bottle)
         db.session.commit()
+        flash(f'An error occurred while creating "{bottle.name}".', "danger")
+        return None  # Bottle creation failed
 
-    bottle_in.image_count = get_bottle_image_count(bottle_in.id)
-    db.session.commit()
-
-    current_app.logger.info(
-        f"{user.username} added bottle {form.name.data} successfully."
-    )
-    flash(flash_message, flash_category)
+    current_app.logger.info(f"{user.username} added bottle {bottle.name} successfully.")
+    return bottle
 
 
 def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:

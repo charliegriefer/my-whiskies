@@ -58,10 +58,14 @@ def bottle_add():
         return redirect(
             url_for("distillery.no_distilleries", username=current_user.username)
         )
+
     form = prep_bottle_form(current_user, BottleAddForm())
+
     if form.validate_on_submit():
-        add_bottle(form, current_user)
-        return redirect(url_for("bottle.list", username=current_user.username))
+        bottle = add_bottle(form, current_user)  # Now returns the bottle object
+        if bottle:
+            return redirect(url_for("bottle.list", username=current_user.username))
+
     return render_template(
         "bottle/add.html",
         title=f"{current_user.username}'s Whiskies: Add Bottle",
