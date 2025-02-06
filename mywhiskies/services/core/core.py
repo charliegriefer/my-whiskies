@@ -37,8 +37,8 @@ def _get_bottle_count() -> int:
 
 
 def _get_image_count() -> int:
-    bottle_table = _get_bottle_table()
-    return db.session.execute(select(func.sum(bottle_table.c.image_count))).scalar()
+    bottle_image_table = db.Model.metadata.tables["bottle_image"]
+    return db.session.execute(select(func.count(bottle_image_table.c.id))).scalar_one()
 
 
 def _get_bottle_type_counts() -> List[Tuple[str, int]]:
