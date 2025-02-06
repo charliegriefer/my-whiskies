@@ -98,10 +98,12 @@ class Bottle(db.Model):
         return len(self.images)
 
     def next_image_sequence(self) -> int:
-        """Return next available image sequence number."""
-        if not self.images:
-            return 1
-        return max(img.sequence for img in self.images) + 1
+        """Return the lowest available image sequence number"""
+        existing_sequences = {img.sequence for img in self.images}
+        for i in range(1, 4):
+            if i not in existing_sequences:
+                return i
+        return 3
 
 
 @event.listens_for(Bottle, "before_insert")
