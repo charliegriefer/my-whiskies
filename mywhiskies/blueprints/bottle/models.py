@@ -95,15 +95,18 @@ class Bottle(db.Model):
 
     @property
     def image_count(self) -> int:
+        """Return the number of images associated with this bottle"""
         return len(self.images)
 
-    def next_image_sequence(self) -> int:
-        """Return the lowest available image sequence number"""
-        existing_sequences = {img.sequence for img in self.images}
-        for i in range(1, 4):
-            if i not in existing_sequences:
-                return i
-        return 3
+    @property
+    def next_available_sequence(self) -> int:
+        """Return the next available sequence number (1-3)"""
+        used_sequences = {img.sequence for img in self.images}
+        return min(seq for seq in range(1, 4) if seq not in used_sequences)
+
+    def get_image_by_sequence(self, sequence: int) -> Optional[BottleImage]:
+        """Get image by sequence number"""
+        return next((img for img in self.images if img.sequence == sequence), None)
 
 
 @event.listens_for(Bottle, "before_insert")

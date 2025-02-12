@@ -178,7 +178,7 @@ ul.terms li {
 
 .image-preview {
   width: 150px;  /* Match the size on the "Add" page */
-  height: 150px;
+  height: 180px;
   object-fit: cover; /* Ensures the image is cropped rather than stretched */
   border: 1px solid #ddd;
   border-radius: 5px;

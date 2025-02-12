@@ -19,57 +19,45 @@ def get_s3_config():
     )
 
 
-def add_bottle_images(form: BottleAddForm, bottle: Bottle, idx: int = None) -> bool:
-    """Processes image uploads and stores metadata in the database."""
-    uploaded_images = []
-
-    for i in range(1, 4):
-        image_field = form[f"bottle_image_{i}"]
-        if image_field.data:
-            uploaded_images.append((i, image_field.data))
-
-    if not uploaded_images:
-        return True  # No images to process
-
-    uploaded_images.sort()  # Sort by field order
-    new_sequence = 1  # Start numbering from 1
-
+def add_bottle_images(form: BottleAddForm, bottle: Bottle) -> bool:
+    """Process image uploads for a bottle"""
     s3_client = boto3.client("s3")
     img_s3_bucket, img_s3_key, _ = get_s3_config()
 
-    for _, image_data in uploaded_images:
+    for field_num in range(1, 4):
+        image_field = form[f"bottle_image_{field_num}"]
+        if not image_field.data:
+            continue
+
         try:
-            image_in = Image.open(image_data)
+            # Process image
+            image = Image.open(image_field.data)
+            if image.width > 400:
+                ratio = 400 / image.width
+                image = image.resize((400, int(image.height * ratio)))
 
-            # Resize image if necessary
-            if image_in.width > 400:
-                ratio = 400 / image_in.width
-                new_size = (400, int(image_in.height * ratio))
-                image_in = image_in.resize(new_size)
-
-            # Generate new filename
-            new_filename = f"{bottle.id}_{new_sequence}.png"
+            # Get next available sequence
+            sequence = bottle.next_available_sequence
 
             # Save to S3
-            in_mem_file = io.BytesIO()
-            image_in.save(in_mem_file, format="PNG")
-            in_mem_file.seek(0)
+            buffer = io.BytesIO()
+            image.save(buffer, format="PNG")
+            buffer.seek(0)
 
             s3_client.put_object(
-                Body=in_mem_file,
+                Body=buffer,
                 Bucket=img_s3_bucket,
-                Key=f"{img_s3_key}/{new_filename}",
+                Key=f"{img_s3_key}/{bottle.id}_{sequence}.png",
                 ContentType="image/png",
             )
 
-            # Add record to bottle_image table
-            db.session.add(BottleImage(bottle_id=bottle.id, sequence=new_sequence))
-            new_sequence += 1
+            # Add database record
+            db.session.add(BottleImage(bottle_id=bottle.id, sequence=sequence))
+            db.session.commit()
 
         except ClientError:
-            return False  # Image upload failed
+            return False
 
-    db.session.commit()
     return True
 
 

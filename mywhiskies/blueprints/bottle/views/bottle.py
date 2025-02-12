@@ -82,7 +82,9 @@ def bottle_edit(bottle_id: str):
     _, _, img_s3_url = get_s3_config()
 
     # Ensure images are passed to the template
-    images = sorted(_bottle.images, key=lambda img: img.sequence)
+    images = [None] * 3  # Initialize with 3 None placeholders
+    for img in _bottle.images:
+        images[img.sequence - 1] = img  # Place each image in its correct slot
 
     form = prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
     if form.validate_on_submit():
