@@ -21,31 +21,36 @@
   </div>
 {% endmacro %}
 
-{% macro render_filefield(field, number) %}
-<div class="d-flex align-items-start mb-3" id="{{ field.id }}-container">
-    <div class="preview-wrapper me-3">
-        <div
-            id="{{ field.id }}-placeholder"
-            class="placeholder-thumbnail d-flex flex-column justify-content-center align-items-center"
-            style="width: 100px; height: 100px; border: 2px dashed #ccc; border-radius: 5px; text-align: center;">
+{% macro render_filefield(field, number, img_s3_url=None, bottle_id=None, image_exists=False) %}
+<div class="d-flex mb-3">
+    <div>
+        <!-- Image Preview (for existing images) -->
+        <img 
+            id="{{ field.id }}-preview" 
+            src="{% if image_exists %}{{ img_s3_url }}/{{ bottle_id }}_{{ number }}.png{% endif %}"
+            alt="Preview" 
+            class="image-preview {% if not image_exists %}d-none{% endif %}"
+        />
+        <!-- Placeholder -->
+        <div 
+            class="placeholder-thumbnail d-flex flex-column justify-content-center align-items-center {% if image_exists %}d-none{% endif %}"
+            id="{{ field.id }}-placeholder" 
+            style="width: 150px; height: 180px; border: 2px dashed #ccc; border-radius: 5px; text-align: center;"
+        >
             <i class="bi bi-card-image" style="font-size: 24px; color: #aaa;"></i>
             <span class="mt-2 text-muted">Image {{ number }}</span>
         </div>
-        <img
-            id="{{ field.id }}-preview"
-            class="img-thumbnail d-none"
-            alt="Preview"
-            style="width: 100px; height: 100px; object-fit: cover;"
-        />
     </div>
-    <div>
-        {{ field.label }}
-        <div class="input-group">
-            {{ field(class="form-control") }}
-            <button type="button" class="btn btn-outline-secondary remove-image-btn" data-target="{{ field.id }}" style="display: none;">
-                ×
-            </button>
-        </div>
+    <div class="ms-3">
+        {{ field.label(class="form-label") }}
+        {{ field(class="form-control") }}
+        <button 
+            type="button" 
+            id="clear-{{ field.id }}" 
+            class="btn btn-danger btn-sm mt-2 clear-image-btn {% if not image_exists %}d-none{% endif %}"
+        >
+            Remove
+        </button>
     </div>
 </div>
 {% endmacro %}

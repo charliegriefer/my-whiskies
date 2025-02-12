@@ -12,16 +12,37 @@
   const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 
   document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[id^='clear-bottle_image_']").forEach((clearBtn) => {
+      clearBtn.addEventListener("click", function () {
+        const targetId = clearBtn.id.replace("clear-bottle_image_", ""); // Extract the image number
+
+        const input = document.querySelector(`#bottle_image_${targetId}`);
+        const preview = document.querySelector(`#bottle_image_${targetId}-preview`);
+        const placeholder = document.querySelector(`#bottle_image_${targetId}-placeholder`);
+        const removeInput = document.querySelector(`#remove_image_${targetId}`);
+
+        if (input) input.value = "";
+        if (preview) {
+          preview.src = "";
+          preview.classList.add("d-none");
+        }
+        if (placeholder) placeholder.classList.remove("d-none");
+        if (removeInput) removeInput.value = "YES"; // Indicate image removal
+        clearBtn.classList.add("d-none");
+      });
+    });
+
+    // Handle new image uploads and initial state
     for (let n = 1; n <= 3; n++) {
       const input = document.querySelector(`#bottle_image_${n}`);
-      const preview = document.querySelector(`#image-preview-${n}`);
-      const placeholder = document.querySelector(`#placeholder-${n}`);
-      const clearBtn = document.querySelector(`#clear-image-${n}`);
-      const removeInput = document.querySelector(`#remove_image_${n}`); // Hidden field
+      const preview = document.querySelector(`#bottle_image_${n}-preview`);
+      const placeholder = document.querySelector(`#bottle_image_${n}-placeholder`);
+      const removeInput = document.querySelector(`#remove_image_${n}`);
+      const clearBtn = document.querySelector(`#clear-bottle_image_${n}`);
 
       // Show remove button if the image exists on load
       if (removeInput && removeInput.value === "" && preview && !preview.classList.contains("d-none")) {
-        clearBtn.classList.remove("d-none");
+        if (clearBtn) clearBtn.classList.remove("d-none");
       }
 
       // Handle new image uploads
@@ -47,25 +68,6 @@
           }
         });
       }
-
-    // Handle image removal
-    if (clearBtn) {
-      clearBtn.addEventListener("click", function () {
-        if (input) input.value = ""; // Clear the file input
-          if (preview) {
-            preview.src = ""; // Clear the preview image
-            preview.classList.add("d-none"); // Hide the preview
-          }
-          if (placeholder) {
-            placeholder.classList.remove("d-none"); // Show the placeholder
-          } else {
-          }
-          clearBtn.classList.add("d-none"); // Hide remove button
-          if (removeInput) {
-            removeInput.value = "YES"; // Mark for removal
-          }
-        });
-      }
     }
   });
 
@@ -74,14 +76,6 @@
   }
 
   $(document).ready(function() {
-    // image uploads on bottle edit
-    $("button.remove-image").on("click", function() {
-      $("#remove_image_" + this.value).val("YES");
-      $("#bottle-image-" + this.value).addClass("d-none");
-      let how_many_are_showing = $("div.bottle-images:visible").length + 1;
-      $("#upload-image-" + how_many_are_showing).removeClass("d-none");
-    });
-
     // registration form script
     const terms_checkbox = $("#register_form #agree_terms");
     $("#register_form #submit").prop("disabled", !terms_checkbox.is(":checked"));

@@ -19,6 +19,11 @@
           {% set popover_private_bottle = "If marked as a &quot;Private Bottle&quot;, this bottle will only show in your list when you're logged in.<br /><br />Other users will not be able to see it." %}
           
           {{ form.csrf_token }}
+
+          {# Hidden fields for image removal tracking #}
+          {{ form.remove_image_1() }}
+          {{ form.remove_image_2() }}
+          {{ form.remove_image_3() }}
         
           {{ form_utils.render_field(form.name) }}
           {{ form_utils.render_field(form.url) }}
@@ -50,38 +55,16 @@
             </small>
           </div>
 
-          {# Hidden fields for image removal tracking #}
-          {{ form.remove_image_1() }}
-          {{ form.remove_image_2() }}
-          {{ form.remove_image_3() }}
-
-          {% for n in range(1, 4) %}
-
-          {# Hidden fields for removal tracking #}
-          {{ form.remove_image_1() }}
-          {{ form.remove_image_2() }}
-          {{ form.remove_image_3() }}
-
-          {% for n in range(1, 4) %}
-          <div class="d-flex mb-3">
-            <div>
-              <!-- image preview -->
-              <img id="image-preview-{{ n }}" src="{% if images[n - 1] %}{{ img_s3_url }}/{{ bottle.id }}_{{ n }}.png{% endif %}" alt="Preview" class="image-preview {% if not images[n - 1] %}d-none{% endif %}" />
-              <!-- placeholder -->
-              <div class="placeholder-thumbnail d-flex flex-column justify-content-center align-items-center {% if images[n - 1] %}d-none{% endif %}" id="placeholder-{{ n }}" style="width: 200px; height: 150px; border: 2px dashed #ccc; border-radius: 5px; text-align: center;">
-                <i class="bi bi-card-image" style="font-size: 24px; color: #aaa;"></i>
-                <span class="mt-2 text-muted">Image {{ n }}</span>
-              </div>
-            </div>
-            <div class="ms-3">
-              {{ form["bottle_image_" ~ n].label(class="form-label") }}
-              {{ form["bottle_image_" ~ n](class="form-control") }}
-              <button type="button" id="clear-image-{{ n }}" class="btn btn-danger btn-sm mt-2 clear-image-btn {% if not images[n - 1] %}d-none{% endif %}">
-                Remove
-              </button>
-            </div>
-          </div>
-          {% endfor %}
+{% for n in range(1, 4) %}
+    {{ form_utils.render_filefield(
+        form["bottle_image_" ~ n], 
+        n, 
+        img_s3_url=img_s3_url, 
+        bottle_id=bottle.id, 
+        image_exists=(images[n - 1] is not none)
+    ) }}
+    {{ form["remove_image_" ~ n]() }} <!-- Hidden field for image removal tracking -->
+{% endfor %}
 
           <div class="pt-3 mb-3">
             {{ form.submit(class="btn btn-primary") }}
