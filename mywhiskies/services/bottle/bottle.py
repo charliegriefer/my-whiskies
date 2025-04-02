@@ -30,7 +30,6 @@ def set_bottle_details(
         for distillery_id in form.distilleries.data
     ]
     bottler_id = form.bottler_id.data if form.bottler_id.data != "0" else None
-
     if bottle is None:
         bottle = Bottle(user_id=user.id)
 
@@ -57,7 +56,7 @@ def set_bottle_details(
 
 
 def add_bottle(form: BottleAddForm, user: User) -> Bottle:
-    bottle = set_bottle_details(form, user)
+    bottle = set_bottle_details(form=form, user=user)
 
     db.session.add(bottle)
     db.session.commit()
@@ -76,27 +75,19 @@ def add_bottle(form: BottleAddForm, user: User) -> Bottle:
 
 
 def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
-    bottle = set_bottle_details(form, bottle)
+    bottle = set_bottle_details(form=form, bottle=bottle)
 
     db.session.add(bottle)
     db.session.commit()
 
-    # Handle image removals
+    # Handle image removals - resequencing is handled in delete_bottle_images
     for seq in range(1, 4):
         if getattr(form, f"remove_image_{seq}").data == "YES":
             if image := bottle.get_image_by_sequence(seq):
                 delete_bottle_images(bottle, [image.id])
-                db.session.delete(image)
 
-    # Handle new image uploads
+    # Handle new image uploads - add_bottle_images will maintain proper sequencing
     add_bottle_images(form, bottle)
-
-    # Resequence remaining images
-    images = sorted(bottle.images, key=lambda img: img.sequence)
-    for idx, img in enumerate(images, start=1):
-        img.sequence = idx
-
-    db.session.commit()
 
     flash(f'"{bottle.name}" has been successfully updated.', "success")
     current_app.logger.info(
