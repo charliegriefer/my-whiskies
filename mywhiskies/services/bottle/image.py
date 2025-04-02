@@ -24,20 +24,21 @@ def add_bottle_images(form: BottleAddForm, bottle: Bottle) -> bool:
     s3_client = boto3.client("s3")
     img_s3_bucket, img_s3_key, _ = get_s3_config()
 
+    # Collect all valid image uploads first
+    valid_uploads = []
     for field_num in range(1, 4):
         image_field = form[f"bottle_image_{field_num}"]
-        if not image_field.data:
-            continue
+        if image_field.data:
+            valid_uploads.append((field_num, image_field.data))
 
+    # Process images in order
+    for sequence, (_, image_data) in enumerate(valid_uploads, start=1):
         try:
             # Process image
-            image = Image.open(image_field.data)
+            image = Image.open(image_data)
             if image.width > 400:
                 ratio = 400 / image.width
                 image = image.resize((400, int(image.height * ratio)))
-
-            # Get next available sequence
-            sequence = bottle.next_available_sequence
 
             # Save to S3
             buffer = io.BytesIO()
@@ -63,20 +64,47 @@ def add_bottle_images(form: BottleAddForm, bottle: Bottle) -> bool:
 
 def delete_bottle_images(bottle, image_ids=None):
     """Delete specific images or all images for a bottle."""
+    s3_client = boto3.client("s3")
+    img_s3_bucket, img_s3_key, _ = get_s3_config()
+
+    # Get images to delete
     images_to_delete = bottle.images
     if image_ids:
         images_to_delete = [img for img in bottle.images if img.id in image_ids]
-        s3_client = boto3.client("s3")
-        img_s3_bucket, img_s3_key, _ = get_s3_config()
 
+    # Delete from S3 and database
     for img in images_to_delete:
         # Delete from S3
         s3_client.delete_object(
             Bucket=f"{img_s3_bucket}",
             Key=f"{img_s3_key}/{bottle.id}_{img.sequence}.png",
         )
-
-    # Remove from database
-    for img in images_to_delete:
         db.session.delete(img)
+
     db.session.commit()
+
+    # Resequence remaining images if any images were deleted
+    if images_to_delete:
+        remaining_images = sorted(
+            [img for img in bottle.images if img not in images_to_delete],
+            key=lambda x: x.sequence,
+        )
+
+        # Resequence remaining images
+        for new_seq, img in enumerate(remaining_images, start=1):
+            old_seq = img.sequence
+            if old_seq != new_seq:
+                # Rename in S3
+                s3_client.copy_object(
+                    Bucket=f"{img_s3_bucket}",
+                    CopySource=f"{img_s3_bucket}/{img_s3_key}/{bottle.id}_{old_seq}.png",
+                    Key=f"{img_s3_key}/{bottle.id}_{new_seq}.png",
+                )
+                s3_client.delete_object(
+                    Bucket=f"{img_s3_bucket}",
+                    Key=f"{img_s3_key}/{bottle.id}_{old_seq}.png",
+                )
+                # Update sequence in database
+                img.sequence = new_seq
+
+        db.session.commit()
