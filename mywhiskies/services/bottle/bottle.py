@@ -1,7 +1,7 @@
 from typing import Optional
 
 import boto3
-from flask import current_app, flash, request
+from flask import Request, current_app, flash
 from flask.wrappers import Response
 
 from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
@@ -17,7 +17,7 @@ from mywhiskies.services.bottle.image import (
 )
 
 
-def list_bottles_by_user(user: User, request: request, current_user: User) -> Response:
+def list_bottles_by_user(user: User, request: Request, current_user: User) -> Response:
     return utils.prep_datatable_bottles(user, current_user, request)
 
 
