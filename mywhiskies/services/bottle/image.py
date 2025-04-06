@@ -31,14 +31,25 @@ def add_bottle_images(form: BottleAddForm, bottle: Bottle) -> bool:
         if image_field.data:
             valid_uploads.append((field_num, image_field.data))
 
+    if not valid_uploads:
+        return True
+
+    # Get the highest existing sequence number or 0 if no images exist
+    existing_sequences = [img.sequence for img in bottle.images]
+    next_sequence = max(existing_sequences, default=0) + 1
+
     # Process images in order
-    for sequence, (_, image_data) in enumerate(valid_uploads, start=1):
+    for _, (_, image_data) in enumerate(valid_uploads):
         try:
             # Process image
             image = Image.open(image_data)
             if image.width > 400:
                 ratio = 400 / image.width
                 image = image.resize((400, int(image.height * ratio)))
+
+            # Use next available sequence number
+            sequence = next_sequence
+            next_sequence += 1
 
             # Save to S3
             buffer = io.BytesIO()
@@ -59,7 +70,61 @@ def add_bottle_images(form: BottleAddForm, bottle: Bottle) -> bool:
         except ClientError:
             return False
 
+    # After adding all new images, resequence everything to ensure we don't have gaps
+    resequence_bottle_images(bottle)
+
     return True
+
+
+def resequence_bottle_images(bottle):
+    """Ensure all bottle images have sequential sequence numbers without gaps."""
+    s3_client = boto3.client("s3")
+    img_s3_bucket, img_s3_key, _ = get_s3_config()
+
+    # Sort existing images by sequence number
+    images = sorted(bottle.images, key=lambda img: img.sequence)
+
+    # Resequence
+    sequence_changes = {}
+    for new_seq, img in enumerate(images, start=1):
+        if img.sequence != new_seq:
+            sequence_changes[img.id] = (img.sequence, new_seq)
+            img.sequence = new_seq
+
+    # If we have changes, update S3 objects and commit database changes
+    if sequence_changes:
+        # First pass: Copy to temporary keys to avoid conflicts
+        for img_id, (old_seq, new_seq) in sequence_changes.items():
+            s3_client.copy_object(
+                Bucket=f"{img_s3_bucket}",
+                CopySource=f"{img_s3_bucket}/{img_s3_key}/{bottle.id}_{old_seq}.png",
+                Key=f"{img_s3_key}/{bottle.id}_temp_{new_seq}.png",
+            )
+
+        # Second pass: Rename from temp keys to final keys
+        for img_id, (old_seq, new_seq) in sequence_changes.items():
+            # Copy from temp key to final key
+            s3_client.copy_object(
+                Bucket=f"{img_s3_bucket}",
+                CopySource=f"{img_s3_bucket}/{img_s3_key}/{bottle.id}_temp_{new_seq}.png",
+                Key=f"{img_s3_key}/{bottle.id}_{new_seq}.png",
+            )
+
+            # Delete temp key
+            s3_client.delete_object(
+                Bucket=f"{img_s3_bucket}",
+                Key=f"{img_s3_key}/{bottle.id}_temp_{new_seq}.png",
+            )
+
+            # Delete original key if different from final
+            if old_seq != new_seq:
+                s3_client.delete_object(
+                    Bucket=f"{img_s3_bucket}",
+                    Key=f"{img_s3_key}/{bottle.id}_{old_seq}.png",
+                )
+
+        # Commit database changes
+        db.session.commit()
 
 
 def delete_bottle_images(bottle, image_ids=None):
