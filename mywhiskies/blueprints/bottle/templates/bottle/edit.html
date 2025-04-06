@@ -19,10 +19,11 @@
           {% set popover_private_bottle = "If marked as a &quot;Private Bottle&quot;, this bottle will only show in your list when you're logged in.<br /><br />Other users will not be able to see it." %}
           
           {{ form.csrf_token }}
-        
-          {{ form.remove_image_1 }}
-          {{ form.remove_image_2 }}
-          {{ form.remove_image_3 }}
+
+          {# Hidden fields for image removal tracking #}
+          {{ form.remove_image_1() }}
+          {{ form.remove_image_2() }}
+          {{ form.remove_image_3() }}
         
           {{ form_utils.render_field(form.name) }}
           {{ form_utils.render_field(form.url) }}
@@ -45,41 +46,26 @@
 
           <hr class="my-4" />
 
-          <div class="mb-2 pb-2 text-nowrap">
-            Upload up to 3 images. Portrait-oriented images are preferred. <i class="bi bi-file-image"></i>
-            <br />
-            By uploading images I agree to the <a href="" data-bs-toggle="modal" data-bs-target="#imageTerms">Image Terms and Conditions.</a>
+          <div class="mb-2 pb-2">
+            <p class="text-nowrap">
+              Upload up to 3 images. Portrait-oriented images are preferred. <i class="bi bi-file-image"></i>
+            </p>
+            <small>
+              By uploading images I agree to the <a href="" data-bs-toggle="modal" data-bs-target="#imageTerms">Image Terms and Conditions.</a>
+            </small>
           </div>
 
-          {% if bottle.image_count %}
-            {% set num_images = bottle.image_count %}
-          {% else %}
-            {% set num_images = 0 %}
-          {% endif %}
+{% for n in range(1, 4) %}
+    {{ form_utils.render_filefield(
+        form["bottle_image_" ~ n], 
+        n, 
+        img_s3_url=img_s3_url, 
+        bottle_id=bottle.id, 
+        image_exists=(images[n - 1] is not none)
+    ) }}
+    {{ form["remove_image_" ~ n]() }} <!-- Hidden field for image removal tracking -->
+{% endfor %}
 
-          {% if num_images %}
-            <div class="mb-2 pb-2">
-              <div class="container text-center">
-                <div class="row">
-                  {% for n in range(1, bottle.image_count + 1) %}
-                    <div class="col-4 ps-0 ms-0 bottle-images" id="bottle-image-{{ n }}">
-                      <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="w-100" src="{{img_s3_url}}/{{ bottle.id }}_{{ n }}.png?r={{ ts }}" />
-                      <br />
-                      <button type="button" class="btn btn-danger btn-sm mt-2 remove-image" value="{{ n }}">Remove Image</button>
-                    </div>
-                  {% endfor %}
-                </div>
-              </div>
-            </div>
-          {% endif %}
-
-          {% for i in range(1, 4) %}
-            {% set img_field = "bottle_image_" ~ i %}
-            <div class="mb-3 {% if num_images >= i %} d-none{% endif %}" id="upload-image-{{ i }}">
-            {{ form[img_field].label(class="form-label") }}
-            {{ form[img_field](class="form-control") }}
-            </div>
-          {% endfor %}
           <div class="pt-3 mb-3">
             {{ form.submit(class="btn btn-primary") }}
             {{ buttons.cancel_button(current_user, request) }}

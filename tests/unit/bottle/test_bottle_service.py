@@ -31,7 +31,7 @@ def test_add_bottle(
 ) -> None:
     mock_add_bottle_images.return_value = True
     form = MagicMock(spec=BottleAddForm)
-    form.distilleries.data = []
+    form.distilleries.data = [distillery.id for distillery in test_user_01.distilleries]
     form.bottler_id.data = "0"
     form.type.data = BottleTypes.BOURBON
     form.name.data = "Test Bottle"
@@ -56,18 +56,17 @@ def test_add_bottle(
     )
 
 
-@patch("mywhiskies.services.bottle.bottle.edit_bottle_images")
 @patch("mywhiskies.services.bottle.bottle.add_bottle_images")
 @patch("mywhiskies.services.bottle.bottle.flash")
 def test_edit_bottle(
     mock_flash: MagicMock,
     mock_add_bottle_images: MagicMock,
-    mock_edit_bottle_images: MagicMock,
+    test_user_01: User,
     test_bottle: Bottle,
 ) -> None:
     mock_add_bottle_images.return_value = True
     form = MagicMock(spec=BottleEditForm)
-    form.distilleries.data = []
+    form.distilleries.data = [distillery.id for distillery in test_user_01.distilleries]
     form.bottler_id.data = "0"
     form.type.data = BottleTypes.BOURBON
     form.name.data = "Test Bottle"

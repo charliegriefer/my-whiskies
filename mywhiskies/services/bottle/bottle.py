@@ -1,5 +1,7 @@
+from typing import Optional
+
 import boto3
-from flask import current_app, flash, request
+from flask import Request, current_app, flash
 from flask.wrappers import Response
 
 from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
@@ -11,76 +13,25 @@ from mywhiskies.services import utils
 from mywhiskies.services.bottle.image import (
     add_bottle_images,
     delete_bottle_images,
-    edit_bottle_images,
-    get_bottle_image_count,
     get_s3_config,
 )
 
 
-def list_bottles_by_user(user: User, request: request, current_user: User) -> Response:
+def list_bottles_by_user(user: User, request: Request, current_user: User) -> Response:
     return utils.prep_datatable_bottles(user, current_user, request)
 
 
-def add_bottle(form: BottleAddForm, user: User) -> None:
-    distilleries = []
-    for distillery_id in form.distilleries.data:
-        distilleries.append(db.session.get(Distillery, distillery_id))
-
+def set_bottle_details(
+    form: BottleAddForm, bottle: Optional[Bottle] = None, user: Optional[User] = None
+) -> Bottle:
+    """Update or create a bottle's details from the form data."""
+    distilleries = [
+        db.session.get(Distillery, distillery_id)
+        for distillery_id in form.distilleries.data
+    ]
     bottler_id = form.bottler_id.data if form.bottler_id.data != "0" else None
-    bottle_in = Bottle(
-        user_id=user.id,
-        name=form.name.data,
-        url=form.url.data,
-        type=form.type.data,
-        distilleries=distilleries,
-        bottler_id=bottler_id,
-        size=form.size.data,
-        year_barrelled=form.year_barrelled.data,
-        year_bottled=form.year_bottled.data,
-        abv=form.abv.data,
-        description=form.description.data,
-        review=form.review.data,
-        stars=form.stars.data,
-        cost=form.cost.data,
-        date_purchased=form.date_purchased.data,
-        date_opened=form.date_opened.data,
-        date_killed=form.date_killed.data,
-        is_private=form.is_private.data,
-        personal_note=form.personal_note.data,
-    )
-
-    db.session.add(bottle_in)
-    db.session.commit()
-
-    db.session.flush()
-    flash_message = f'"{bottle_in.name}" has been successfully added.'
-    flash_category = "success"
-
-    image_upload_success = add_bottle_images(form, bottle_in)
-
-    if image_upload_success:
-        pass
-    else:
-        flash_message = f'An error occurred while creating "{bottle_in.name}".'
-        flash_category = "danger"
-        db.session.delete(bottle_in)
-        db.session.commit()
-
-    bottle_in.image_count = get_bottle_image_count(bottle_in.id)
-    db.session.commit()
-
-    current_app.logger.info(
-        f"{user.username} added bottle {form.name.data} successfully."
-    )
-    flash(flash_message, flash_category)
-
-
-def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
-    distilleries = []
-    for distillery_id in form.distilleries.data:
-        distilleries.append(db.session.get(Distillery, distillery_id))
-
-    bottler_id = form.bottler_id.data if form.bottler_id.data != "0" else None
+    if bottle is None:
+        bottle = Bottle(user_id=user.id)
 
     bottle.name = form.name.data
     bottle.url = form.url.data
@@ -100,24 +51,48 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
     bottle.date_killed = form.date_killed.data
     bottle.is_private = form.is_private.data
     bottle.personal_note = form.personal_note.data
-    edit_bottle_images(form, bottle)
-    image_upload_success = add_bottle_images(form, bottle)
 
-    if image_upload_success:
-        delete_bottle_images(bottle)
-        flash_message = f'"{bottle.name}" has been successfully updated.'
-        flash_category = "success"
-        bottle.image_count = get_bottle_image_count(bottle.id)
-        db.session.add(bottle)
-        db.session.commit()
+    return bottle
+
+
+def add_bottle(form: BottleAddForm, user: User) -> Bottle:
+    bottle = set_bottle_details(form=form, user=user)
+
+    db.session.add(bottle)
+    db.session.commit()
+
+    # Upload images
+    if add_bottle_images(form, bottle):
+        flash(f'"{bottle.name}" has been successfully added.', "success")
     else:
-        flash_message = f'An error occurred while updating "{bottle.name}".'
-        flash_category = "danger"
+        db.session.delete(bottle)
+        db.session.commit()
+        flash(f'An error occurred while creating "{bottle.name}".', "danger")
+        return None  # Bottle creation failed
 
+    current_app.logger.info(f"{user.username} added bottle {bottle.name} successfully.")
+    return bottle
+
+
+def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
+    bottle = set_bottle_details(form=form, bottle=bottle)
+
+    db.session.add(bottle)
+    db.session.commit()
+
+    # Handle image removals - resequencing is handled in delete_bottle_images
+    for seq in range(1, 4):
+        if getattr(form, f"remove_image_{seq}").data == "YES":
+            if image := bottle.get_image_by_sequence(seq):
+                delete_bottle_images(bottle, [image.id])
+
+    # Handle new image uploads - add_bottle_images will maintain proper sequencing
+    add_bottle_images(form, bottle)
+
+    flash(f'"{bottle.name}" has been successfully updated.', "success")
     current_app.logger.info(
         f"{bottle.user.username} edited bottle {bottle.name} successfully."
     )
-    flash(flash_message, flash_category)
 
 
 def delete_bottle(user: User, bottle_id: str) -> None:

@@ -174,3 +174,18 @@ ul.terms li {
   border: none !important;
   box-shadow: none !important;
 }
+
+
+.image-preview {
+  width: 150px;  /* Match the size on the "Add" page */
+  height: 180px;
+  object-fit: cover; /* Ensures the image is cropped rather than stretched */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.image-preview:hover {
+  transform: scale(1.2); /* Scales the image by 20% */
+  transition: transform 0.3s ease; /* Smooth animation */
+  z-index: 10; /* Ensures the hovered image appears on top */
+}

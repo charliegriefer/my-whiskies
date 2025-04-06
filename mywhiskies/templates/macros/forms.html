@@ -21,6 +21,40 @@
   </div>
 {% endmacro %}
 
+{% macro render_filefield(field, number, img_s3_url=None, bottle_id=None, image_exists=False) %}
+<div class="d-flex mb-3">
+    <div>
+        <!-- Image Preview (for existing images) -->
+        <img 
+            id="{{ field.id }}-preview" 
+            src="{% if image_exists %}{{ img_s3_url }}/{{ bottle_id }}_{{ number }}.png{% endif %}"
+            alt="Preview" 
+            class="image-preview {% if not image_exists %}d-none{% endif %}"
+        />
+        <!-- Placeholder -->
+        <div 
+            class="placeholder-thumbnail d-flex flex-column justify-content-center align-items-center {% if image_exists %}d-none{% endif %}"
+            id="{{ field.id }}-placeholder" 
+            style="width: 150px; height: 180px; border: 2px dashed #ccc; border-radius: 5px; text-align: center;"
+        >
+            <i class="bi bi-card-image" style="font-size: 24px; color: #aaa;"></i>
+            <span class="mt-2 text-muted">Image {{ number }}</span>
+        </div>
+    </div>
+    <div class="ms-3">
+        {{ field.label(class="form-label") }}
+        {{ field(class="form-control") }}
+        <button 
+            type="button" 
+            id="clear-{{ field.id }}" 
+            class="btn btn-danger btn-sm mt-2 clear-image-btn {% if not image_exists %}d-none{% endif %}"
+        >
+            Remove
+        </button>
+    </div>
+</div>
+{% endmacro %}
+
 {% macro render_popover(field, popover_text, extra_class="") %}
   {% if popover_text %}
     {% set popover_title = "<i class='bi bi-question-circle pe-1'></i> " ~ field.label.text %}
