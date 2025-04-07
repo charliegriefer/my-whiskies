@@ -130,8 +130,9 @@ def bottle_diagnostics():
             .limit(10)
         )
         .scalars()
+        .unique()
         .all()
-    )
+    )  # Added unique() here
 
     # Get image info
     image_info = []
