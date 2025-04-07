@@ -4,6 +4,10 @@ Revision ID: 1a4eb1e3f498
 Revises: 6c7916b59f10
 Create Date: 2025-01-30 02:33:25.673374
 
+NOTE: This migration assumes "dev" as the S3 key prefix. In a production environment,
+the prefix is likely "prod" instead. If you're applying this migration in production,
+you may need to run the populate_bottle_images.py script afterward to populate the
+bottle_image table correctly. This issue is documented in ticket #150.
 """
 
 import re
