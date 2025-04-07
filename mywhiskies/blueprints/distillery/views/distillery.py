@@ -39,7 +39,7 @@ def bulk_distillery_add():
     bulk_add_distillery(current_user, current_app)
 
     flash("New distilleries have been added to your account.")
-    return redirect(url_for("core.main", username=current_user.username))
+    return redirect(url_for("core.main"))
 
 
 @distillery_bp.route("/<username>/distilleries", endpoint="list")

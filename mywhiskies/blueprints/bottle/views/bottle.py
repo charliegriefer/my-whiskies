@@ -29,8 +29,8 @@ def bottles(username: str):
     return response
 
 
-@bottle_bp.route("/<string:username>/bottle/<bottle_id>", endpoint="detail")
-def bottle(username: str, bottle_id: str):
+@bottle_bp.route("/bottle/<bottle_id>", endpoint="detail")
+def bottle(bottle_id: str):
     _bottle = db.get_or_404(Bottle, bottle_id)
     _, _, img_s3_url = get_s3_config()
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
@@ -55,9 +55,7 @@ def bottle(username: str, bottle_id: str):
 @login_required
 def bottle_add():
     if not current_user.distilleries:
-        return redirect(
-            url_for("distillery.no_distilleries", username=current_user.username)
-        )
+        return redirect(url_for("distillery.no_distilleries"))
 
     form = prep_bottle_form(current_user, BottleAddForm())
 
@@ -89,13 +87,7 @@ def bottle_edit(bottle_id: str):
     form = prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
     if form.validate_on_submit():
         edit_bottle(form, _bottle)
-        return redirect(
-            url_for(
-                "bottle.detail",
-                bottle_id=bottle_id,
-                username=current_user.username,
-            )
-        )
+        return redirect(url_for("bottle.detail", bottle_id=bottle_id))
     else:
         form.type.data = _bottle.type.name
         form.distilleries.data = [d.id for d in _bottle.distilleries]
