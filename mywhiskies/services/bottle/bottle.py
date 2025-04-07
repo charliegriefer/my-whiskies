@@ -18,6 +18,11 @@ from mywhiskies.services.bottle.image import (
 
 
 def list_bottles_by_user(user: User, request: Request, current_user: User) -> Response:
+    # First ensure all bottles have their image relationships loaded
+    bottles = db.session.query(Bottle).filter(Bottle.user_id == user.id).options(
+        db.joinedload(Bottle.images)
+    ).all()
+    
     return utils.prep_datatable_bottles(user, current_user, request)
 
 
