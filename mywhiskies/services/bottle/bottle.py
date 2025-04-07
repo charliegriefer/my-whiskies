@@ -20,11 +20,32 @@ from mywhiskies.services.bottle.image import (
 def list_bottles_by_user(user: User, request: Request, current_user: User) -> Response:
     # Eagerly load bottles with their images to avoid lazy-loading issues
     # Using modern Session API instead of Query API
-    db.session.execute(
-        db.select(Bottle)
-        .filter_by(user_id=user.id)
-        .options(db.joinedload(Bottle.images))
-    ).scalars().unique().all()
+    result = (
+        db.session.execute(
+            db.select(Bottle)
+            .filter_by(user_id=user.id)
+            .options(db.joinedload(Bottle.images))
+        )
+        .scalars()
+        .unique()
+        .all()
+    )
+
+    # Add diagnostic logging
+    bottle_count = len(result)
+    bottles_with_images = sum(1 for b in result if b.image_count > 0)
+    current_app.logger.info(
+        f"Loaded {bottle_count} bottles, {bottles_with_images} have images"
+    )
+
+    if bottles_with_images > 0:
+        # Log first bottle with images for debugging
+        sample_bottle = next((b for b in result if b.image_count > 0), None)
+        if sample_bottle:
+            current_app.logger.info(
+                f"Sample bottle {sample_bottle.id} has {sample_bottle.image_count} images: "
+                f"{[img.id for img in sample_bottle.images]}"
+            )
 
     # Continue with the standard process to prepare the datatable
     return utils.prep_datatable_bottles(user, current_user, request)
