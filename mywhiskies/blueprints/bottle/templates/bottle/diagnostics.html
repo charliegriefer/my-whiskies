@@ -1,0 +1,86 @@
+{% extends "_base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container ps-0">
+
+      <div class="row mt-4">
+        <h3 class="mb-0" style="color:#696969;">Image Diagnostics</h3>
+        <h1>Bottle Image Debug Info</h1>
+      </div>
+
+      <hr />
+
+      <div class="row">
+        <div class="col-12">
+          <h3>S3 Configuration</h3>
+          <ul>
+            <li>S3 Bucket: {{ debug_info.s3_config[0] }}</li>
+            <li>S3 Key: {{ debug_info.s3_config[1] }}</li>
+            <li>S3 URL: {{ debug_info.s3_config[2] }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="row">
+        <div class="col-12">
+          <h3>Bottle Image Information</h3>
+          
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Bottle Name</th>
+                <th>image_count property</th>
+                <th>Raw images length</th>
+                <th>Images</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for info in image_info %}
+                <tr>
+                  <td>{{ info.name }}</td>
+                  <td>{{ info.image_count_property }}</td>
+                  <td>{{ info.raw_images_length }}</td>
+                  <td>
+                    <ul>
+                      {% for img in info.image_details %}
+                        <li>ID: {{ img.id }}, Sequence: {{ img.sequence }}, Created: {{ img.created_at }}</li>
+                      {% else %}
+                        <li>No images</li>
+                      {% endfor %}
+                    </ul>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="row">
+        <div class="col-12">
+          <h3>Test Images</h3>
+          {% for bottle in bottles %}
+            {% if bottle.image_count > 0 %}
+              <div class="mb-4">
+                <h4>{{ bottle.name }} ({{ bottle.image_count }} images)</h4>
+                {% for img in bottle.images %}
+                  <div class="mb-2">
+                    <p>Image #{{ img.sequence }}:</p>
+                    <img src="{{ debug_info.s3_config[2] }}/{{ bottle.id }}_{{ img.sequence }}.png" alt="Bottle image" class="img-thumbnail" style="max-width: 200px;">
+                  </div>
+                {% endfor %}
+              </div>
+              <hr>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </main>
+{% endblock %}

@@ -18,15 +18,6 @@ from mywhiskies.services.bottle.image import (
 
 
 def list_bottles_by_user(user: User, request: Request, current_user: User) -> Response:
-    # Eagerly load bottles with their images to avoid lazy-loading issues
-    # Using modern Session API instead of Query API
-    db.session.execute(
-        db.select(Bottle)
-        .filter_by(user_id=user.id)
-        .options(db.joinedload(Bottle.images))
-    ).scalars().unique().all()
-
-    # Continue with the standard process to prepare the datatable
     return utils.prep_datatable_bottles(user, current_user, request)
 
 
