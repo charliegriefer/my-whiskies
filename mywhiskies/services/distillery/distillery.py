@@ -1,7 +1,7 @@
 import json
 import os
 
-from flask import current_app, flash, request
+from flask import Flask, Request, current_app, flash
 from flask.wrappers import Response
 from sqlalchemy import insert
 
@@ -12,10 +12,8 @@ from mywhiskies.extensions import db
 from mywhiskies.services import utils
 
 
-def bulk_add_distillery(user: User, current_app: current_app) -> None:
-    json_file = os.path.join(
-        current_app.static_folder, "data", "base_distilleries.json"
-    )
+def bulk_add_distillery(user: User, app: Flask) -> None:
+    json_file = os.path.join(app.static_folder, "data", "base_distilleries.json")
 
     with open(json_file, mode="r", encoding="utf-8") as f:
         data = json.load(f)
@@ -29,9 +27,9 @@ def bulk_add_distillery(user: User, current_app: current_app) -> None:
 
 
 def list_distilleries(
-    user: User, current_user: User, request: request, entity_type: str
+    user: User, current_user: User, req: Request, entity_type: str
 ) -> Response:
-    return utils.prep_datatable_entities(user, current_user, request, entity_type)
+    return utils.prep_datatable_entities(user, current_user, req, entity_type)
 
 
 def add_distillery(form: DistilleryAddForm, user: User) -> None:
@@ -78,6 +76,6 @@ def delete_distillery(user: User, distillery_id: str) -> None:
 
 
 def get_distillery_detail(
-    distillery: Distillery, request: request, current_user: User
+    distillery: Distillery, req: Request, current_user: User
 ) -> Response:
-    return utils.prep_datatable_bottles(distillery, current_user, request)
+    return utils.prep_datatable_bottles(distillery, current_user, req)
