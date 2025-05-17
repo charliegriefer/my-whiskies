@@ -83,3 +83,7 @@ labels:
   - name: good first issue
     description: Good entry-level task for contributors
     color: "7057ff"
+
+  - name: temp-trigger
+    description: Temporary label to force re-sync
+    color: "ededed"
