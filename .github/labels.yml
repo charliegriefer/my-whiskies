@@ -1,0 +1,85 @@
+labels:
+  # 🛠 Development Work
+  - name: enhancement
+    description: New feature or request
+    color: "2cbe4e"
+
+  - name: refactor
+    description: Code change that doesn't alter functionality
+    color: "c2e0c6"
+
+  - name: tests
+    description: Add or improve tests
+    color: "5319e7"
+
+  - name: documentation
+    description: Additions or improvements to documentation
+    color: "0075ca"
+
+  - name: performance
+    description: Improve app speed or efficiency
+    color: "f7c6c7"
+
+  # 🧠 AI-Specific
+  - name: ai
+    description: AI integration (e.g. OpenAI, prompt logic)
+    color: "b60205"
+
+  - name: ocr
+    description: Image-to-text recognition (e.g. Tesseract, Vision API)
+    color: "d93f0b"
+
+  # 🧩 UI / UX
+  - name: ui
+    description: Layout or frontend display changes
+    color: "1d76db"
+
+  - name: ux
+    description: Improve user experience and ease of use
+    color: "0052cc"
+
+  - name: accessibility
+    description: Improve usability for all users
+    color: "a2eeef"
+
+  # 🧪 Status / Triage
+  - name: bug
+    description: Something isn't working
+    color: "d73a4a"
+
+  - name: invalid
+    description: Not a valid issue or request
+    color: "e4e669"
+
+  - name: duplicate
+    description: This issue or pull request already exists
+    color: "cfd3d7"
+
+  - name: wontfix
+    description: This will not be worked on
+    color: "ffffff"
+
+  - name: in progress
+    description: Currently being worked on
+    color: "0e8a16"
+
+  - name: blocked
+    description: Blocked by another issue or dependency
+    color: "f9d0c4"
+
+  # 🧭 Community / Support
+  - name: help wanted
+    description: Extra attention is needed
+    color: "008672"
+
+  - name: question
+    description: Further information is requested
+    color: "d876e3"
+
+  - name: discussion
+    description: Idea, proposal, or open-ended topic
+    color: "fef2c0"
+
+  - name: good first issue
+    description: Good entry-level task for contributors
+    color: "7057ff"
