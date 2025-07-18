@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg mb-5" style="background-color:#F5F5F5; border-bottom:1px solid #696969;">
   <div class="container">
-    <img src="{{ url_for('static', filename='cheers.png') }}" style="width:7%;" class="me-3" />
+    <img src="{{ url_for('static', filename='my-whiskies_logo.png') }}" style="width:7%;" class="me-3" />
     {% if current_user.is_authenticated %}
       {% set username = current_user.username %}
     {% else %}
