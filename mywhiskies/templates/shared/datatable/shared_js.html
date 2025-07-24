@@ -1,8 +1,10 @@
 
 /* set cookie when length dropdown is changed */
-$("select[name='bottles_length']").on("change", function() {
-  let next_year = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
-  document.cookie = "dt-list-length=" + this.value + "; expires=" + next_year + "; path=/";
+$(document).ready(function () {
+  $("select[name='bottles_length']").on("change", function() {
+    let next_year = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+    document.cookie = "dt-list-length=" + this.value + "; expires=" + next_year + "; path=/";
+  });
 });
   
 /* confirm delete modal window */
