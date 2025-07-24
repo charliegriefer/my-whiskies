@@ -40,10 +40,11 @@ def bottle(bottle_id: str):
         if _bottle.is_private:
             abort(404)
 
-    og_image = None
-    if _bottle.images:
-        og_image = f"{img_s3_url}/{_bottle.id}_1.png"
-    g.bottle_og_image_url = og_image
+    g.bottle_og_image_url = (
+        f"{img_s3_url}/{_bottle.id}_1.png"
+        if _bottle.images
+        else url_for("static", filename="my-whiskies_logo.png", _external=True)
+    )
 
     return render_template(
         "bottle/bottle.html",

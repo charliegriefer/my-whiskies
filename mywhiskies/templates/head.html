@@ -3,9 +3,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  {% if g.bottle_og_image_url -%}
   <meta data-rh="true" property="og:image" content="{{ g.bottle_og_image_url }}" />
-  {% endif -%}
   {% if title -%}
   <meta data-rh="true" property="og:title" content="{{ title | replace(' &raquo;', ':') }}" />
   {%- endif %}
