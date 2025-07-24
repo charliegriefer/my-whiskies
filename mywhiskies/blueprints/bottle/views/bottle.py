@@ -1,6 +1,6 @@
 import time
 
-from flask import abort, redirect, render_template, request, url_for
+from flask import abort, g, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.bottle import bottle_bp
@@ -39,6 +39,11 @@ def bottle(bottle_id: str):
         _bottle.personal_note = None
         if _bottle.is_private:
             abort(404)
+
+    og_image = None
+    if _bottle.images:
+        og_image = f"{img_s3_url}/{_bottle.id}_1.png"
+    g.bottle_og_image_url = og_image
 
     return render_template(
         "bottle/bottle.html",
