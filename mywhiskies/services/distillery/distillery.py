@@ -3,13 +3,11 @@ import os
 
 from flask import Flask, Request, current_app, flash
 from flask.wrappers import Response
-from sqlalchemy import insert
-
 from mywhiskies.blueprints.distillery.forms import DistilleryAddForm, DistilleryEditForm
-from mywhiskies.blueprints.distillery.models import Distillery
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.models import Distillery, User
 from mywhiskies.services import utils
+from sqlalchemy import insert
 
 
 def bulk_add_distillery(user: User, app: Flask) -> None:

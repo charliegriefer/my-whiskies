@@ -1,12 +1,11 @@
 from flask import Flask, url_for
 from flask.testing import FlaskClient
-from sqlalchemy import select
-from werkzeug.datastructures import MultiDict
-
 from mywhiskies.blueprints.auth.forms import ResetPWForm
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.models import User
+from sqlalchemy import select
 from tests.conftest import TEST_USER_PASSWORD
+from werkzeug.datastructures import MultiDict
 
 
 def test_reset_password_valid_token(

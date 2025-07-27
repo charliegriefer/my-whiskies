@@ -3,13 +3,9 @@ from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 from flask.testing import FlaskClient
-from werkzeug.datastructures import MultiDict
-
-from mywhiskies.blueprints.bottle.models import Bottle, BottleTypes
 from mywhiskies.blueprints.distillery.forms import DistilleryAddForm, DistilleryEditForm
-from mywhiskies.blueprints.distillery.models import Distillery
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.models import Bottle, BottleTypes, Distillery, User
 from mywhiskies.services.distillery.distillery import (
     add_distillery,
     delete_distillery,
@@ -17,6 +13,7 @@ from mywhiskies.services.distillery.distillery import (
     get_distillery_detail,
     list_distilleries,
 )
+from werkzeug.datastructures import MultiDict
 
 
 @patch("mywhiskies.services.utils.render_template")

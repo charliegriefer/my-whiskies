@@ -6,11 +6,7 @@ from dateutil.relativedelta import relativedelta
 from flask import Markup, abort, flash, make_response, render_template, request
 from flask.wrappers import Response
 from flask_wtf import FlaskForm as Form
-
-from mywhiskies.blueprints.bottle.models import Bottle, BottleTypes
-from mywhiskies.blueprints.bottler.models import Bottler
-from mywhiskies.blueprints.distillery.models import Distillery
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import Bottle, Bottler, BottleTypes, Distillery, User
 
 
 def is_my_list(username: str, current_user: User) -> bool:
@@ -182,10 +178,10 @@ def _set_empty_text(
     # Convenience method to set the empty table text for the datatable.
     if type(entity) in [Distillery, Bottler]:
         empty_text = (
-            f"{ entity.user.username} has no bottles from { entity.name }. Yet."
+            f"{entity.user.username} has no bottles from {entity.name}. Yet."
         )
     elif type(entity) is User:
-        empty_text = f"{ entity.username} has no bottles. Yet."
+        empty_text = f"{entity.username} has no bottles. Yet."
     else:
         return "No bottles found."
 

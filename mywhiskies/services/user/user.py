@@ -1,9 +1,8 @@
 from typing import Optional
 
 import pandas as pd
-
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.models import User
 
 
 def get_user_by_email(email: str) -> Optional[User]:

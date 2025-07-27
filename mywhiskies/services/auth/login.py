@@ -1,10 +1,9 @@
 from flask import flash, url_for
+from mywhiskies.extensions import db
+from mywhiskies.models import User
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
 from werkzeug.urls import url_parse
-
-from mywhiskies.blueprints.user.models import User
-from mywhiskies.extensions import db
 
 
 def get_user_by_username(username: str) -> User:

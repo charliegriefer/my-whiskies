@@ -5,9 +5,9 @@ from flask import Request, current_app, flash
 from flask.wrappers import Response
 
 from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
-from mywhiskies.blueprints.bottle.models import Bottle
-from mywhiskies.blueprints.distillery.models import Distillery
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import Bottle
+from mywhiskies.models import Distillery
+from mywhiskies.models import User
 from mywhiskies.extensions import db
 from mywhiskies.services import utils
 from mywhiskies.services.bottle.image import (

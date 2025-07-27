@@ -1,9 +1,7 @@
 from decimal import Decimal
 
 import pytest
-
-from mywhiskies.blueprints.bottle.models import Bottle, BottleTypes
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import Bottle, BottleTypes, User
 
 
 def test_bottle_creation(test_bottle: Bottle, test_user_01: User) -> None:

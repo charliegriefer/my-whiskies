@@ -2,9 +2,8 @@ from textwrap import dedent
 from typing import Optional
 
 from flask import Markup, flash
-
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.models import User
 
 
 def find_user_for_password_reset(email: str) -> Optional[User]:

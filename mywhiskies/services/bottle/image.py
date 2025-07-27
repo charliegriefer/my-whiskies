@@ -3,11 +3,10 @@ import io
 import boto3
 from botocore.exceptions import ClientError
 from flask import current_app
-from PIL import Image
-
 from mywhiskies.blueprints.bottle.forms import BottleAddForm
-from mywhiskies.blueprints.bottle.models import Bottle, BottleImage
 from mywhiskies.extensions import db
+from mywhiskies.models import Bottle, BottleImage
+from PIL import Image
 
 
 def get_s3_config():

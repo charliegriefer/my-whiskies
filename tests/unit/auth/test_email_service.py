@@ -1,6 +1,6 @@
 from unittest.mock import ANY, MagicMock, patch
 
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import User
 from mywhiskies.services.auth.email import (
     send_password_reset_email,
     send_registration_confirmation_email,

@@ -2,19 +2,14 @@ import decimal
 import enum
 import uuid
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Optional
+from typing import List, Optional
 
 import sqlalchemy as sa
+from mywhiskies.extensions import db
+from mywhiskies.models import bottle_distillery  # noqa: F401
+from mywhiskies.models import Bottler, Distillery, User
 from sqlalchemy import ForeignKey, Numeric, String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from mywhiskies.blueprints.core.models import bottle_distillery  # noqa: F401
-from mywhiskies.blueprints.user.models import User
-from mywhiskies.extensions import db
-
-if TYPE_CHECKING:  # avoid circular imports
-    from mywhiskies.blueprints.bottler.models import Bottler
-    from mywhiskies.blueprints.distillery.models import Distillery
 
 
 class BottleTypes(enum.Enum):

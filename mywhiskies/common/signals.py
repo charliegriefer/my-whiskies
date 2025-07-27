@@ -1,7 +1,6 @@
 from flask import current_app, request
-
-from mywhiskies.blueprints.user.models import UserLogin
 from mywhiskies.extensions import db
+from mywhiskies.models import UserLogin
 
 
 def log_user_login(sender, user):

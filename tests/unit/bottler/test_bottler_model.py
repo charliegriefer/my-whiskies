@@ -1,5 +1,4 @@
-from mywhiskies.blueprints.bottler.models import Bottler
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import Bottler, User
 
 
 def test_bottler_creation(test_bottler: Bottler) -> None:

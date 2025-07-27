@@ -1,6 +1,5 @@
 from flask import abort, current_app, flash, render_template
-
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import User
 from mywhiskies.services.email.email import send_email
 
 

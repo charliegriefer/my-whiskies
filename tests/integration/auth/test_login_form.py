@@ -1,10 +1,9 @@
 from flask import Flask, url_for
 from flask.testing import FlaskClient
-from werkzeug.datastructures import MultiDict
-
 from mywhiskies.blueprints.auth.forms import LoginForm
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import User
 from tests.conftest import TEST_USER_PASSWORD
+from werkzeug.datastructures import MultiDict
 
 
 def test_valid_login_form(test_user_01: User) -> None:

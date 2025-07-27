@@ -1,9 +1,7 @@
 import pytest
 from flask import Flask
-
-from mywhiskies.blueprints.distillery.models import Distillery
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.models import Distillery, User
 
 
 @pytest.fixture

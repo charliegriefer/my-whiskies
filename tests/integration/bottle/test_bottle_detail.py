@@ -1,7 +1,6 @@
 from flask import url_for
 from flask.testing import FlaskClient
-
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import User
 
 
 def test_private_bottle_logged_out(client: FlaskClient, test_user_01: User) -> None:
