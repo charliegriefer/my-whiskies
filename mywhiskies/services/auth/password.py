@@ -1,7 +1,9 @@
 from textwrap import dedent
 from typing import Optional
 
-from flask import Markup, flash
+from flask import flash
+from markupsafe import Markup
+
 from mywhiskies.extensions import db
 from mywhiskies.models import User
 

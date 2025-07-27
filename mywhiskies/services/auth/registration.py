@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import Optional
 
-from flask import Markup, flash, url_for
+from flask import flash, url_for
+from markupsafe import Markup
+
 from mywhiskies.extensions import db
 from mywhiskies.models import User
 
