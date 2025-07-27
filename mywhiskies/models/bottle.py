@@ -5,10 +5,11 @@ from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 
 import sqlalchemy as sa
-from mywhiskies.extensions import db
-from mywhiskies.models import bottle_distillery  # noqa: F401
 from sqlalchemy import ForeignKey, Numeric, String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from mywhiskies.extensions import db
+from mywhiskies.models.core import bottle_distillery  # noqa: F401
 
 if TYPE_CHECKING:
     from mywhiskies.models import Bottler, Distillery, User
