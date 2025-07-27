@@ -1,10 +1,13 @@
 import os
 import sys
+from typing import Generator
 
 import pytest
 from flask import Flask, url_for
 from flask.testing import FlaskClient
 from flask_login import logout_user
+from mywhiskies.database import init_db
+from mywhiskies.extensions import db
 from mywhiskies.models import Bottle, Bottler, Distillery, User
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -13,16 +16,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 from config import TestConfig  # noqa: E402
 from mywhiskies.app import create_app  # noqa: E402
-from mywhiskies.extensions import db  # noqa: E402
 
 TEST_USER_PASSWORD = "testpass"
 
 
 @pytest.fixture(scope="session")
-def app() -> Flask:
+def app() -> Generator[Flask, None, None]:
     app = create_app(config_class=TestConfig)
     with app.app_context():
-        db.create_all()
+        init_db()
         yield app
         db.session.remove()
         db.drop_all()
@@ -216,7 +218,7 @@ def logged_in_user_02(
 
 
 @pytest.fixture(autouse=True)
-def logged_out_user() -> None:
+def logged_out_user() -> Generator[None, None, None]:
     """Ensure the user is logged out before each test."""
     yield
     logout_user()
