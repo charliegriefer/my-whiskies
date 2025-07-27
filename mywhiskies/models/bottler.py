@@ -1,10 +1,12 @@
 import uuid
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from mywhiskies.extensions import db
-from mywhiskies.models import Bottle, User
 from sqlalchemy import String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+if TYPE_CHECKING:
+    from mywhiskies.models import Bottle, User
 
 
 class Bottler(db.Model):

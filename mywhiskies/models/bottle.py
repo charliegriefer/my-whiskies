@@ -2,14 +2,16 @@ import decimal
 import enum
 import uuid
 from datetime import datetime
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 import sqlalchemy as sa
 from mywhiskies.extensions import db
 from mywhiskies.models import bottle_distillery  # noqa: F401
-from mywhiskies.models import Bottler, Distillery, User
 from sqlalchemy import ForeignKey, Numeric, String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+if TYPE_CHECKING:
+    from mywhiskies.models import Bottler, Distillery, User
 
 
 class BottleTypes(enum.Enum):

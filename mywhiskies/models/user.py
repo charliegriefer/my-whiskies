@@ -1,16 +1,18 @@
 import uuid
 from datetime import datetime
 from time import time
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 import jwt
 from flask import current_app
 from flask_login import UserMixin
 from mywhiskies.extensions import db, login_manager
-from mywhiskies.models import Bottle, Bottler, Distillery
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import check_password_hash, generate_password_hash
+
+if TYPE_CHECKING:
+    from mywhiskies.models import Bottle, Bottler, Distillery
 
 
 class User(UserMixin, db.Model):
