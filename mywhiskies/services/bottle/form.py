@@ -1,6 +1,6 @@
 from typing import Union
 
-from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
+from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
 from mywhiskies.models import BottleTypes, User
 
 

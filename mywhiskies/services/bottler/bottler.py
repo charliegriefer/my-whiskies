@@ -1,7 +1,8 @@
 from flask import current_app, flash, request
 from flask.wrappers import Response
-from mywhiskies.blueprints.bottler.forms import BottlerAddForm, BottlerEditForm
+
 from mywhiskies.extensions import db
+from mywhiskies.forms.bottler import BottlerAddForm, BottlerEditForm
 from mywhiskies.models import Bottler, User
 from mywhiskies.services import utils
 

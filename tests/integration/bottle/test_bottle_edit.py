@@ -4,12 +4,13 @@ from unittest.mock import MagicMock, patch
 
 from flask import url_for
 from flask.testing import FlaskClient
-from mywhiskies.blueprints.bottle.forms import BottleEditForm
+from werkzeug.datastructures import FileStorage, MultiDict
+
 from mywhiskies.extensions import db
+from mywhiskies.forms import BottleEditForm
 from mywhiskies.models import Bottle, User
 from mywhiskies.services.bottle.bottle import edit_bottle
 from mywhiskies.services.bottle.form import prep_bottle_form
-from werkzeug.datastructures import FileStorage, MultiDict
 
 
 def test_edit_bottle_requires_login(client: FlaskClient, test_user_01: User) -> None:

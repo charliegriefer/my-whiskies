@@ -1,8 +1,9 @@
 from flask import url_for
 from flask.testing import FlaskClient
-from mywhiskies.blueprints.distillery.forms import DistilleryAddForm
-from mywhiskies.models import User
 from werkzeug.datastructures import MultiDict
+
+from mywhiskies.forms.distillery import DistilleryAddForm
+from mywhiskies.models import User
 
 new_distillery_formdata = MultiDict(
     {

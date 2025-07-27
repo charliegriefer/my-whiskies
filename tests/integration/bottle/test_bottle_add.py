@@ -3,11 +3,12 @@ from unittest.mock import MagicMock, patch
 
 from flask import Flask, url_for
 from flask.testing import FlaskClient
-from mywhiskies.blueprints.bottle.forms import BottleAddForm
+from werkzeug.datastructures import FileStorage, MultiDict
+
+from mywhiskies.forms.bottle import BottleAddForm
 from mywhiskies.models import Bottle, User
 from mywhiskies.services.bottle.form import prep_bottle_form
 from mywhiskies.services.bottle.image import add_bottle_images
-from werkzeug.datastructures import FileStorage, MultiDict
 
 
 def create_bottle_formdata(

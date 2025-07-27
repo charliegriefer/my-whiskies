@@ -2,7 +2,7 @@ from flask import current_app, redirect, render_template, request, url_for
 from flask_login import current_user
 
 from mywhiskies.blueprints.auth import auth
-from mywhiskies.blueprints.auth.forms import ResetPasswordRequestForm, ResetPWForm
+from mywhiskies.forms.auth import ResetPasswordRequestForm, ResetPWForm
 from mywhiskies.services.auth.email import send_password_reset_email
 from mywhiskies.services.auth.password import (
     find_user_for_password_reset,

@@ -1,8 +1,9 @@
 from flask import redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+
 from mywhiskies.blueprints.bottler import bottler_bp
-from mywhiskies.blueprints.bottler.forms import BottlerAddForm, BottlerEditForm
 from mywhiskies.extensions import db
+from mywhiskies.forms.bottler import BottlerAddForm, BottlerEditForm
 from mywhiskies.models import Bottler, User
 from mywhiskies.services import utils
 from mywhiskies.services.bottler.bottler import (
