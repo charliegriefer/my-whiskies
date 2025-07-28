@@ -63,11 +63,17 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
     # lazy load blueprints to avoid circular imports
     from mywhiskies.blueprints.auth import auth as auth_bp
     from mywhiskies.blueprints.bottle import bottle_bp
+
+    # Import view modules to register routes with blueprints
+    from mywhiskies.blueprints.bottle.views import bottle  # noqa: F401
     from mywhiskies.blueprints.bottler import bottler_bp
+    from mywhiskies.blueprints.bottler.views import bottler  # noqa: F401
     from mywhiskies.blueprints.core import core_bp
     from mywhiskies.blueprints.distillery import distillery_bp
+    from mywhiskies.blueprints.distillery.views import distillery  # noqa: F401
     from mywhiskies.blueprints.errors.views import errors
     from mywhiskies.blueprints.user import user_bp
+    from mywhiskies.blueprints.user.views import user  # noqa: F401
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(core_bp)
