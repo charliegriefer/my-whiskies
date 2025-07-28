@@ -1,7 +1,7 @@
 from werkzeug.datastructures import MultiDict
 
-from mywhiskies.blueprints.auth.forms import ResetPasswordRequestForm
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.forms.auth import ResetPasswordRequestForm
+from mywhiskies.models import User
 
 
 def test_reset_password_request_form_valid(test_user_01: User) -> None:

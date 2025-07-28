@@ -6,10 +6,9 @@ from flask import url_for
 from flask.testing import FlaskClient
 from werkzeug.datastructures import FileStorage, MultiDict
 
-from mywhiskies.blueprints.bottle.forms import BottleEditForm
-from mywhiskies.blueprints.bottle.models import Bottle
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.forms import BottleEditForm
+from mywhiskies.models import Bottle, User
 from mywhiskies.services.bottle.bottle import edit_bottle
 from mywhiskies.services.bottle.form import prep_bottle_form
 

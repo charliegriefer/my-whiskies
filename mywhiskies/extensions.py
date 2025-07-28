@@ -12,6 +12,17 @@ migrate = Migrate()
 
 
 def register_extensions(app):
+    # Import all models to ensure they're registered with SQLAlchemy before db.init_app()
+    from mywhiskies.models import (  # noqa: F401
+        Bottle,
+        BottleImage,
+        Bottler,
+        Distillery,
+        User,
+        UserLogin,
+        bottle_distillery,
+    )
+
     db.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)

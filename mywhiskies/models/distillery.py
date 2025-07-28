@@ -1,15 +1,12 @@
 import uuid
 from typing import TYPE_CHECKING, List, Optional
 
+from mywhiskies.extensions import db
 from sqlalchemy import ForeignKey, String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from mywhiskies.blueprints.core.models import bottle_distillery  # noqa: F401
-from mywhiskies.blueprints.user.models import User
-from mywhiskies.extensions import db
-
-if TYPE_CHECKING:  # avoid circular imports
-    from mywhiskies.blueprints.bottle.models import Bottle
+if TYPE_CHECKING:
+    from mywhiskies.models import Bottle, User
 
 
 class Distillery(db.Model):

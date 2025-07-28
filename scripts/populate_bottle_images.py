@@ -13,9 +13,8 @@ from datetime import datetime
 
 import boto3
 from flask import current_app
-
-from mywhiskies.blueprints.bottle.models import Bottle, BottleImage
 from mywhiskies.extensions import db
+from mywhiskies.models import Bottle, BottleImage
 
 # Get S3 configuration from app config
 s3_bucket = current_app.config["BOTTLE_IMAGE_S3_BUCKET"]

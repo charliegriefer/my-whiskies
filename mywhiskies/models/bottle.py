@@ -8,13 +8,11 @@ import sqlalchemy as sa
 from sqlalchemy import ForeignKey, Numeric, String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from mywhiskies.blueprints.core.models import bottle_distillery  # noqa: F401
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.models.core import bottle_distillery  # noqa: F401
 
-if TYPE_CHECKING:  # avoid circular imports
-    from mywhiskies.blueprints.bottler.models import Bottler
-    from mywhiskies.blueprints.distillery.models import Distillery
+if TYPE_CHECKING:
+    from mywhiskies.models import Bottler, Distillery, User
 
 
 class BottleTypes(enum.Enum):

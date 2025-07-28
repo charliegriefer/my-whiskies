@@ -1,9 +1,7 @@
 from flask import url_for
 from flask.testing import FlaskClient
-
-from mywhiskies.blueprints.distillery.models import Distillery
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.models import Distillery, User
 
 
 def test_edit_distillery_requires_login(

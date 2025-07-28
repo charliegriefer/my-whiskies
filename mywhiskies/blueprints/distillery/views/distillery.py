@@ -2,10 +2,9 @@ from flask import current_app, flash, redirect, render_template, request, url_fo
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.distillery import distillery_bp
-from mywhiskies.blueprints.distillery.forms import DistilleryAddForm, DistilleryEditForm
-from mywhiskies.blueprints.distillery.models import Distillery
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.forms.distillery import DistilleryAddForm, DistilleryEditForm
+from mywhiskies.models import Distillery, User
 from mywhiskies.services import utils
 from mywhiskies.services.distillery.distillery import (
     add_distillery,

@@ -2,10 +2,8 @@ import copy
 
 from flask import url_for
 from flask.testing import FlaskClient
-
-from mywhiskies.blueprints.bottler.models import Bottler
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.models import Bottler, User
 
 
 def test_edit_bottler_requires_login(client: FlaskClient, test_user_01: User) -> None:

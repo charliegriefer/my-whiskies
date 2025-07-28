@@ -1,6 +1,5 @@
 from flask import url_for
-
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import User
 from mywhiskies.services.auth.login import (
     check_email_confirmation,
     determine_next_page,

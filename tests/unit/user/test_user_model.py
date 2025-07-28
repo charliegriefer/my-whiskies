@@ -1,4 +1,4 @@
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import User
 from tests.conftest import TEST_USER_PASSWORD
 
 

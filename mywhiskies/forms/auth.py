@@ -1,8 +1,9 @@
 import re
 
 import requests
-from flask import Markup, current_app, request, url_for
+from flask import current_app, request, url_for
 from flask_wtf import FlaskForm
+from markupsafe import Markup
 from wtforms import BooleanField, HiddenField, PasswordField, StringField, SubmitField
 from wtforms.fields import EmailField, Label
 from wtforms.validators import (
@@ -14,7 +15,7 @@ from wtforms.validators import (
     ValidationError,
 )
 
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import User
 from mywhiskies.services.auth.registration import find_user_by_email
 
 USERNAME_DESCRIPTION = (

@@ -4,9 +4,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
 from mywhiskies.blueprints.auth import auth
-from mywhiskies.blueprints.auth.forms import LoginForm
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.forms.auth import LoginForm
+from mywhiskies.models import User
 from mywhiskies.services.auth.login import (
     check_email_confirmation,
     determine_next_page,

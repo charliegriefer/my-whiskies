@@ -4,9 +4,8 @@ from unittest.mock import MagicMock, patch
 from flask import request
 from flask.testing import FlaskClient
 
-from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
-from mywhiskies.blueprints.bottle.models import Bottle, BottleTypes
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
+from mywhiskies.models import Bottle, BottleTypes, User
 from mywhiskies.services.bottle.bottle import (
     add_bottle,
     delete_bottle,

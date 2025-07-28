@@ -1,8 +1,6 @@
 from flask import url_for
 from flask.testing import FlaskClient
-
-from mywhiskies.blueprints.bottle.models import Bottle
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import Bottle, User
 
 
 def test_delete_bottle_not_logged_in(client: FlaskClient, test_user_01: User) -> None:

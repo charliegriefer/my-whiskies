@@ -1,10 +1,11 @@
 from datetime import datetime
 from typing import Optional
 
-from flask import Markup, flash, url_for
+from flask import flash, url_for
+from markupsafe import Markup
 
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.models import User
 
 
 def verify_confirmation_token(token: str) -> Optional[User]:
@@ -28,8 +29,8 @@ def flash_registration_instructions() -> None:
     flash(
         Markup(
             """<p>Check your e-mail for further instructions.</p>
-           <p>If you don't receive an e-mail within an hour:</p>
-           <ul><li>Check your spam folder</li><li>Consider whitelisting the domain my-whiskies.online</li></ul>"""
+            <p>If you don't receive an e-mail within an hour:</p>
+            <ul><li>Check your spam folder</li><li>Consider whitelisting the domain my-whiskies.online</li></ul>"""
         ),
         "info",
     )

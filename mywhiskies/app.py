@@ -9,13 +9,6 @@ from flask_login import current_user
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import DevConfig, ProdConfig
-from mywhiskies.blueprints.auth import auth
-from mywhiskies.blueprints.bottle import bottle_bp
-from mywhiskies.blueprints.bottler import bottler_bp
-from mywhiskies.blueprints.core import core_bp
-from mywhiskies.blueprints.distillery import distillery_bp
-from mywhiskies.blueprints.errors.views import errors
-from mywhiskies.blueprints.user import user_bp
 from mywhiskies.extensions import register_extensions
 from mywhiskies.logging import register_logging
 from mywhiskies.signals import register_signals
@@ -67,7 +60,16 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
                 )
         return response
 
-    app.register_blueprint(auth)
+    # lazy load blueprints to avoid circular imports
+    from mywhiskies.blueprints.auth import auth as auth_bp
+    from mywhiskies.blueprints.bottle import bottle_bp
+    from mywhiskies.blueprints.bottler import bottler_bp
+    from mywhiskies.blueprints.core import core_bp
+    from mywhiskies.blueprints.distillery import distillery_bp
+    from mywhiskies.blueprints.errors.views import errors
+    from mywhiskies.blueprints.user import user_bp
+
+    app.register_blueprint(auth_bp)
     app.register_blueprint(core_bp)
     app.register_blueprint(bottle_bp)
     app.register_blueprint(bottler_bp)

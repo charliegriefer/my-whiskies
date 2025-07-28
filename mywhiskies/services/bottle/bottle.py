@@ -4,11 +4,9 @@ import boto3
 from flask import Request, current_app, flash
 from flask.wrappers import Response
 
-from mywhiskies.blueprints.bottle.forms import BottleAddForm, BottleEditForm
-from mywhiskies.blueprints.bottle.models import Bottle
-from mywhiskies.blueprints.distillery.models import Distillery
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
+from mywhiskies.models import Bottle, Distillery, User
 from mywhiskies.services import utils
 from mywhiskies.services.bottle.image import (
     add_bottle_images,

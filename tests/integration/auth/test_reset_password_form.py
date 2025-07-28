@@ -3,9 +3,9 @@ from flask.testing import FlaskClient
 from sqlalchemy import select
 from werkzeug.datastructures import MultiDict
 
-from mywhiskies.blueprints.auth.forms import ResetPWForm
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.forms.auth import ResetPWForm
+from mywhiskies.models import User
 from tests.conftest import TEST_USER_PASSWORD
 
 

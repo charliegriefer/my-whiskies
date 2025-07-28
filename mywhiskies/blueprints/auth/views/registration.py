@@ -2,7 +2,7 @@ from flask import current_app, flash, redirect, render_template, url_for
 from flask_login import current_user
 
 from mywhiskies.blueprints.auth import auth
-from mywhiskies.blueprints.auth.forms import RegistrationForm, ResendRegEmailForm
+from mywhiskies.forms.auth import RegistrationForm, ResendRegEmailForm
 from mywhiskies.services import utils
 from mywhiskies.services.auth.email import send_registration_confirmation_email
 from mywhiskies.services.auth.registration import (

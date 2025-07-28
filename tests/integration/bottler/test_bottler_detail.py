@@ -1,7 +1,6 @@
 from flask import url_for
 from flask.testing import FlaskClient
-
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import User
 
 
 def test_distillery_detail_no_bottles(client: FlaskClient, test_user_02: User) -> None:

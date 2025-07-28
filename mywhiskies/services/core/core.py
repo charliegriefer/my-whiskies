@@ -1,14 +1,9 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from flask_login import current_user
-from sqlalchemy import func, select
-
-from mywhiskies.blueprints.distillery.models import Distillery
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
-
-if TYPE_CHECKING:
-    from mywhiskies.blueprints.bottle.models import Bottle
+from mywhiskies.models import Bottle, Distillery, User
+from sqlalchemy import func, select
 
 
 def get_index_counts() -> Dict[str, Any]:

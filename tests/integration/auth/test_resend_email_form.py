@@ -1,7 +1,7 @@
 from werkzeug.datastructures import MultiDict
 
-from mywhiskies.blueprints.auth.forms import ResendRegEmailForm
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.forms.auth import ResendRegEmailForm
+from mywhiskies.models import User
 
 
 def test_resend_reg_email_form_valid(test_user_01: User) -> None:

@@ -1,6 +1,6 @@
 from unittest.mock import ANY, MagicMock, patch
 
-from mywhiskies.blueprints.user.models import User
+from mywhiskies.models import User
 from mywhiskies.services.auth.password import (
     find_user_for_password_reset,
     flash_password_reset_instructions,

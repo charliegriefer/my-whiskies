@@ -5,11 +5,9 @@ from unittest.mock import MagicMock, patch
 from flask.testing import FlaskClient
 from werkzeug.datastructures import MultiDict
 
-from mywhiskies.blueprints.bottle.models import Bottle, BottleTypes
-from mywhiskies.blueprints.distillery.forms import DistilleryAddForm, DistilleryEditForm
-from mywhiskies.blueprints.distillery.models import Distillery
-from mywhiskies.blueprints.user.models import User
 from mywhiskies.extensions import db
+from mywhiskies.forms.distillery import DistilleryAddForm, DistilleryEditForm
+from mywhiskies.models import Bottle, BottleTypes, Distillery, User
 from mywhiskies.services.distillery.distillery import (
     add_distillery,
     delete_distillery,

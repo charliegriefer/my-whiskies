@@ -1,6 +1,6 @@
 from werkzeug.datastructures import MultiDict
 
-from mywhiskies.blueprints.auth.forms import RegistrationForm
+from mywhiskies.forms.auth import RegistrationForm
 
 
 def test_valid_registration_form() -> None:
