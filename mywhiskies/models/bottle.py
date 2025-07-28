@@ -50,7 +50,7 @@ class Bottle(db.Model):
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
     date_created: Mapped[datetime] = mapped_column(default=datetime.utcnow)
-    name: Mapped[str] = mapped_column(String(64))
+    name: Mapped[str] = mapped_column(String(100))
     type: Mapped[BottleTypes]
     abv: Mapped[Optional[decimal.Decimal]] = mapped_column(Numeric(6, 4))
     size: Mapped[Optional[int]]
