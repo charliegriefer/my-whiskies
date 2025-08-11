@@ -197,3 +197,6 @@ log/*
 
 # vscode
 .vscode/
+
+# Docker environment files
+.env.docker
