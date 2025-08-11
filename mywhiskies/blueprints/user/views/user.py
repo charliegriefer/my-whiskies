@@ -1,8 +1,13 @@
-from flask import render_template, send_file
+from flask import redirect, render_template, send_file, url_for
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.user import user_bp
 from mywhiskies.services.user.user import create_export_csv
+
+
+@user_bp.route("/<string:username>", methods=["GET"])
+def bottles_redirect(username: str):
+    return redirect(url_for("bottle.list", username=username))
 
 
 @user_bp.route("/account")
