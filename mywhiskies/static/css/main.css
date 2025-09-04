@@ -23,6 +23,20 @@ a:focus, a:hover {
   color: crimson;
 }
 
+.table-tight td,
+.table-tight th {
+  padding-top: 0.005rem;
+  padding-bottom: 0.005rem;
+}
+
+.table-tight th {
+  white-space: nowrap;
+  width: 1%;
+  text-align: left;
+  vertical-align: top;
+}
+
+
 /* nav bar */
 /* ---------------------------------------------------------------------------------------- */
 .navbar {
