@@ -1,0 +1,12 @@
+{% macro float_with_symbol(value, symbol="", position="suffix") %}
+  {% if value is not none %}
+    {% set formatted = value | float_or_dash %}
+    {% if position == "prefix" %}
+      {{ symbol }}{{ formatted }}
+    {% else %}
+      {{ formatted }}{{ symbol }}
+    {% endif %}
+  {% else %}
+    {{ value | float_or_dash }}
+  {% endif %}
+{% endmacro %}
