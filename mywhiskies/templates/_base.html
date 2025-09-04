@@ -7,9 +7,11 @@
 <body>
   {% include "navbar.html" %}
   {% block content %}
-    <div class="container">
-      {% include "flash.html" %}
-      {% block app_content %}{% endblock %}
+    <div class="w-100">
+      <div class="mx-auto px-3" style="max-width: 1000px;">
+        {% include "flash.html" %}
+        {% block app_content %}{% endblock %}
+      </div>
     </div>
     {% include "footer.html" %}
   {% endblock %}
