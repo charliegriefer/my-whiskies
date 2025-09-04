@@ -9,6 +9,7 @@ from flask_login import current_user
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import DevConfig, ProdConfig
+from mywhiskies.common.filters import register_filters
 from mywhiskies.extensions import register_extensions
 from mywhiskies.logging import register_logging
 from mywhiskies.signals import register_signals
@@ -82,6 +83,8 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
     app.register_blueprint(distillery_bp)
     app.register_blueprint(errors)
     app.register_blueprint(user_bp)
+
+    register_filters(app)
 
     register_logging(app)
     register_extensions(app)
