@@ -127,7 +127,7 @@
                       {% set the_var = "stars/stars_" + times_ten|string + ".png" %}
                        <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1" />
                     {% else %}
-                        {% set alt = current_user.username + " has not rated this bottle." %}
+                        {% set alt = bottle.user.username + " has not rated this bottle." %}
                        <img src="{{ url_for('static', filename='stars/stars_blank.png') }}" alt="{{ alt }}" title="{{ alt }}" class="mb-1" />
                     {% endif %}
                   </td>
