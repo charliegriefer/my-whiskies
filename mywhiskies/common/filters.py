@@ -21,13 +21,17 @@ def value_or_dash(
 def multiline_or_dash(
     value: Any, fallback: str = "-", dash_class: str = "text-muted"
 ) -> Markup:
-    """Return value with <br /> for newlines, or a styled dash if empty or None."""
     if value is None or (isinstance(value, str) and value.strip() == ""):
         return Markup(f'<span class="{dash_class}">{escape(fallback)}</span>')
 
-    # Replace newlines and escape text
-    escaped = escape(value).replace("\n", "<br />")
-    return Markup(escaped)
+    # normalize newlines
+    normalized = value.replace("\r\n", "\n").replace("\r", "\n")
+    # escape user input (protects against HTML injection)
+    escaped = escape(normalized)
+    # insert <br /> after escaping
+    with_breaks = escaped.replace("\n", Markup("<br />"))
+
+    return Markup(with_breaks)
 
 
 def date_or_dash(
