@@ -50,7 +50,7 @@
                 {% if is_my_bottle %}
                   <tr>
                     <th class="text-nowrap">Is Private:</th>
-                    <td>{{ bottle.is_private | yesno("Yes,No") }}</td>
+                    <td>{{ bottle.is_private | yesno("Yes", "No") }}</td>
                   </tr>
                 {% endif %}
                 <tr>
