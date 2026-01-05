@@ -1,8 +1,13 @@
 <div class="container-fluid px-0" style="background-color:#F5F5F5; border-bottom:1px solid #696969;">
-  <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-expand-lg flex-nowrap">
     <div class="container" style="max-width: 1000px;">
-      <a href="{{ url_for('core.main') }}">
-      <img src="{{ url_for('static', filename='logotext.png') }}" style="width:60%;" class="me-3" />
+      <a href="{{ url_for('core.main') }}" class="navbar-brand d-flex align-items-center flex-shrink-0">
+        <img
+          src="{{ url_for('static', filename='logotext.png') }}"
+          alt="My Whiskies Online"
+          class="me-3"
+          style="height:clamp(44px,5vw,60px); width:auto;"
+        />
       </a>
       {% if current_user.is_authenticated %}
         {% set username = current_user.username %}
