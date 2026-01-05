@@ -42,7 +42,7 @@ def bottle(bottle_id: str):
     g.bottle_og_image_url = (
         f"{img_s3_url}/{_bottle.id}_1.png"
         if _bottle.images
-        else url_for("static", filename="my-whiskies_logo.png", _external=True)
+        else url_for("static", filename="logo.png", _external=True)
     )
 
     return render_template(

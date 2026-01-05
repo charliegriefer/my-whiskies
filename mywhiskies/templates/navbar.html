@@ -1,7 +1,7 @@
 <div class="container-fluid px-0" style="background-color:#F5F5F5; border-bottom:1px solid #696969;">
   <nav class="navbar navbar-expand-lg">
     <div class="container" style="max-width: 1000px;">
-      <img src="{{ url_for('static', filename='my-whiskies_logo.png') }}" style="width:7%;" class="me-3" />
+      <img src="{{ url_for('static', filename='logotext.png') }}" style="width:60%;" class="me-3" />
       {% if current_user.is_authenticated %}
         {% set username = current_user.username %}
       {% else %}
@@ -14,11 +14,6 @@
         {% if distillery %}
           {% set username = distillery.user.username %}
         {% endif %}
-      {% endif %}
-      {% if request.endpoint == "core.main" %}
-        <div class="navbar-brand">My Whiskies Online</div>
-      {% else %}
-          <a class="navbar-brand" href="{{ url_for('core.main') }}">My Whiskies Online</a>
       {% endif %}
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -63,7 +58,7 @@
             {% if current_user.is_anonymous %}
               {% if request.endpoint != "auth.login" %}
                 <li class="nav-item">
-                  <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white" role="button" id="nav_login">Log In</a>
+                  <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white text-nowrap" role="button" id="nav_login">Log In</a>
                 </li>
               {% endif %}
             {% else %}
