@@ -44,6 +44,9 @@
     <div class="ms-3">
         {{ field.label(class="form-label") }}
         {{ field(class="form-control") }}
+        <div class="invalid-feedback">
+            This image exceeds the {{ config.MAX_FILE_UPLOAD_SIZE }} limit and may fail to upload.
+        </div>
         <button 
             type="button" 
             id="clear-{{ field.id }}" 

@@ -94,3 +94,58 @@
     </div>
   </div>
 {% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script>
+    console.log("FILE SIZE WARNING SCRIPT LOADED");
+
+    const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
+
+    document.addEventListener("change", (e) => {
+      const input = e.target;
+
+      if (!input.matches('input[type="file"][name^="bottle_image_"]')) {
+        return;
+      }
+
+      const file = input.files && input.files[0];
+      const tooLarge = !!file && file.size > MAX_BYTES;
+
+      // turn field red
+      input.classList.toggle("is-invalid", tooLarge);
+
+      // ensure it's visible even if file input styling is weird
+      input.classList.toggle("border", tooLarge);
+      input.classList.toggle("border-danger", tooLarge);
+
+      // force the feedback to show/hide
+      const feedback = input.parentElement.querySelector(".invalid-feedback");
+      if (feedback) {
+        feedback.classList.toggle("d-block", tooLarge);
+      }
+    });
+
+    // Clear button cleanup
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest(".clear-image-btn");
+      if (!btn) return;
+
+      // Button id looks like: clear-bottle_image_1
+      const fieldId = btn.id.replace("clear-", "");
+      const input = document.getElementById(fieldId);
+      if (!input) return;
+
+      // Clear the file input
+      input.value = "";
+
+      // Remove validation styling
+      input.classList.remove("is-invalid", "border", "border-danger");
+
+      const feedback = input.parentElement.querySelector(".invalid-feedback");
+      if (feedback) {
+        feedback.classList.remove("d-block");
+      }
+    });
+  </script>
+{% endblock %}
