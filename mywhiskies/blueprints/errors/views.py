@@ -19,6 +19,13 @@ def not_found_error(error):
     return render_template("errors/404.html"), 404
 
 
+@errors.app_errorhandler(413)
+def request_entity_too_large(error):
+    msg = f"{error} | {request.path}"
+    current_app.logger.info(msg)
+    return render_template("errors/413.html"), 413
+
+
 @errors.app_errorhandler(500)
 def internal_error(error):
     db.session.rollback()
@@ -26,3 +33,9 @@ def internal_error(error):
         f"500 Internal Server Error at {request.path}: {error}", exc_info=True
     )
     return render_template("errors/500.html"), 500
+
+
+@errors.get("/upload-too-large")
+def upload_too_large():
+    # excplicitly throw a 413 from nginx to trigger the 413 error handler
+    return render_template("errors/413.html"), 413

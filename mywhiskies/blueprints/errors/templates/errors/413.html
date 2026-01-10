@@ -1,0 +1,15 @@
+{% extends "_base.html" %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container">
+      <h1>Oh Snap!</h1>
+      <hr />
+
+        <p>It looks like you tried to upload a file that exceeds the maximum allowed size.</p>
+        <p>Please resize the image(s) in question and give it another go!</p>
+        <p><a href="{{ url_for('core.main') }}">Home</a></p>
+
+    </div>
+  </main>
+{% endblock %}
