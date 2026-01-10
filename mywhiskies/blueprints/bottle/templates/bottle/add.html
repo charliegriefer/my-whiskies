@@ -98,9 +98,7 @@
 {% block scripts %}
   {{ super() }}
   <script>
-    console.log("FILE SIZE WARNING SCRIPT LOADED");
-
-    const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
+    const MAX_BYTES = {{ config.MAX_FILE_UPLOAD_SIZE|replace(" MB", "") }} * 1024 * 1024;
 
     document.addEventListener("change", (e) => {
       const input = e.target;
