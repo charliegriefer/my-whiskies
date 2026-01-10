@@ -85,18 +85,19 @@
 
           <tr>
             {% if is_my_list %}
-              <td class="me-0 pe-0">
-                <a href="{{ url_for('bottle.edit', bottle_id=bottle.id) }}"><i class="bi bi-pencil"></i></a>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ url_for('bottle.delete', bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
+              <td class="me-0 pe-0 text-nowrap">
+                <div class="d-inline-flex align-items-center gap-2">
+                  <a href="{{ url_for('bottle.edit', bottle_id=bottle.id) }}"><i class="bi bi-pencil"></i></a>
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete"
+                    data-bs-href="{{ url_for('bottle.delete', bottle_id=bottle.id) }}"><i class="bi bi-trash"></i></a>
+                </div>
               </td>
               {% if show_privates %}
-              <td>
-              {% if bottle.is_private %}
-                <i class="bi bi-incognito opacity-50"></i>
-              {% else %}
-                &nbsp;
-              {% endif %}
-              </td>
+                <td class="text-center align-middle" style="width: 1%; white-space: nowrap;">
+                  {% if bottle.is_private %}
+                    <i class="bi bi-incognito opacity-50"></i>
+                  {% endif %}
+                </td>
               {% endif %}
             {% endif %}
             <td class="pb-0 me-0">
