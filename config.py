@@ -12,7 +12,8 @@ class BaseConfig:
     SECRET_KEY = os.environ["SECRET_KEY"]
     PERMANENT_SESSION_LIFETIME = 86400  # 24 hours
 
-    MAX_FILE_UPLOAD_SIZE = "10MB"
+    MAX_FILE_UPLOAD_MB = 10
+    MAX_FILE_UPLOAD_BYTES = MAX_FILE_UPLOAD_MB * 1024 * 1024
 
     # ----------------------------------------------------------------------
     # DATABASE

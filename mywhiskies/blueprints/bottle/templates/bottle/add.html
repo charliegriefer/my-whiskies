@@ -46,7 +46,7 @@
           <div class="mb-2 pb-2 text-nowrap">
             Upload up to 3 images. Portrait-oriented images (<i class="bi bi-file-image"></i>) are preferred.
             <br />
-            <span class="fw-bold">Maximum file size per image: {{ config.MAX_FILE_UPLOAD_SIZE }}.</span>
+            <span class="fw-bold">Maximum file size per image: {{ config.MAX_FILE_UPLOAD_MB }}MB.</span>
             <br />
             By uploading images I agree to the <a href="" data-bs-toggle="modal" data-bs-target="#imageTerms">Image Terms and Conditions.</a>
           </div>
@@ -98,7 +98,7 @@
 {% block scripts %}
   {{ super() }}
   <script>
-    const MAX_BYTES = {{ config.MAX_FILE_UPLOAD_SIZE|replace(" MB", "") }} * 1024 * 1024;
+    const MAX_BYTES = {{ config.MAX_FILE_UPLOAD_BYTES }};
 
     document.addEventListener("change", (e) => {
       const input = e.target;
