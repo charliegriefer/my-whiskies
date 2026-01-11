@@ -27,9 +27,12 @@
         <!-- Image Preview (for existing images) -->
         <img 
             id="{{ field.id }}-preview" 
-            src="{% if image_exists %}{{ img_s3_url }}/{{ bottle_id }}_{{ number }}.png{% endif %}"
+            {% if image_exists %}
+              src="{{ img_s3_url }}/{{ bottle_id }}_{{ number }}.jpg" 
+              onerror="this.onerror=null;this.src='{{ img_s3_url }}/{{ bottle_id }}_{{ number }}.png';" 
+            {% endif %}
             alt="Preview" 
-            class="image-preview {% if not image_exists %}d-none{% endif %}"
+            class="image-preview {% if not image_exists %}d-none{% endif %}" 
         />
         <!-- Placeholder -->
         <div 
@@ -43,7 +46,7 @@
     </div>
     <div class="ms-3">
         {{ field.label(class="form-label") }}
-        {{ field(class="form-control") }}
+        {{ field(class="form-control", accept=".jpg,.jpeg,.png") }}
         <div class="invalid-feedback">
             This image exceeds the {{ config.MAX_FILE_UPLOAD_MB }}MB limit and may fail to upload.
         </div>

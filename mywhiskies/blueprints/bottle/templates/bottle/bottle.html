@@ -170,7 +170,13 @@
                   <div class="carousel-inner">
                     {% for n in range(1, bottle.image_count + 1) %}
                       <div class="carousel-item{% if n == 1 %} active{% endif %}">
-                        <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img rounded border border-2 border-dark d-block w-100" src="{{img_s3_url}}/{{ bottle.id }}_{{ n }}.png" />
+                        <img 
+                          alt="{{ bottle.name }}" 
+                          title="{{ bottle.name }}" 
+                          class="bottle-img rounded border border-2 border-dark d-block w-100" 
+                          src="{{img_s3_url}}/{{ bottle.id }}_{{ n }}.jpg"
+                          onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_{{ n }}.png';"
+                        />
                       </div>
                     {% endfor %}
                     <button class="carousel-control-prev" type="button" data-bs-target="#bottleCarousel" data-bs-slide="prev">
