@@ -1,89 +1,80 @@
-<div class="container-fluid px-0" style="background-color:#F5F5F5; border-bottom:1px solid #696969;">
-  <nav class="navbar navbar-expand-lg">
-    <div class="container" style="max-width: 1000px;">
-      <a href="{{ url_for('core.main') }}" class="navbar-brand d-flex align-items-center flex-shrink-0">
+<nav class="navbar navbar-expand-lg">
+  <div class="container mx-auto px-3" style="max-width: 1000px;">
+    <a href="{{ url_for('core.main') }}" class="navbar-brand d-flex align-items-center flex-shrink-0 me-2 ms-2">
         <img
           src="{{ url_for('static', filename='logotext.png') }}"
           alt="My Whiskies Online"
-          class="me-3"
-          style="height:clamp(52px,6vw,70px); width:auto;"
+          class="me-2"
+          style="height:64px; width:auto; max-width:none;"
         />
       </a>
+
       {% if current_user.is_authenticated %}
         {% set username = current_user.username %}
       {% else %}
-        {% if user %}
-          {% set username = user.username %}
-        {% endif %}
-        {% if bottle %}
-          {% set username = bottle.user.username %}
-        {% endif %}
-        {% if distillery %}
-          {% set username = distillery.user.username %}
-        {% endif %}
+        {% if user %}{% set username = user.username %}{% endif %}
+        {% if bottle %}{% set username = bottle.user.username %}{% endif %}
+        {% if distillery %}{% set username = distillery.user.username %}{% endif %}
       {% endif %}
+
       {% if current_user.is_authenticated %}
-      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+        <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" id="nav_home" href="{{ url_for('core.main') }}">Home</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBottles" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Bottles
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownBottles">
-              <a class="dropdown-item" href="{{ url_for('bottle.add') }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottle</a>
-              <a class="dropdown-item" href="{{ url_for('bottle.list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Bottles</a>
-            </div>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBottlers" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Bottlers
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownBottlers">
-              <a class="dropdown-item" href="{{ url_for('bottler.add') }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottler</a>
-              <a class="dropdown-item" href="{{ url_for('bottler.list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Bottlers</a>
-            </div>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownDistilleries" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Distilleries
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownDistilleries">
-              <a class="dropdown-item" href="{{ url_for('distillery.add') }}"><i class="bi bi-plus-circle pe-1"></i> Add Distillery</a>
-              <a class="dropdown-item" href="{{ url_for('distillery.list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Distilleries</a>
-            </div>
-          </li>
-        </ul>
+        <div class="collapse navbar-collapse flex-grow-1" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" id="nav_home" href="{{ url_for('core.main') }}">Home</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBottles" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Bottles
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownBottles">
+                <a class="dropdown-item" href="{{ url_for('bottle.add') }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottle</a>
+                <a class="dropdown-item" href="{{ url_for('bottle.list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Bottles</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBottlers" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Bottlers
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownBottlers">
+                <a class="dropdown-item" href="{{ url_for('bottler.add') }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottler</a>
+                <a class="dropdown-item" href="{{ url_for('bottler.list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Bottlers</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownDistilleries" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Distilleries
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownDistilleries">
+                <a class="dropdown-item" href="{{ url_for('distillery.add') }}"><i class="bi bi-plus-circle pe-1"></i> Add Distillery</a>
+                <a class="dropdown-item" href="{{ url_for('distillery.list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Distilleries</a>
+              </div>
+            </li>
+          </ul>
 
-        <span class="navbar-text ms-lg-auto">
-          <ul class="navbar-nav mb-2 mb-lg-0">
+          <ul class="navbar-nav ms-auto me-2">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="bi bi-check-square"></i> {{ username }}
               </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdownUser">
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownUser">
                 <li><a class="dropdown-item" href="{{ url_for('user.account') }}"><i class="bi bi-gear pe-1"></i> My Account</a></li>
                 <li><hr class="dropdown-divider mt-2"></li>
                 <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}"><i class="bi bi-x-square pe-1"></i> Log Out {{ current_user.username }}</a></li>
               </ul>
             </li>
           </ul>
-        </span>
-      </div>
-
+        </div>
       {% else %}
-      <div class="ms-auto">
-        {% if request.endpoint != "auth.login" %}
-          <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white text-nowrap" role="button" id="nav_login">Log In</a>
-        {% endif %}
-      </div>
+        <div class="ms-auto me-2">
+          {% if request.endpoint != "auth.login" %}
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white text-nowrap" role="button" id="nav_login">Log In</a>
+          {% endif %}
+        </div>
       {% endif %}
     </div>
   </nav>
-</div>

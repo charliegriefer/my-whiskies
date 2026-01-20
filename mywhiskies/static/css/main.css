@@ -43,6 +43,20 @@ a:focus, a:hover {
   border-bottom: 1px solid #D3D3D3;
 }
 
+/* Make sure the logo never gets squished */
+.navbar-brand img {
+  height: 64px;
+  width: auto;
+  max-width: none;
+}
+
+/* Slightly smaller logo on phones so it doesn't force wrapping */
+@media (max-width: 575.98px) {
+  .navbar-brand img {
+    height: 52px;
+  }
+}
+
 #nav_login, #nav_logout {
   color: #000;
 }
