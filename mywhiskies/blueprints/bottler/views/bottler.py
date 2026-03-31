@@ -26,11 +26,14 @@ def bottlers(username: str):
 
 
 @bottler_bp.route(
-    "/bottler/<string:bottler_id>", methods=["GET", "POST"], endpoint="detail"
+    "/<string:username>/bottler/<paddedint:user_num>",
+    methods=["GET", "POST"],
+    endpoint="detail",
 )
-def bottler(bottler_id: str):
-    bottler = db.one_or_404(db.select(Bottler).filter_by(id=bottler_id))
-    response = get_bottler_detail(bottler, request, current_user)
+def bottler(username: str, user_num: int):
+    user = db.one_or_404(db.select(User).filter_by(username=username))
+    _bottler = db.one_or_404(db.select(Bottler).filter_by(user_id=user.id, user_num=user_num))
+    response = get_bottler_detail(_bottler, request, current_user)
     utils.set_cookie_expiration(
         response, "dt-list-length", request.cookies.get("dt-list-length", "50")
     )
@@ -55,27 +58,34 @@ def bottler_add():
 
 
 @bottler_bp.route(
-    "/bottler/edit/<string:bottler_id>", methods=["GET", "POST"], endpoint="edit"
+    "/<string:username>/bottler/<paddedint:user_num>/edit",
+    methods=["GET", "POST"],
+    endpoint="edit",
 )
 @login_required
-def bottler_edit(bottler_id: str):
-    bottler = db.get_or_404(Bottler, bottler_id)
-    form = BottlerEditForm(obj=bottler)
+def bottler_edit(username: str, user_num: int):
+    user = db.one_or_404(db.select(User).filter_by(username=username))
+    _bottler = db.one_or_404(db.select(Bottler).filter_by(user_id=user.id, user_num=user_num))
+    form = BottlerEditForm(obj=_bottler)
 
     if form.validate_on_submit():
-        edit_bottler(form, bottler)
+        edit_bottler(form, _bottler)
         return redirect(url_for("bottler.list", username=current_user.username))
 
     return render_template(
         "bottler/edit.html",
         title=f"{current_user.username}'s Whiskies: Edit Bottler",
-        bottler=bottler,
+        bottler=_bottler,
         form=form,
     )
 
 
-@bottler_bp.route("/bottler/delete/<string:bottler_id>", endpoint="delete")
+@bottler_bp.route(
+    "/<string:username>/bottler/<paddedint:user_num>/delete", endpoint="delete"
+)
 @login_required
-def bottler_delete(bottler_id: str):
-    delete_bottler(current_user, bottler_id)
+def bottler_delete(username: str, user_num: int):
+    user = db.one_or_404(db.select(User).filter_by(username=username))
+    _bottler = db.one_or_404(db.select(Bottler).filter_by(user_id=user.id, user_num=user_num))
+    delete_bottler(current_user, _bottler)
     return redirect(url_for("bottler.list", username=current_user.username))

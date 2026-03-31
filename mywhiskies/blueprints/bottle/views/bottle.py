@@ -28,9 +28,10 @@ def bottles(username: str):
     return response
 
 
-@bottle_bp.route("/bottle/<bottle_id>", endpoint="detail")
-def bottle(bottle_id: str):
-    _bottle = db.get_or_404(Bottle, bottle_id)
+@bottle_bp.route("/<string:username>/bottle/<paddedint:user_num>", endpoint="detail")
+def bottle(username: str, user_num: int):
+    user = db.one_or_404(db.select(User).filter_by(username=username))
+    _bottle = db.one_or_404(db.select(Bottle).filter_by(user_id=user.id, user_num=user_num))
     _, _, img_s3_url = get_s3_config()
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id
 
@@ -65,7 +66,7 @@ def bottle_add():
     form = prep_bottle_form(current_user, BottleAddForm())
 
     if form.validate_on_submit():
-        bottle = add_bottle(form, current_user)  # Now returns the bottle object
+        bottle = add_bottle(form, current_user)
         if bottle:
             return redirect(url_for("bottle.list", username=current_user.username))
 
@@ -77,22 +78,24 @@ def bottle_add():
 
 
 @bottle_bp.route(
-    "/bottle/edit/<string:bottle_id>", methods=["GET", "POST"], endpoint="edit"
+    "/<string:username>/bottle/<paddedint:user_num>/edit",
+    methods=["GET", "POST"],
+    endpoint="edit",
 )
 @login_required
-def bottle_edit(bottle_id: str):
-    _bottle = db.get_or_404(Bottle, bottle_id)
+def bottle_edit(username: str, user_num: int):
+    user = db.one_or_404(db.select(User).filter_by(username=username))
+    _bottle = db.one_or_404(db.select(Bottle).filter_by(user_id=user.id, user_num=user_num))
     _, _, img_s3_url = get_s3_config()
 
-    # Ensure images are passed to the template
-    images = [None] * 3  # Initialize with 3 None placeholders
+    images = [None] * 3
     for img in _bottle.images:
-        images[img.sequence - 1] = img  # Place each image in its correct slot
+        images[img.sequence - 1] = img
 
     form = prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
     if form.validate_on_submit():
         edit_bottle(form, _bottle)
-        return redirect(url_for("bottle.detail", bottle_id=bottle_id))
+        return redirect(url_for("bottle.detail", username=username, user_num=user_num))
     else:
         form.type.data = _bottle.type.name
         form.distilleries.data = [d.id for d in _bottle.distilleries]
@@ -107,8 +110,12 @@ def bottle_edit(bottle_id: str):
     )
 
 
-@bottle_bp.route("/bottle/delete/<string:bottle_id>", endpoint="delete")
+@bottle_bp.route(
+    "/<string:username>/bottle/<paddedint:user_num>/delete", endpoint="delete"
+)
 @login_required
-def bottle_delete(bottle_id: str):
-    delete_bottle(current_user, bottle_id)
+def bottle_delete(username: str, user_num: int):
+    user = db.one_or_404(db.select(User).filter_by(username=username))
+    _bottle = db.one_or_404(db.select(Bottle).filter_by(user_id=user.id, user_num=user_num))
+    delete_bottle(current_user, _bottle)
     return redirect(url_for("bottle.list", username=current_user.username))

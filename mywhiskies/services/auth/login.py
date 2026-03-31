@@ -3,7 +3,7 @@ from mywhiskies.extensions import db
 from mywhiskies.models import User
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
-from werkzeug.urls import url_parse
+from urllib.parse import urlparse
 
 
 def get_user_by_username(username: str) -> User:
@@ -34,6 +34,6 @@ def check_email_confirmation(user: User) -> bool:
 
 
 def determine_next_page(user: User, next_page_param: str) -> str:
-    if not next_page_param or url_parse(next_page_param).netloc != "":
+    if not next_page_param or urlparse(next_page_param).netloc != "":
         return url_for("core.main")
     return next_page_param

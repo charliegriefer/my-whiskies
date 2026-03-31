@@ -33,8 +33,7 @@ def edit_bottler(form: BottlerEditForm, bottler: Bottler) -> None:
     flash(f'"{bottler.name}" has been successfully updated.', "success")
 
 
-def delete_bottler(user: User, bottler_id: str) -> None:
-    bottler = db.get_or_404(Bottler, bottler_id)
+def delete_bottler(user: User, bottler: Bottler) -> None:
     if bottler.user.id != user.id:
         flash("There was an issue deleting this bottler.", "danger")
         return

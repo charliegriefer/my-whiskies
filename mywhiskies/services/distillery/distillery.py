@@ -18,8 +18,9 @@ def bulk_add_distillery(user: User, app: Flask) -> None:
         data = json.load(f)
 
         base_distilleries = data.get("distilleries")
-        for distillery in base_distilleries:
+        for i, distillery in enumerate(base_distilleries, 1):
             distillery["user_id"] = user.id
+            distillery["user_num"] = i
 
         db.session.execute(insert(Distillery), base_distilleries)
         db.session.commit()
@@ -52,8 +53,7 @@ def edit_distillery(form: DistilleryEditForm, distillery: Distillery) -> None:
     flash(f'Distillery "{distillery.name}" has been successfully updated.', "success")
 
 
-def delete_distillery(user: User, distillery_id: str) -> None:
-    distillery = db.get_or_404(Distillery, distillery_id)
+def delete_distillery(user: User, distillery: Distillery) -> None:
     if distillery.user.id != user.id:
         flash("There was an issue deleting this distillery.", "danger")
         return

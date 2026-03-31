@@ -42,15 +42,15 @@
               {% if is_my_list %}
                 <td class="me-0 pe-0">
                   {{ username }}
-                  <a href="{{ entity_utils.create_link(entity_type, 'edit', entity.id) }}"><i class="bi bi-pencil"></i></a>
+                  <a href="{{ entity_utils.create_link(entity_type, 'edit', entity.user.username, entity.user_num) }}"><i class="bi bi-pencil"></i></a>
                   {% if entity.bottles|length %}
                     <a href="#" data-bs-toggle="modal" data-bs-target="#cannotDelete"><i class="bi bi-trash"></i></a>
                   {% else %}
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ entity_utils.create_link(entity_type, 'delete', entity.id)}}"><i class="bi bi-trash"></i></a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" data-bs-href="{{ entity_utils.create_link(entity_type, 'delete', entity.user.username, entity.user_num) }}"><i class="bi bi-trash"></i></a>
                   {% endif %}
                 </td>
               {% endif %}
-              <td><a href="{{ entity_utils.create_link(entity_type, 'detail', entity.id) }}">{{ entity.name }}</a></td>
+              <td><a href="{{ entity_utils.create_link(entity_type, 'detail', entity.user.username, entity.user_num) }}">{{ entity.name }}</a></td>
               <td class="text-end">
                 <span class="pe-4">{{ entity.bottles|length }}</span>
               </td>

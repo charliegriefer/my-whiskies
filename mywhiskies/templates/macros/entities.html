@@ -7,7 +7,7 @@
   {{ entity }}
 {%- endmacro %}
 
-{% macro create_link(entity_type, action, id) -%}
+{% macro create_link(entity_type, action, username, user_num) -%}
   {%- set entity = set_entity(entity_type) -%}
-  {{- url_for(entity ~ "." ~ action, **{entity ~ "_id": id}) -}}
+  {{- url_for(entity ~ "." ~ action, username=username, user_num=user_num) -}}
 {%- endmacro %}

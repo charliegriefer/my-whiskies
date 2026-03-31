@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from flask import Flask, g, request
 from flask_login import current_user
 from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.routing import BaseConverter
 
 from config import DevConfig, ProdConfig
 from mywhiskies.common.filters import register_filters
@@ -17,6 +18,16 @@ from mywhiskies.signals import register_signals
 load_dotenv()
 
 
+class PaddedIntConverter(BaseConverter):
+    """URL converter that accepts zero-padded integers (e.g. 0001) and produces them."""
+
+    def to_python(self, value: str) -> int:
+        return int(value)
+
+    def to_url(self, value: int) -> str:
+        return f"{int(value):04d}"
+
+
 def create_app(settings_override: dict = None, config_class: type = None) -> Flask:
     config_type = os.getenv("CONFIG_TYPE", "config.DevConfig")
     config_class = config_class or (
@@ -25,6 +36,7 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
 
     app = Flask(__name__, instance_relative_config=True)
     app.url_map.strict_slashes = False
+    app.url_map.converters["paddedint"] = PaddedIntConverter
     app.config.from_object(config_class)
 
     if settings_override:

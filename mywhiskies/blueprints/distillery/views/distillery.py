@@ -52,10 +52,15 @@ def distilleries(username: str):
 
 
 @distillery_bp.route(
-    "/distillery/<string:distillery_id>", methods=["GET", "POST"], endpoint="detail"
+    "/<string:username>/distillery/<paddedint:user_num>",
+    methods=["GET", "POST"],
+    endpoint="detail",
 )
-def distillery_detail(distillery_id: str):
-    distillery = db.one_or_404(db.select(Distillery).filter_by(id=distillery_id))
+def distillery_detail(username: str, user_num: int):
+    user = db.one_or_404(db.select(User).filter_by(username=username))
+    distillery = db.one_or_404(
+        db.select(Distillery).filter_by(user_id=user.id, user_num=user_num)
+    )
     response = get_distillery_detail(distillery, request, current_user)
     utils.set_cookie_expiration(
         response, "dt-list-length", request.cookies.get("dt-list-length", "50")
@@ -81,11 +86,16 @@ def distillery_add():
 
 
 @distillery_bp.route(
-    "/distillery_edit/<string:distillery_id>", methods=["GET", "POST"], endpoint="edit"
+    "/<string:username>/distillery/<paddedint:user_num>/edit",
+    methods=["GET", "POST"],
+    endpoint="edit",
 )
 @login_required
-def distillery_edit(distillery_id: str):
-    distillery = db.get_or_404(Distillery, distillery_id)
+def distillery_edit(username: str, user_num: int):
+    user = db.one_or_404(db.select(User).filter_by(username=username))
+    distillery = db.one_or_404(
+        db.select(Distillery).filter_by(user_id=user.id, user_num=user_num)
+    )
     form = DistilleryEditForm(obj=distillery if request.method != "POST" else None)
 
     if form.validate_on_submit():
@@ -100,8 +110,14 @@ def distillery_edit(distillery_id: str):
     )
 
 
-@distillery_bp.route("/distillery_delete/<string:distillery_id>", endpoint="delete")
+@distillery_bp.route(
+    "/<string:username>/distillery/<paddedint:user_num>/delete", endpoint="delete"
+)
 @login_required
-def distillery_delete(distillery_id: str):
-    delete_distillery(current_user, distillery_id)
+def distillery_delete(username: str, user_num: int):
+    user = db.one_or_404(db.select(User).filter_by(username=username))
+    distillery = db.one_or_404(
+        db.select(Distillery).filter_by(user_id=user.id, user_num=user_num)
+    )
+    delete_distillery(current_user, distillery)
     return redirect(url_for("distillery.list", username=current_user.username))

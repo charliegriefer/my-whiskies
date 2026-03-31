@@ -93,8 +93,7 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
     )
 
 
-def delete_bottle(user: User, bottle_id: str) -> None:
-    bottle = db.get_or_404(Bottle, bottle_id)
+def delete_bottle(user: User, bottle: Bottle) -> None:
     if bottle.user_id != user.id:
         flash("There was an issue deleting this bottle.", "danger")
         return
