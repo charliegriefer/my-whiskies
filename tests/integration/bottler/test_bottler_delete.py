@@ -5,11 +5,12 @@ from mywhiskies.models import User
 
 def test_delete_bottler_not_logged_in(client: FlaskClient, test_user_01: User) -> None:
     """Test that a user must be logged in to delete a bottler."""
+    bottler = test_user_01.bottlers[0]
     response = client.get(
         url_for(
             "bottler.delete",
-            username="skibidi",
-            bottler_id=test_user_01.bottlers[0].id,
+            username=test_user_01.username,
+            user_num=bottler.user_num,
         ),
         follow_redirects=True,
     )
@@ -22,10 +23,12 @@ def test_delete_not_my_bottler(
 ) -> None:
     """Test that even if logged in, a user cannot delete another user's bottler."""
     client = logged_in_user_01
+    bottler = test_user_02.bottlers[0]
     response = client.get(
         url_for(
             "bottler.delete",
-            bottler_id=test_user_02.bottlers[0].id,
+            username=test_user_02.username,
+            user_num=bottler.user_num,
         ),
         follow_redirects=True,
     )
@@ -41,7 +44,8 @@ def test_delete_my_bottler_has_bottles(
         response = client.get(
             url_for(
                 "bottler.delete",
-                bottler_id=bottler.id,
+                username=test_user_01.username,
+                user_num=bottler.user_num,
             ),
             follow_redirects=True,
         )

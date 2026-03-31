@@ -14,10 +14,10 @@ def test_private_bottle_logged_out(client: FlaskClient, test_user_01: User) -> N
     Returns:
         None
     """
-    bottle_id = _get_ironroot_bottle(test_user_01)
+    bottle = _get_ironroot_bottle(test_user_01)
 
     response = client.get(
-        url_for("bottle.detail", bottle_id=bottle_id, username=test_user_01.username)
+        url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num)
     )
     assert response.status_code == 404
 
@@ -35,9 +35,9 @@ def test_private_bottle_logged_in(
     Returns:
         None
     """
-    bottle_id = _get_ironroot_bottle(test_user_01)
+    bottle = _get_ironroot_bottle(test_user_01)
     response = logged_in_user_01.get(
-        url_for("bottle.detail", bottle_id=bottle_id, username=test_user_01.username)
+        url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num)
     )
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
@@ -57,9 +57,9 @@ def test_private_bottle_logged_in_not_my_bottle(
     Returns:
         None
     """
-    bottle_id = _get_ironroot_bottle(test_user_01)
+    bottle = _get_ironroot_bottle(test_user_01)
     response = logged_in_user_02.get(
-        url_for("bottle.detail", bottle_id=bottle_id, username=test_user_01.username)
+        url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num)
     )
     assert response.status_code == 404
 
@@ -75,10 +75,10 @@ def test_personal_note_logged_out(client: FlaskClient, test_user_01: User) -> No
     Returns:
         None
     """
-    bottle_id = _get_frey_ranch_bottle(test_user_01)
+    bottle = _get_frey_ranch_bottle(test_user_01)
 
     response = client.get(
-        url_for("bottle.detail", bottle_id=bottle_id, username=test_user_01.username)
+        url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num)
     )
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
@@ -98,10 +98,10 @@ def test_personal_note_logged_in(
     Returns:
         None
     """
-    bottle_id = _get_frey_ranch_bottle(test_user_01)
+    bottle = _get_frey_ranch_bottle(test_user_01)
 
     response = logged_in_user_01.get(
-        url_for("bottle.detail", bottle_id=bottle_id, username=test_user_01.username)
+        url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num)
     )
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
@@ -121,25 +121,25 @@ def test_personal_note_logged_in_not_my_bottle(
     Returns:
         None
     """
-    bottle_id = _get_frey_ranch_bottle(test_user_01)
+    bottle = _get_frey_ranch_bottle(test_user_01)
 
     response = logged_in_user_02.get(
-        url_for("bottle.detail", bottle_id=bottle_id, username=test_user_01.username)
+        url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num)
     )
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "Personal Note" not in response_data
 
 
-def _get_frey_ranch_bottle(test_user_01: User) -> str:
+def _get_frey_ranch_bottle(test_user_01: User):
     """Convenience method to return a bottle with a personal note value"""
     for bottle in test_user_01.bottles:
         if bottle.name == "Frey Ranch Straight Rye Whiskey":
-            return bottle.id
+            return bottle
 
 
-def _get_ironroot_bottle(test_user_01: User) -> str:
+def _get_ironroot_bottle(test_user_01: User):
     """Convenience method to return a private bottle"""
     for bottle in test_user_01.bottles:
         if bottle.name == "Ironroot Republic Hubris Hazmat":
-            return bottle.id
+            return bottle

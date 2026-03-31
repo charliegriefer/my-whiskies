@@ -333,7 +333,6 @@ def _frey_ranch_straight_rye() -> "Bottle":  # noqa: F821
         stars="5",
         description="100% Fallon-grown rye goodness",
         personal_note="This bottle is in my office desk drawer.",
-        bottler_id="0",
     )
 
 
@@ -342,7 +341,6 @@ def _frey_ranch_hazmat_private() -> "Bottle":  # noqa: F821
     return Bottle(
         name="Frey Ranch Straight Bourbon Whiskey",
         type="BOURBON",
-        bottler_id="0",
         is_private=True,
     )
 
@@ -352,6 +350,5 @@ def _ironroot_hubris_hazmat_private() -> "Bottle":  # noqa: F821
     return Bottle(
         name="Ironroot Republic Hubris Hazmat",
         type="AMERICAN_WHISKEY",
-        bottler_id="0",
         is_private=True,
     )

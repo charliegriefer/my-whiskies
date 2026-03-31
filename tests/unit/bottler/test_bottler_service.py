@@ -74,7 +74,7 @@ def test_edit_bottler(mock_flash: MagicMock, test_bottler: Bottler) -> None:
 def test_delete_bottler(
     mock_flash: MagicMock, test_user_01: User, test_bottler: Bottler
 ) -> None:
-    delete_bottler(test_user_01, test_bottler.id)
+    delete_bottler(test_user_01, test_bottler)
     mock_flash.assert_called_once_with(
         '"Single Cask Nation" has been successfully deleted.', "success"
     )

@@ -7,11 +7,12 @@ from mywhiskies.models import Distillery, User
 def test_edit_distillery_requires_login(
     client: FlaskClient, test_user_01: User
 ) -> None:
+    distillery = test_user_01.distilleries[0]
     response = client.get(
         url_for(
             "distillery.edit",
             username=test_user_01.username,
-            distillery_id=test_user_01.bottlers[0].id,
+            user_num=distillery.user_num,
         ),
         follow_redirects=False,
     )
@@ -36,7 +37,7 @@ def test_valid_distillery_edit_form(
         url_for(
             "distillery.edit",
             username=test_user_01.username,
-            distillery_id=test_user_01.distilleries[0].id,
+            user_num=test_user_01.distilleries[0].user_num,
         ),
         data=formdata,
         follow_redirects=True,

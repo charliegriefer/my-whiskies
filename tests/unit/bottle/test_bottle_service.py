@@ -98,5 +98,5 @@ def test_delete_bottle(
     test_user_01: User,
     test_bottle: Bottle,
 ) -> None:
-    delete_bottle(test_user_01, test_bottle.id)
+    delete_bottle(test_user_01, test_bottle)
     mock_flash.assert_called_once_with("Bottle deleted successfully", "success")

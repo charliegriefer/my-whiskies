@@ -15,8 +15,9 @@ from mywhiskies.services.bottle.form import prep_bottle_form
 
 def test_edit_bottle_requires_login(client: FlaskClient, test_user_01: User) -> None:
     # loading the form should fail.
+    bottle = test_user_01.bottles[0]
     response = client.get(
-        url_for("bottle.edit", bottle_id=test_user_01.bottles[0].id),
+        url_for("bottle.edit", username=test_user_01.username, user_num=bottle.user_num),
         follow_redirects=False,
     )
     assert response.status_code == 302
@@ -26,7 +27,7 @@ def test_edit_bottle_requires_login(client: FlaskClient, test_user_01: User) -> 
     bottle_name = test_user_01.bottles[0].name
     formdata = MultiDict({"name": "Updated Bottle Name"})
     response = client.post(
-        url_for("bottle.edit", bottle_id=test_user_01.bottles[0].id),
+        url_for("bottle.edit", username=test_user_01.username, user_num=bottle.user_num),
         data=formdata,
         follow_redirects=True,
     )

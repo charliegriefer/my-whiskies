@@ -7,11 +7,12 @@ from mywhiskies.models import Bottler, User
 
 
 def test_edit_bottler_requires_login(client: FlaskClient, test_user_01: User) -> None:
+    bottler = test_user_01.bottlers[0]
     response = client.get(
         url_for(
             "bottler.edit",
             username=test_user_01.username,
-            bottler_id=test_user_01.bottlers[0].id,
+            user_num=bottler.user_num,
         ),
         follow_redirects=False,
     )
@@ -39,7 +40,7 @@ def test_valid_bottler_edit_form(
         url_for(
             "bottler.edit",
             username=test_user_01.username,
-            bottler_id=test_user_01.bottlers[0].id,
+            user_num=test_user_01.bottlers[0].user_num,
         ),
         data=formdata,
         follow_redirects=True,

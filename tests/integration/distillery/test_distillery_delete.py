@@ -7,11 +7,12 @@ def test_delete_distillery_not_logged_in(
     client: FlaskClient, test_user_01: User
 ) -> None:
     """Test that a user must be logged in to delete a distillery."""
+    distillery = test_user_01.distilleries[0]
     response = client.get(
         url_for(
             "distillery.delete",
             username=test_user_01.username,
-            distillery_id=test_user_01.distilleries[0].id,
+            user_num=distillery.user_num,
         ),
         follow_redirects=True,
     )
@@ -24,11 +25,12 @@ def test_delete_not_my_distillery(
 ) -> None:
     """Test that even if logged in, a user cannot delete another user's distillery."""
     client = logged_in_user_01
+    distillery = test_user_02.distilleries[0]
     response = client.get(
         url_for(
             "distillery.delete",
-            username=test_user_01.username,
-            distillery_id=test_user_02.distilleries[0].id,
+            username=test_user_02.username,
+            user_num=distillery.user_num,
         ),
         follow_redirects=True,
     )
@@ -48,7 +50,7 @@ def test_delete_my_distillery_has_bottles(
             url_for(
                 "distillery.delete",
                 username=test_user_01.username,
-                distillery_id=distillery.id,
+                user_num=distillery.user_num,
             ),
             follow_redirects=True,
         )
