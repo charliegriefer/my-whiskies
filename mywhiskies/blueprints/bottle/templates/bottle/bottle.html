@@ -3,6 +3,19 @@
 {% from "macros/value_format.html" import float_with_symbol %}
 
 {% set dtfmt = "%d %B %Y" %}
+{% set type_badge = {
+  'BOURBON':               'bg-warning text-dark',
+  'TENNESSEE_WHISKEY':     'bg-warning text-dark',
+  'RYE':                   'bg-success',
+  'SCOTCH':                'bg-primary',
+  'IRISH_WHISKEY':         'badge-irish',
+  'CANADIAN_WHISKEY':      'bg-danger',
+  'AMERICAN_SINGLE_MALT':  'bg-info text-dark',
+  'AMERICAN_WHISKEY':      'bg-secondary',
+  'AMERICAN_LIGHT_WHISKEY':'bg-secondary',
+  'WORLD_WHISKEY':         'bg-dark',
+  'OTHER':                 'bg-secondary',
+} %}
 {% set btn_label = bottle.user.username ~ "'s List" %}
 {% if is_my_bottle %}
   {% set btn_label = "My List" %}
@@ -12,13 +25,21 @@
   <main class="flex-shrink-0">
     <div class="container ps-0">
 
-      <div class="row mt-4">
+      <div class="row mt-4 align-items-end">
         <div class="col">
-          <h3 class="mb-0" style="color:#696969;">{{ bottle.user.username }}'s Whiskies: Bottles</h3>
-          <h1>{{ bottle.name }}</h1>
+          <h6 class="text-muted mb-1">{{ bottle.user.username }}'s Whiskies: Bottles</h6>
+          <h1 class="mb-0">
+            {% if bottle.url %}
+              <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset">{{ bottle.name }}</a><a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer" class="text-muted ms-2" style="font-size:0.5em; vertical-align:middle;"><i class="bi bi-box-arrow-up-right"></i></a>
+            {% else %}
+              {{ bottle.name }}
+            {% endif %}
+            {% if is_my_bottle and bottle.is_private %}
+              <span class="badge rounded-pill bg-danger ms-2" style="font-size:0.4em; vertical-align:middle;">Private</span>
+            {% endif %}
+          </h1>
         </div>
-
-        <div class="col d-flex align-items-end justify-content-end pb-2">
+        <div class="col-auto d-flex pb-1">
           {% if is_my_bottle %}
             <a class="btn btn-primary me-2" href="{{ url_for('bottle.edit', username=bottle.user.username, user_num=bottle.user_num) }}" role="button"><i class="bi bi-pencil"></i> Edit Bottle</a>
           {% endif %}
@@ -27,35 +48,23 @@
       </div>
 
       <hr />
-      
+
       <div class="container mt-4 ps-0">
         <div class="row">
           <!--- left column (data) --->
           <div class="col-lg-6 mb-4 ps-2">
             <table class="table table-borderless table-sm mb-0 table-tight">
               <tbody>
+
+                <!-- Details -->
                 <tr>
-                  <th class="text-nowrap">Name:</th>
-                  <td>
-                    {% if bottle.url %}
-                      <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer">
-                        {{ bottle.name | replace("\n", "<br />") | safe }}
-                        <i class="bi bi-box-arrow-up-right"></i>
-                      </a>
-                    {% else %}
-                      {{ bottle.name | replace("\n", "<br />") | safe }}
-                    {% endif %}
-                  </td> 
+                  <td colspan="2" class="pt-0 pb-1">
+                    <span class="text-uppercase text-muted fw-semibold" style="font-size:0.7rem; letter-spacing:0.06em;">Details</span>
+                  </td>
                 </tr>
-                {% if is_my_bottle %}
-                  <tr>
-                    <th class="text-nowrap">Is Private:</th>
-                    <td>{{ bottle.is_private | yesno() }}</td>
-                  </tr>
-                {% endif %}
                 <tr>
-                  <th class="text-nowrap">Type:</th>
-                  <td>{{ bottle.type.value }}</td>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Type</td>
+                  <td><span class="badge {{ type_badge.get(bottle.type.name, 'bg-secondary') }}">{{ bottle.type.value }}</span></td>
                 </tr>
                 <tr>
                   {% if bottle.distilleries|length > 1 %}
@@ -63,16 +72,16 @@
                   {% else %}
                     {% set label = "Distillery" %}
                   {% endif %}
-                  <th class="text-nowrap">{{ label }}:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">{{ label }}</td>
                   <td>
                     {% for distillery in bottle.distilleries %}
                       <a href="{{ url_for('distillery.detail', username=distillery.user.username, user_num=distillery.user_num) }}">{{ distillery.name }}</a>
-                      {% if not loop.last %}<br /> {% endif %}
+                      {% if not loop.last %}<br />{% endif %}
                     {% endfor %}
                   </td>
                 </tr>
                 <tr>
-                  <th class="text-nowrap">Bottler:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Bottler</td>
                   <td>
                     {% if bottle.bottler_id %}
                       <a href="{{ url_for('bottler.detail', username=bottle.user.username, user_num=bottle.bottler.user_num) }}">{{ bottle.bottler.name }}</a>
@@ -82,122 +91,129 @@
                   </td>
                 </tr>
                 <tr>
-                  <th class="text-nowrap">Size:</th>
-                  <td>{{ bottle.size | value_or_dash }}ml</td>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Size</td>
+                  <td>{{ bottle.size | value_or_dash }}{% if bottle.size %}ml{% endif %}</td>
                 </tr>
                 <tr>
-                  <th class="text-nowrap">Year Barrelled:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Year Barrelled</td>
                   <td>{{ bottle.year_barrelled | value_or_dash }}</td>
                 </tr>
                 <tr>
-                  <th class="text-nowrap">Year Bottled:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Year Bottled</td>
                   <td>{{ bottle.year_bottled | value_or_dash }}</td>
                 </tr>
                 <tr>
-                  <th class="text-nowrap">ABV:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">ABV</td>
                   <td>{{ float_with_symbol(bottle.abv, "%") }}</td>
                 </tr>
                 <tr>
-                  <th class="text-nowrap">Proof:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Proof</td>
                   <td>{{ float_with_symbol(bottle.abv * 2 if bottle.abv else none, "º") }}</td>
                 </tr>
+
+                <!-- Notes -->
                 <tr>
-                  <td colspan="2">&nbsp;</td>
+                  <td colspan="2" class="pb-1 pt-3">
+                    <span class="text-uppercase text-muted fw-semibold" style="font-size:0.7rem; letter-spacing:0.06em;">Notes</span>
+                  </td>
                 </tr>
                 <tr>
-                  <th class="text-nowrap">Cost:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Cost</td>
                   <td>{{ float_with_symbol(bottle.cost, "$", "prefix") }}</td>
                 </tr>
                 <tr>
-                  <th class="text-nowrap">Description:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Description</td>
                   <td>{{ bottle.description | multiline_or_dash }}</td>
                 </tr>
                 {% if is_my_bottle %}
                   <tr>
-                    <th class="text-nowrap">Personal Note:</th>
+                    <td class="text-muted text-nowrap pe-4 fw-normal">Personal Note</td>
                     <td>{{ bottle.personal_note | multiline_or_dash }}</td>
                   </tr>
                 {% endif %}
                 <tr>
-                  <th class="text-nowrap">Rating:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Rating</td>
                   <td>
                     {% if bottle.stars %}
                       {% set times_ten = bottle.stars * 10 %}
                       {% set times_ten = times_ten|int %}
                       {% set the_var = "stars/stars_" + times_ten|string + ".png" %}
-                       <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1" />
+                      <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1" />
                     {% else %}
-                        {% set alt = bottle.user.username + " has not rated this bottle." %}
-                       <img src="{{ url_for('static', filename='stars/stars_blank.png') }}" alt="{{ alt }}" title="{{ alt }}" class="mb-1" />
+                      {% set alt = bottle.user.username + " has not rated this bottle." %}
+                      <img src="{{ url_for('static', filename='stars/stars_blank.png') }}" alt="{{ alt }}" title="{{ alt }}" class="mb-1" />
                     {% endif %}
                   </td>
                 </tr>
                 <tr>
-                  <th class="text-nowrap">Review:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Review</td>
                   <td>{{ bottle.review | multiline_or_dash }}</td>
                 </tr>
+
+                <!-- Timeline -->
                 <tr>
-                  <td colspan="2">&nbsp;</td>
+                  <td colspan="2" class="pb-1 pt-3">
+                    <span class="text-uppercase text-muted fw-semibold" style="font-size:0.7rem; letter-spacing:0.06em;">Timeline</span>
+                  </td>
                 </tr>
                 <tr>
-                  <th class="text-nowrap">Date Purchased:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Purchased</td>
                   <td>{{ bottle.date_purchased | date_or_dash }}</td>
                 </tr>
                 <tr>
-                  <th class="text-nowrap">Date Opened:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Opened</td>
                   <td>{{ bottle.date_opened | date_or_dash }}</td>
                 </tr>
                 <tr>
-                  <th class="text-nowrap">Date Killed:</th>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Killed</td>
                   <td>{{ bottle.date_killed | date_or_dash }}</td>
                 </tr>
+
               </tbody>
             </table>
           </div>
 
           <!--- right column (images) --->
-            {% if bottle.image_count %}
+          {% if bottle.image_count %}
           <div class="col-lg-6 d-flex justify-content-lg-end justify-content-start pe-0">
-
-              {% if bottle.image_count > 1 %}
-              <div class="me-0" style="max-width:350px;">
-                <div id="bottleCarousel" class="carousel carousel-dark slide carousel-fade float-lg-end" data-bs-ride="false" data-bs-interval="false" data-bs-touch="true">
-                  <div class="carousel-indicators">
-                    {% for n in range(1, bottle.image_count + 1) %}
-                      <button type="button" data-bs-target="#bottleCarousel" data-bs-slide-to="{{ n-1 }}"{% if n == 1 %} class="active" aria-current="true"{% endif %} aria-label="Slide {{ n }}"></button>
-                    {% endfor %}
-                  </div>
-                  <div class="carousel-inner">
-                    {% for n in range(1, bottle.image_count + 1) %}
-                      <div class="carousel-item{% if n == 1 %} active{% endif %}">
-                        <img 
-                          alt="{{ bottle.name }}" 
-                          title="{{ bottle.name }}" 
-                          class="bottle-img rounded border border-2 border-dark d-block w-100" 
-                          src="{{img_s3_url}}/{{ bottle.id }}_{{ n }}.jpg"
-                          onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_{{ n }}.png';"
-                        />
-                      </div>
-                    {% endfor %}
-                    <button class="carousel-control-prev" type="button" data-bs-target="#bottleCarousel" data-bs-slide="prev">
-                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#bottleCarousel" data-bs-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Next</span>
-                    </button>
-                  </div>
+            {% if bottle.image_count > 1 %}
+            <div class="me-0" style="max-width:350px;">
+              <div id="bottleCarousel" class="carousel carousel-dark slide carousel-fade float-lg-end" data-bs-ride="false" data-bs-interval="false" data-bs-touch="true">
+                <div class="carousel-indicators">
+                  {% for n in range(1, bottle.image_count + 1) %}
+                    <button type="button" data-bs-target="#bottleCarousel" data-bs-slide-to="{{ n-1 }}"{% if n == 1 %} class="active" aria-current="true"{% endif %} aria-label="Slide {{ n }}"></button>
+                  {% endfor %}
                 </div>
+                <div class="carousel-inner">
+                  {% for n in range(1, bottle.image_count + 1) %}
+                    <div class="carousel-item{% if n == 1 %} active{% endif %}">
+                      <img
+                        alt="{{ bottle.name }}"
+                        title="{{ bottle.name }}"
+                        class="bottle-img rounded border border-2 border-dark d-block w-100"
+                        src="{{img_s3_url}}/{{ bottle.id }}_{{ n }}.jpg"
+                        onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_{{ n }}.png';"
+                      />
+                    </div>
+                  {% endfor %}
+                  <button class="carousel-control-prev" type="button" data-bs-target="#bottleCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#bottleCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
                 </div>
-              {% else %}
-                <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img rounded border border-2 border-dark" src="{{img_s3_url}}/{{ bottle.id }}_1.png?r={{ ts }}" />
-              {% endif %}
-
+              </div>
+            </div>
+            {% else %}
+              <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img rounded border border-2 border-dark" src="{{img_s3_url}}/{{ bottle.id }}_1.png?r={{ ts }}" />
+            {% endif %}
           </div>
-            {% endif %}          
+          {% endif %}
+
         </div>
-      </div>
       </div>
     </div>
   </main>

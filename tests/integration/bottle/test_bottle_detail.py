@@ -41,7 +41,7 @@ def test_private_bottle_logged_in(
     )
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
-    assert "Is Private" in response_data
+    assert "Private" in response_data
 
 
 def test_private_bottle_logged_in_not_my_bottle(

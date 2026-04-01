@@ -77,33 +77,11 @@ a:focus, a:hover {
 }
 
 /* alerts */
-/* https://vikramlearning.com/dotnet/article/blazor-bootstrap-alert-component-examples/88/157 */
 /* ---------------------------------------------------------------------------------------- */
 .alert ul { margin-bottom: 0px; }
 
-.bg-primary { background-color: #cce5ff !important; }
-.text-primary { color: #26509b !important; }
-
-.bg-secondary { background-color: #e2e3e5 !important; }
-.text-secondary { color: #474b4f !important; }
-
-.bg-success { background-color: #d4edda !important; }
-.text-success { color: #474b4f !important; }
-
-.bg-danger { background-color: #f8d7da !important; }
-.text-danger { color: #985458 !important; }
-
-.bg-warning { background-color: #fff3cd !important;}
-.text-warning { color: #8e7c45 !important; }
-
-.bg-info { background-color: #d1ecf1 !important; }
-.text-info { color: #985458 !important; }
-
-.bg-light { background-color: #fefefe !important; }
-.text-light { color: #6b6d7f !important; }
-
-.bg-dark { background-color: #d3d3d4 !important; }
-.text-dark { color: #d6d8d9 !important; }
+/* Irish whiskey badge — distinct from Bootstrap's success green */
+.badge-irish { background-color: #2fb380; color: #fff; }
 
 
 
