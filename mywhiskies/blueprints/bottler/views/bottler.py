@@ -15,7 +15,7 @@ from mywhiskies.services.bottler.bottler import (
 )
 
 
-@bottler_bp.route("/<string:username>/bottlers", endpoint="list")
+@bottler_bp.route("/<username:username>/bottlers", endpoint="list")
 def bottlers(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     response = list_bottlers(user, current_user, request, "bottlers")
@@ -26,7 +26,7 @@ def bottlers(username: str):
 
 
 @bottler_bp.route(
-    "/<string:username>/bottler/<paddedint:user_num>",
+    "/<username:username>/bottler/<paddedint:user_num>",
     methods=["GET", "POST"],
     endpoint="detail",
 )
@@ -58,7 +58,7 @@ def bottler_add():
 
 
 @bottler_bp.route(
-    "/<string:username>/bottler/<paddedint:user_num>/edit",
+    "/<username:username>/bottler/<paddedint:user_num>/edit",
     methods=["GET", "POST"],
     endpoint="edit",
 )
@@ -81,7 +81,7 @@ def bottler_edit(username: str, user_num: int):
 
 
 @bottler_bp.route(
-    "/<string:username>/bottler/<paddedint:user_num>/delete", endpoint="delete"
+    "/<username:username>/bottler/<paddedint:user_num>/delete", endpoint="delete"
 )
 @login_required
 def bottler_delete(username: str, user_num: int):

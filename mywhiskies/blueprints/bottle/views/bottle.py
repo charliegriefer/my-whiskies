@@ -18,7 +18,7 @@ from mywhiskies.services.bottle.form import prep_bottle_form
 from mywhiskies.services.bottle.image import get_s3_config
 
 
-@bottle_bp.route("/<string:username>/bottles", methods=["GET", "POST"], endpoint="list")
+@bottle_bp.route("/<username:username>/bottles", methods=["GET", "POST"], endpoint="list")
 def bottles(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     response = list_bottles_by_user(user, request, current_user)
@@ -28,7 +28,7 @@ def bottles(username: str):
     return response
 
 
-@bottle_bp.route("/<string:username>/bottle/<paddedint:user_num>", endpoint="detail")
+@bottle_bp.route("/<username:username>/bottle/<paddedint:user_num>", endpoint="detail")
 def bottle(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     _bottle = db.one_or_404(db.select(Bottle).filter_by(user_id=user.id, user_num=user_num))
@@ -78,7 +78,7 @@ def bottle_add():
 
 
 @bottle_bp.route(
-    "/<string:username>/bottle/<paddedint:user_num>/edit",
+    "/<username:username>/bottle/<paddedint:user_num>/edit",
     methods=["GET", "POST"],
     endpoint="edit",
 )
@@ -111,7 +111,7 @@ def bottle_edit(username: str, user_num: int):
 
 
 @bottle_bp.route(
-    "/<string:username>/bottle/<paddedint:user_num>/delete", endpoint="delete"
+    "/<username:username>/bottle/<paddedint:user_num>/delete", endpoint="delete"
 )
 @login_required
 def bottle_delete(username: str, user_num: int):

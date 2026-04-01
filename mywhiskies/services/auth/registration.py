@@ -18,7 +18,7 @@ def find_user_by_email(email: str) -> Optional[User]:
 
 
 def register_user(username: str, email: str, password: str) -> User:
-    user = User(username=username.strip(), email=email.strip(), email_confirmed=False)
+    user = User(username=username.strip().lower(), email=email.strip(), email_confirmed=False)
     user.set_password(password)
     db.session.add(user)
     db.session.commit()

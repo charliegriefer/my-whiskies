@@ -28,6 +28,16 @@ class PaddedIntConverter(BaseConverter):
         return f"{int(value):04d}"
 
 
+class UsernameConverter(BaseConverter):
+    """URL converter that normalizes usernames to lowercase in both directions."""
+
+    def to_python(self, value: str) -> str:
+        return value.lower()
+
+    def to_url(self, value: str) -> str:
+        return value.lower()
+
+
 def create_app(settings_override: dict = None, config_class: type = None) -> Flask:
     config_type = os.getenv("CONFIG_TYPE", "config.DevConfig")
     config_class = config_class or (
@@ -37,6 +47,7 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
     app = Flask(__name__, instance_relative_config=True)
     app.url_map.strict_slashes = False
     app.url_map.converters["paddedint"] = PaddedIntConverter
+    app.url_map.converters["username"] = UsernameConverter
     app.config.from_object(config_class)
 
     if settings_override:

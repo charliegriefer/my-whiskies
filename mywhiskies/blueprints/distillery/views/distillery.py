@@ -52,7 +52,7 @@ def distilleries(username: str):
 
 
 @distillery_bp.route(
-    "/<string:username>/distillery/<paddedint:user_num>",
+    "/<username:username>/distillery/<paddedint:user_num>",
     methods=["GET", "POST"],
     endpoint="detail",
 )
@@ -86,7 +86,7 @@ def distillery_add():
 
 
 @distillery_bp.route(
-    "/<string:username>/distillery/<paddedint:user_num>/edit",
+    "/<username:username>/distillery/<paddedint:user_num>/edit",
     methods=["GET", "POST"],
     endpoint="edit",
 )
@@ -111,7 +111,7 @@ def distillery_edit(username: str, user_num: int):
 
 
 @distillery_bp.route(
-    "/<string:username>/distillery/<paddedint:user_num>/delete", endpoint="delete"
+    "/<username:username>/distillery/<paddedint:user_num>/delete", endpoint="delete"
 )
 @login_required
 def distillery_delete(username: str, user_num: int):

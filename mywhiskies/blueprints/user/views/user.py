@@ -5,7 +5,7 @@ from mywhiskies.blueprints.user import user_bp
 from mywhiskies.services.user.user import create_export_csv
 
 
-@user_bp.route("/<string:username>", methods=["GET"])
+@user_bp.route("/<username:username>", methods=["GET"])
 def bottles_redirect(username: str):
     return redirect(url_for("bottle.list", username=username))
 

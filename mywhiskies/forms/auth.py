@@ -15,13 +15,16 @@ from wtforms.validators import (
     ValidationError,
 )
 
+from sqlalchemy import func
+
+from mywhiskies.extensions import db
 from mywhiskies.models import User
 from mywhiskies.services.auth.registration import find_user_by_email
 
 USERNAME_DESCRIPTION = (
     "Username requirements:<ul>"
     "<li>Must be between 4 and 24 characters.</li>"
-    "<li>Only letters, numbers, and underscore characters are allowed.</li>"
+    "<li>Only letters, numbers, underscores, and hyphens are allowed.</li>"
     "</ul>"
 )
 
@@ -45,10 +48,12 @@ CAPTCHA_THRESHOLD = 0.5
 class UsernameValidatorMixin:
     def validate_username(self, username: StringField) -> None:
         error_message = ""
-        m = re.compile(r"[a-zA-Z0-9_]+$")
+        m = re.compile(r"^[a-zA-Z0-9_-]+$")
         if not m.match(username.data):
             error_message = "Username does not adhere to the specified requirements."
-        if User.query.filter_by(username=username.data).first():
+        elif db.session.execute(
+            db.select(User).filter(func.lower(User.username) == username.data.lower())
+        ).first():
             error_message = (
                 f'"{username.data}" is unavailable. Please choose a different username.'
             )
