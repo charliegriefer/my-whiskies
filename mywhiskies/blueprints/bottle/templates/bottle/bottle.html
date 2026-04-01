@@ -30,7 +30,7 @@
           <h6 class="text-muted mb-1">{{ bottle.user.username }}'s Whiskies: Bottles</h6>
           <h1 class="mb-0">
             {% if bottle.url %}
-              <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset">{{ bottle.name }}</a><a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer" class="text-muted ms-2" style="font-size:0.5em; vertical-align:middle;"><i class="bi bi-box-arrow-up-right"></i></a>
+              <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset">{{ bottle.name }}<i class="bi bi-box-arrow-up-right ms-2 text-muted" style="font-size:0.55em; vertical-align:middle;"></i></a>
             {% else %}
               {{ bottle.name }}
             {% endif %}
