@@ -80,9 +80,6 @@ a:focus, a:hover {
 /* ---------------------------------------------------------------------------------------- */
 .alert ul { margin-bottom: 0px; }
 
-/* Irish whiskey badge — distinct from Bootstrap's success green */
-.badge-irish { background-color: #2fb380; color: #fff; }
-
 
 
 #bottleCarousel {

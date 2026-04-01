@@ -3,19 +3,6 @@
 {% from "macros/value_format.html" import float_with_symbol %}
 
 {% set dtfmt = "%d %B %Y" %}
-{% set type_badge = {
-  'BOURBON':               'bg-warning text-dark',
-  'TENNESSEE_WHISKEY':     'bg-warning text-dark',
-  'RYE':                   'bg-success',
-  'SCOTCH':                'bg-primary',
-  'IRISH_WHISKEY':         'badge-irish',
-  'CANADIAN_WHISKEY':      'bg-danger',
-  'AMERICAN_SINGLE_MALT':  'bg-info text-dark',
-  'AMERICAN_WHISKEY':      '',
-  'AMERICAN_LIGHT_WHISKEY':'',
-  'WORLD_WHISKEY':         'bg-dark',
-  'OTHER':                 '',
-} %}
 {% set btn_label = bottle.user.username ~ "'s List" %}
 {% if is_my_bottle %}
   {% set btn_label = "My List" %}
@@ -63,14 +50,7 @@
                 </tr>
                 <tr>
                   <td class="text-muted text-nowrap pe-4 fw-normal">Type</td>
-                  <td>
-                    {% set badge_class = type_badge.get(bottle.type.name, '') %}
-                    {% if badge_class %}
-                      <span class="badge {{ badge_class }}">{{ bottle.type.value }}</span>
-                    {% else %}
-                      {{ bottle.type.value }}
-                    {% endif %}
-                  </td>
+                  <td>{{ bottle.type.value }}</td>
                 </tr>
                 <tr>
                   {% if bottle.distilleries|length > 1 %}
