@@ -29,15 +29,14 @@
         <div class="col">
           <h6 class="text-muted mb-1">{{ bottle.user.username }}'s Whiskies: Bottles</h6>
           <h1 class="mb-0">
-            {% if bottle.url %}
-              <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset">{{ bottle.name }}<i class="bi bi-box-arrow-up-right ms-2 text-muted" style="font-size:0.55em; vertical-align:middle;"></i></a>
-            {% else %}
-              {{ bottle.name }}
-            {% endif %}
+            {{ bottle.name }}
             {% if is_my_bottle and bottle.is_private %}
               <span class="badge rounded-pill bg-danger ms-2" style="font-size:0.4em; vertical-align:middle;">Private</span>
             {% endif %}
           </h1>
+          {% if bottle.url %}
+            <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer" class="small text-muted">Visit website <i class="bi bi-box-arrow-up-right"></i></a>
+          {% endif %}
         </div>
         <div class="col-auto d-flex pb-1">
           {% if is_my_bottle %}
