@@ -20,7 +20,7 @@ def test_distillery_list(client: FlaskClient, test_user_01: User) -> None:
             assert distillery.url in response_data
 
 
-def distillery_list_logged_in_elements(
+def test_distillery_list_logged_in_elements(
     logged_in_user_01: FlaskClient, test_user_01: User, test_user_02: User
 ) -> None:
     client = logged_in_user_01
@@ -32,18 +32,22 @@ def distillery_list_logged_in_elements(
 
     response_data = response.get_data(as_text=True)
 
-    assert "Add Distillery" not in response_data
+    # looking for the "Add Distillery" button
+    assert '<a class="btn btn-primary" href="/distillery_add"' not in response_data
+
     assert "bi-pencil" not in response_data
     assert "bi-trash" not in response_data
 
-    # get the distillery  list page the current user.
-    # now we should see the edit and delete iconss, as well as the "Add" button.
+    # get the distillery list page the current user.
+    # now we should see the edit and delete icons, as well as the "Add" button.
     response = client.get(url_for("distillery.list", username=test_user_01.username))
     response_data = response.get_data(as_text=True)
 
     assert response.status_code == 200
 
-    assert "Add Distillery" in response_data
+    # looking for the "Add Distillery" button
+    assert '<a class="btn btn-primary" href="/distillery_add"' in response_data
+
     assert "bi-pencil" in response_data
     assert "bi-trash" in response_data
 

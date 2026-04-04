@@ -1,4 +1,4 @@
-from flask import redirect, render_template, request, url_for
+from flask import abort, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.bottler import bottler_bp
@@ -65,6 +65,8 @@ def bottler_add():
 @login_required
 def bottler_edit(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
+    if user.id != current_user.id:
+        abort(403)
     _bottler = db.one_or_404(db.select(Bottler).filter_by(user_id=user.id, user_num=user_num))
     form = BottlerEditForm(obj=_bottler)
 

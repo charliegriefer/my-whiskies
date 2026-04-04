@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from flask import Flask, url_for
 from flask.testing import FlaskClient
+from mywhiskies.extensions import db
 from mywhiskies.models import User
 from tests.conftest import expected_page_title
 
@@ -67,3 +70,22 @@ def test_bottle_list_logged_out_elements(
     assert "bi-trash" not in response_data
     assert "bi-incognito" not in response_data
     assert "Ironroot Republic Hubris Hazmat" not in response_data
+
+
+def test_bottle_list_no_killed_toggle_without_killed_bottles(
+    client: FlaskClient, test_user_01: User
+) -> None:
+    # test_user_01 has no killed bottles — toggle should not appear
+    response = client.get(url_for("bottle.list", username=test_user_01.username))
+    assert "Show Killed Bottles" not in response.get_data(as_text=True)
+
+
+def test_bottle_list_shows_killed_toggle_when_bottle_is_killed(
+    client: FlaskClient, test_user_01: User
+) -> None:
+    # kill one of the user's bottles
+    test_user_01.bottles[0].date_killed = datetime(2024, 6, 1)
+    db.session.commit()
+
+    response = client.get(url_for("bottle.list", username=test_user_01.username))
+    assert "Show Killed Bottles" in response.get_data(as_text=True)

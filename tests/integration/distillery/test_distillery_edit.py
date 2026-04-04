@@ -59,3 +59,25 @@ def test_valid_distillery_edit_form(
     assert updated_distillery.region_1 == formdata["region_1"]
     assert updated_distillery.region_2 == formdata["region_2"]
     assert updated_distillery.url == formdata["url"]
+
+
+def test_edit_not_my_distillery(
+    logged_in_user_01: FlaskClient, test_user_02: User
+) -> None:
+    """A logged-in user should not be able to edit another user's distillery."""
+    client = logged_in_user_01
+    distillery = test_user_02.distilleries[0]
+    original_name = distillery.name
+
+    response = client.post(
+        url_for(
+            "distillery.edit",
+            username=test_user_02.username,
+            user_num=distillery.user_num,
+        ),
+        data={"name": "Hacked Name", "region_1": "XX", "region_2": "YY"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code in (403, 200)
+    assert distillery.name == original_name

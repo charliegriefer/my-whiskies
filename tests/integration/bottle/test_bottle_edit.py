@@ -102,5 +102,24 @@ def test_valid_bottle_edit_form(test_user_01: User, mock_image: str) -> None:
         assert bottle_orig.get("review") != bottle_to_edit.review
 
 
+def test_edit_not_my_bottle(
+    logged_in_user_01: FlaskClient, test_user_01: User, test_user_02: User
+) -> None:
+    """A logged-in user should not be able to edit another user's bottle."""
+    client = logged_in_user_01
+    bottle = test_user_02.bottles[0]
+    original_name = bottle.name
+
+    response = client.post(
+        url_for("bottle.edit", username=test_user_02.username, user_num=bottle.user_num),
+        data={"name": "Hacked Name", "type": bottle.type.name},
+        follow_redirects=True,
+    )
+
+    # Should be blocked — either 403, or redirect away without making changes
+    assert response.status_code in (403, 200)
+    assert bottle.name == original_name
+
+
 def _get_bottle_by_name(bottles: List[Bottle], name: str) -> Bottle:
     return next((b for b in bottles if b.name == name), None)
