@@ -85,6 +85,8 @@ def bottle_add():
 @login_required
 def bottle_edit(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
+    if user.id != current_user.id:
+        abort(403)
     _bottle = db.one_or_404(db.select(Bottle).filter_by(user_id=user.id, user_num=user_num))
     _, _, img_s3_url = get_s3_config()
 

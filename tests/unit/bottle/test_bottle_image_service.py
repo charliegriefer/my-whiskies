@@ -7,8 +7,11 @@ from PIL import Image
 
 from mywhiskies.extensions import db
 from mywhiskies.models import Bottle, BottleImage, BottleTypes, User
+from botocore.exceptions import ClientError
+
 from mywhiskies.services.bottle.image import (
     _to_resized_jpg_bytes,
+    add_bottle_images,
     delete_bottle_images,
     resequence_bottle_images,
 )
@@ -164,3 +167,33 @@ def test_delete_specific_image(
         .all()
     )
     assert len(remaining) == 2
+
+
+# --- add_bottle_images: S3 error path ---
+
+@patch("mywhiskies.services.bottle.image.boto3.client")
+def test_add_bottle_images_returns_false_on_s3_error(
+    mock_boto: MagicMock, app: Flask, test_user_01: User
+) -> None:
+    mock_s3 = MagicMock()
+    mock_s3.put_object.side_effect = ClientError(
+        {"Error": {"Code": "NoSuchBucket", "Message": "Bucket not found"}}, "PutObject"
+    )
+    mock_boto.return_value = mock_s3
+
+    bottle = Bottle(
+        name="S3 Error Bottle",
+        type=BottleTypes.BOURBON,
+        user_id=test_user_01.id,
+    )
+    db.session.add(bottle)
+    db.session.commit()
+
+    form = MagicMock()
+    form.__getitem__ = MagicMock(side_effect=lambda key: (
+        MagicMock(data=_make_image_file()) if key == "bottle_image_1"
+        else MagicMock(data=None)
+    ))
+
+    result = add_bottle_images(form, bottle)
+    assert result is False

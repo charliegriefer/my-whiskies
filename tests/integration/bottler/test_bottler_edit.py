@@ -61,3 +61,25 @@ def test_valid_bottler_edit_form(
     assert bottler_orig.get("region_1") != updated_bottler.region_1
     assert bottler_orig.get("region_2") != updated_bottler.region_2
     assert bottler_orig.get("url") != updated_bottler.url
+
+
+def test_edit_not_my_bottler(
+    logged_in_user_01: FlaskClient, test_user_02: User
+) -> None:
+    """A logged-in user should not be able to edit another user's bottler."""
+    client = logged_in_user_01
+    bottler = test_user_02.bottlers[0]
+    original_name = bottler.name
+
+    response = client.post(
+        url_for(
+            "bottler.edit",
+            username=test_user_02.username,
+            user_num=bottler.user_num,
+        ),
+        data={"name": "Hacked Name", "region_1": "XX", "region_2": "YY"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code in (403, 200)
+    assert bottler.name == original_name

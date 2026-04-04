@@ -1,4 +1,4 @@
-from flask import current_app, flash, redirect, render_template, request, url_for
+from flask import abort, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.distillery import distillery_bp
@@ -93,6 +93,8 @@ def distillery_add():
 @login_required
 def distillery_edit(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
+    if user.id != current_user.id:
+        abort(403)
     distillery = db.one_or_404(
         db.select(Distillery).filter_by(user_id=user.id, user_num=user_num)
     )
