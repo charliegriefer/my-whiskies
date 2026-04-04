@@ -123,6 +123,7 @@ class BottleAddForm(FlaskForm):
         ],
         render_kw={"placeholder": "00.00"},
     )
+    is_single_barrel = BooleanField("Single Barrel?")
     is_private = BooleanField("Private Bottle?")
     cost = DecimalField(
         "Cost:",
