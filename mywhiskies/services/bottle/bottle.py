@@ -47,6 +47,7 @@ def set_bottle_details(
     bottle.date_purchased = form.date_purchased.data
     bottle.date_opened = form.date_opened.data
     bottle.date_killed = form.date_killed.data
+    bottle.is_single_barrel = form.is_single_barrel.data
     bottle.is_private = form.is_private.data
     bottle.personal_note = form.personal_note.data
 

@@ -17,6 +17,9 @@
           <h6 class="text-muted mb-1">{{ bottle.user.username }}'s Whiskies: Bottles</h6>
           <h1 class="mb-0">
             {{ bottle.name }}
+            {% if bottle.is_single_barrel %}
+              <span class="badge rounded-pill bg-secondary ms-2" style="font-size:0.4em; vertical-align:middle;">Single Barrel</span>
+            {% endif %}
             {% if is_my_bottle and bottle.is_private %}
               <span class="badge rounded-pill bg-danger ms-2" style="font-size:0.4em; vertical-align:middle;">Private</span>
             {% endif %}

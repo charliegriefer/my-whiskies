@@ -47,6 +47,7 @@ def test_add_bottle(
     form.date_purchased.data = datetime(2024, 1, 1)
     form.date_opened.data = datetime(2024, 2, 1)
     form.date_killed.data = datetime(2024, 3, 1)
+    form.is_single_barrel.data = False
     form.is_private.data = False
     form.personal_note.data = None
     add_bottle(form, test_user_01)
@@ -82,6 +83,7 @@ def test_edit_bottle(
     form.date_purchased.data = datetime(2024, 1, 1)
     form.date_opened.data = datetime(2024, 2, 1)
     form.date_killed.data = datetime(2024, 3, 1)
+    form.is_single_barrel.data = False
     form.is_private.data = True
     form.personal_note.data = None
     edit_bottle(form, test_bottle)

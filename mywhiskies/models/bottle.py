@@ -71,6 +71,9 @@ class Bottle(db.Model):
     is_private: Mapped[bool] = mapped_column(
         default=False, server_default=sa.text("false"), nullable=False
     )
+    is_single_barrel: Mapped[bool] = mapped_column(
+        default=False, server_default=sa.text("false"), nullable=False
+    )
     personal_note: Mapped[Optional[str]] = mapped_column(Text)
 
     # foreign keys
