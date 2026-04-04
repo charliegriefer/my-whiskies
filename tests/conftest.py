@@ -1,5 +1,6 @@
 import os
 import sys
+from datetime import datetime
 from typing import Generator
 
 import pytest
@@ -76,6 +77,7 @@ def test_user_01() -> "User":  # noqa: F821
         username="test_user_01",
         email="test_user_01@example.com",
         email_confirmed=True,
+        email_confirm_date=datetime(2024, 1, 1),
     )
     test_user_01.set_password(TEST_USER_PASSWORD)
     db.session.add(test_user_01)
@@ -150,6 +152,7 @@ def test_user_02() -> "User":  # noqa: F821
         username="test_user_02",
         email="test_user_02@example.com",
         email_confirmed=True,
+        email_confirm_date=datetime(2024, 1, 1),
     )
     test_user_02.set_password(TEST_USER_PASSWORD)
     db.session.add(test_user_02)
