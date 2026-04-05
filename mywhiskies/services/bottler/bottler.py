@@ -1,16 +1,46 @@
-from flask import current_app, flash, request
-from flask.wrappers import Response
+from typing import Dict, List, Optional
+
+from flask import current_app, flash
 
 from mywhiskies.extensions import db
 from mywhiskies.forms.bottler import BottlerAddForm, BottlerEditForm
 from mywhiskies.models import Bottler, User
-from mywhiskies.services import utils
+
+_SORT_FNS = {
+    "name": lambda b: b.name.lower(),
+    "bottles": lambda b: len(b.bottles),
+    "location": lambda b: f"{b.region_1 or ''} {b.region_2 or ''}".lower(),
+}
 
 
 def list_bottlers(
-    user: User, current_user: User, request: request, entity_type: str
-) -> Response:
-    return utils.prep_datatable_entities(user, current_user, request, entity_type)
+    user: User,
+    is_my_list: bool,
+    q: str = "",
+    sort: str = "name",
+    direction: str = "asc",
+    page: int = 1,
+    per_page: int = 25,
+) -> Dict:
+    bottlers = list(user.bottlers)
+
+    if q:
+        bottlers = [b for b in bottlers if q.lower() in b.name.lower()]
+
+    total = len(bottlers)
+    bottlers.sort(key=_SORT_FNS.get(sort, _SORT_FNS["name"]), reverse=(direction == "desc"))
+
+    total_pages = max(1, (total + per_page - 1) // per_page)
+    page = min(page, total_pages)
+    offset = (page - 1) * per_page
+
+    return {
+        "bottlers": bottlers[offset : offset + per_page],
+        "total": total,
+        "page": page,
+        "per_page": per_page,
+        "total_pages": total_pages,
+    }
 
 
 def add_bottler(form: BottlerAddForm, user: User) -> None:
@@ -52,7 +82,3 @@ def delete_bottler(user: User, bottler: Bottler) -> None:
         flash(f'"{bottler.name}" has been successfully deleted.', "success")
 
 
-def get_bottler_detail(
-    bottler: Bottler, request: request, current_user: User
-) -> Response:
-    return utils.prep_datatable_bottles(bottler, current_user, request)

@@ -1,30 +1,40 @@
 import copy
-from datetime import datetime
 from unittest.mock import MagicMock, patch
 
-from flask.testing import FlaskClient
 from werkzeug.datastructures import MultiDict
 
 from mywhiskies.extensions import db
 from mywhiskies.forms.bottler import BottlerAddForm, BottlerEditForm
-from mywhiskies.models import Bottle, Bottler, BottleTypes, User
+from mywhiskies.models import Bottler, User
 from mywhiskies.services.bottler.bottler import (
     add_bottler,
     delete_bottler,
     edit_bottler,
-    get_bottler_detail,
     list_bottlers,
 )
 
 
-@patch("mywhiskies.services.utils.render_template")
-def test_list_bottlers(
-    mock_render_template: MagicMock, test_user_01: User, client: FlaskClient
-) -> None:
-    mock_render_template.return_value = "Rendered Template"
-    request = MagicMock()
-    response = list_bottlers(test_user_01, test_user_01, request, "bottlers")
-    assert response.data == b"Rendered Template"
+def test_list_bottlers(test_user_01: User) -> None:
+    result = list_bottlers(user=test_user_01, is_my_list=True)
+    assert "bottlers" in result
+    assert "total" in result
+    assert "page" in result
+    assert "per_page" in result
+    assert "total_pages" in result
+    assert result["total"] == len(test_user_01.bottlers)
+
+
+def test_list_bottlers_search(test_user_01: User) -> None:
+    first_bottler = test_user_01.bottlers[0]
+    result = list_bottlers(user=test_user_01, is_my_list=True, q=first_bottler.name)
+    assert result["total"] == 1
+    assert result["bottlers"][0].name == first_bottler.name
+
+
+def test_list_bottlers_sort(test_user_01: User) -> None:
+    asc = list_bottlers(user=test_user_01, is_my_list=True, sort="name", direction="asc")
+    desc = list_bottlers(user=test_user_01, is_my_list=True, sort="name", direction="desc")
+    assert asc["bottlers"] == list(reversed(desc["bottlers"]))
 
 
 @patch("mywhiskies.services.bottler.bottler.flash")
@@ -78,69 +88,3 @@ def test_delete_bottler(
     mock_flash.assert_called_once_with(
         '"Single Cask Nation" has been successfully deleted.', "success"
     )
-
-
-@patch("mywhiskies.services.bottler.bottler.utils.is_my_list")
-@patch("mywhiskies.services.bottler.bottler.db.get_or_404")
-def test_get_bottler_detail(
-    mock_get_or_404: MagicMock,
-    mock_is_my_list: MagicMock,
-    test_user_01: User,
-    test_bottler: Bottler,
-) -> None:
-    # Mock setup
-    test_bottler.user = test_user_01
-    test_bottler.name = "Single Cask Nation"
-    mock_get_or_404.return_value = test_bottler
-    mock_is_my_list.return_value = True
-
-    # Add bottles to bottler
-    live_bottle = Bottle(
-        name="Live Bottle",
-        type=BottleTypes.BOURBON,
-        date_killed=None,
-        user_id=test_user_01.id,
-    )
-    killed_bottle = Bottle(
-        name="Killed Bottle",
-        type=BottleTypes.BOURBON,
-        date_killed=datetime(2023, 1, 1),
-        user_id=test_user_01.id,
-    )
-    db.session.add_all([live_bottle, killed_bottle])
-    db.session.commit()
-
-    test_bottler.bottles = [live_bottle, killed_bottle]
-
-    # Simulate a GET request
-    request = MagicMock(method="GET", cookies=MultiDict({"dt-list-length": "100"}))
-    request.form.getlist.return_value = []
-    request.form.get.return_value = 0
-    response = get_bottler_detail(test_bottler, request, test_user_01)
-    html = response.get_data(as_text=True)
-
-    # Assertions for the GET request
-    expected_title = (
-        f"{test_bottler.user.username}&#39;s Whiskies: Bottlers: {test_bottler.name}"
-    )
-    assert expected_title in html, f"Expected title '{expected_title}' not in HTML"
-    assert "Live Bottle" in html
-    assert "Killed Bottle" in html
-
-    # Simulate a POST request with "random_toggle" set to 1
-    request = MagicMock(
-        method="POST",
-        cookies=MultiDict({"dt-list-length": "50"}),
-        form=MultiDict({"random_toggle": "1", "bottle_type": ["BOURBON"]}),
-    )
-    response = get_bottler_detail(test_bottler, request, test_user_01)
-
-    # Parse the response HTML for POST
-    html = response.get_data(as_text=True)
-
-    # Assertions for the POST request
-    assert (
-        f"{test_bottler.user.username}&#39;s Whiskies: Bottlers: {test_bottler.name}"
-        in html
-    )
-    assert "Live Bottle" in html
