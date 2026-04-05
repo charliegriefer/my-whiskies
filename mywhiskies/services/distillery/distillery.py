@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Dict
 
 from flask import Flask, Request, current_app, flash
 from flask.wrappers import Response
@@ -9,6 +10,12 @@ from mywhiskies.extensions import db
 from mywhiskies.forms.distillery import DistilleryAddForm, DistilleryEditForm
 from mywhiskies.models import Distillery, User
 from mywhiskies.services import utils
+
+_SORT_FNS = {
+    "name": lambda d: d.name.lower(),
+    "bottles": lambda d: len(d.bottles),
+    "location": lambda d: f"{d.region_1 or ''} {d.region_2 or ''}".lower(),
+}
 
 
 def bulk_add_distillery(user: User, app: Flask) -> None:
@@ -27,9 +34,35 @@ def bulk_add_distillery(user: User, app: Flask) -> None:
 
 
 def list_distilleries(
-    user: User, current_user: User, req: Request, entity_type: str
-) -> Response:
-    return utils.prep_datatable_entities(user, current_user, req, entity_type)
+    user: User,
+    is_my_list: bool,
+    q: str = "",
+    sort: str = "name",
+    direction: str = "asc",
+    page: int = 1,
+    per_page: int = 25,
+) -> Dict:
+    distilleries = list(user.distilleries)
+
+    if q:
+        distilleries = [d for d in distilleries if q.lower() in d.name.lower()]
+
+    total = len(distilleries)
+    distilleries.sort(
+        key=_SORT_FNS.get(sort, _SORT_FNS["name"]), reverse=(direction == "desc")
+    )
+
+    total_pages = max(1, (total + per_page - 1) // per_page)
+    page = min(page, total_pages)
+    offset = (page - 1) * per_page
+
+    return {
+        "distilleries": distilleries[offset : offset + per_page],
+        "total": total,
+        "page": page,
+        "per_page": per_page,
+        "total_pages": total_pages,
+    }
 
 
 def add_distillery(form: DistilleryAddForm, user: User) -> None:

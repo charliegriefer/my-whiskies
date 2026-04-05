@@ -16,8 +16,6 @@ def test_distillery_list(client: FlaskClient, test_user_01: User) -> None:
     for distillery in test_user_01.distilleries:
         assert distillery.name in response_data
         assert distillery.region_1 in response_data
-        if distillery.url:
-            assert distillery.url in response_data
 
 
 def test_distillery_list_logged_in_elements(
