@@ -50,6 +50,7 @@
                 {{ n }} per page
               </option>
             {% endfor %}
+            <option value="10000" {% if per_page == 10000 %}selected{% endif %}>All</option>
           </select>
         </div>
 

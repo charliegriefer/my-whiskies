@@ -20,7 +20,7 @@ from mywhiskies.services.bottle.image import get_s3_config
 
 _VALID_SORTS = {"name", "type", "abv", "rating", "sb", "private"}
 _VALID_DIRS = {"asc", "desc"}
-_VALID_PER_PAGE = {25, 50, 100}
+_VALID_PER_PAGE = {25, 50, 100, 10000}
 
 
 @bottle_bp.route("/<username:username>/bottles", methods=["GET"], endpoint="list")
