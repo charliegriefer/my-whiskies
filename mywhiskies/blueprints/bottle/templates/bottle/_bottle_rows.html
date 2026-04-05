@@ -42,7 +42,7 @@
 
         {# Single Barrel — sortable #}
         {% set sb_dir = 'desc' if sort == 'sb' and direction == 'asc' else 'asc' %}
-        <th class="text-center" style="width: 4%;">
+        <th class="text-center text-nowrap" style="width: 4%;">
           <a class="text-dark text-decoration-none"
             title="Single Barrel" data-bs-toggle="tooltip"
             hx-get="{{ url_for('bottle.list', username=user.username) }}"
@@ -53,6 +53,8 @@
             SB
             {% if sort == 'sb' %}
               <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+            {% else %}
+              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
             {% endif %}
           </a>
         </th>
@@ -114,7 +116,7 @@
         {# Private — sortable, owner only #}
         {% if is_my_list %}
           {% set priv_dir = 'desc' if sort == 'private' and direction == 'asc' else 'asc' %}
-          <th class="text-center" style="width: 4%;">
+          <th class="text-center text-nowrap" style="width: 4%;">
             <a class="text-dark text-decoration-none"
               title="Private" data-bs-toggle="tooltip"
               hx-get="{{ url_for('bottle.list', username=user.username) }}"
@@ -125,6 +127,8 @@
               <i class="bi bi-incognito"></i>
               {% if sort == 'private' %}
                 <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+              {% else %}
+                <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
               {% endif %}
             </a>
           </th>
