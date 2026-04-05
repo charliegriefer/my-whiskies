@@ -1,0 +1,176 @@
+<form id="current-state" hidden>
+  <input type="hidden" name="sort" value="{{ sort }}">
+  <input type="hidden" name="dir" value="{{ direction }}">
+</form>
+
+{% if total > 0 %}
+  <p class="text-muted small mb-2">
+    Showing {{ (page - 1) * per_page + 1 }}–{{ [page * per_page, total] | min }}
+    of {{ total }} bottler{{ "s" if total != 1 }}
+  </p>
+{% endif %}
+
+<div class="table-responsive">
+  <table class="table table-striped table-hover">
+    <thead style="border-bottom: 1px solid #696969;">
+      <tr>
+
+        {% if is_my_list %}
+          <th class="text-nowrap" style="width: 1%;">&nbsp;</th>
+        {% endif %}
+
+        {# Name — sortable #}
+        {% set name_dir = 'desc' if sort == 'name' and direction == 'asc' else 'asc' %}
+        <th>
+          <a class="text-dark text-decoration-none"
+            hx-get="{{ url_for('bottler.list', username=user.username) }}"
+            hx-target="#bottler-results"
+            hx-push-url="true"
+            hx-include="#list-controls"
+            hx-vals='{"sort": "name", "dir": "{{ name_dir }}", "page": "1"}'>
+            Name
+            {% if sort == 'name' %}
+              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+            {% else %}
+              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+            {% endif %}
+          </a>
+        </th>
+
+        {# Bottles — sortable #}
+        {% set bottles_dir = 'desc' if sort == 'bottles' and direction == 'asc' else 'asc' %}
+        <th class="text-end" style="width: 8%;">
+          <a class="text-dark text-decoration-none"
+            hx-get="{{ url_for('bottler.list', username=user.username) }}"
+            hx-target="#bottler-results"
+            hx-push-url="true"
+            hx-include="#list-controls"
+            hx-vals='{"sort": "bottles", "dir": "{{ bottles_dir }}", "page": "1"}'>
+            Bottles
+            {% if sort == 'bottles' %}
+              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+            {% else %}
+              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+            {% endif %}
+          </a>
+        </th>
+
+        {# Location — sortable #}
+        {% set location_dir = 'desc' if sort == 'location' and direction == 'asc' else 'asc' %}
+        <th>
+          <a class="text-dark text-decoration-none"
+            hx-get="{{ url_for('bottler.list', username=user.username) }}"
+            hx-target="#bottler-results"
+            hx-push-url="true"
+            hx-include="#list-controls"
+            hx-vals='{"sort": "location", "dir": "{{ location_dir }}", "page": "1"}'>
+            Location
+            {% if sort == 'location' %}
+              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+            {% else %}
+              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+            {% endif %}
+          </a>
+        </th>
+
+        {# URL — not sortable #}
+        <th style="width: 4%;"></th>
+
+      </tr>
+    </thead>
+    <tbody>
+      {% if bottlers %}
+        {% for bottler in bottlers %}
+          <tr>
+
+            {# Edit / Delete — owner only #}
+            {% if is_my_list %}
+              <td class="text-nowrap">
+                <div class="d-inline-flex align-items-center gap-2">
+                  <a href="{{ url_for('bottler.edit', username=bottler.user.username, user_num=bottler.user_num) }}">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  {% if bottler.bottles | length %}
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#cannotDelete">
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  {% else %}
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete"
+                      data-bs-href="{{ url_for('bottler.delete', username=bottler.user.username, user_num=bottler.user_num) }}">
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  {% endif %}
+                </div>
+              </td>
+            {% endif %}
+
+            {# Name — links to bottler detail (bottles from this bottler) #}
+            <td>
+              <a href="{{ url_for('bottler.detail', username=bottler.user.username, user_num=bottler.user_num) }}">
+                {{ bottler.name }}
+              </a>
+            </td>
+
+            {# Bottle count #}
+            <td class="text-end pe-4">{{ bottler.bottles | length }}</td>
+
+            {# Location #}
+            <td>{{ bottler.region_1 }}, {{ bottler.region_2 }}</td>
+
+            {# URL icon #}
+            <td class="text-center">
+              {% if bottler.url %}
+                <a href="{{ bottler.url }}" target="_blank" rel="noopener noreferrer"
+                  title="{{ bottler.url }}">
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+              {% endif %}
+            </td>
+
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="{{ 4 + (1 if is_my_list else 0) }}"
+              class="text-center text-muted py-4">
+            {{ empty_text }}
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+{# Pagination #}
+{% if total_pages > 1 %}
+  <nav aria-label="Bottler list pages">
+    <ul class="pagination pagination-sm justify-content-center">
+      <li class="page-item {{ 'disabled' if page <= 1 }}">
+        <a class="page-link"
+          hx-get="{{ url_for('bottler.list', username=user.username) }}"
+          hx-target="#bottler-results"
+          hx-push-url="true"
+          hx-include="#list-controls, #current-state"
+          hx-vals='{"page": "{{ page - 1 }}"}'>Previous</a>
+      </li>
+      {% for p in range(1, total_pages + 1) %}
+        <li class="page-item {{ 'active' if p == page }}">
+          <a class="page-link"
+            hx-get="{{ url_for('bottler.list', username=user.username) }}"
+            hx-target="#bottler-results"
+            hx-push-url="true"
+            hx-include="#list-controls, #current-state"
+            hx-vals='{"page": "{{ p }}"}'>{{ p }}</a>
+        </li>
+      {% endfor %}
+      <li class="page-item {{ 'disabled' if page >= total_pages }}">
+        <a class="page-link"
+          hx-get="{{ url_for('bottler.list', username=user.username) }}"
+          hx-target="#bottler-results"
+          hx-push-url="true"
+          hx-include="#list-controls, #current-state"
+          hx-vals='{"page": "{{ page + 1 }}"}'>Next</a>
+      </li>
+    </ul>
+  </nav>
+{% endif %}
