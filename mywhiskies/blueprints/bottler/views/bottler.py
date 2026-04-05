@@ -14,15 +14,60 @@ from mywhiskies.services.bottler.bottler import (
     list_bottlers,
 )
 
+_VALID_SORTS = {"name", "bottles", "location"}
+_VALID_DIRS = {"asc", "desc"}
+_VALID_PER_PAGE = {25, 50, 100}
 
-@bottler_bp.route("/<username:username>/bottlers", endpoint="list")
+
+@bottler_bp.route("/<username:username>/bottlers", methods=["GET"], endpoint="list")
 def bottlers(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
-    response = list_bottlers(user, current_user, request, "bottlers")
-    utils.set_cookie_expiration(
-        response, "dt_list_length", request.cookies.get("bt-list-length", "50")
+    _is_my_list = utils.is_my_list(username, current_user)
+
+    q = request.args.get("q", "").strip()
+    sort = request.args.get("sort", "name")
+    if sort not in _VALID_SORTS:
+        sort = "name"
+    direction = request.args.get("dir", "asc")
+    if direction not in _VALID_DIRS:
+        direction = "asc"
+    page = max(1, request.args.get("page", 1, type=int))
+    per_page = request.args.get("per_page", 25, type=int)
+    if per_page not in _VALID_PER_PAGE:
+        per_page = 25
+
+    data = list_bottlers(
+        user=user,
+        is_my_list=_is_my_list,
+        q=q,
+        sort=sort,
+        direction=direction,
+        page=page,
+        per_page=per_page,
     )
-    return response
+
+    empty_text = "No bottlers match your search." if q else f"{user.username} has no bottlers. Yet."
+    if data["total"] > 0:
+        empty_text = ""
+
+    possessive = f"{user.username}'" if user.username.endswith("s") else f"{user.username}'s"
+    ctx = dict(
+        title=f"{possessive} Whiskies: Bottlers",
+        heading_01=f"{possessive} Whiskies",
+        heading_02="Bottlers",
+        user=user,
+        is_my_list=_is_my_list,
+        q=q,
+        sort=sort,
+        direction=direction,
+        empty_text=empty_text,
+        **data,
+    )
+
+    if request.headers.get("HX-Request"):
+        return render_template("bottler/_bottler_rows.html", **ctx)
+
+    return render_template("bottler/list.html", **ctx)
 
 
 @bottler_bp.route(

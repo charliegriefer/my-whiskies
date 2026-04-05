@@ -2,7 +2,6 @@ import copy
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
-from flask.testing import FlaskClient
 from werkzeug.datastructures import MultiDict
 
 from mywhiskies.extensions import db
@@ -17,14 +16,27 @@ from mywhiskies.services.bottler.bottler import (
 )
 
 
-@patch("mywhiskies.services.utils.render_template")
-def test_list_bottlers(
-    mock_render_template: MagicMock, test_user_01: User, client: FlaskClient
-) -> None:
-    mock_render_template.return_value = "Rendered Template"
-    request = MagicMock()
-    response = list_bottlers(test_user_01, test_user_01, request, "bottlers")
-    assert response.data == b"Rendered Template"
+def test_list_bottlers(test_user_01: User) -> None:
+    result = list_bottlers(user=test_user_01, is_my_list=True)
+    assert "bottlers" in result
+    assert "total" in result
+    assert "page" in result
+    assert "per_page" in result
+    assert "total_pages" in result
+    assert result["total"] == len(test_user_01.bottlers)
+
+
+def test_list_bottlers_search(test_user_01: User) -> None:
+    first_bottler = test_user_01.bottlers[0]
+    result = list_bottlers(user=test_user_01, is_my_list=True, q=first_bottler.name)
+    assert result["total"] == 1
+    assert result["bottlers"][0].name == first_bottler.name
+
+
+def test_list_bottlers_sort(test_user_01: User) -> None:
+    asc = list_bottlers(user=test_user_01, is_my_list=True, sort="name", direction="asc")
+    desc = list_bottlers(user=test_user_01, is_my_list=True, sort="name", direction="desc")
+    assert asc["bottlers"] == list(reversed(desc["bottlers"]))
 
 
 @patch("mywhiskies.services.bottler.bottler.flash")
