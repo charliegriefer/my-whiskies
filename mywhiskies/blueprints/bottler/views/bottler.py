@@ -16,7 +16,7 @@ from mywhiskies.services.bottler.bottler import (
 
 _VALID_SORTS = {"name", "bottles", "location"}
 _VALID_DIRS = {"asc", "desc"}
-_VALID_PER_PAGE = {25, 50, 100}
+_VALID_PER_PAGE = {25, 50, 100, 10000}
 
 
 @bottler_bp.route("/<username:username>/bottlers", methods=["GET"], endpoint="list")

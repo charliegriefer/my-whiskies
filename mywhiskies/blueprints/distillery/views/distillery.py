@@ -17,7 +17,7 @@ from mywhiskies.services.distillery.distillery import (
 
 _VALID_SORTS = {"name", "bottles", "location"}
 _VALID_DIRS = {"asc", "desc"}
-_VALID_PER_PAGE = {25, 50, 100}
+_VALID_PER_PAGE = {25, 50, 100, 10000}
 
 
 @distillery_bp.route("/no_distilleries")

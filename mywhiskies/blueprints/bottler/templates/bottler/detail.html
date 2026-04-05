@@ -60,6 +60,7 @@
                 {{ n }} per page
               </option>
             {% endfor %}
+            <option value="10000" {% if per_page == 10000 %}selected{% endif %}>All</option>
           </select>
 
           <!-- Type filter dropdown -->
@@ -85,7 +86,8 @@
                   hx-target="#bottle-results"
                   hx-push-url="true"
                   hx-include="#list-controls, #current-state"
-                  hx-vals='{"page": "1"}'>Apply</button>
+                  hx-vals='{"page": "1"}'
+                  onclick="bootstrap.Dropdown.getInstance(this.closest('.dropdown').querySelector('.dropdown-toggle'))?.hide()">Apply</button>
                 <button type="button" class="btn btn-outline-secondary btn-sm"
                   id="select-all-types">Select All</button>
               </div>
