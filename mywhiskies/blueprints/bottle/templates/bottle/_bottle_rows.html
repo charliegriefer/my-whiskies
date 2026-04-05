@@ -42,7 +42,7 @@
 
         {# Single Barrel — sortable #}
         {% set sb_dir = 'desc' if sort == 'sb' and direction == 'asc' else 'asc' %}
-        <th class="text-center text-nowrap" style="width: 4%;">
+        <th class="text-center text-nowrap" style="width: 1%;">
           <a class="text-dark text-decoration-none"
             title="Single Barrel" data-bs-toggle="tooltip"
             hx-get="{{ list_url }}"
@@ -116,7 +116,7 @@
         {# Private — sortable, owner only #}
         {% if is_my_list %}
           {% set priv_dir = 'desc' if sort == 'private' and direction == 'asc' else 'asc' %}
-          <th class="text-center text-nowrap" style="width: 4%;">
+          <th class="text-center text-nowrap" style="width: 1%;">
             <a class="text-dark text-decoration-none"
               title="Private" data-bs-toggle="tooltip"
               hx-get="{{ list_url }}"
