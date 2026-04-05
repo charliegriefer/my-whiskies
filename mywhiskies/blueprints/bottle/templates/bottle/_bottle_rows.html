@@ -42,7 +42,7 @@
 
         {# Single Barrel — sortable #}
         {% set sb_dir = 'desc' if sort == 'sb' and direction == 'asc' else 'asc' %}
-        <th class="text-center text-nowrap" style="width: 4%;">
+        <th class="text-center text-nowrap" style="width: 1%;">
           <a class="text-dark text-decoration-none"
             title="Single Barrel" data-bs-toggle="tooltip"
             hx-get="{{ list_url }}"
@@ -77,16 +77,16 @@
           </a>
         </th>
 
-        {# ABV — sortable #}
+        {# ABV/Proof — sortable #}
         {% set abv_dir = 'desc' if sort == 'abv' and direction == 'asc' else 'asc' %}
-        <th class="text-end" style="width: 8%;">
+        <th class="text-end text-nowrap">
           <a class="text-dark text-decoration-none"
             hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-include="#list-controls"
             hx-vals='{"sort": "abv", "dir": "{{ abv_dir }}", "page": "1"}'>
-            ABV
+            ABV/Proof
             {% if sort == 'abv' %}
               <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
             {% else %}
@@ -116,7 +116,7 @@
         {# Private — sortable, owner only #}
         {% if is_my_list %}
           {% set priv_dir = 'desc' if sort == 'private' and direction == 'asc' else 'asc' %}
-          <th class="text-center text-nowrap" style="width: 4%;">
+          <th class="text-center text-nowrap" style="width: 1%;">
             <a class="text-dark text-decoration-none"
               title="Private" data-bs-toggle="tooltip"
               hx-get="{{ list_url }}"
@@ -167,7 +167,7 @@
             </td>
 
             {# Single Barrel #}
-            <td class="text-center">
+            <td class="text-center pe-4">
               {% if bottle.is_single_barrel %}
                 <i class="bi bi-check-circle-fill text-secondary" title="Single Barrel"></i>
               {% endif %}
@@ -176,9 +176,9 @@
             {# Type #}
             <td>{{ bottle.type.value }}</td>
 
-            {# ABV #}
-            <td class="text-end pe-3">
-              {% if bottle.abv %}{{ "%.2f" | format(bottle.abv) }}{% else %}-{% endif %}
+            {# ABV / Proof #}
+            <td class="text-end pe-4 text-nowrap">
+              {% if bottle.abv %}{{ "%.2f" | format(bottle.abv) }}/{{ "%.2f" | format(bottle.abv * 2) }}°{% else %}-{% endif %}
             </td>
 
             {# Rating #}
@@ -195,7 +195,7 @@
 
             {# Private — owner only #}
             {% if is_my_list %}
-              <td class="text-center">
+              <td class="text-center pe-4">
                 {% if bottle.is_private %}
                   <i class="bi bi-incognito opacity-50" title="Private"></i>
                 {% endif %}
