@@ -167,7 +167,7 @@
             </td>
 
             {# Single Barrel #}
-            <td class="text-center">
+            <td class="text-center pe-3">
               {% if bottle.is_single_barrel %}
                 <i class="bi bi-check-circle-fill text-secondary" title="Single Barrel"></i>
               {% endif %}
@@ -195,7 +195,7 @@
 
             {# Private — owner only #}
             {% if is_my_list %}
-              <td class="text-center">
+              <td class="text-center pe-3">
                 {% if bottle.is_private %}
                   <i class="bi bi-incognito opacity-50" title="Private"></i>
                 {% endif %}
