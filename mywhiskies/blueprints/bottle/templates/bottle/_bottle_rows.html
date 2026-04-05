@@ -24,7 +24,7 @@
 
         {# Name — sortable #}
         {% set name_dir = 'desc' if sort == 'name' and direction == 'asc' else 'asc' %}
-        <th style="width: 100%;">
+        <th>
           <a class="text-dark text-decoration-none"
             hx-get="{{ list_url }}"
             hx-target="#bottle-results"
@@ -79,7 +79,7 @@
 
         {# ABV/Proof — sortable #}
         {% set abv_dir = 'desc' if sort == 'abv' and direction == 'asc' else 'asc' %}
-        <th class="text-end text-nowrap pe-4">
+        <th class="text-end text-nowrap">
           <a class="text-dark text-decoration-none"
             hx-get="{{ list_url }}"
             hx-target="#bottle-results"
