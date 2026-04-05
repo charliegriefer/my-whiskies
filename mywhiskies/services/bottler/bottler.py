@@ -1,12 +1,10 @@
 from typing import Dict, List, Optional
 
-from flask import Request, current_app, flash
-from flask.wrappers import Response
+from flask import current_app, flash
 
 from mywhiskies.extensions import db
 from mywhiskies.forms.bottler import BottlerAddForm, BottlerEditForm
 from mywhiskies.models import Bottler, User
-from mywhiskies.services import utils
 
 _SORT_FNS = {
     "name": lambda b: b.name.lower(),
@@ -84,7 +82,3 @@ def delete_bottler(user: User, bottler: Bottler) -> None:
         flash(f'"{bottler.name}" has been successfully deleted.', "success")
 
 
-def get_bottler_detail(
-    bottler: Bottler, request: Request, current_user: User
-) -> Response:
-    return utils.prep_datatable_bottles(bottler, current_user, request)

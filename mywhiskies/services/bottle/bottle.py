@@ -1,12 +1,12 @@
 import random
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import boto3
 from flask import current_app, flash
 
 from mywhiskies.extensions import db
 from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
-from mywhiskies.models import Bottle, Distillery, User
+from mywhiskies.models import Bottle, Bottler, Distillery, User
 from mywhiskies.services.bottle.image import (
     add_bottle_images,
     delete_bottle_images,
@@ -35,6 +35,51 @@ def list_bottles_by_user(
     per_page: int = 25,
 ) -> Dict:
     bottles = list(user.bottles)
+
+    if not is_my_list:
+        bottles = [b for b in bottles if not b.is_private]
+
+    has_killed = any(b.date_killed for b in bottles)
+
+    if not show_killed:
+        bottles = [b for b in bottles if not b.date_killed]
+
+    if types:
+        bottles = [b for b in bottles if b.type.name in types]
+
+    if q:
+        q_lower = q.lower()
+        bottles = [b for b in bottles if q_lower in b.name.lower()]
+
+    total = len(bottles)
+    bottles.sort(key=_SORT_FNS.get(sort, _SORT_FNS["name"]), reverse=(direction == "desc"))
+
+    total_pages = max(1, (total + per_page - 1) // per_page)
+    page = min(page, total_pages)
+    offset = (page - 1) * per_page
+
+    return {
+        "bottles": bottles[offset : offset + per_page],
+        "total": total,
+        "page": page,
+        "per_page": per_page,
+        "total_pages": total_pages,
+        "has_killed": has_killed,
+    }
+
+
+def list_bottles_for_entity(
+    entity: Union[Bottler, Distillery],
+    is_my_list: bool,
+    q: str = "",
+    types: Optional[List[str]] = None,
+    show_killed: bool = False,
+    sort: str = "name",
+    direction: str = "asc",
+    page: int = 1,
+    per_page: int = 25,
+) -> Dict:
+    bottles = list(entity.bottles)
 
     if not is_my_list:
         bottles = [b for b in bottles if not b.is_private]

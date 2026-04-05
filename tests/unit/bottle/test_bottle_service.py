@@ -11,6 +11,7 @@ from mywhiskies.services.bottle.bottle import (
     edit_bottle,
     get_random_bottle,
     list_bottles_by_user,
+    list_bottles_for_entity,
 )
 
 
@@ -49,6 +50,21 @@ def test_list_bottles_pagination(test_user_01: User) -> None:
 def test_get_random_bottle(test_user_01: User) -> None:
     bottle = get_random_bottle(test_user_01)
     assert bottle is None or bottle in test_user_01.bottles
+
+
+def test_list_bottles_for_entity_returns_dict(test_user_01: User) -> None:
+    bottler = test_user_01.bottlers[0]
+    data = list_bottles_for_entity(entity=bottler, is_my_list=True)
+    assert "bottles" in data
+    assert "total" in data
+    assert "has_killed" in data
+    assert data["total"] == len(bottler.bottles)
+
+
+def test_list_bottles_for_entity_hides_private_for_guests(test_user_01: User) -> None:
+    bottler = test_user_01.bottlers[0]
+    data = list_bottles_for_entity(entity=bottler, is_my_list=False)
+    assert all(not b.is_private for b in data["bottles"])
 
 
 @patch("mywhiskies.services.bottle.bottle.add_bottle_images")

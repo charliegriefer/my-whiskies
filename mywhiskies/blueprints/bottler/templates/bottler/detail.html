@@ -10,14 +10,6 @@
           <h6 class="text-muted mb-1">{{ heading_01 }}</h6>
           <h1 class="mb-0">{{ heading_02 }}</h1>
         </div>
-        <div class="col-auto d-flex pb-1 gap-2">
-          {% if is_my_list and total > 1 %}
-            <a href="{{ url_for('bottle.random', username=user.username) }}"
-               class="btn btn-primary text-nowrap">
-              <i class="bi bi-question-circle"></i> Random Bottle
-            </a>
-          {% endif %}
-        </div>
       </div>
 
       <hr />
