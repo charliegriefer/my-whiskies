@@ -77,22 +77,21 @@
           </a>
         </th>
 
-        {# ABV — sortable #}
+        {# ABV/Proof — sortable #}
         {% set abv_dir = 'desc' if sort == 'abv' and direction == 'asc' else 'asc' %}
-        <th class="text-end" style="width: 8%;">
+        <th class="text-end text-nowrap">
           <a class="text-dark text-decoration-none"
             hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-include="#list-controls"
             hx-vals='{"sort": "abv", "dir": "{{ abv_dir }}", "page": "1"}'>
-            ABV
+            ABV/Proof
             {% if sort == 'abv' %}
               <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
             {% else %}
               <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
             {% endif %}
-            <br><small class="text-muted fw-normal">Proof</small>
           </a>
         </th>
 
@@ -178,13 +177,8 @@
             <td>{{ bottle.type.value }}</td>
 
             {# ABV / Proof #}
-            <td class="text-end pe-3">
-              {% if bottle.abv %}
-                <div class="lh-1">
-                  {{ "%.2f" | format(bottle.abv) }}<br>
-                  <small class="text-muted">{{ "%.2f" | format(bottle.abv * 2) }}°</small>
-                </div>
-              {% else %}-{% endif %}
+            <td class="text-end pe-3 text-nowrap">
+              {% if bottle.abv %}{{ "%.2f" | format(bottle.abv) }}/{{ "%.2f" | format(bottle.abv * 2) }}°{% else %}-{% endif %}
             </td>
 
             {# Rating #}
