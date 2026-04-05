@@ -15,6 +15,10 @@ from mywhiskies.services.distillery.distillery import (
     list_distilleries,
 )
 
+_VALID_SORTS = {"name", "bottles", "location"}
+_VALID_DIRS = {"asc", "desc"}
+_VALID_PER_PAGE = {25, 50, 100}
+
 
 @distillery_bp.route("/no_distilleries")
 @login_required
@@ -41,14 +45,61 @@ def bulk_distillery_add():
     return redirect(url_for("core.main"))
 
 
-@distillery_bp.route("/<username>/distilleries", endpoint="list")
+@distillery_bp.route("/<username>/distilleries", methods=["GET"], endpoint="list")
 def distilleries(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
-    response = list_distilleries(user, current_user, request, "distilleries")
-    utils.set_cookie_expiration(
-        response, "dt_list_length", request.cookies.get("bt-list-length", "50")
+    _is_my_list = utils.is_my_list(username, current_user)
+
+    q = request.args.get("q", "").strip()
+    sort = request.args.get("sort", "name")
+    if sort not in _VALID_SORTS:
+        sort = "name"
+    direction = request.args.get("dir", "asc")
+    if direction not in _VALID_DIRS:
+        direction = "asc"
+    page = max(1, request.args.get("page", 1, type=int))
+    per_page = request.args.get("per_page", 25, type=int)
+    if per_page not in _VALID_PER_PAGE:
+        per_page = 25
+
+    data = list_distilleries(
+        user=user,
+        is_my_list=_is_my_list,
+        q=q,
+        sort=sort,
+        direction=direction,
+        page=page,
+        per_page=per_page,
     )
-    return response
+
+    empty_text = (
+        "No distilleries match your search."
+        if q
+        else f"{user.username} has no distilleries. Yet."
+    )
+    if data["total"] > 0:
+        empty_text = ""
+
+    possessive = (
+        f"{user.username}'" if user.username.endswith("s") else f"{user.username}'s"
+    )
+    ctx = dict(
+        title=f"{possessive} Whiskies: Distilleries",
+        heading_01=f"{possessive} Whiskies",
+        heading_02="Distilleries",
+        user=user,
+        is_my_list=_is_my_list,
+        q=q,
+        sort=sort,
+        direction=direction,
+        empty_text=empty_text,
+        **data,
+    )
+
+    if request.headers.get("HX-Request"):
+        return render_template("distillery/_distillery_rows.html", **ctx)
+
+    return render_template("distillery/list.html", **ctx)
 
 
 @distillery_bp.route(

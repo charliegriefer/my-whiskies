@@ -2,7 +2,6 @@ import copy
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
-from flask.testing import FlaskClient
 from werkzeug.datastructures import MultiDict
 
 from mywhiskies.extensions import db
@@ -17,14 +16,27 @@ from mywhiskies.services.distillery.distillery import (
 )
 
 
-@patch("mywhiskies.services.utils.render_template")
-def test_list_distilleries(
-    mock_render_template: MagicMock, test_user_01: User, client: FlaskClient
-) -> None:
-    mock_render_template.return_value = "Rendered Template"
-    request = MagicMock()
-    response = list_distilleries(test_user_01, test_user_01, request, "distilleries")
-    assert response.data == b"Rendered Template"
+def test_list_distilleries(test_user_01: User) -> None:
+    result = list_distilleries(user=test_user_01, is_my_list=True)
+    assert "distilleries" in result
+    assert "total" in result
+    assert "page" in result
+    assert "per_page" in result
+    assert "total_pages" in result
+    assert result["total"] == len(test_user_01.distilleries)
+
+
+def test_list_distilleries_search(test_user_01: User) -> None:
+    first = test_user_01.distilleries[0]
+    result = list_distilleries(user=test_user_01, is_my_list=True, q=first.name)
+    assert result["total"] == 1
+    assert result["distilleries"][0].name == first.name
+
+
+def test_list_distilleries_sort(test_user_01: User) -> None:
+    asc = list_distilleries(user=test_user_01, is_my_list=True, sort="name", direction="asc")
+    desc = list_distilleries(user=test_user_01, is_my_list=True, sort="name", direction="desc")
+    assert asc["distilleries"] == list(reversed(desc["distilleries"]))
 
 
 @patch("mywhiskies.services.distillery.distillery.flash")
