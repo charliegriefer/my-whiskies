@@ -32,7 +32,9 @@ def bottlers(username: str):
     if direction not in _VALID_DIRS:
         direction = "asc"
     page = max(1, request.args.get("page", 1, type=int))
-    per_page = request.args.get("per_page", 25, type=int)
+    per_page = request.args.get("per_page", type=int)
+    if per_page not in _VALID_PER_PAGE:
+        per_page = int(request.cookies.get("per_page", 25))
     if per_page not in _VALID_PER_PAGE:
         per_page = 25
 
@@ -91,7 +93,9 @@ def bottler(username: str, user_num: int):
     if direction not in _VALID_DIRS:
         direction = "asc"
     page = max(1, request.args.get("page", 1, type=int))
-    per_page = request.args.get("per_page", 25, type=int)
+    per_page = request.args.get("per_page", type=int)
+    if per_page not in _VALID_PER_PAGE:
+        per_page = int(request.cookies.get("per_page", 25))
     if per_page not in _VALID_PER_PAGE:
         per_page = 25
 

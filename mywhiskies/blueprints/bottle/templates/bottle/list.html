@@ -1,6 +1,7 @@
 {% extends "_base.html" %}
 
 {% block app_content %}
+  <div x-data="{ deleteUrl: '' }">
   <main class="flex-shrink-0">
     <div class="container ps-0">
 
@@ -12,10 +13,9 @@
         </div>
         <div class="col-auto d-flex pb-1 gap-2">
           {% if is_my_list and total > 1 %}
-            <a href="{{ url_for('bottle.random', username=user.username) }}"
-               class="btn btn-primary text-nowrap">
+            <button type="button" class="btn btn-primary text-nowrap" id="random-bottle-btn">
               <i class="bi bi-question-circle"></i> Random Bottle
-            </a>
+            </button>
           {% endif %}
         </div>
       </div>
@@ -72,12 +72,15 @@
           </select>
 
           <!-- Type filter dropdown -->
-          <div class="dropdown">
+          <div class="dropdown"
+            x-data="{ anyChecked: true }"
+            x-init="anyChecked = !!$el.querySelector('.type-filter:checked')">
             <button class="btn btn-primary text-nowrap dropdown-toggle" type="button"
               data-bs-toggle="dropdown" data-bs-auto-close="outside">
               <i class="bi bi-funnel"></i> Filter List
             </button>
-            <div class="dropdown-menu p-3" style="min-width: 200px;">
+            <div class="dropdown-menu p-3" style="min-width: 200px;"
+              @change="anyChecked = !!$el.querySelectorAll('.type-filter:checked').length">
               {% for bt in bottle_types %}
                 <div class="form-check">
                   <input type="checkbox" class="form-check-input type-filter"
@@ -95,9 +98,12 @@
                   hx-push-url="true"
                   hx-include="#list-controls, #current-state"
                   hx-vals='{"page": "1"}'
+                  :disabled="!anyChecked"
                   onclick="bootstrap.Dropdown.getInstance(this.closest('.dropdown').querySelector('.dropdown-toggle'))?.hide()">Apply</button>
                 <button type="button" class="btn btn-outline-secondary btn-sm"
-                  id="select-all-types">Select All</button>
+                  @click="$el.closest('.dropdown-menu').querySelectorAll('.type-filter').forEach(cb => cb.checked = true); anyChecked = true">Select All</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm"
+                  @click="$el.closest('.dropdown-menu').querySelectorAll('.type-filter').forEach(cb => cb.checked = false); anyChecked = false">Select None</button>
               </div>
             </div>
           </div>
@@ -130,30 +136,31 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary"
             data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-danger" id="confirm-delete">
+          <button type="button" class="btn btn-danger"
+            @click="location.href = deleteUrl">
             Delete Bottle
           </button>
         </div>
       </div>
     </div>
   </div>
+  </div>
 {% endblock %}
 
 {% block scripts %}
   {{ super() }}
+  {% if is_my_list and total > 1 %}
   <script>
-    // Type filter: Select All button
-    document.getElementById('select-all-types')?.addEventListener('click', () => {
-      document.querySelectorAll('input.type-filter').forEach(cb => cb.checked = true);
+    document.getElementById('random-bottle-btn').addEventListener('click', () => {
+      const baseUrl = "{{ url_for('bottle.random', username=user.username) }}";
+      const form = document.getElementById('list-controls');
+      const data = new FormData(form);
+      const params = new URLSearchParams();
+      const q = data.get('q');
+      if (q) params.set('q', q);
+      data.getAll('types').forEach(t => params.append('types', t));
+      window.location.href = baseUrl + (params.toString() ? '?' + params.toString() : '');
     });
-
-    // Delete confirmation modal (vanilla JS, no jQuery)
-    const confirmModal = document.getElementById('confirmDelete');
-    if (confirmModal) {
-      confirmModal.addEventListener('show.bs.modal', e => {
-        const url = e.relatedTarget?.getAttribute('data-bs-href');
-        document.getElementById('confirm-delete').onclick = () => location.href = url;
-      });
-    }
   </script>
+  {% endif %}
 {% endblock %}

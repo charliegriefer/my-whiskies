@@ -113,9 +113,18 @@ def list_bottles_for_entity(
     }
 
 
-def get_random_bottle(user: User) -> Optional[Bottle]:
-    active = [b for b in user.bottles if not b.date_killed]
-    return random.choice(active) if active else None
+def get_random_bottle(
+    user: User,
+    q: str = "",
+    types: Optional[List[str]] = None,
+) -> Optional[Bottle]:
+    bottles = [b for b in user.bottles if not b.date_killed]
+    if types:
+        bottles = [b for b in bottles if b.type.name in types]
+    if q:
+        q_lower = q.lower()
+        bottles = [b for b in bottles if q_lower in b.name.lower()]
+    return random.choice(bottles) if bottles else None
 
 
 def set_bottle_details(

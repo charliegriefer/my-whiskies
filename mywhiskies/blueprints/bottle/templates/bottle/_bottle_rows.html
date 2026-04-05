@@ -149,7 +149,7 @@
                     <i class="bi bi-pencil"></i>
                   </a>
                   <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete"
-                    data-bs-href="{{ url_for('bottle.delete', username=bottle.user.username, user_num=bottle.user_num) }}">
+                    @click="deleteUrl = '{{ url_for('bottle.delete', username=bottle.user.username, user_num=bottle.user_num) }}'">
                     <i class="bi bi-trash"></i>
                   </a>
                 </div>

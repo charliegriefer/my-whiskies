@@ -39,7 +39,9 @@ def bottles(username: str):
     if direction not in _VALID_DIRS:
         direction = "asc"
     page = max(1, request.args.get("page", 1, type=int))
-    per_page = request.args.get("per_page", 25, type=int)
+    per_page = request.args.get("per_page", type=int)
+    if per_page not in _VALID_PER_PAGE:
+        per_page = int(request.cookies.get("per_page", 25))
     if per_page not in _VALID_PER_PAGE:
         per_page = 25
 
@@ -91,7 +93,10 @@ def bottle_random(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     if user.id != current_user.id:
         abort(403)
-    bottle = get_random_bottle(user)
+    q = request.args.get("q", "").strip()
+    all_type_names = [b.name for b in BottleTypes]
+    types = request.args.getlist("types") or all_type_names
+    bottle = get_random_bottle(user, q=q, types=types)
     if bottle:
         return redirect(url_for("bottle.detail", username=username, user_num=bottle.user_num))
     return redirect(url_for("bottle.list", username=username))

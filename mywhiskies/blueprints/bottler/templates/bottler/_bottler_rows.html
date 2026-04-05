@@ -96,7 +96,7 @@
                     </a>
                   {% else %}
                     <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete"
-                      data-bs-href="{{ url_for('bottler.delete', username=bottler.user.username, user_num=bottler.user_num) }}">
+                      @click="deleteUrl = '{{ url_for('bottler.delete', username=bottler.user.username, user_num=bottler.user_num) }}'">
                       <i class="bi bi-trash"></i>
                     </a>
                   {% endif %}

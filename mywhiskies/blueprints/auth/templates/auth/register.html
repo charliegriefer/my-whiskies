@@ -17,7 +17,8 @@
         <div class="row">
           <div class="col-md-4 pt-4">
 
-            <form method="post" id="register_form" novalidate>
+            <form method="post" id="register_form" novalidate
+                  x-data="{ agreed: {{ 'true' if form.agree_terms.data else 'false' }} }">
               {{ form.csrf_token }}
               {{ form.form_name }}
               {{ form.g_recaptcha_response }}
@@ -26,10 +27,21 @@
               {{ form_utils.render_field(form.email) }}
               {{ form_utils.render_field(form.password) }}
               {{ form_utils.render_field(form.password2) }}
-              {{ form_utils.render_checkbox(form.agree_terms) }}
-              
+
+              <div class="mb-3">
+                <input type="checkbox" class="form-check-input{{ ' is-invalid' if form.agree_terms.errors else '' }}"
+                  id="{{ form.agree_terms.id }}" name="{{ form.agree_terms.name }}" value="y"
+                  x-model="agreed">
+                &nbsp;&nbsp;
+                {{ form.agree_terms.label(class="form-label fw-normal") }}
+                <span class="text-danger">*</span>
+                {% for error in form.agree_terms.errors %}
+                  <div class="invalid-feedback"><i class="bi bi-exclamation-circle"></i> {{ error }}</div>
+                {% endfor %}
+              </div>
+
               <div class="mb-3 pt-3">
-                {{ form.submit(class="btn btn-primary") }}
+                <input type="submit" class="btn btn-primary" value="Register" :disabled="!agreed">
                 {{ buttons.cancel_button(current_user, request) }}
               </div>
             </form>
