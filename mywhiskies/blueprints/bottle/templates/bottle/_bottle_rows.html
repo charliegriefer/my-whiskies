@@ -26,7 +26,7 @@
         {% set name_dir = 'desc' if sort == 'name' and direction == 'asc' else 'asc' %}
         <th>
           <a class="text-dark text-decoration-none"
-            hx-get="{{ url_for('bottle.list', username=user.username) }}"
+            hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-include="#list-controls"
@@ -45,7 +45,7 @@
         <th class="text-center text-nowrap" style="width: 4%;">
           <a class="text-dark text-decoration-none"
             title="Single Barrel" data-bs-toggle="tooltip"
-            hx-get="{{ url_for('bottle.list', username=user.username) }}"
+            hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-include="#list-controls"
@@ -63,7 +63,7 @@
         {% set type_dir = 'desc' if sort == 'type' and direction == 'asc' else 'asc' %}
         <th>
           <a class="text-dark text-decoration-none"
-            hx-get="{{ url_for('bottle.list', username=user.username) }}"
+            hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-include="#list-controls"
@@ -81,7 +81,7 @@
         {% set abv_dir = 'desc' if sort == 'abv' and direction == 'asc' else 'asc' %}
         <th class="text-end" style="width: 8%;">
           <a class="text-dark text-decoration-none"
-            hx-get="{{ url_for('bottle.list', username=user.username) }}"
+            hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-include="#list-controls"
@@ -99,7 +99,7 @@
         {% set rating_dir = 'desc' if sort == 'rating' and direction == 'asc' else 'asc' %}
         <th>
           <a class="text-dark text-decoration-none"
-            hx-get="{{ url_for('bottle.list', username=user.username) }}"
+            hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-include="#list-controls"
@@ -119,7 +119,7 @@
           <th class="text-center text-nowrap" style="width: 4%;">
             <a class="text-dark text-decoration-none"
               title="Private" data-bs-toggle="tooltip"
-              hx-get="{{ url_for('bottle.list', username=user.username) }}"
+              hx-get="{{ list_url }}"
               hx-target="#bottle-results"
               hx-push-url="true"
               hx-include="#list-controls"
@@ -222,7 +222,7 @@
     <ul class="pagination pagination-sm justify-content-center">
       <li class="page-item {{ 'disabled' if page <= 1 }}">
         <a class="page-link"
-          hx-get="{{ url_for('bottle.list', username=user.username) }}"
+          hx-get="{{ list_url }}"
           hx-target="#bottle-results"
           hx-push-url="true"
           hx-include="#list-controls, #current-state"
@@ -231,7 +231,7 @@
       {% for p in range(1, total_pages + 1) %}
         <li class="page-item {{ 'active' if p == page }}">
           <a class="page-link"
-            hx-get="{{ url_for('bottle.list', username=user.username) }}"
+            hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-include="#list-controls, #current-state"
@@ -240,7 +240,7 @@
       {% endfor %}
       <li class="page-item {{ 'disabled' if page >= total_pages }}">
         <a class="page-link"
-          hx-get="{{ url_for('bottle.list', username=user.username) }}"
+          hx-get="{{ list_url }}"
           hx-target="#bottle-results"
           hx-push-url="true"
           hx-include="#list-controls, #current-state"

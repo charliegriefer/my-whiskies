@@ -75,6 +75,7 @@ def bottles(username: str):
         sort=sort,
         direction=direction,
         empty_text=empty_text,
+        list_url=url_for("bottle.list", username=user.username),
         **data,
     )
 

@@ -2,14 +2,12 @@ import json
 import os
 from typing import Dict
 
-from flask import Flask, Request, current_app, flash
-from flask.wrappers import Response
+from flask import Flask, current_app, flash
 from sqlalchemy import insert
 
 from mywhiskies.extensions import db
 from mywhiskies.forms.distillery import DistilleryAddForm, DistilleryEditForm
 from mywhiskies.models import Distillery, User
-from mywhiskies.services import utils
 
 _SORT_FNS = {
     "name": lambda d: d.name.lower(),
@@ -107,7 +105,3 @@ def delete_distillery(user: User, distillery: Distillery) -> None:
         )
 
 
-def get_distillery_detail(
-    distillery: Distillery, req: Request, current_user: User
-) -> Response:
-    return utils.prep_datatable_bottles(distillery, current_user, req)
