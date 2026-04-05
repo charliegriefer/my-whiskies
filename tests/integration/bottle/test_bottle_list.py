@@ -20,10 +20,9 @@ def test_bottle_list(client: FlaskClient, test_user_01: User) -> None:
             assert bottle.name not in response_data
         else:
             assert bottle.name in response_data
-            assert bottle.type.name in response_data
+            assert bottle.type.value in response_data
             if bottle.abv:
-                assert str(bottle.abv) in response_data
-            assert bottle.description in response_data
+                assert f"{bottle.abv:.2f}" in response_data
 
 
 def test_bottle_list_logged_in_elements(

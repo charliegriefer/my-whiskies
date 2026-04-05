@@ -1,0 +1,247 @@
+{# Hidden navigation state — lives inside the swap target so it's refreshed on every HTMX response.
+   External controls include this via hx-include="#list-controls, #current-state" to preserve
+   sort and direction across filter/pagination interactions. #}
+<form id="current-state" hidden>
+  <input type="hidden" name="sort" value="{{ sort }}">
+  <input type="hidden" name="dir" value="{{ direction }}">
+</form>
+
+{% if total > 0 %}
+  <p class="text-muted small mb-2">
+    Showing {{ (page - 1) * per_page + 1 }}–{{ [page * per_page, total] | min }}
+    of {{ total }} bottle{{ "s" if total != 1 }}
+  </p>
+{% endif %}
+
+<div class="table-responsive">
+  <table class="table table-striped table-hover">
+    <thead style="border-bottom: 1px solid #696969;">
+      <tr>
+
+        {% if is_my_list %}
+          <th class="text-nowrap" style="width: 1%;">&nbsp;</th>
+        {% endif %}
+
+        {# Name — sortable #}
+        {% set name_dir = 'desc' if sort == 'name' and direction == 'asc' else 'asc' %}
+        <th>
+          <a class="text-dark text-decoration-none"
+            hx-get="{{ url_for('bottle.list', username=user.username) }}"
+            hx-target="#bottle-results"
+            hx-push-url="true"
+            hx-include="#list-controls"
+            hx-vals='{"sort": "name", "dir": "{{ name_dir }}", "page": "1"}'>
+            Name
+            {% if sort == 'name' %}
+              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+            {% else %}
+              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+            {% endif %}
+          </a>
+        </th>
+
+        {# Single Barrel — sortable #}
+        {% set sb_dir = 'desc' if sort == 'sb' and direction == 'asc' else 'asc' %}
+        <th class="text-center" style="width: 4%;">
+          <a class="text-dark text-decoration-none"
+            title="Single Barrel" data-bs-toggle="tooltip"
+            hx-get="{{ url_for('bottle.list', username=user.username) }}"
+            hx-target="#bottle-results"
+            hx-push-url="true"
+            hx-include="#list-controls"
+            hx-vals='{"sort": "sb", "dir": "{{ sb_dir }}", "page": "1"}'>
+            SB
+            {% if sort == 'sb' %}
+              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+            {% endif %}
+          </a>
+        </th>
+
+        {# Type — sortable #}
+        {% set type_dir = 'desc' if sort == 'type' and direction == 'asc' else 'asc' %}
+        <th>
+          <a class="text-dark text-decoration-none"
+            hx-get="{{ url_for('bottle.list', username=user.username) }}"
+            hx-target="#bottle-results"
+            hx-push-url="true"
+            hx-include="#list-controls"
+            hx-vals='{"sort": "type", "dir": "{{ type_dir }}", "page": "1"}'>
+            Type
+            {% if sort == 'type' %}
+              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+            {% else %}
+              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+            {% endif %}
+          </a>
+        </th>
+
+        {# ABV — sortable #}
+        {% set abv_dir = 'desc' if sort == 'abv' and direction == 'asc' else 'asc' %}
+        <th class="text-end" style="width: 8%;">
+          <a class="text-dark text-decoration-none"
+            hx-get="{{ url_for('bottle.list', username=user.username) }}"
+            hx-target="#bottle-results"
+            hx-push-url="true"
+            hx-include="#list-controls"
+            hx-vals='{"sort": "abv", "dir": "{{ abv_dir }}", "page": "1"}'>
+            ABV
+            {% if sort == 'abv' %}
+              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+            {% else %}
+              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+            {% endif %}
+          </a>
+        </th>
+
+        {# Rating — sortable #}
+        {% set rating_dir = 'desc' if sort == 'rating' and direction == 'asc' else 'asc' %}
+        <th>
+          <a class="text-dark text-decoration-none"
+            hx-get="{{ url_for('bottle.list', username=user.username) }}"
+            hx-target="#bottle-results"
+            hx-push-url="true"
+            hx-include="#list-controls"
+            hx-vals='{"sort": "rating", "dir": "{{ rating_dir }}", "page": "1"}'>
+            Rating
+            {% if sort == 'rating' %}
+              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+            {% else %}
+              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+            {% endif %}
+          </a>
+        </th>
+
+        {# Private — sortable, owner only #}
+        {% if is_my_list %}
+          {% set priv_dir = 'desc' if sort == 'private' and direction == 'asc' else 'asc' %}
+          <th class="text-center" style="width: 4%;">
+            <a class="text-dark text-decoration-none"
+              title="Private" data-bs-toggle="tooltip"
+              hx-get="{{ url_for('bottle.list', username=user.username) }}"
+              hx-target="#bottle-results"
+              hx-push-url="true"
+              hx-include="#list-controls"
+              hx-vals='{"sort": "private", "dir": "{{ priv_dir }}", "page": "1"}'>
+              <i class="bi bi-incognito"></i>
+              {% if sort == 'private' %}
+                <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+              {% endif %}
+            </a>
+          </th>
+        {% endif %}
+
+      </tr>
+    </thead>
+    <tbody>
+      {% if bottles %}
+        {% for bottle in bottles %}
+          <tr class="{{ 'opacity-50' if bottle.date_killed else '' }}">
+
+            {# Edit / Delete — owner only #}
+            {% if is_my_list %}
+              <td class="text-nowrap">
+                <div class="d-inline-flex align-items-center gap-2">
+                  <a href="{{ url_for('bottle.edit', username=bottle.user.username, user_num=bottle.user_num) }}">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete"
+                    data-bs-href="{{ url_for('bottle.delete', username=bottle.user.username, user_num=bottle.user_num) }}">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
+              </td>
+            {% endif %}
+
+            {# Name + image indicator #}
+            <td>
+              <a href="{{ url_for('bottle.detail', username=bottle.user.username, user_num=bottle.user_num) }}">
+                {{ bottle.name | replace("\n", " ") }}
+              </a>
+              {% if bottle.image_count %}
+                <i class="bi bi-file-image ms-1 text-muted" title="Has Image(s)"></i>
+              {% endif %}
+            </td>
+
+            {# Single Barrel #}
+            <td class="text-center">
+              {% if bottle.is_single_barrel %}
+                <i class="bi bi-check-circle-fill text-secondary" title="Single Barrel"></i>
+              {% endif %}
+            </td>
+
+            {# Type #}
+            <td>{{ bottle.type.value }}</td>
+
+            {# ABV #}
+            <td class="text-end pe-3">
+              {% if bottle.abv %}{{ "%.2f" | format(bottle.abv) }}{% else %}-{% endif %}
+            </td>
+
+            {# Rating #}
+            <td>
+              {% if bottle.stars %}
+                {% set times_ten = (bottle.stars * 10) | int %}
+                <img src="{{ url_for('static', filename='stars/stars_' + times_ten | string + '.png') }}"
+                  alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1">
+              {% else %}
+                <img src="{{ url_for('static', filename='stars/stars_blank.png') }}"
+                  alt="Not yet rated" title="Not yet rated" class="mb-1">
+              {% endif %}
+            </td>
+
+            {# Private — owner only #}
+            {% if is_my_list %}
+              <td class="text-center">
+                {% if bottle.is_private %}
+                  <i class="bi bi-incognito opacity-50" title="Private"></i>
+                {% endif %}
+              </td>
+            {% endif %}
+
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="{{ 5 + (2 if is_my_list else 0) }}"
+              class="text-center text-muted py-4">
+            {{ empty_text }}
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+{# Pagination #}
+{% if total_pages > 1 %}
+  <nav aria-label="Bottle list pages">
+    <ul class="pagination pagination-sm justify-content-center">
+      <li class="page-item {{ 'disabled' if page <= 1 }}">
+        <a class="page-link"
+          hx-get="{{ url_for('bottle.list', username=user.username) }}"
+          hx-target="#bottle-results"
+          hx-push-url="true"
+          hx-include="#list-controls, #current-state"
+          hx-vals='{"page": "{{ page - 1 }}"}'>Previous</a>
+      </li>
+      {% for p in range(1, total_pages + 1) %}
+        <li class="page-item {{ 'active' if p == page }}">
+          <a class="page-link"
+            hx-get="{{ url_for('bottle.list', username=user.username) }}"
+            hx-target="#bottle-results"
+            hx-push-url="true"
+            hx-include="#list-controls, #current-state"
+            hx-vals='{"page": "{{ p }}"}'>{{ p }}</a>
+        </li>
+      {% endfor %}
+      <li class="page-item {{ 'disabled' if page >= total_pages }}">
+        <a class="page-link"
+          hx-get="{{ url_for('bottle.list', username=user.username) }}"
+          hx-target="#bottle-results"
+          hx-push-url="true"
+          hx-include="#list-controls, #current-state"
+          hx-vals='{"page": "{{ page + 1 }}"}'>Next</a>
+      </li>
+    </ul>
+  </nav>
+{% endif %}

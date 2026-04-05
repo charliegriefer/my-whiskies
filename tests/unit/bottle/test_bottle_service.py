@@ -1,7 +1,6 @@
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
-from flask import request
 from flask.testing import FlaskClient
 
 from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
@@ -10,17 +9,46 @@ from mywhiskies.services.bottle.bottle import (
     add_bottle,
     delete_bottle,
     edit_bottle,
+    get_random_bottle,
     list_bottles_by_user,
 )
 
 
-@patch("mywhiskies.services.utils.render_template")
-def test_list_bottles(
-    mock_render_template: MagicMock, test_user_01: User, client: FlaskClient
-) -> None:
-    mock_render_template.return_value = "Rendered Template"
-    response = list_bottles_by_user(test_user_01, request, test_user_01)
-    assert response.data == b"Rendered Template"
+def test_list_bottles_returns_all(test_user_01: User) -> None:
+    data = list_bottles_by_user(user=test_user_01, is_my_list=True)
+    assert "bottles" in data
+    assert "total" in data
+    assert "has_killed" in data
+    assert data["total"] == len(test_user_01.bottles)
+
+
+def test_list_bottles_hides_private_for_guests(test_user_01: User) -> None:
+    data = list_bottles_by_user(user=test_user_01, is_my_list=False)
+    assert all(not b.is_private for b in data["bottles"])
+
+
+def test_list_bottles_search(test_user_01: User) -> None:
+    first_name = test_user_01.bottles[0].name.split()[0].lower()
+    data = list_bottles_by_user(user=test_user_01, is_my_list=True, q=first_name)
+    assert all(first_name in b.name.lower() for b in data["bottles"])
+
+
+def test_list_bottles_type_filter(test_user_01: User) -> None:
+    data = list_bottles_by_user(
+        user=test_user_01, is_my_list=True, types=[BottleTypes.BOURBON.name]
+    )
+    assert all(b.type == BottleTypes.BOURBON for b in data["bottles"])
+
+
+def test_list_bottles_pagination(test_user_01: User) -> None:
+    data = list_bottles_by_user(user=test_user_01, is_my_list=True, per_page=1, page=1)
+    assert len(data["bottles"]) == 1
+    assert data["total_pages"] == data["total"]
+
+
+def test_get_random_bottle(test_user_01: User) -> None:
+    bottle = get_random_bottle(test_user_01)
+    assert bottle is None or bottle in test_user_01.bottles
 
 
 @patch("mywhiskies.services.bottle.bottle.add_bottle_images")

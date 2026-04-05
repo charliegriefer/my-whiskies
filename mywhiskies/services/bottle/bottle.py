@@ -1,22 +1,76 @@
-from typing import Optional
+import random
+from typing import Dict, List, Optional
 
 import boto3
-from flask import Request, current_app, flash
-from flask.wrappers import Response
+from flask import current_app, flash
 
 from mywhiskies.extensions import db
 from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
 from mywhiskies.models import Bottle, Distillery, User
-from mywhiskies.services import utils
 from mywhiskies.services.bottle.image import (
     add_bottle_images,
     delete_bottle_images,
     get_s3_config,
 )
 
+_SORT_FNS = {
+    "name": lambda b: b.name.lower(),
+    "type": lambda b: b.type.value.lower(),
+    "abv": lambda b: float(b.abv) if b.abv else 0.0,
+    "rating": lambda b: float(b.stars) if b.stars else 0.0,
+    "sb": lambda b: b.is_single_barrel,
+    "private": lambda b: b.is_private,
+}
 
-def list_bottles_by_user(user: User, request: Request, current_user: User) -> Response:
-    return utils.prep_datatable_bottles(user, current_user, request)
+
+def list_bottles_by_user(
+    user: User,
+    is_my_list: bool,
+    q: str = "",
+    types: Optional[List[str]] = None,
+    show_killed: bool = False,
+    sort: str = "name",
+    direction: str = "asc",
+    page: int = 1,
+    per_page: int = 25,
+) -> Dict:
+    bottles = list(user.bottles)
+
+    if not is_my_list:
+        bottles = [b for b in bottles if not b.is_private]
+
+    has_killed = any(b.date_killed for b in bottles)
+
+    if not show_killed:
+        bottles = [b for b in bottles if not b.date_killed]
+
+    if types:
+        bottles = [b for b in bottles if b.type.name in types]
+
+    if q:
+        q_lower = q.lower()
+        bottles = [b for b in bottles if q_lower in b.name.lower()]
+
+    total = len(bottles)
+    bottles.sort(key=_SORT_FNS.get(sort, _SORT_FNS["name"]), reverse=(direction == "desc"))
+
+    total_pages = max(1, (total + per_page - 1) // per_page)
+    page = min(page, total_pages)
+    offset = (page - 1) * per_page
+
+    return {
+        "bottles": bottles[offset : offset + per_page],
+        "total": total,
+        "page": page,
+        "per_page": per_page,
+        "total_pages": total_pages,
+        "has_killed": has_killed,
+    }
+
+
+def get_random_bottle(user: User) -> Optional[Bottle]:
+    active = [b for b in user.bottles if not b.date_killed]
+    return random.choice(active) if active else None
 
 
 def set_bottle_details(
