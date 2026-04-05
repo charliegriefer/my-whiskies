@@ -86,12 +86,13 @@
             hx-push-url="true"
             hx-include="#list-controls"
             hx-vals='{"sort": "abv", "dir": "{{ abv_dir }}", "page": "1"}'>
-            ABV<br><small class="text-muted fw-normal">Proof</small>
+            ABV
             {% if sort == 'abv' %}
               <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
             {% else %}
               <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
             {% endif %}
+            <br><small class="text-muted fw-normal">Proof</small>
           </a>
         </th>
 
@@ -179,8 +180,10 @@
             {# ABV / Proof #}
             <td class="text-end pe-3">
               {% if bottle.abv %}
-                {{ "%.2f" | format(bottle.abv) }}<br>
-                <small class="text-muted">{{ "%.2f" | format(bottle.abv * 2) }}°</small>
+                <div class="lh-1">
+                  {{ "%.2f" | format(bottle.abv) }}<br>
+                  <small class="text-muted">{{ "%.2f" | format(bottle.abv * 2) }}°</small>
+                </div>
               {% else %}-{% endif %}
             </td>
 
