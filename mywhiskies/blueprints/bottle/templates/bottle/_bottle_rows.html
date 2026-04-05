@@ -167,7 +167,7 @@
             </td>
 
             {# Single Barrel #}
-            <td class="text-center pe-3">
+            <td class="text-center pe-4">
               {% if bottle.is_single_barrel %}
                 <i class="bi bi-check-circle-fill text-secondary" title="Single Barrel"></i>
               {% endif %}
@@ -177,7 +177,7 @@
             <td>{{ bottle.type.value }}</td>
 
             {# ABV / Proof #}
-            <td class="text-end pe-3 text-nowrap">
+            <td class="text-end pe-4 text-nowrap">
               {% if bottle.abv %}{{ "%.2f" | format(bottle.abv) }}/{{ "%.2f" | format(bottle.abv * 2) }}°{% else %}-{% endif %}
             </td>
 
@@ -195,7 +195,7 @@
 
             {# Private — owner only #}
             {% if is_my_list %}
-              <td class="text-center pe-3">
+              <td class="text-center pe-4">
                 {% if bottle.is_private %}
                   <i class="bi bi-incognito opacity-50" title="Private"></i>
                 {% endif %}
