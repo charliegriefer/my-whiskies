@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from flask import abort, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
@@ -70,6 +72,14 @@ def bottlers(username: str):
         return render_template("bottler/_bottler_rows.html", **ctx)
 
     return render_template("bottler/list.html", **ctx)
+
+
+@bottler_bp.route("/<username:username>/bottler/<uuid:bottler_uuid>", endpoint="detail_legacy")
+def bottler_legacy(username: str, bottler_uuid: UUID):
+    _bottler = db.one_or_404(db.select(Bottler).filter_by(id=str(bottler_uuid)))
+    return redirect(
+        url_for("bottler.detail", username=username, user_num=_bottler.user_num), 301
+    )
 
 
 @bottler_bp.route(
