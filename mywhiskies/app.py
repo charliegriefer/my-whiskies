@@ -68,7 +68,8 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
         if not app.testing:
             # Skip logging for static files
             if not request.path.startswith("/static/"):
-                duration_ms = int((time.time() - g.start_time) * 1000)
+                start_time = getattr(g, "start_time", None)
+                duration_ms = int((time.time() - start_time) * 1000) if start_time else 0
                 extra = {
                     "duration_ms": duration_ms,
                     "request_id": g.request_id,

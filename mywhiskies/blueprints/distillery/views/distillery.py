@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from flask import abort, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
@@ -102,6 +104,17 @@ def distilleries(username: str):
         return render_template("distillery/_distillery_rows.html", **ctx)
 
     return render_template("distillery/list.html", **ctx)
+
+
+@distillery_bp.route(
+    "/<username:username>/distillery/<uuid:distillery_uuid>",
+    endpoint="detail_legacy",
+)
+def distillery_legacy(username: str, distillery_uuid: UUID):
+    _distillery = db.one_or_404(db.select(Distillery).filter_by(id=str(distillery_uuid)))
+    return redirect(
+        url_for("distillery.detail", username=username, user_num=_distillery.user_num), 301
+    )
 
 
 @distillery_bp.route(

@@ -1,4 +1,5 @@
 import time
+from uuid import UUID
 
 from flask import abort, g, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
@@ -100,6 +101,14 @@ def bottle_random(username: str):
     if bottle:
         return redirect(url_for("bottle.detail", username=username, user_num=bottle.user_num))
     return redirect(url_for("bottle.list", username=username))
+
+
+@bottle_bp.route("/<username:username>/bottle/<uuid:bottle_uuid>", endpoint="detail_legacy")
+def bottle_legacy(username: str, bottle_uuid: UUID):
+    _bottle = db.one_or_404(db.select(Bottle).filter_by(id=str(bottle_uuid)))
+    return redirect(
+        url_for("bottle.detail", username=username, user_num=_bottle.user_num), 301
+    )
 
 
 @bottle_bp.route("/<username:username>/bottle/<paddedint:user_num>", endpoint="detail")
