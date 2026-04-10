@@ -16,7 +16,7 @@ Flask-Migrate==4.1.0
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.2
 git-filter-repo==2.45.0
-greenlet==2.0.2
+greenlet==3.4.0
 idna==3.11
 importlib-metadata==6.0.0
 iniconfig==2.0.0
