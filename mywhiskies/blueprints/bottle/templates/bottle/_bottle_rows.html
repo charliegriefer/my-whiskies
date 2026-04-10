@@ -177,9 +177,9 @@
               {% if is_my_list %}<td></td>{% endif %}
 
               <td>
-                <i class="bi expand-chevron" :class="open ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
                 <span style="color: var(--t-text-group); font-weight: 500;">{{ group.name | replace("\n", " ") }}</span>
                 <span class="count-badge">×{{ group.count }}</span>
+                <i class="bi expand-chevron ms-1" :class="open ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
               </td>
 
               <td class="text-center pe-4">
