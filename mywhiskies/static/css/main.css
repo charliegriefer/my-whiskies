@@ -258,33 +258,6 @@ ul.terms li {
   --t-pill-other-bg: #f0f0f0;    --t-pill-other-text: #666;
 }
 
-[data-theme="dark-cellar"] {
-  --t-header-bg: #1a1008;
-  --t-header-text: #8a7055;
-  --t-header-text-secondary: #5a4030;
-  --t-row-bg: #1a1008;
-  --t-row-bg-alt: #1f1509;
-  --t-row-bg-hover: #231508;
-  --t-row-bg-group: #1f1408;
-  --t-row-bg-sub: #150e05;
-  --t-row-border: #2a1c0a;
-  --t-text-primary: #e8d5b0;
-  --t-text-secondary: #a08060;
-  --t-text-group: #f5e4c0;
-  --t-accent: #c8a030;
-  --t-star-on: #e8a020;
-  --t-star-off: #3a2810;
-  --t-sb-color: #c8a030;
-  --t-badge-bg: #3a2810;
-  --t-badge-text: #c8a870;
-  --t-expand-color: #8a7055;
-  --t-pill-bourbon-bg: #3a2810;  --t-pill-bourbon-text: #c8a870;
-  --t-pill-rye-bg: #1a2810;      --t-pill-rye-text: #7ab870;
-  --t-pill-scotch-bg: #102030;   --t-pill-scotch-text: #70a8d8;
-  --t-pill-american-bg: #1e1830; --t-pill-american-text: #a090d8;
-  --t-pill-other-bg: #2a1c0a;    --t-pill-other-text: #a08060;
-}
-
 
 /* ===================================================================
    THEMED TABLE COMPONENT

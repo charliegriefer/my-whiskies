@@ -4,10 +4,12 @@
 <!doctype html>
 <html lang="en">
   {% include "head.html" %}
+{% set _saved_theme = request.cookies.get('bottle_theme', 'clean') %}
+{% set _initial_theme = _saved_theme if _saved_theme in ['whiskey-bar', 'clean'] else 'clean' %}
 <body
-  data-theme="{{ request.cookies.get('bottle_theme', 'clean') }}"
+  data-theme="{{ _initial_theme }}"
   x-data="{
-    theme: '{{ request.cookies.get('bottle_theme', 'clean') }}',
+    theme: '{{ _initial_theme }}',
     setTheme(t) {
       this.theme = t;
       document.cookie = 'bottle_theme=' + t + '; path=/; max-age=31536000';
