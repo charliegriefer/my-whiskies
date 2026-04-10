@@ -56,20 +56,6 @@
             </li>
           </ul>
 
-          <!-- Theme picker -->
-          <div class="d-flex align-items-center gap-2 ms-3 me-2">
-            <span style="font-size: 0.7rem; opacity: 0.6; white-space: nowrap;">Theme:</span>
-            <button @click="setTheme('whiskey-bar')" class="theme-swatch"
-              :class="theme === 'whiskey-bar' ? 'active-swatch' : ''"
-              title="Whiskey Bar" style="background: #3d1f00;"></button>
-            <button @click="setTheme('clean')" class="theme-swatch"
-              :class="theme === 'clean' ? 'active-swatch' : ''"
-              title="Clean" style="background: #e0e0e0;"></button>
-            <button @click="setTheme('dark-cellar')" class="theme-swatch"
-              :class="theme === 'dark-cellar' ? 'active-swatch' : ''"
-              title="Dark Cellar" style="background: #1a1008;"></button>
-          </div>
-
           <ul class="navbar-nav ms-auto me-2">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

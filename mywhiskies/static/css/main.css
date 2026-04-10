@@ -209,6 +209,7 @@ ul.terms li {
   --t-header-text: #f5c842;
   --t-header-text-secondary: #c8a030;
   --t-row-bg: #ffffff;
+  --t-row-bg-alt: #faf7f2;
   --t-row-bg-hover: #fdf6ee;
   --t-row-bg-group: #fdf0dc;
   --t-row-bg-sub: #fffaf5;
@@ -235,6 +236,7 @@ ul.terms li {
   --t-header-text: #444;
   --t-header-text-secondary: #888;
   --t-row-bg: #ffffff;
+  --t-row-bg-alt: #f7f7f7;
   --t-row-bg-hover: #f5f5f5;
   --t-row-bg-group: #f9f9f9;
   --t-row-bg-sub: #f5f5f5;
@@ -261,6 +263,7 @@ ul.terms li {
   --t-header-text: #8a7055;
   --t-header-text-secondary: #5a4030;
   --t-row-bg: #1a1008;
+  --t-row-bg-alt: #1f1509;
   --t-row-bg-hover: #231508;
   --t-row-bg-group: #1f1408;
   --t-row-bg-sub: #150e05;
@@ -342,6 +345,12 @@ ul.terms li {
 .themed-table tbody td a:hover {
   color: var(--t-accent);
   text-decoration: underline;
+}
+
+/* Zebra striping — applied per-tbody via a Jinja loop.index class;
+   group-row and sub-row !important backgrounds take precedence */
+.themed-table tbody.stripe > tr {
+  background-color: var(--t-row-bg-alt);
 }
 
 /* Group rows */

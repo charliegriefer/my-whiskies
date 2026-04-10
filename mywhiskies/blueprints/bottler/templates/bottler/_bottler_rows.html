@@ -78,7 +78,7 @@
     <tbody>
       {% if bottlers %}
         {% for bottler in bottlers %}
-          <tr>
+          <tr style="{{ 'background-color: var(--t-row-bg-alt);' if loop.index is even else '' }}">
 
             {# Edit / Delete — owner only #}
             {% if is_my_list %}

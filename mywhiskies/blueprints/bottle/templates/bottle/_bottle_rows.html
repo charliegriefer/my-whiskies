@@ -169,7 +169,7 @@
 
         {% if group.is_group %}
           {# ── Multi-bottle group: collapsible ────────────────────────────── #}
-          <tbody x-data="{ open: false }">
+          <tbody x-data="{ open: false }" class="{{ 'stripe' if loop.index is even else '' }}">
 
             {# Group header row #}
             <tr class="group-row" @click="open = !open">
@@ -265,7 +265,7 @@
         {% else %}
           {# ── Single bottle: flat row ─────────────────────────────────────── #}
           {% set bottle = group.bottles[0] %}
-          <tbody>
+          <tbody class="{{ 'stripe' if loop.index is even else '' }}">
             <tr class="{{ 'opacity-50' if bottle.date_killed else '' }}">
 
               {% if is_my_list %}
