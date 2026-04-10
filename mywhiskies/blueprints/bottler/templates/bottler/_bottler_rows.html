@@ -11,8 +11,8 @@
 {% endif %}
 
 <div class="table-responsive">
-  <table class="table table-striped table-hover">
-    <thead style="border-bottom: 1px solid #696969;">
+  <table class="table themed-table">
+    <thead>
       <tr>
 
         {% if is_my_list %}
@@ -22,8 +22,7 @@
         {# Name — sortable #}
         {% set name_dir = 'desc' if sort == 'name' and direction == 'asc' else 'asc' %}
         <th>
-          <a class="text-dark text-decoration-none"
-            hx-get="{{ url_for('bottler.list', username=user.username) }}"
+          <a hx-get="{{ url_for('bottler.list', username=user.username) }}"
             hx-target="#bottler-results"
             hx-push-url="true"
             hx-include="#list-controls"
@@ -32,7 +31,7 @@
             {% if sort == 'name' %}
               <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
             {% endif %}
           </a>
         </th>
@@ -40,8 +39,7 @@
         {# Bottles — sortable #}
         {% set bottles_dir = 'desc' if sort == 'bottles' and direction == 'asc' else 'asc' %}
         <th class="text-end" style="width: 8%;">
-          <a class="text-dark text-decoration-none"
-            hx-get="{{ url_for('bottler.list', username=user.username) }}"
+          <a hx-get="{{ url_for('bottler.list', username=user.username) }}"
             hx-target="#bottler-results"
             hx-push-url="true"
             hx-include="#list-controls"
@@ -50,7 +48,7 @@
             {% if sort == 'bottles' %}
               <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
             {% endif %}
           </a>
         </th>
@@ -58,8 +56,7 @@
         {# Location — sortable #}
         {% set location_dir = 'desc' if sort == 'location' and direction == 'asc' else 'asc' %}
         <th>
-          <a class="text-dark text-decoration-none"
-            hx-get="{{ url_for('bottler.list', username=user.username) }}"
+          <a hx-get="{{ url_for('bottler.list', username=user.username) }}"
             hx-target="#bottler-results"
             hx-push-url="true"
             hx-include="#list-controls"
@@ -68,7 +65,7 @@
             {% if sort == 'location' %}
               <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
             {% endif %}
           </a>
         </th>
@@ -81,7 +78,7 @@
     <tbody>
       {% if bottlers %}
         {% for bottler in bottlers %}
-          <tr>
+          <tr style="{{ 'background-color: var(--t-row-bg-alt);' if loop.index is even else '' }}">
 
             {# Edit / Delete — owner only #}
             {% if is_my_list %}

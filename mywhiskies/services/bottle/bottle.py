@@ -1,4 +1,5 @@
 import random
+from itertools import groupby
 from typing import Dict, List, Optional, Union
 
 import boto3
@@ -21,6 +22,41 @@ _SORT_FNS = {
     "sb": lambda b: b.is_single_barrel,
     "private": lambda b: b.is_private,
 }
+
+_GROUP_SORT_FNS = {
+    "name": lambda g: g["name"].lower(),
+    "type": lambda g: g["type"].value.lower(),
+    "abv": lambda g: g["abv_max"] or 0.0,
+    "rating": lambda g: g["max_stars"] or 0.0,
+    "sb": lambda g: g["all_sb"],
+    "private": lambda g: any(b.is_private for b in g["bottles"]),
+}
+
+
+def _make_groups(bottles: list) -> list:
+    """Group bottles by (name, type) into dicts with aggregate display values."""
+    bottles_sorted = sorted(bottles, key=lambda b: (b.name.lower(), b.type.name))
+    groups = []
+    for _, group_iter in groupby(
+        bottles_sorted, key=lambda b: (b.name.lower(), b.type.name)
+    ):
+        items = list(group_iter)
+        abvs = [float(b.abv) for b in items if b.abv]
+        stars_vals = [float(b.stars) for b in items if b.stars]
+        groups.append(
+            {
+                "name": items[0].name,
+                "type": items[0].type,
+                "count": len(items),
+                "bottles": items,
+                "is_group": len(items) > 1,
+                "abv_min": min(abvs) if abvs else None,
+                "abv_max": max(abvs) if abvs else None,
+                "max_stars": max(stars_vals) if stars_vals else None,
+                "all_sb": all(b.is_single_barrel for b in items),
+            }
+        )
+    return groups
 
 
 def list_bottles_by_user(
@@ -51,16 +87,23 @@ def list_bottles_by_user(
         q_lower = q.lower()
         bottles = [b for b in bottles if q_lower in b.name.lower()]
 
-    total = len(bottles)
-    bottles.sort(key=_SORT_FNS.get(sort, _SORT_FNS["name"]), reverse=(direction == "desc"))
+    groups = _make_groups(bottles)
+    groups.sort(
+        key=_GROUP_SORT_FNS.get(sort, _GROUP_SORT_FNS["name"]),
+        reverse=(direction == "desc"),
+    )
+
+    total = len(groups)
+    total_bottles = sum(g["count"] for g in groups)
 
     total_pages = max(1, (total + per_page - 1) // per_page)
     page = min(page, total_pages)
     offset = (page - 1) * per_page
 
     return {
-        "bottles": bottles[offset : offset + per_page],
+        "grouped": groups[offset : offset + per_page],
         "total": total,
+        "total_bottles": total_bottles,
         "page": page,
         "per_page": per_page,
         "total_pages": total_pages,
@@ -96,16 +139,23 @@ def list_bottles_for_entity(
         q_lower = q.lower()
         bottles = [b for b in bottles if q_lower in b.name.lower()]
 
-    total = len(bottles)
-    bottles.sort(key=_SORT_FNS.get(sort, _SORT_FNS["name"]), reverse=(direction == "desc"))
+    groups = _make_groups(bottles)
+    groups.sort(
+        key=_GROUP_SORT_FNS.get(sort, _GROUP_SORT_FNS["name"]),
+        reverse=(direction == "desc"),
+    )
+
+    total = len(groups)
+    total_bottles = sum(g["count"] for g in groups)
 
     total_pages = max(1, (total + per_page - 1) // per_page)
     page = min(page, total_pages)
     offset = (page - 1) * per_page
 
     return {
-        "bottles": bottles[offset : offset + per_page],
+        "grouped": groups[offset : offset + per_page],
         "total": total,
+        "total_bottles": total_bottles,
         "page": page,
         "per_page": per_page,
         "total_pages": total_pages,

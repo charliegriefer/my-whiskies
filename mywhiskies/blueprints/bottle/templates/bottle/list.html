@@ -12,7 +12,7 @@
           <h1 class="mb-0">{{ heading_02 }}</h1>
         </div>
         <div class="col-auto d-flex pb-1 gap-2">
-          {% if is_my_list and total > 1 %}
+          {% if is_my_list and total_bottles > 1 %}
             <button type="button" class="btn btn-primary text-nowrap" id="random-bottle-btn">
               <i class="bi bi-question-circle"></i> Random Bottle
             </button>
@@ -54,6 +54,17 @@
 
         <!-- Right-side controls -->
         <div class="col-auto ms-auto d-flex gap-2 align-items-center">
+
+          <!-- Theme picker -->
+          <div class="d-flex align-items-center gap-2 me-1">
+            <span class="text-muted" style="font-size: 0.7rem; white-space: nowrap;">Theme:</span>
+            <button @click="setTheme('whiskey-bar')" class="theme-swatch"
+              :class="theme === 'whiskey-bar' ? 'active-swatch' : ''"
+              title="Whiskey Bar" style="background: #3d1f00;"></button>
+            <button @click="setTheme('clean')" class="theme-swatch"
+              :class="theme === 'clean' ? 'active-swatch' : ''"
+              title="Clean" style="background: #e0e0e0;"></button>
+          </div>
 
           <!-- Per-page selector -->
           <select class="form-select form-select-sm" name="per_page" style="width: auto;"

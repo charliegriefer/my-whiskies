@@ -1,32 +1,64 @@
-{# Hidden navigation state — lives inside the swap target so it's refreshed on every HTMX response.
-   External controls include this via hx-include="#list-controls, #current-state" to preserve
-   sort and direction across filter/pagination interactions. #}
+{# ── Macros ────────────────────────────────────────────────────────────────── #}
+
+{% macro render_stars(stars_val) %}
+  {% if stars_val %}
+    {% set full  = stars_val | int %}
+    {% set half  = 1 if (stars_val - full) >= 0.5 else 0 %}
+    {% set empty = 5 - full - half %}
+    {% for _ in range(full)  %}<i class="bi bi-star-fill"  style="color: var(--t-star-on);"></i>{% endfor %}
+    {% if half              %}<i class="bi bi-star-half"  style="color: var(--t-star-on);"></i>{% endif %}
+    {% for _ in range(empty) %}<i class="bi bi-star"       style="color: var(--t-star-off);"></i>{% endfor %}
+  {% else %}
+    {% for _ in range(5) %}<i class="bi bi-star" style="color: var(--t-star-off);"></i>{% endfor %}
+  {% endif %}
+{% endmacro %}
+
+{% macro type_pill(bottle_type) %}
+  {% if bottle_type.name in ['BOURBON', 'TENNESSEE_WHISKEY'] %}
+    {% set pill_cls = 'type-pill-bourbon' %}
+  {% elif bottle_type.name == 'RYE' %}
+    {% set pill_cls = 'type-pill-rye' %}
+  {% elif bottle_type.name == 'SCOTCH' %}
+    {% set pill_cls = 'type-pill-scotch' %}
+  {% elif bottle_type.name in ['AMERICAN_WHISKEY', 'AMERICAN_SINGLE_MALT', 'AMERICAN_LIGHT_WHISKEY'] %}
+    {% set pill_cls = 'type-pill-american' %}
+  {% else %}
+    {% set pill_cls = 'type-pill-other' %}
+  {% endif %}
+  <span class="type-pill {{ pill_cls }}">{{ bottle_type.value }}</span>
+{% endmacro %}
+
+{# ── Hidden nav state ─────────────────────────────────────────────────────── #}
+{# Refreshed on every HTMX swap; included by external controls to preserve
+   sort/direction across filter/pagination interactions. #}
 <form id="current-state" hidden>
   <input type="hidden" name="sort" value="{{ sort }}">
   <input type="hidden" name="dir" value="{{ direction }}">
 </form>
 
+{# ── Summary text ─────────────────────────────────────────────────────────── #}
 {% if total > 0 %}
   <p class="text-muted small mb-2">
     Showing {{ (page - 1) * per_page + 1 }}–{{ [page * per_page, total] | min }}
-    of {{ total }} bottle{{ "s" if total != 1 }}
+    of {{ total }} group{{ "s" if total != 1 }}
+    ({{ total_bottles }} bottle{{ "s" if total_bottles != 1 }})
   </p>
 {% endif %}
 
+{# ── Table ────────────────────────────────────────────────────────────────── #}
 <div class="table-responsive">
-  <table class="table table-striped table-hover">
-    <thead style="border-bottom: 1px solid #696969;">
+  <table class="table themed-table">
+    <thead>
       <tr>
 
         {% if is_my_list %}
-          <th class="text-nowrap" style="width: 1%;">&nbsp;</th>
+          <th style="width: 1%;">&nbsp;</th>
         {% endif %}
 
         {# Name — sortable #}
         {% set name_dir = 'desc' if sort == 'name' and direction == 'asc' else 'asc' %}
         <th>
-          <a class="text-dark text-decoration-none"
-            hx-get="{{ list_url }}"
+          <a hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-include="#list-controls"
@@ -35,7 +67,7 @@
             {% if sort == 'name' %}
               <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
             {% endif %}
           </a>
         </th>
@@ -43,8 +75,7 @@
         {# Single Barrel — sortable #}
         {% set sb_dir = 'desc' if sort == 'sb' and direction == 'asc' else 'asc' %}
         <th class="text-center text-nowrap" style="width: 1%;">
-          <a class="text-dark text-decoration-none"
-            title="Single Barrel" data-bs-toggle="tooltip"
+          <a title="Single Barrel" data-bs-toggle="tooltip"
             hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
@@ -54,7 +85,7 @@
             {% if sort == 'sb' %}
               <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
             {% endif %}
           </a>
         </th>
@@ -62,8 +93,7 @@
         {# Type — sortable #}
         {% set type_dir = 'desc' if sort == 'type' and direction == 'asc' else 'asc' %}
         <th>
-          <a class="text-dark text-decoration-none"
-            hx-get="{{ list_url }}"
+          <a hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-include="#list-controls"
@@ -72,7 +102,7 @@
             {% if sort == 'type' %}
               <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
             {% endif %}
           </a>
         </th>
@@ -80,17 +110,16 @@
         {# ABV/Proof — sortable #}
         {% set abv_dir = 'desc' if sort == 'abv' and direction == 'asc' else 'asc' %}
         <th class="text-end text-nowrap">
-          <a class="text-dark text-decoration-none"
-            hx-get="{{ list_url }}"
+          <a hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-include="#list-controls"
             hx-vals='{"sort": "abv", "dir": "{{ abv_dir }}", "page": "1"}'>
-            ABV/Proof
+            ABV / Proof
             {% if sort == 'abv' %}
               <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
             {% endif %}
           </a>
         </th>
@@ -98,8 +127,7 @@
         {# Rating — sortable #}
         {% set rating_dir = 'desc' if sort == 'rating' and direction == 'asc' else 'asc' %}
         <th>
-          <a class="text-dark text-decoration-none"
-            hx-get="{{ list_url }}"
+          <a hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-include="#list-controls"
@@ -108,7 +136,7 @@
             {% if sort == 'rating' %}
               <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
             {% endif %}
           </a>
         </th>
@@ -117,8 +145,7 @@
         {% if is_my_list %}
           {% set priv_dir = 'desc' if sort == 'private' and direction == 'asc' else 'asc' %}
           <th class="text-center text-nowrap" style="width: 1%;">
-            <a class="text-dark text-decoration-none"
-              title="Private" data-bs-toggle="tooltip"
+            <a title="Private" data-bs-toggle="tooltip"
               hx-get="{{ list_url }}"
               hx-target="#bottle-results"
               hx-push-url="true"
@@ -128,7 +155,7 @@
               {% if sort == 'private' %}
                 <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
               {% else %}
-                <i class="bi bi-arrow-down-up text-muted opacity-50" style="font-size: 0.75em;"></i>
+                <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
               {% endif %}
             </a>
           </th>
@@ -136,87 +163,178 @@
 
       </tr>
     </thead>
-    <tbody>
-      {% if bottles %}
-        {% for bottle in bottles %}
-          <tr class="{{ 'opacity-50' if bottle.date_killed else '' }}">
 
-            {# Edit / Delete — owner only #}
-            {% if is_my_list %}
-              <td class="text-nowrap">
-                <div class="d-inline-flex align-items-center gap-2">
-                  <a href="{{ url_for('bottle.edit', username=bottle.user.username, user_num=bottle.user_num) }}">
-                    <i class="bi bi-pencil"></i>
-                  </a>
-                  <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete"
-                    @click="deleteUrl = '{{ url_for('bottle.delete', username=bottle.user.username, user_num=bottle.user_num) }}'">
-                    <i class="bi bi-trash"></i>
-                  </a>
-                </div>
+    {% if grouped %}
+      {% for group in grouped %}
+
+        {% if group.is_group %}
+          {# ── Multi-bottle group: collapsible ────────────────────────────── #}
+          <tbody x-data="{ open: false }" class="{{ 'stripe' if loop.index is even else '' }}">
+
+            {# Group header row #}
+            <tr class="group-row" @click="open = !open">
+
+              {% if is_my_list %}<td></td>{% endif %}
+
+              <td>
+                <i class="bi expand-chevron" :class="open ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+                <span style="color: var(--t-text-group); font-weight: 500;">{{ group.name | replace("\n", " ") }}</span>
+                <span class="count-badge">×{{ group.count }}</span>
               </td>
-            {% endif %}
 
-            {# Name + image indicator #}
-            <td>
-              <a href="{{ url_for('bottle.detail', username=bottle.user.username, user_num=bottle.user_num) }}">
-                {{ bottle.name | replace("\n", " ") }}
-              </a>
-              {% if bottle.image_count %}
-                <i class="bi bi-file-image ms-1 text-muted" title="Has Image(s)"></i>
-              {% endif %}
-            </td>
-
-            {# Single Barrel #}
-            <td class="text-center pe-4">
-              {% if bottle.is_single_barrel %}
-                <i class="bi bi-check-circle-fill text-secondary" title="Single Barrel"></i>
-              {% endif %}
-            </td>
-
-            {# Type #}
-            <td>{{ bottle.type.value }}</td>
-
-            {# ABV / Proof #}
-            <td class="text-end pe-4 text-nowrap">
-              {% if bottle.abv %}{{ "%.2f" | format(bottle.abv) }}/{{ "%.2f" | format(bottle.abv * 2) }}°{% else %}-{% endif %}
-            </td>
-
-            {# Rating #}
-            <td>
-              {% if bottle.stars %}
-                {% set times_ten = (bottle.stars * 10) | int %}
-                <img src="{{ url_for('static', filename='stars/stars_' + times_ten | string + '.png') }}"
-                  alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1">
-              {% else %}
-                <img src="{{ url_for('static', filename='stars/stars_blank.png') }}"
-                  alt="Not yet rated" title="Not yet rated" class="mb-1">
-              {% endif %}
-            </td>
-
-            {# Private — owner only #}
-            {% if is_my_list %}
               <td class="text-center pe-4">
-                {% if bottle.is_private %}
-                  <i class="bi bi-incognito opacity-50" title="Private"></i>
+                {% if group.all_sb %}
+                  <i class="bi bi-check-circle-fill sb-icon" title="All Single Barrel"></i>
                 {% endif %}
               </td>
-            {% endif %}
 
-          </tr>
-        {% endfor %}
-      {% else %}
+              <td>{{ type_pill(group.type) }}</td>
+
+              <td class="text-end pe-4 text-nowrap">
+                {% if group.abv_min is not none %}
+                  {% if group.abv_min == group.abv_max %}
+                    {{ "%.2f" | format(group.abv_min) }}/{{ "%.2f" | format(group.abv_min * 2) }}°
+                  {% else %}
+                    {{ "%.2f" | format(group.abv_min) }}–{{ "%.2f" | format(group.abv_max) }}°
+                  {% endif %}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+
+              <td>{{ render_stars(group.max_stars) }}</td>
+
+              {% if is_my_list %}<td></td>{% endif %}
+
+            </tr>
+
+            {# Sub-rows — one per bottle in the group #}
+            {% for bottle in group.bottles %}
+              <tr class="sub-row" x-show="open" x-cloak>
+
+                {% if is_my_list %}
+                  <td class="text-nowrap">
+                    <div class="d-inline-flex align-items-center gap-2" style="padding-left: 1.25rem;">
+                      <a href="{{ url_for('bottle.edit', username=bottle.user.username, user_num=bottle.user_num) }}">
+                        <i class="bi bi-pencil"></i>
+                      </a>
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete"
+                        @click="deleteUrl = '{{ url_for('bottle.delete', username=bottle.user.username, user_num=bottle.user_num) }}'">
+                        <i class="bi bi-trash"></i>
+                      </a>
+                    </div>
+                  </td>
+                {% endif %}
+
+                <td style="padding-left: 2rem;">
+                  <a href="{{ url_for('bottle.detail', username=bottle.user.username, user_num=bottle.user_num) }}">
+                    {{ bottle.name | replace("\n", " ") }}
+                  </a>
+                  {% if bottle.image_count %}
+                    <i class="bi bi-file-image ms-1 text-muted" title="Has Image(s)"></i>
+                  {% endif %}
+                </td>
+
+                <td class="text-center pe-4">
+                  {% if bottle.is_single_barrel %}
+                    <i class="bi bi-check-circle-fill sb-icon" title="Single Barrel"></i>
+                  {% endif %}
+                </td>
+
+                <td>{{ type_pill(bottle.type) }}</td>
+
+                <td class="text-end pe-4 text-nowrap">
+                  {% if bottle.abv %}{{ "%.2f" | format(bottle.abv) }}/{{ "%.2f" | format(bottle.abv * 2) }}°{% else %}—{% endif %}
+                </td>
+
+                <td>{{ render_stars(bottle.stars) }}</td>
+
+                {% if is_my_list %}
+                  <td class="text-center pe-4">
+                    {% if bottle.is_private %}
+                      <i class="bi bi-incognito opacity-50" title="Private"></i>
+                    {% endif %}
+                  </td>
+                {% endif %}
+
+              </tr>
+            {% endfor %}
+
+          </tbody>
+
+        {% else %}
+          {# ── Single bottle: flat row ─────────────────────────────────────── #}
+          {% set bottle = group.bottles[0] %}
+          <tbody class="{{ 'stripe' if loop.index is even else '' }}">
+            <tr class="{{ 'opacity-50' if bottle.date_killed else '' }}">
+
+              {% if is_my_list %}
+                <td class="text-nowrap">
+                  <div class="d-inline-flex align-items-center gap-2">
+                    <a href="{{ url_for('bottle.edit', username=bottle.user.username, user_num=bottle.user_num) }}">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete"
+                      @click="deleteUrl = '{{ url_for('bottle.delete', username=bottle.user.username, user_num=bottle.user_num) }}'">
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </div>
+                </td>
+              {% endif %}
+
+              <td>
+                <a href="{{ url_for('bottle.detail', username=bottle.user.username, user_num=bottle.user_num) }}">
+                  {{ bottle.name | replace("\n", " ") }}
+                </a>
+                {% if bottle.image_count %}
+                  <i class="bi bi-file-image ms-1 text-muted" title="Has Image(s)"></i>
+                {% endif %}
+              </td>
+
+              <td class="text-center pe-4">
+                {% if bottle.is_single_barrel %}
+                  <i class="bi bi-check-circle-fill sb-icon" title="Single Barrel"></i>
+                {% endif %}
+              </td>
+
+              <td>{{ type_pill(bottle.type) }}</td>
+
+              <td class="text-end pe-4 text-nowrap">
+                {% if bottle.abv %}{{ "%.2f" | format(bottle.abv) }}/{{ "%.2f" | format(bottle.abv * 2) }}°{% else %}—{% endif %}
+              </td>
+
+              <td>{{ render_stars(bottle.stars) }}</td>
+
+              {% if is_my_list %}
+                <td class="text-center pe-4">
+                  {% if bottle.is_private %}
+                    <i class="bi bi-incognito opacity-50" title="Private"></i>
+                  {% endif %}
+                </td>
+              {% endif %}
+
+            </tr>
+          </tbody>
+
+        {% endif %}
+      {% endfor %}
+
+    {% else %}
+      {# ── Empty state ──────────────────────────────────────────────────────── #}
+      <tbody>
         <tr>
           <td colspan="{{ 5 + (2 if is_my_list else 0) }}"
               class="text-center text-muted py-4">
             {{ empty_text }}
           </td>
         </tr>
-      {% endif %}
-    </tbody>
+      </tbody>
+    {% endif %}
+
   </table>
 </div>
 
-{# Pagination #}
+{# ── Pagination ───────────────────────────────────────────────────────────── #}
 {% if total_pages > 1 %}
   <nav aria-label="Bottle list pages">
     <ul class="pagination pagination-sm justify-content-center">
