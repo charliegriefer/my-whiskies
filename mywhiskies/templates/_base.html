@@ -4,7 +4,16 @@
 <!doctype html>
 <html lang="en">
   {% include "head.html" %}
-<body>
+<body
+  data-theme="{{ request.cookies.get('bottle_theme', 'clean') }}"
+  x-data="{
+    theme: '{{ request.cookies.get('bottle_theme', 'clean') }}',
+    setTheme(t) {
+      this.theme = t;
+      document.cookie = 'bottle_theme=' + t + '; path=/; max-age=31536000';
+    }
+  }"
+  :data-theme="theme">
   {% include "navbar.html" %}
   {% block content %}
     <div class="w-100">

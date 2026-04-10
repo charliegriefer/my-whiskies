@@ -192,3 +192,247 @@ ul.terms li {
   transition: transform 0.3s ease; /* Smooth animation */
   z-index: 10; /* Ensures the hovered image appears on top */
 }
+
+
+/* ===================================================================
+   ALPINE — prevent flash of unstyled content on x-cloak elements
+   =================================================================== */
+[x-cloak] { display: none !important; }
+
+
+/* ===================================================================
+   TABLE THEMES — CSS custom properties scoped to data-theme
+   =================================================================== */
+
+[data-theme="whiskey-bar"] {
+  --t-header-bg: #3d1f00;
+  --t-header-text: #f5c842;
+  --t-header-text-secondary: #c8a030;
+  --t-row-bg: #ffffff;
+  --t-row-bg-hover: #fdf6ee;
+  --t-row-bg-group: #fdf0dc;
+  --t-row-bg-sub: #fffaf5;
+  --t-row-border: #e8ddd0;
+  --t-text-primary: #2c1a00;
+  --t-text-secondary: #5a4030;
+  --t-text-group: #884800;
+  --t-accent: #884800;
+  --t-star-on: #f5a623;
+  --t-star-off: #ddd;
+  --t-sb-color: #884800;
+  --t-badge-bg: #884800;
+  --t-badge-text: #ffd98c;
+  --t-expand-color: #884800;
+  --t-pill-bourbon-bg: #fdf0dc;  --t-pill-bourbon-text: #884800;
+  --t-pill-rye-bg: #eaf3de;      --t-pill-rye-text: #27500a;
+  --t-pill-scotch-bg: #e6f1fb;   --t-pill-scotch-text: #0c447c;
+  --t-pill-american-bg: #eeedfe; --t-pill-american-text: #3c3489;
+  --t-pill-other-bg: #f0ece8;    --t-pill-other-text: #5a4030;
+}
+
+[data-theme="clean"] {
+  --t-header-bg: #f8f8f8;
+  --t-header-text: #444;
+  --t-header-text-secondary: #888;
+  --t-row-bg: #ffffff;
+  --t-row-bg-hover: #f5f5f5;
+  --t-row-bg-group: #f9f9f9;
+  --t-row-bg-sub: #f5f5f5;
+  --t-row-border: #e5e5e5;
+  --t-text-primary: #1a1a1a;
+  --t-text-secondary: #666;
+  --t-text-group: #333;
+  --t-accent: #378add;
+  --t-star-on: #f5a623;
+  --t-star-off: #ddd;
+  --t-sb-color: #378add;
+  --t-badge-bg: #e6f1fb;
+  --t-badge-text: #0c447c;
+  --t-expand-color: #888;
+  --t-pill-bourbon-bg: #faeeda;  --t-pill-bourbon-text: #633806;
+  --t-pill-rye-bg: #eaf3de;      --t-pill-rye-text: #27500a;
+  --t-pill-scotch-bg: #e6f1fb;   --t-pill-scotch-text: #0c447c;
+  --t-pill-american-bg: #eeedfe; --t-pill-american-text: #3c3489;
+  --t-pill-other-bg: #f0f0f0;    --t-pill-other-text: #666;
+}
+
+[data-theme="dark-cellar"] {
+  --t-header-bg: #1a1008;
+  --t-header-text: #8a7055;
+  --t-header-text-secondary: #5a4030;
+  --t-row-bg: #1a1008;
+  --t-row-bg-hover: #231508;
+  --t-row-bg-group: #1f1408;
+  --t-row-bg-sub: #150e05;
+  --t-row-border: #2a1c0a;
+  --t-text-primary: #e8d5b0;
+  --t-text-secondary: #a08060;
+  --t-text-group: #f5e4c0;
+  --t-accent: #c8a030;
+  --t-star-on: #e8a020;
+  --t-star-off: #3a2810;
+  --t-sb-color: #c8a030;
+  --t-badge-bg: #3a2810;
+  --t-badge-text: #c8a870;
+  --t-expand-color: #8a7055;
+  --t-pill-bourbon-bg: #3a2810;  --t-pill-bourbon-text: #c8a870;
+  --t-pill-rye-bg: #1a2810;      --t-pill-rye-text: #7ab870;
+  --t-pill-scotch-bg: #102030;   --t-pill-scotch-text: #70a8d8;
+  --t-pill-american-bg: #1e1830; --t-pill-american-text: #a090d8;
+  --t-pill-other-bg: #2a1c0a;    --t-pill-other-text: #a08060;
+}
+
+
+/* ===================================================================
+   THEMED TABLE COMPONENT
+   =================================================================== */
+
+.themed-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.themed-table thead {
+  background-color: var(--t-header-bg);
+}
+
+.themed-table thead th {
+  color: var(--t-header-text);
+  border: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.65rem 0.75rem;
+  white-space: nowrap;
+}
+
+.themed-table thead th a,
+.themed-table thead th a:hover {
+  color: var(--t-header-text) !important;
+  text-decoration: none !important;
+}
+
+.themed-table tbody tr {
+  background-color: var(--t-row-bg);
+  border-bottom: 1px solid var(--t-row-border);
+  transition: background-color 0.1s ease;
+}
+
+.themed-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.themed-table tbody tr:hover {
+  background-color: var(--t-row-bg-hover);
+}
+
+.themed-table tbody td {
+  color: var(--t-text-primary);
+  padding: 0.55rem 0.75rem;
+  vertical-align: middle;
+  border: none;
+}
+
+.themed-table tbody td a {
+  color: var(--t-accent);
+}
+
+.themed-table tbody td a:hover {
+  color: var(--t-accent);
+  text-decoration: underline;
+}
+
+/* Group rows */
+.themed-table .group-row {
+  background-color: var(--t-row-bg-group) !important;
+  cursor: pointer;
+  user-select: none;
+}
+
+.themed-table .group-row:hover {
+  filter: brightness(0.97);
+}
+
+/* Sub rows */
+.themed-table .sub-row {
+  background-color: var(--t-row-bg-sub) !important;
+}
+
+.themed-table .sub-row:hover {
+  filter: brightness(0.97) !important;
+}
+
+/* Count badge */
+.count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.3rem;
+  height: 1.3rem;
+  padding: 0 0.35rem;
+  border-radius: 0.75rem;
+  background-color: var(--t-badge-bg);
+  color: var(--t-badge-text);
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* Expand chevron */
+.expand-chevron {
+  color: var(--t-expand-color);
+  font-size: 0.7rem;
+  margin-right: 0.3rem;
+  vertical-align: middle;
+}
+
+/* SB icon */
+.sb-icon {
+  color: var(--t-sb-color);
+}
+
+/* Type pills */
+.type-pill {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.type-pill-bourbon  { background-color: var(--t-pill-bourbon-bg);  color: var(--t-pill-bourbon-text); }
+.type-pill-rye      { background-color: var(--t-pill-rye-bg);      color: var(--t-pill-rye-text); }
+.type-pill-scotch   { background-color: var(--t-pill-scotch-bg);   color: var(--t-pill-scotch-text); }
+.type-pill-american { background-color: var(--t-pill-american-bg); color: var(--t-pill-american-text); }
+.type-pill-other    { background-color: var(--t-pill-other-bg);    color: var(--t-pill-other-text); }
+
+
+/* ===================================================================
+   THEME PICKER SWATCHES (navbar)
+   =================================================================== */
+
+.theme-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.theme-swatch:hover {
+  transform: scale(1.25);
+}
+
+.theme-swatch.active-swatch {
+  outline: 2px solid rgba(255, 255, 255, 0.75);
+  outline-offset: 1px;
+}
