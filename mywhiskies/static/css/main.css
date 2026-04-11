@@ -232,9 +232,9 @@ ul.terms li {
 }
 
 [data-theme="clean"] {
-  --t-header-bg: #f8f8f8;
-  --t-header-text: #444;
-  --t-header-text-secondary: #888;
+  --t-header-bg: #c8ddf0;
+  --t-header-text: #1e3a52;
+  --t-header-text-secondary: #4a6a85;
   --t-row-bg: #ffffff;
   --t-row-bg-alt: #f7f7f7;
   --t-row-bg-hover: #f5f5f5;
