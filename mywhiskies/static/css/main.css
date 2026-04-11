@@ -335,6 +335,10 @@ ul.terms li {
   user-select: none;
 }
 
+.themed-table .group-row.group-open {
+  border-top: 2px solid rgba(0, 0, 0, 0.35) !important;
+}
+
 .themed-table .group-row:hover {
   filter: brightness(0.97);
 }
