@@ -160,6 +160,17 @@
 
 {% block scripts %}
   {{ super() }}
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('abvDisplay', {
+        pref: document.cookie.split('; ').find(r => r.startsWith('abv_display='))?.split('=')[1] || 'abv',
+        set(val) {
+          this.pref = val;
+          document.cookie = 'abv_display=' + val + '; path=/; max-age=31536000';
+        }
+      });
+    });
+  </script>
   {% if is_my_list and total > 1 %}
   <script>
     document.getElementById('random-bottle-btn').addEventListener('click', () => {

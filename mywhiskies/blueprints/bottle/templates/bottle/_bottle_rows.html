@@ -46,7 +46,7 @@
 {% endif %}
 
 {# ── Table ────────────────────────────────────────────────────────────────── #}
-<div class="table-responsive">
+<div class="table-responsive" x-data>
   <table class="table themed-table">
     <thead>
       <tr>
@@ -107,21 +107,29 @@
           </a>
         </th>
 
-        {# ABV/Proof — sortable #}
+        {# ABV/Proof — sortable + display toggle #}
         {% set abv_dir = 'desc' if sort == 'abv' and direction == 'asc' else 'asc' %}
         <th class="text-end text-nowrap">
-          <a hx-get="{{ list_url }}"
-            hx-target="#bottle-results"
-            hx-push-url="true"
-            hx-include="#list-controls"
-            hx-vals='{"sort": "abv", "dir": "{{ abv_dir }}", "page": "1"}'>
-            ABV / Proof
-            {% if sort == 'abv' %}
-              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
-            {% else %}
-              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
-            {% endif %}
-          </a>
+          <div class="d-inline-flex align-items-center gap-1">
+            <select class="form-select form-select-sm"
+              style="width: auto; font-size: 0.75rem; padding-top: 0.1rem; padding-bottom: 0.1rem;"
+              :value="$store.abvDisplay.pref"
+              @change="$store.abvDisplay.set($el.value)">
+              <option value="abv">ABV</option>
+              <option value="proof">Proof</option>
+            </select>
+            <a hx-get="{{ list_url }}"
+              hx-target="#bottle-results"
+              hx-push-url="true"
+              hx-include="#list-controls"
+              hx-vals='{"sort": "abv", "dir": "{{ abv_dir }}", "page": "1"}'>
+              {% if sort == 'abv' %}
+                <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+              {% else %}
+                <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
+              {% endif %}
+            </a>
+          </div>
         </th>
 
         {# Rating — sortable #}
@@ -193,9 +201,11 @@
               <td class="text-end pe-4 text-nowrap">
                 {% if group.abv_min is not none %}
                   {% if group.abv_min == group.abv_max %}
-                    {{ "%.2f" | format(group.abv_min) }}/{{ "%.2f" | format(group.abv_min * 2) }}°
+                    <span x-show="$store.abvDisplay.pref === 'abv'">{{ "%.2f" | format(group.abv_min) }}°</span>
+                    <span x-show="$store.abvDisplay.pref === 'proof'">{{ "%.2f" | format(group.abv_min * 2) }}°</span>
                   {% else %}
-                    {{ "%.2f" | format(group.abv_min) }}–{{ "%.2f" | format(group.abv_max) }}°
+                    <span x-show="$store.abvDisplay.pref === 'abv'">{{ "%.2f" | format(group.abv_min) }}–{{ "%.2f" | format(group.abv_max) }}°</span>
+                    <span x-show="$store.abvDisplay.pref === 'proof'">{{ "%.2f" | format(group.abv_min * 2) }}–{{ "%.2f" | format(group.abv_max * 2) }}°</span>
                   {% endif %}
                 {% else %}
                   —
@@ -244,7 +254,10 @@
                 <td>{{ type_pill(bottle.type) }}</td>
 
                 <td class="text-end pe-4 text-nowrap">
-                  {% if bottle.abv %}{{ "%.2f" | format(bottle.abv) }}/{{ "%.2f" | format(bottle.abv * 2) }}°{% else %}—{% endif %}
+                  {% if bottle.abv %}
+                    <span x-show="$store.abvDisplay.pref === 'abv'">{{ "%.2f" | format(bottle.abv) }}°</span>
+                    <span x-show="$store.abvDisplay.pref === 'proof'">{{ "%.2f" | format(bottle.abv * 2) }}°</span>
+                  {% else %}—{% endif %}
                 </td>
 
                 <td>{{ render_stars(bottle.stars) }}</td>
