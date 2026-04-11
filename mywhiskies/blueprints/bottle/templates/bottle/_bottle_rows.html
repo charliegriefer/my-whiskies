@@ -180,7 +180,7 @@
           <tbody x-data="{ open: false }" class="{{ 'stripe' if loop.index is even else '' }}">
 
             {# Group header row #}
-            <tr class="group-row" @click="open = !open">
+            <tr class="group-row" @click="open = !open" :class="open ? 'group-open' : ''">
 
               {% if is_my_list %}<td></td>{% endif %}
 
