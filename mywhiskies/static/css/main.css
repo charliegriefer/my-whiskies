@@ -213,6 +213,7 @@ ul.terms li {
   --t-row-bg-hover: #fdf6ee;
   --t-row-bg-group: #fdf0dc;
   --t-row-bg-sub: #fffaf5;
+  --t-row-bg-sub-alt: #fef3e4;
   --t-row-border: #e8ddd0;
   --t-text-primary: #2c1a00;
   --t-text-secondary: #5a4030;
@@ -240,6 +241,7 @@ ul.terms li {
   --t-row-bg-hover: #f5f5f5;
   --t-row-bg-group: #e8f3fb;
   --t-row-bg-sub: #f5f5f5;
+  --t-row-bg-sub-alt: #edf5fb;
   --t-row-border: #e5e5e5;
   --t-text-primary: #1a1a1a;
   --t-text-secondary: #666;
@@ -340,6 +342,10 @@ ul.terms li {
 /* Sub rows */
 .themed-table .sub-row {
   background-color: var(--t-row-bg-sub) !important;
+}
+
+.themed-table .sub-row.sub-stripe {
+  background-color: var(--t-row-bg-sub-alt) !important;
 }
 
 .themed-table .sub-row:hover {

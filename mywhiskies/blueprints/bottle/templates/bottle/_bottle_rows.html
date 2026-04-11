@@ -220,11 +220,11 @@
 
             {# Sub-rows — one per bottle in the group #}
             {% for bottle in group.bottles %}
-              <tr class="sub-row" x-show="open" x-cloak>
+              <tr class="sub-row {{ 'sub-stripe' if loop.index is even else '' }}" x-show="open" x-cloak>
 
                 {% if is_my_list %}
                   <td class="text-nowrap">
-                    <div class="d-inline-flex align-items-center gap-2" style="padding-left: 1.25rem;">
+                    <div class="d-inline-flex align-items-center gap-2">
                       <a href="{{ url_for('bottle.edit', username=bottle.user.username, user_num=bottle.user_num) }}">
                         <i class="bi bi-pencil"></i>
                       </a>
