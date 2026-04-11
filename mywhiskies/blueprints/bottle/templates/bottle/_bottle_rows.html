@@ -313,7 +313,10 @@
               <td>{{ type_pill(bottle.type) }}</td>
 
               <td class="text-end pe-4 text-nowrap">
-                {% if bottle.abv %}{{ "%.2f" | format(bottle.abv) }}/{{ "%.2f" | format(bottle.abv * 2) }}°{% else %}—{% endif %}
+                {% if bottle.abv %}
+                  <span x-show="$store.abvDisplay.pref === 'abv'">{{ "%.2f" | format(bottle.abv) }}°</span>
+                  <span x-show="$store.abvDisplay.pref === 'proof'">{{ "%.2f" | format(bottle.abv * 2) }}°</span>
+                {% else %}—{% endif %}
               </td>
 
               <td>{{ render_stars(bottle.stars) }}</td>
