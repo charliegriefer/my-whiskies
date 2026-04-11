@@ -211,9 +211,9 @@ ul.terms li {
   --t-row-bg: #ffffff;
   --t-row-bg-alt: #faf7f2;
   --t-row-bg-hover: #fdf6ee;
-  --t-row-bg-group: #fde8c5;
-  --t-row-bg-sub: #fdf0dc;
-  --t-row-bg-sub-alt: #fff8f0;
+  --t-row-bg-group: #fef5e4;
+  --t-row-bg-sub: var(--t-row-bg);
+  --t-row-bg-sub-alt: var(--t-row-bg-alt);
   --t-row-border: #e8ddd0;
   --t-text-primary: #2c1a00;
   --t-text-secondary: #5a4030;
@@ -239,9 +239,9 @@ ul.terms li {
   --t-row-bg: #ffffff;
   --t-row-bg-alt: #f7f7f7;
   --t-row-bg-hover: #f5f5f5;
-  --t-row-bg-group: #e0ecf7;
-  --t-row-bg-sub: #e8f3fb;
-  --t-row-bg-sub-alt: #f4f9fd;
+  --t-row-bg-group: #eef6fc;
+  --t-row-bg-sub: var(--t-row-bg);
+  --t-row-bg-sub-alt: var(--t-row-bg-alt);
   --t-row-border: #e5e5e5;
   --t-text-primary: #1a1a1a;
   --t-text-secondary: #666;
@@ -349,7 +349,7 @@ ul.terms li {
 }
 
 .themed-table .sub-row:last-child {
-  border-bottom: 1px solid var(--t-row-border) !important;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.35) !important;
 }
 
 .themed-table .sub-row:hover {
