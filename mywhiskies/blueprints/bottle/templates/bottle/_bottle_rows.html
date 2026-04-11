@@ -237,6 +237,7 @@
                 {% endif %}
 
                 <td style="padding-left: 2rem;">
+                  <span class="text-muted me-1">•</span>
                   <a href="{{ url_for('bottle.detail', username=bottle.user.username, user_num=bottle.user_num) }}">
                     {{ bottle.name | replace("\n", " ") }}
                   </a>
