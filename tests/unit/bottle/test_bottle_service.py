@@ -36,6 +36,29 @@ def test_list_bottles_search(test_user_01: User) -> None:
     assert all(first_name in b.name.lower() for b in all_bottles)
 
 
+def test_list_bottles_search_by_description(test_user_01: User) -> None:
+    data = list_bottles_by_user(user=test_user_01, is_my_list=True, q="fallon-grown")
+    all_bottles = [b for g in data["grouped"] for b in g["bottles"]]
+    assert len(all_bottles) == 1
+    assert "fallon-grown" in all_bottles[0].description.lower()
+
+
+def test_list_bottles_search_by_bottler(test_user_01: User) -> None:
+    data = list_bottles_by_user(user=test_user_01, is_my_list=True, q="lost lantern")
+    all_bottles = [b for g in data["grouped"] for b in g["bottles"]]
+    assert len(all_bottles) >= 1
+    assert all(b.bottler and "lost lantern" in b.bottler.name.lower() for b in all_bottles)
+
+
+def test_list_bottles_search_by_distillery(test_user_01: User) -> None:
+    data = list_bottles_by_user(user=test_user_01, is_my_list=True, q="ironroot")
+    all_bottles = [b for g in data["grouped"] for b in g["bottles"]]
+    assert len(all_bottles) >= 1
+    assert all(
+        any("ironroot" in d.name.lower() for d in b.distilleries) for b in all_bottles
+    )
+
+
 def test_list_bottles_type_filter(test_user_01: User) -> None:
     data = list_bottles_by_user(
         user=test_user_01, is_my_list=True, types=[BottleTypes.BOURBON.name]
