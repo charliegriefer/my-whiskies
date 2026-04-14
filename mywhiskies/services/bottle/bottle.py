@@ -85,7 +85,13 @@ def list_bottles_by_user(
 
     if q:
         q_lower = q.lower()
-        bottles = [b for b in bottles if q_lower in b.name.lower()]
+        bottles = [
+            b for b in bottles
+            if q_lower in b.name.lower()
+            or (b.description and q_lower in b.description.lower())
+            or (b.bottler and q_lower in b.bottler.name.lower())
+            or any(q_lower in d.name.lower() for d in b.distilleries)
+        ]
 
     groups = _make_groups(bottles)
     groups.sort(
@@ -137,7 +143,13 @@ def list_bottles_for_entity(
 
     if q:
         q_lower = q.lower()
-        bottles = [b for b in bottles if q_lower in b.name.lower()]
+        bottles = [
+            b for b in bottles
+            if q_lower in b.name.lower()
+            or (b.description and q_lower in b.description.lower())
+            or (b.bottler and q_lower in b.bottler.name.lower())
+            or any(q_lower in d.name.lower() for d in b.distilleries)
+        ]
 
     groups = _make_groups(bottles)
     groups.sort(
@@ -173,7 +185,13 @@ def get_random_bottle(
         bottles = [b for b in bottles if b.type.name in types]
     if q:
         q_lower = q.lower()
-        bottles = [b for b in bottles if q_lower in b.name.lower()]
+        bottles = [
+            b for b in bottles
+            if q_lower in b.name.lower()
+            or (b.description and q_lower in b.description.lower())
+            or (b.bottler and q_lower in b.bottler.name.lower())
+            or any(q_lower in d.name.lower() for d in b.distilleries)
+        ]
     return random.choice(bottles) if bottles else None
 
 
