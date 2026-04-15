@@ -308,7 +308,7 @@ ul.terms li {
 
 .themed-table tbody td {
   color: var(--t-text-primary);
-  padding: 0.55rem 0.45rem;
+  padding: 0.25rem 0.45rem;
   vertical-align: middle;
   border: none;
 }
