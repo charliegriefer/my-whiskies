@@ -118,10 +118,14 @@ def process_bottle_images(form, bottle: Bottle) -> Tuple[bool, Optional[str]]:
                     Bucket=img_s3_bucket,
                     Key=f"{img_s3_key}/{bottle.id}_tmp_{new_seq}.jpg",
                 )
-                s3_client.delete_object(
-                    Bucket=img_s3_bucket,
-                    Key=f"{img_s3_key}/{bottle.id}_{old_seq}.jpg",
-                )
+            # Phase 3: delete old keys that are not a final destination of any rename.
+            final_seqs_set = {new_seq for _, new_seq in to_rename.values()}
+            for _, (old_seq, _) in to_rename.items():
+                if old_seq not in final_seqs_set:
+                    s3_client.delete_object(
+                        Bucket=img_s3_bucket,
+                        Key=f"{img_s3_key}/{bottle.id}_{old_seq}.jpg",
+                    )
 
         # DB: reassign sequences (temp offset avoids UNIQUE constraint conflicts).
         for img in kept.values():
