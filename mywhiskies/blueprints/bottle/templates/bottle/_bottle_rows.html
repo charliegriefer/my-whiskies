@@ -1,32 +1,4 @@
-{# ── Macros ────────────────────────────────────────────────────────────────── #}
-
-{% macro render_stars(stars_val) %}
-  {% if stars_val %}
-    {% set full  = stars_val | int %}
-    {% set half  = 1 if (stars_val - full) >= 0.5 else 0 %}
-    {% set empty = 5 - full - half %}
-    {% for _ in range(full)  %}<i class="bi bi-star-fill small" style="color: var(--t-star-on);"></i>{% endfor %}
-    {% if half               %}<i class="bi bi-star-half small" style="color: var(--t-star-on);"></i>{% endif %}
-    {% for _ in range(empty) %}<i class="bi bi-star small" style="color: var(--t-star-off);"></i>{% endfor %}
-  {% else %}
-    {% for _ in range(5) %}<i class="bi bi-star small" style="color: var(--t-star-off);"></i>{% endfor %}
-  {% endif %}
-{% endmacro %}
-
-{% macro type_pill(bottle_type) %}
-  {% if bottle_type.name in ['BOURBON', 'TENNESSEE_WHISKEY'] %}
-    {% set pill_cls = 'type-pill-bourbon' %}
-  {% elif bottle_type.name == 'RYE' %}
-    {% set pill_cls = 'type-pill-rye' %}
-  {% elif bottle_type.name == 'SCOTCH' %}
-    {% set pill_cls = 'type-pill-scotch' %}
-  {% elif bottle_type.name in ['AMERICAN_WHISKEY', 'AMERICAN_SINGLE_MALT', 'AMERICAN_LIGHT_WHISKEY'] %}
-    {% set pill_cls = 'type-pill-american' %}
-  {% else %}
-    {% set pill_cls = 'type-pill-other' %}
-  {% endif %}
-  <span class="type-pill {{ pill_cls }}">{{ bottle_type.value }}</span>
-{% endmacro %}
+{%- from "macros/bottle_display.html" import render_stars, type_pill -%}
 
 {# ── Hidden nav state ─────────────────────────────────────────────────────── #}
 {# Refreshed on every HTMX swap; included by external controls to preserve
