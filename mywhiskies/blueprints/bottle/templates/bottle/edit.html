@@ -31,7 +31,7 @@
       badges.innerHTML = '';
       Array.from(select.options).filter(o => o.selected).forEach(opt => {
         const b = document.createElement('span');
-        b.className = 'badge bg-secondary d-flex align-items-center gap-1 fw-normal';
+        b.className = 'badge bg-primary d-flex align-items-center gap-1 fw-normal';
         b.textContent = opt.text + ' ';
         const x = document.createElement('button');
         x.type = 'button';
