@@ -90,9 +90,17 @@ a:focus, a:hover {
 /* Fixed-height carousel so prev/next buttons stay anchored regardless of image dimensions */
 #bottleCarousel .carousel-inner {
   height: 400px;
+  overflow: hidden;
+}
+#bottleCarousel .carousel-item {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #bottleCarousel .bottle-img {
   height: 100%;
+  width: 100%;
   object-fit: contain;
 }
 
