@@ -12,6 +12,7 @@ from mywhiskies.services.bottle.image import (
     add_bottle_images,
     delete_bottle_images,
     get_s3_config,
+    process_bottle_images,
 )
 
 _SORT_FNS = {
@@ -236,14 +237,14 @@ def add_bottle(form: BottleAddForm, user: User) -> Bottle:
     db.session.add(bottle)
     db.session.commit()
 
-    # Upload images
-    if add_bottle_images(form, bottle):
+    ok, error = process_bottle_images(form, bottle)
+    if ok:
         flash(f'"{bottle.name}" has been successfully added.', "success")
     else:
         db.session.delete(bottle)
         db.session.commit()
-        flash(f'An error occurred while creating "{bottle.name}".', "danger")
-        return None  # Bottle creation failed
+        flash(error or f'An error occurred while creating "{bottle.name}".', "danger")
+        return None
 
     current_app.logger.info(f"{user.username} added bottle {bottle.name} successfully.")
     return bottle
@@ -255,14 +256,10 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
     db.session.add(bottle)
     db.session.commit()
 
-    # Handle image removals - resequencing is handled in delete_bottle_images
-    for seq in range(1, 4):
-        if getattr(form, f"remove_image_{seq}").data == "YES":
-            if image := bottle.get_image_by_sequence(seq):
-                delete_bottle_images(bottle, [image.id])
-
-    # Handle new image uploads - add_bottle_images will maintain proper sequencing
-    add_bottle_images(form, bottle)
+    ok, error = process_bottle_images(form, bottle)
+    if not ok:
+        flash(error or f'An error occurred while updating images for "{bottle.name}".', "danger")
+        return
 
     flash(f'"{bottle.name}" has been successfully updated.', "success")
     current_app.logger.info(

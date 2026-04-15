@@ -1,0 +1,223 @@
+{#
+  Image drop-zone partial — {% include %} inside bottle add/edit forms.
+
+  Required context variables:
+    existing_images  — list of BottleImage objects in sequence order ([] on add)
+    img_s3_url       — S3 image base URL
+    form             — WTForms form object (BottleAddForm / BottleEditForm)
+    config           — Flask app config (auto-injected by Flask)
+#}
+
+<div class="mb-3">
+  <div class="mb-2">
+    <span class="fw-bold">Images</span>
+    <span class="text-muted small ms-2">Up to 3 · max {{ config.MAX_FILE_UPLOAD_MB }}MB each · JPG or PNG · drag to reorder</span>
+  </div>
+
+  <div id="dropzone-error" class="alert alert-danger py-2 mb-2 d-none" role="alert"></div>
+
+  <div id="dropzone-container" class="image-dropzone d-flex flex-wrap gap-3 align-items-start">
+
+    {% for img in existing_images %}
+      <div class="dropzone-card" data-type="existing" data-id="{{ img.id }}">
+        <img src="{{ img_s3_url }}/{{ img.bottle_id }}_{{ img.sequence }}.jpg"
+             alt="Image {{ img.sequence }}"
+             onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ img.bottle_id }}_{{ img.sequence }}.png';">
+        <button type="button" class="btn btn-danger btn-remove" title="Remove">
+          <i class="bi bi-x"></i>
+        </button>
+        <span class="seq-badge"><i class="bi bi-grip-vertical"></i></span>
+      </div>
+    {% endfor %}
+
+    <div id="dropzone-add-card" class="dropzone-add-card{% if existing_images | length >= 3 %} d-none{% endif %}">
+      <i class="bi bi-plus-circle fs-2 mb-1"></i>
+      <small class="text-center px-2">Drop image here<br>or click to browse</small>
+    </div>
+
+  </div>
+
+  <div class="mt-2 small text-muted">
+    Portrait-oriented images <i class="bi bi-file-image"></i> are preferred.
+    By uploading images you agree to the
+    <a href="" data-bs-toggle="modal" data-bs-target="#imageTerms">Image Terms and Conditions</a>.
+  </div>
+</div>
+
+{# Hidden file inputs — populated by JS on submit via DataTransfer #}
+<div class="d-none">
+  {{ form.bottle_image_1(id="bottle_image_1", accept=".jpg,.jpeg,.png") }}
+  {{ form.bottle_image_2(id="bottle_image_2", accept=".jpg,.jpeg,.png") }}
+  {{ form.bottle_image_3(id="bottle_image_3", accept=".jpg,.jpeg,.png") }}
+  {# Shared browse picker — no name, does not submit #}
+  <input type="file" id="dropzone-picker" accept=".jpg,.jpeg,.png" multiple>
+</div>
+
+{{ form.image_order(id="image_order") }}
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  const MAX_BYTES = {{ config.MAX_FILE_UPLOAD_BYTES }};
+  const MAX_MB   = {{ config.MAX_FILE_UPLOAD_MB }};
+  const MAX_IMGS  = 3;
+
+  const zone     = document.getElementById('dropzone-container');
+  const addCard  = document.getElementById('dropzone-add-card');
+  const errorEl  = document.getElementById('dropzone-error');
+  const picker   = document.getElementById('dropzone-picker');
+  const orderFld = document.getElementById('image_order');
+
+  // slot (1–3) → File object for pending new uploads
+  const pending = {};
+
+  // ── SortableJS ────────────────────────────────────────────────────────────
+  Sortable.create(zone, {
+    animation: 150,
+    filter: '#dropzone-add-card',
+    preventOnFilter: false,
+    ghostClass: 'sortable-ghost',
+    dragClass: 'sortable-drag',
+    onEnd: () => { serializeOrder(); updateAddCard(); }
+  });
+
+  serializeOrder();
+  updateAddCard();
+
+  // ── Drag image files from the filesystem ─────────────────────────────────
+  zone.addEventListener('dragenter', e => {
+    if (hasFiles(e)) zone.classList.add('dragover');
+  });
+  zone.addEventListener('dragover', e => {
+    if (hasFiles(e)) { e.preventDefault(); zone.classList.add('dragover'); }
+  });
+  zone.addEventListener('dragleave', e => {
+    if (!zone.contains(e.relatedTarget)) zone.classList.remove('dragover');
+  });
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    if (!hasFiles(e)) return;
+    const room = MAX_IMGS - cardCount();
+    Array.from(e.dataTransfer.files).slice(0, room).forEach(addFile);
+  });
+
+  // ── Click the add card to open a file picker ──────────────────────────────
+  addCard.addEventListener('click', () => picker.click());
+  picker.addEventListener('change', () => {
+    const room = MAX_IMGS - cardCount();
+    Array.from(picker.files).slice(0, room).forEach(addFile);
+    picker.value = '';
+  });
+
+  // ── Remove button ─────────────────────────────────────────────────────────
+  zone.addEventListener('click', e => {
+    const btn = e.target.closest('.btn-remove');
+    if (!btn) return;
+    const card = btn.closest('.dropzone-card');
+    if (!card) return;
+    if (card.dataset.type === 'new') {
+      const s = +card.dataset.slot;
+      delete pending[s];
+      const inp = document.getElementById('bottle_image_' + s);
+      if (inp) inp.value = '';
+    }
+    card.remove();
+    serializeOrder();
+    updateAddCard();
+  });
+
+  // ── On submit: move File objects into the named inputs via DataTransfer ───
+  zone.closest('form').addEventListener('submit', () => {
+    serializeOrder();
+    for (const [slot, file] of Object.entries(pending)) {
+      const inp = document.getElementById('bottle_image_' + slot);
+      if (!inp || !file) continue;
+      try {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        inp.files = dt.files;
+      } catch (err) {
+        console.warn('DataTransfer not supported:', err);
+      }
+    }
+  });
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function hasFiles(e) {
+    return e.dataTransfer && Array.from(e.dataTransfer.types).includes('Files');
+  }
+
+  function cardCount() {
+    return zone.querySelectorAll('.dropzone-card').length;
+  }
+
+  function nextSlot() {
+    for (let s = 1; s <= MAX_IMGS; s++) if (!pending[s]) return s;
+    return null;
+  }
+
+  function updateAddCard() {
+    addCard.classList.toggle('d-none', cardCount() >= MAX_IMGS);
+  }
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.classList.remove('d-none');
+    clearTimeout(showError._t);
+    showError._t = setTimeout(() => errorEl.classList.add('d-none'), 6000);
+  }
+
+  function serializeOrder() {
+    const order = [];
+    zone.querySelectorAll('.dropzone-card').forEach(c => {
+      if (c.dataset.type === 'existing') {
+        order.push({ type: 'existing', id: c.dataset.id });
+      } else if (c.dataset.type === 'new') {
+        order.push({ type: 'new', slot: +c.dataset.slot });
+      }
+    });
+    orderFld.value = JSON.stringify(order);
+  }
+
+  function addFile(file) {
+    if (cardCount() >= MAX_IMGS) return;
+    if (!file.type.match(/^image\/(jpeg|png)$/)) {
+      showError('"' + file.name + '" — unsupported type. Use JPG or PNG.');
+      return;
+    }
+    if (file.size > MAX_BYTES) {
+      showError('"' + file.name + '" exceeds the ' + MAX_MB + 'MB limit.');
+      return;
+    }
+    const slot = nextSlot();
+    if (!slot) return;
+    pending[slot] = file;
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const card = buildCard(slot, ev.target.result, file.name);
+      zone.insertBefore(card, addCard);
+      serializeOrder();
+      updateAddCard();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function buildCard(slot, src, alt) {
+    const d = document.createElement('div');
+    d.className = 'dropzone-card';
+    d.dataset.type = 'new';
+    d.dataset.slot = slot;
+    d.innerHTML =
+      '<img src="' + src + '" alt="' + alt + '">' +
+      '<button type="button" class="btn btn-danger btn-remove" title="Remove">' +
+        '<i class="bi bi-x"></i>' +
+      '</button>' +
+      '<span class="seq-badge"><i class="bi bi-grip-vertical"></i></span>';
+    return d;
+  }
+})();
+</script>
