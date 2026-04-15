@@ -75,6 +75,7 @@ def resequence_bottle_images(bottle):
         if img.sequence != new_seq:
             sequence_changes[img.id] = (img.sequence, new_seq)
             img.sequence = new_seq
+            db.session.flush()
 
     if sequence_changes:
         # Copy to temporary keys first (avoid collisions)
@@ -149,6 +150,7 @@ def delete_bottle_images(bottle, image_ids=None):
                 Key=f"{img_s3_key}/{bottle.id}_{old_seq}.jpg",
             )
             img.sequence = new_seq
+            db.session.flush()
 
     db.session.commit()
 
