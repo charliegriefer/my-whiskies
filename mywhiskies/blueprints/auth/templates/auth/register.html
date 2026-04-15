@@ -18,7 +18,7 @@
           <div class="col-md-4 pt-4">
 
             <form method="post" id="register_form" novalidate
-                  x-data="{ agreed: {{ 'true' if form.agree_terms.data else 'false' }} }">
+                  x-data="{ agreed: {{ 'true' if form.agree_terms.data else 'false' }}, agreedAge: {{ 'true' if form.confirm_age.data else 'false' }} }">
               {{ form.csrf_token }}
               {{ form.form_name }}
               {{ form.g_recaptcha_response }}
@@ -40,8 +40,20 @@
                 {% endfor %}
               </div>
 
+              <div class="mb-3">
+                <input type="checkbox" class="form-check-input{{ ' is-invalid' if form.confirm_age.errors else '' }}"
+                  id="{{ form.confirm_age.id }}" name="{{ form.confirm_age.name }}" value="y"
+                  x-model="agreedAge" @change="agreedAge = $event.target.checked">
+                &nbsp;&nbsp;
+                {{ form.confirm_age.label(class="form-label fw-normal") }}
+                <span class="text-danger">*</span>
+                {% for error in form.confirm_age.errors %}
+                  <div class="invalid-feedback"><i class="bi bi-exclamation-circle"></i> {{ error }}</div>
+                {% endfor %}
+              </div>
+
               <div class="mb-3 pt-3">
-                <input type="submit" class="btn btn-primary" value="Register" :disabled="!agreed">
+                <input type="submit" class="btn btn-primary" value="Register" :disabled="!agreed || !agreedAge">
                 {{ buttons.cancel_button(current_user, request) }}
               </div>
             </form>

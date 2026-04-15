@@ -13,6 +13,7 @@ def test_valid_registration_form() -> None:
                 "password": "newPassword1234",
                 "password2": "newPassword1234",
                 "agree_terms": True,
+                "confirm_age": True,
             }
         )
     )
@@ -28,6 +29,7 @@ def test_invalid_username_format() -> None:
                 "password": "newpassword",
                 "password2": "newpassword",
                 "agree_terms": True,
+                "confirm_age": True,
             }
         )
     )
@@ -44,6 +46,7 @@ def test_duplicate_username(test_user_01: User) -> None:
                 "password": "NewPassword1234",
                 "password2": "NewPassword1234",
                 "agree_terms": True,
+                "confirm_age": True,
             }
         )
     )
@@ -60,6 +63,7 @@ def test_invalid_email_format() -> None:
                 "password": "NewPassword1234",
                 "password2": "NewPassword1234",
                 "agree_terms": True,
+                "confirm_age": True,
             }
         )
     )
@@ -76,6 +80,7 @@ def test_duplicate_email(test_user_01: User) -> None:
                 "password": "NewPassword1234",
                 "password2": "NewPassword1234",
                 "agree_terms": True,
+                "confirm_age": True,
             }
         )
     )
@@ -92,6 +97,7 @@ def test_password_mismatch() -> None:
                 "password": "NewPassword1234",
                 "password2": "NewPassword12345",
                 "agree_terms": True,
+                "confirm_age": True,
             }
         )
     )
@@ -108,8 +114,26 @@ def test_terms_not_agreed() -> None:
                 "password": "NewPassword1234",
                 "password2": "NewPassword1234",
                 "agree_terms": False,
+                "confirm_age": True,
             }
         )
     )
     assert not form.validate()
     assert "agree_terms" in form.errors
+
+
+def test_age_not_confirmed() -> None:
+    form = RegistrationForm(
+        formdata=MultiDict(
+            {
+                "username": "whiskey_guy_42069",
+                "email": "newuser@example.com",
+                "password": "NewPassword1234",
+                "password2": "NewPassword1234",
+                "agree_terms": True,
+                "confirm_age": False,
+            }
+        )
+    )
+    assert not form.validate()
+    assert "confirm_age" in form.errors

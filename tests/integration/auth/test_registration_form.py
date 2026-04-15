@@ -13,6 +13,7 @@ def test_valid_registration_form() -> None:
                 "password": "StrongPassword123",
                 "password2": "StrongPassword123",
                 "agree_terms": True,
+                "confirm_age": True,
             }
         )
     )
@@ -29,6 +30,7 @@ def test_invalid_email() -> None:
             "password": "StrongPassword123",
             "password2": "StrongPassword123",
             "agree_terms": True,
+            "confirm_age": True,
         },
     )
     assert not form.validate()
@@ -45,6 +47,7 @@ def test_passwords_do_not_match() -> None:
             "password": "StrongPassword123",
             "password2": "DifferentPassword123",
             "agree_terms": True,
+            "confirm_age": True,
         },
     )
     assert not form.validate()
@@ -61,7 +64,25 @@ def test_agree_terms_required() -> None:
             "password": "StrongPassword123",
             "password2": "StrongPassword123",
             "agree_terms": False,
+            "confirm_age": True,
         },
     )
     assert not form.validate()
     assert "agree_terms" in form.errors
+
+
+def test_confirm_age_required() -> None:
+    """Test that not confirming legal drinking age fails validation."""
+    form = RegistrationForm(
+        formdata=None,
+        data={
+            "username": "validuser",
+            "email": "user@example.com",
+            "password": "StrongPassword123",
+            "password2": "StrongPassword123",
+            "agree_terms": True,
+            "confirm_age": False,
+        },
+    )
+    assert not form.validate()
+    assert "confirm_age" in form.errors

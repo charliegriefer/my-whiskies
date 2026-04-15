@@ -223,6 +223,10 @@ class RegistrationForm(UsernameValidatorMixin, PasswordValidatorMixin, FlaskForm
         "",
         validators=[DataRequired("You must agree to the Terms of Service.")],
     )
+    confirm_age = BooleanField(
+        "I confirm that I am of legal drinking age in my country or region.",
+        validators=[DataRequired("You must confirm that you are of legal drinking age.")],
+    )
     g_recaptcha_response = HiddenField("", id="g-recaptcha-response")
     recaptcha = SubmitField(
         validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)]
