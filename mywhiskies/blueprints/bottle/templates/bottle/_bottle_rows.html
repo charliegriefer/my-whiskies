@@ -5,11 +5,11 @@
     {% set full  = stars_val | int %}
     {% set half  = 1 if (stars_val - full) >= 0.5 else 0 %}
     {% set empty = 5 - full - half %}
-    {% for _ in range(full)  %}<i class="bi bi-star-fill"  style="color: var(--t-star-on);"></i>{% endfor %}
-    {% if half              %}<i class="bi bi-star-half"  style="color: var(--t-star-on);"></i>{% endif %}
-    {% for _ in range(empty) %}<i class="bi bi-star"       style="color: var(--t-star-off);"></i>{% endfor %}
+    {% for _ in range(full)  %}<i class="bi bi-star-fill small"  style="color: var(--t-star-on);"></i>{% endfor %}
+    {% if half              %}<i class="bi bi-star-half small"  style="color: var(--t-star-on);"></i>{% endif %}
+    {% for _ in range(empty) %}<i class="bi bi-star small"       style="color: var(--t-star-off);"></i>{% endfor %}
   {% else %}
-    {% for _ in range(5) %}<i class="bi bi-star" style="color: var(--t-star-off);"></i>{% endfor %}
+    {% for _ in range(5) %}<i class="bi bi-star  small" style="color: var(--t-star-off);"></i>{% endfor %}
   {% endif %}
 {% endmacro %}
 
