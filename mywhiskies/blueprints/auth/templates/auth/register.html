@@ -28,25 +28,25 @@
               {{ form_utils.render_field(form.password) }}
               {{ form_utils.render_field(form.password2) }}
 
-              <div class="mb-3">
+              <div class="form-check mb-3">
                 <input type="checkbox" class="form-check-input{{ ' is-invalid' if form.agree_terms.errors else '' }}"
                   id="{{ form.agree_terms.id }}" name="{{ form.agree_terms.name }}" value="y"
                   x-model="agreed">
-                &nbsp;&nbsp;
-                {{ form.agree_terms.label(class="form-label fw-normal") }}
-                <span class="text-danger">*</span>
+                <label class="form-check-label fw-normal" for="{{ form.agree_terms.id }}">
+                  {{ form.agree_terms.label.text }} <span class="text-danger">*</span>
+                </label>
                 {% for error in form.agree_terms.errors %}
                   <div class="invalid-feedback"><i class="bi bi-exclamation-circle"></i> {{ error }}</div>
                 {% endfor %}
               </div>
 
-              <div class="mb-3">
+              <div class="form-check mb-3">
                 <input type="checkbox" class="form-check-input{{ ' is-invalid' if form.confirm_age.errors else '' }}"
                   id="{{ form.confirm_age.id }}" name="{{ form.confirm_age.name }}" value="y"
                   x-model="agreedAge" @change="agreedAge = $event.target.checked">
-                &nbsp;&nbsp;
-                {{ form.confirm_age.label(class="form-label fw-normal") }}
-                <span class="text-danger">*</span>
+                <label class="form-check-label fw-normal" for="{{ form.confirm_age.id }}">
+                  {{ form.confirm_age.label.text }} <span class="text-danger">*</span>
+                </label>
                 {% for error in form.confirm_age.errors %}
                   <div class="invalid-feedback"><i class="bi bi-exclamation-circle"></i> {{ error }}</div>
                 {% endfor %}
