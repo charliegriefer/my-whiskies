@@ -1,5 +1,86 @@
 {% extends "_base.html" %}
 
+{% block scripts %}
+  {{ super() }}
+  <script>
+  (function () {
+    const select = document.getElementById('distilleries');
+    if (!select) return;
+
+    // Build widget
+    const wrapper = document.createElement('div');
+    wrapper.className = 'distillery-widget form-control p-2';
+
+    const badges = document.createElement('div');
+    badges.className = 'd-flex flex-wrap gap-1 distillery-badges';
+
+    const search = document.createElement('input');
+    search.type = 'text';
+    search.className = 'form-control form-control-sm mt-2';
+    search.placeholder = 'Search distilleries\u2026';
+
+    const dropdown = document.createElement('div');
+    dropdown.className = 'list-group mt-1 distillery-dropdown';
+    dropdown.style.cssText = 'max-height:200px;overflow-y:auto;display:none;position:relative;z-index:10;';
+
+    wrapper.append(badges, search, dropdown);
+    select.after(wrapper);
+    select.style.display = 'none';
+
+    function renderBadges() {
+      badges.innerHTML = '';
+      Array.from(select.options).filter(o => o.selected).forEach(opt => {
+        const b = document.createElement('span');
+        b.className = 'badge bg-secondary d-flex align-items-center gap-1 fw-normal';
+        b.textContent = opt.text + ' ';
+        const x = document.createElement('button');
+        x.type = 'button';
+        x.className = 'btn-close btn-close-white';
+        x.style.fontSize = '0.55em';
+        x.setAttribute('aria-label', 'Remove');
+        x.addEventListener('mousedown', e => {
+          e.preventDefault();
+          opt.selected = false;
+          renderBadges();
+          renderDropdown(search.value);
+        });
+        b.appendChild(x);
+        badges.appendChild(b);
+      });
+    }
+
+    function renderDropdown(q) {
+      dropdown.innerHTML = '';
+      const matches = Array.from(select.options)
+        .filter(o => !o.selected && o.text.toLowerCase().includes(q.toLowerCase()));
+      matches.forEach(opt => {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'list-group-item list-group-item-action py-1 px-2 text-start small';
+        item.textContent = opt.text;
+        item.addEventListener('mousedown', e => {
+          e.preventDefault();
+          opt.selected = true;
+          search.value = '';
+          renderBadges();
+          renderDropdown('');
+          dropdown.style.display = 'none';
+        });
+        dropdown.appendChild(item);
+      });
+      dropdown.style.display = matches.length ? 'block' : 'none';
+    }
+
+    search.addEventListener('focus', () => renderDropdown(search.value));
+    search.addEventListener('input', () => renderDropdown(search.value));
+    search.addEventListener('blur', () => { setTimeout(() => dropdown.style.display = 'none', 150); });
+    document.addEventListener('click', e => { if (!wrapper.contains(e.target)) dropdown.style.display = 'none'; });
+
+    renderBadges();
+  })();
+  </script>
+{% endblock %}
+
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container ps-0">
