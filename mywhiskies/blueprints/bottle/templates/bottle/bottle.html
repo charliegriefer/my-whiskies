@@ -166,38 +166,54 @@
           {% if bottle.image_count %}
           <div class="col-lg-6 d-flex justify-content-lg-end justify-content-start pe-0">
             {% if bottle.image_count > 1 %}
-            <div class="me-0" style="max-width:350px;">
-              <div id="bottleCarousel" class="carousel carousel-dark slide carousel-fade float-lg-end" data-bs-ride="false" data-bs-interval="false" data-bs-touch="true">
-                <div class="carousel-indicators">
-                  {% for n in range(1, bottle.image_count + 1) %}
-                    <button type="button" data-bs-target="#bottleCarousel" data-bs-slide-to="{{ n-1 }}"{% if n == 1 %} class="active" aria-current="true"{% endif %} aria-label="Slide {{ n }}"></button>
-                  {% endfor %}
-                </div>
+            <div class="bottle-image-panel">
+              <div id="bottleCarousel" class="carousel slide carousel-fade" data-bs-ride="false" data-bs-interval="false" data-bs-touch="true">
                 <div class="carousel-inner">
                   {% for n in range(1, bottle.image_count + 1) %}
                     <div class="carousel-item{% if n == 1 %} active{% endif %}">
-<img
-  alt="{{ bottle.name }}"
-  title="{{ bottle.name }}"
-  class="bottle-img rounded border border-2 border-dark d-block w-100"
-  src="{{img_s3_url}}/{{ bottle.id }}_{{ n }}.jpg"
-  onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_{{ n }}.png';"
-/>
+                      <img
+                        alt="{{ bottle.name }}"
+                        title="{{ bottle.name }}"
+                        class="bottle-img d-block w-100"
+                        src="{{img_s3_url}}/{{ bottle.id }}_{{ n }}.jpg"
+                        onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_{{ n }}.png';"
+                      />
                     </div>
                   {% endfor %}
-                  <button class="carousel-control-prev" type="button" data-bs-target="#bottleCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                  </button>
-                  <button class="carousel-control-next" type="button" data-bs-target="#bottleCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                  </button>
                 </div>
               </div>
+              <div class="d-flex justify-content-between align-items-center mt-1 pt-2 border-top border-light">
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-target="#bottleCarousel" data-bs-slide="prev">
+                  <i class="bi bi-chevron-left"></i> Prev
+                </button>
+                <div class="d-flex gap-2 align-items-center">
+                  {% for n in range(1, bottle.image_count + 1) %}
+                    <button type="button"
+                            class="carousel-dot{% if n == 1 %} active{% endif %}"
+                            data-bs-target="#bottleCarousel"
+                            data-bs-slide-to="{{ n - 1 }}"
+                            aria-label="Image {{ n }}"
+                            {% if n == 1 %}aria-current="true"{% endif %}></button>
+                  {% endfor %}
+                </div>
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-target="#bottleCarousel" data-bs-slide="next">
+                  Next <i class="bi bi-chevron-right"></i>
+                </button>
+              </div>
+              <script>
+                (function () {
+                  const el = document.getElementById('bottleCarousel');
+                  const dots = document.querySelectorAll('.carousel-dot');
+                  el.addEventListener('slide.bs.carousel', e => {
+                    dots.forEach((d, i) => d.classList.toggle('active', i === e.to));
+                  });
+                })();
+              </script>
             </div>
             {% else %}
-              <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img rounded border border-2 border-dark" src="{{img_s3_url}}/{{ bottle.id }}_1.jpg" onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_1.png';" />
+              <div class="bottle-image-panel">
+                <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img w-100" src="{{img_s3_url}}/{{ bottle.id }}_1.jpg" onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_1.png';" />
+              </div>
             {% endif %}
           </div>
           {% endif %}

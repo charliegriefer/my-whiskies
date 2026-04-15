@@ -147,6 +147,7 @@ def bottle_add():
         return redirect(url_for("distillery.no_distilleries"))
 
     form = prep_bottle_form(current_user, BottleAddForm())
+    _, _, img_s3_url = get_s3_config()
 
     if form.validate_on_submit():
         bottle = add_bottle(form, current_user)
@@ -157,6 +158,8 @@ def bottle_add():
         "bottle/add.html",
         title=f"{current_user.username}'s Whiskies: Add Bottle",
         form=form,
+        img_s3_url=img_s3_url,
+        existing_images=[],
     )
 
 
@@ -173,10 +176,6 @@ def bottle_edit(username: str, user_num: int):
     _bottle = db.one_or_404(db.select(Bottle).filter_by(user_id=user.id, user_num=user_num))
     _, _, img_s3_url = get_s3_config()
 
-    images = [None] * 3
-    for img in _bottle.images:
-        images[img.sequence - 1] = img
-
     form = prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
     if form.validate_on_submit():
         edit_bottle(form, _bottle)
@@ -191,7 +190,7 @@ def bottle_edit(username: str, user_num: int):
         bottle=_bottle,
         form=form,
         img_s3_url=img_s3_url,
-        images=images,
+        existing_images=list(_bottle.images),
     )
 
 

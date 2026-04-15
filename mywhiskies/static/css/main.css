@@ -69,64 +69,55 @@ a:focus, a:hover {
   margin-top: 0;
 }
 
+/* bottle image panel — wraps carousel (or single image) + controls */
+.bottle-image-panel {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 2rem;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
 /* bottle image on bottle detail page */
 .bottle-img {
   max-height: 100%;
   max-width: 100%;
   margin: auto;
+  border-radius: 4px;
+}
+
+/* Fixed-height carousel so prev/next buttons stay anchored regardless of image dimensions */
+#bottleCarousel .carousel-inner {
+  height: 400px;
+}
+#bottleCarousel .bottle-img {
+  height: 100%;
+  object-fit: contain;
+}
+
+.carousel.slide {
+  width: 100%;
+  max-width: 100%;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: #ccc;
+  padding: 0;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+.carousel-dot.active {
+  background: #6c757d;
 }
 
 /* alerts */
 /* ---------------------------------------------------------------------------------------- */
 .alert ul { margin-bottom: 0px; }
-
-
-
-#bottleCarousel {
-  margin-bottom: 40px;
-}
-
-.carousel.slide {
-    width: 100%;
-    max-width: 400px !important;
-}
-
-.carousel-indicators {
-  bottom: -50px;
-}
-
-.carousel .carousel-indicators button {
-  height: 10px;
-  width: 10px;
-  border-radius: 50%;
-}
-
-.carousel .carousel-indicators button {background-color: #808080;}
-.carousel .carousel-indicators button.active {background-color: #696969;}
-
-.carousel .carousel-control-next, .carousel .carousel-control-prev {
-  background: #FAF9F6;
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  top: 45%;
-}
-.carousel .carousel-control-next {
-  right: 14px;
-}
-.carousel .carousel-control-prev {
-  left: 14px;
-}
-.carousel .carousel-control-next-icon {
-  height: 20px;
-  width: 20px;
-  margin-right: -4px;
-}
-.carousel .carousel-control-prev-icon {
-  height: 20px;
-  width: 20px;
-  margin-left: -4px;
-}
 ul.terms li {
   margin-left: 24px;
 }
@@ -179,19 +170,97 @@ ul.terms li {
 }
 
 
-.image-preview {
-  width: 150px;  /* Match the size on the "Add" page */
-  height: 180px;
-  object-fit: cover; /* Ensures the image is cropped rather than stretched */
-  border: 1px solid #ddd;
-  border-radius: 5px;
+/* ===================================================================
+   IMAGE DROP ZONE
+   =================================================================== */
+
+.image-dropzone {
+  min-height: 210px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-.image-preview:hover {
-  transform: scale(1.2); /* Scales the image by 20% */
-  transition: transform 0.3s ease; /* Smooth animation */
-  z-index: 10; /* Ensures the hovered image appears on top */
+.image-dropzone.dragover {
+  border-color: #0d6efd;
+  background-color: rgba(13, 110, 253, 0.05);
 }
+
+.dropzone-card {
+  position: relative;
+  width: 150px;
+  height: 180px;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  flex-shrink: 0;
+  border: 1px solid #ddd;
+}
+
+.dropzone-card:active { cursor: grabbing; }
+
+.dropzone-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dropzone-card .btn-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+  line-height: 1;
+}
+
+.dropzone-card .btn-remove:hover { opacity: 1; }
+
+.dropzone-card .seq-badge {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 0.65rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.dropzone-add-card {
+  width: 150px;
+  height: 180px;
+  border: 2px dashed #adb5bd;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6c757d;
+  transition: border-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.dropzone-add-card:hover {
+  border-color: #0d6efd;
+  color: #0d6efd;
+}
+
+.sortable-ghost { opacity: 0.35; }
+.sortable-drag  { opacity: 0.9; cursor: grabbing !important; }
 
 
 /* ===================================================================

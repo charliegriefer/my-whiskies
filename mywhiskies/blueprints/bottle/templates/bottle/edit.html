@@ -20,11 +20,6 @@
           
           {{ form.csrf_token }}
 
-          {# Hidden fields for image removal tracking #}
-          {{ form.remove_image_1() }}
-          {{ form.remove_image_2() }}
-          {{ form.remove_image_3() }}
-        
           {{ form_utils.render_field(form.name) }}
           {{ form_utils.render_field(form.url) }}
           {{ form_utils.render_field(form.distilleries) }}
@@ -47,25 +42,7 @@
 
           <hr class="my-4" />
 
-          <div class="mb-2 pb-2">
-            <p class="text-nowrap">
-              Upload up to 3 images. Portrait-oriented images are preferred. <i class="bi bi-file-image"></i>
-            </p>
-            <small>
-              By uploading images I agree to the <a href="" data-bs-toggle="modal" data-bs-target="#imageTerms">Image Terms and Conditions.</a>
-            </small>
-          </div>
-
-{% for n in range(1, 4) %}
-    {{ form_utils.render_filefield(
-        form["bottle_image_" ~ n], 
-        n, 
-        img_s3_url=img_s3_url, 
-        bottle_id=bottle.id, 
-        image_exists=(images[n - 1] is not none)
-    ) }}
-    {{ form["remove_image_" ~ n]() }} <!-- Hidden field for image removal tracking -->
-{% endfor %}
+          {% include "bottle/_image_dropzone.html" %}
 
           <div class="pt-3 mb-3">
             {{ form.submit(class="btn btn-primary") }}

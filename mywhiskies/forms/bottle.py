@@ -160,11 +160,11 @@ class BottleAddForm(FlaskForm):
         "Image 3:", validators=[FileAllowed(["jpg", "jpeg", "png"], IMG_MESSAGE)]
     )
 
+    # Serialized JSON order from the drop zone widget; empty when JS is disabled.
+    image_order = HiddenField()
+
     submit = SubmitField("Add Bottle")
 
 
 class BottleEditForm(BottleAddForm):
-    remove_image_1 = HiddenField()
-    remove_image_2 = HiddenField()
-    remove_image_3 = HiddenField()
     submit = SubmitField("Edit Bottle")

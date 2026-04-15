@@ -94,12 +94,12 @@ def test_list_bottles_for_entity_hides_private_for_guests(test_user_01: User) ->
     assert all(not b.is_private for b in all_bottles)
 
 
-@patch("mywhiskies.services.bottle.bottle.add_bottle_images")
+@patch("mywhiskies.services.bottle.bottle.process_bottle_images")
 @patch("mywhiskies.services.bottle.bottle.flash")
 def test_add_bottle(
-    mock_flash: MagicMock, mock_add_bottle_images: MagicMock, test_user_01: User
+    mock_flash: MagicMock, mock_process_bottle_images: MagicMock, test_user_01: User
 ) -> None:
-    mock_add_bottle_images.return_value = True
+    mock_process_bottle_images.return_value = (True, None)
     form = MagicMock(spec=BottleAddForm)
     form.distilleries.data = [distillery.id for distillery in test_user_01.distilleries]
     form.bottler_id.data = "0"
@@ -127,15 +127,15 @@ def test_add_bottle(
     )
 
 
-@patch("mywhiskies.services.bottle.bottle.add_bottle_images")
+@patch("mywhiskies.services.bottle.bottle.process_bottle_images")
 @patch("mywhiskies.services.bottle.bottle.flash")
 def test_edit_bottle(
     mock_flash: MagicMock,
-    mock_add_bottle_images: MagicMock,
+    mock_process_bottle_images: MagicMock,
     test_user_01: User,
     test_bottle: Bottle,
 ) -> None:
-    mock_add_bottle_images.return_value = True
+    mock_process_bottle_images.return_value = (True, None)
     form = MagicMock(spec=BottleEditForm)
     form.distilleries.data = [distillery.id for distillery in test_user_01.distilleries]
     form.bottler_id.data = "0"

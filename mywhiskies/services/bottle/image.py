@@ -1,4 +1,6 @@
 import io
+import json
+from typing import Optional, Tuple
 
 import boto3
 from botocore.exceptions import ClientError
@@ -17,6 +19,146 @@ def get_s3_config():
         current_app.config["BOTTLE_IMAGE_S3_KEY"],
         f"{current_app.config['BOTTLE_IMAGE_S3_URL']}/{current_app.config['BOTTLE_IMAGE_S3_KEY']}",
     )
+
+
+def process_bottle_images(form, bottle: Bottle) -> Tuple[bool, Optional[str]]:
+    """
+    Process the drop-zone form submission: parse `image_order` JSON and apply
+    uploads, reordering, and removals in one atomic operation.
+
+    Falls back to `add_bottle_images` when `image_order` is empty (JS disabled).
+
+    Returns (True, None) on success, (False, error_message) on failure.
+    """
+    image_order_field = getattr(form, "image_order", None)
+    image_order_str = (image_order_field.data or "").strip() if image_order_field else ""
+
+    if not image_order_str:
+        # JS-disabled fallback: process bottle_image_1/2/3 in slot order.
+        ok = add_bottle_images(form, bottle)
+        return (True, None) if ok else (False, "An error occurred while uploading images.")
+
+    try:
+        image_order = json.loads(image_order_str)
+    except (json.JSONDecodeError, ValueError):
+        return False, "Invalid image order data."
+
+    if not image_order:
+        return True, None
+
+    # Server-side file-size validation before touching anything.
+    max_bytes = current_app.config.get("MAX_FILE_UPLOAD_BYTES", 10 * 1024 * 1024)
+    max_mb = current_app.config.get("MAX_FILE_UPLOAD_MB", 10)
+    for item in image_order:
+        if item.get("type") == "new":
+            slot = item.get("slot")
+            if slot:
+                ff = getattr(form, f"bottle_image_{slot}", None)
+                if ff and ff.data:
+                    ff.data.seek(0, 2)
+                    size = ff.data.tell()
+                    ff.data.seek(0)
+                    if size > max_bytes:
+                        return False, f"One or more images exceed the {max_mb}MB size limit."
+
+    s3_client = boto3.client("s3")
+    img_s3_bucket, img_s3_key, _ = get_s3_config()
+
+    # Build map of current existing images.
+    existing_map = {img.id: img for img in bottle.images}
+    keep_ids = {
+        item["id"]
+        for item in image_order
+        if item.get("type") == "existing" and item.get("id")
+    }
+
+    # Delete images that are no longer in the order.
+    for img_id, img in list(existing_map.items()):
+        if img_id not in keep_ids:
+            try:
+                s3_client.delete_object(
+                    Bucket=img_s3_bucket,
+                    Key=f"{img_s3_key}/{bottle.id}_{img.sequence}.jpg",
+                )
+            except ClientError:
+                pass  # Non-fatal; DB record still cleaned up.
+            db.session.delete(img)
+    db.session.flush()
+
+    kept = {img_id: img for img_id, img in existing_map.items() if img_id in keep_ids}
+    orig_seqs = {img_id: img.sequence for img_id, img in kept.items()}
+
+    # Compute final sequences for kept existing images.
+    final_seqs: dict = {}
+    for final_seq, item in enumerate(image_order, start=1):
+        if item.get("type") == "existing" and item.get("id") in kept:
+            final_seqs[item["id"]] = final_seq
+
+    try:
+        # S3: rename existing images whose sequence changes (two-phase to avoid conflicts).
+        to_rename = {
+            img_id: (orig_seqs[img_id], new_seq)
+            for img_id, new_seq in final_seqs.items()
+            if orig_seqs[img_id] != new_seq
+        }
+        if to_rename:
+            for img_id, (old_seq, new_seq) in to_rename.items():
+                s3_client.copy_object(
+                    Bucket=img_s3_bucket,
+                    CopySource=f"{img_s3_bucket}/{img_s3_key}/{bottle.id}_{old_seq}.jpg",
+                    Key=f"{img_s3_key}/{bottle.id}_tmp_{new_seq}.jpg",
+                )
+            for img_id, (old_seq, new_seq) in to_rename.items():
+                s3_client.copy_object(
+                    Bucket=img_s3_bucket,
+                    CopySource=f"{img_s3_bucket}/{img_s3_key}/{bottle.id}_tmp_{new_seq}.jpg",
+                    Key=f"{img_s3_key}/{bottle.id}_{new_seq}.jpg",
+                )
+                s3_client.delete_object(
+                    Bucket=img_s3_bucket,
+                    Key=f"{img_s3_key}/{bottle.id}_tmp_{new_seq}.jpg",
+                )
+            # Phase 3: delete old keys that are not a final destination of any rename.
+            final_seqs_set = {new_seq for _, new_seq in to_rename.values()}
+            for _, (old_seq, _) in to_rename.items():
+                if old_seq not in final_seqs_set:
+                    s3_client.delete_object(
+                        Bucket=img_s3_bucket,
+                        Key=f"{img_s3_key}/{bottle.id}_{old_seq}.jpg",
+                    )
+
+        # DB: reassign sequences (temp offset avoids UNIQUE constraint conflicts).
+        for img in kept.values():
+            img.sequence = 10 + img.sequence
+            db.session.flush()
+        for img_id, new_seq in final_seqs.items():
+            kept[img_id].sequence = new_seq
+            db.session.flush()
+
+        # Upload new images at their final positions.
+        for final_seq, item in enumerate(image_order, start=1):
+            if item.get("type") == "new":
+                slot = item.get("slot")
+                if slot:
+                    ff = getattr(form, f"bottle_image_{slot}", None)
+                    if ff and ff.data:
+                        jpg_bytes = _to_resized_jpg_bytes(ff.data)
+                        s3_client.put_object(
+                            Body=jpg_bytes,
+                            Bucket=img_s3_bucket,
+                            Key=f"{img_s3_key}/{bottle.id}_{final_seq}.jpg",
+                            ContentType="image/jpeg",
+                            CacheControl="public, max-age=31536000",
+                        )
+                        db.session.add(BottleImage(bottle_id=bottle.id, sequence=final_seq))
+                        db.session.flush()
+
+        db.session.commit()
+        return True, None
+
+    except (ClientError, OSError, ValueError):
+        db.session.rollback()
+        return False, "An error occurred while uploading images."
 
 
 def add_bottle_images(form: BottleAddForm, bottle: Bottle) -> bool:
