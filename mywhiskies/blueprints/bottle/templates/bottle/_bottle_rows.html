@@ -212,7 +212,7 @@
                 {% endif %}
               </td>
 
-              <td>{{ render_stars(group.max_stars) }}</td>
+              <td class="text-nowrap">{{ render_stars(group.max_stars) }}</td>
 
               {% if is_my_list %}<td></td>{% endif %}
 
@@ -261,7 +261,7 @@
                   {% else %}—{% endif %}
                 </td>
 
-                <td>{{ render_stars(bottle.stars) }}</td>
+                <td class="text-nowrap">{{ render_stars(bottle.stars) }}</td>
 
                 {% if is_my_list %}
                   <td class="text-center pe-4">
