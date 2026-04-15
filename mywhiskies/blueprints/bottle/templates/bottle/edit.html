@@ -3,42 +3,68 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container ps-0">
-
-      <div class="row mt-4">
-        <h3 class="mb-0" style="color:#696969;">{{ bottle.user.username }}'s Whiskies: Edit Bottle</h3>
-        <h1>{{ bottle.name }}</h1>
+      <div class="row mt-4 align-items-end">
+        <div class="col">
+          <h6 class="text-muted mb-1">{{ bottle.user.username }}'s Whiskies: Edit Bottle</h6>
+          <h1 class="mb-0">{{ bottle.name }}</h1>
+        </div>
       </div>
     </div>
 
     <hr />
 
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-lg-8">
         <form method="post" novalidate enctype="multipart/form-data">
           {% set popover_personal_note = "<p>Anything entered into this field will only be visible to you when logged in.</p><p>Perhaps it's the location of the bottle (e.g. 'Main Cabinet' or 'Bedroom Closet'), for example. </p><p>Anything that is relevant to you, but wouldn't necessarily be relevant to others, could go here.</p>" %}
           {% set popover_private_bottle = "If marked as a &quot;Private Bottle&quot;, this bottle will only show in your list when you're logged in.<br /><br />Other users will not be able to see it." %}
-          
+
           {{ form.csrf_token }}
+
+          <p class="text-uppercase text-muted fw-semibold mb-3" style="font-size:0.7rem; letter-spacing:0.06em;">Details</p>
 
           {{ form_utils.render_field(form.name) }}
           {{ form_utils.render_field(form.url) }}
           {{ form_utils.render_field(form.distilleries) }}
-          {{ form_utils.render_field(form.bottler_id) }}
-          {{ form_utils.render_field(form.type) }}
-          {{ form_utils.render_field(form.size) }}
-          {{ form_utils.render_field(form.year_barrelled) }}
-          {{ form_utils.render_field(form.year_bottled) }}
-          {{ form_utils.render_field(form.abv) }}
+
+          <div class="row">
+            <div class="col-sm-6">{{ form_utils.render_field(form.bottler_id) }}</div>
+            <div class="col-sm-6">{{ form_utils.render_field(form.type) }}</div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-3">{{ form_utils.render_field(form.size) }}</div>
+            <div class="col-sm-3">{{ form_utils.render_field(form.abv) }}</div>
+            <div class="col-sm-3">{{ form_utils.render_field(form.year_barrelled) }}</div>
+            <div class="col-sm-3">{{ form_utils.render_field(form.year_bottled) }}</div>
+          </div>
+
+          <hr class="my-3" />
+          <p class="text-uppercase text-muted fw-semibold mb-3" style="font-size:0.7rem; letter-spacing:0.06em;">Notes</p>
+
           {{ form_utils.render_field(form.description) }}
           {{ form_utils.render_field(form.personal_note, popover_text=popover_personal_note) }}
-          {{ form_utils.render_field(form.stars) }}
+
+          <div class="row">
+            <div class="col-sm-4">{{ form_utils.render_field(form.stars) }}</div>
+            <div class="col-sm-4">{{ form_utils.render_field(form.cost) }}</div>
+          </div>
+
           {{ form_utils.render_field(form.review) }}
-          {{ form_utils.render_checkbox(form.is_single_barrel) }}
-          {{ form_utils.render_checkbox(form.is_private, popover_text=popover_private_bottle) }}
-          {{ form_utils.render_field(form.cost) }}
-          {{ form_utils.render_field(form.date_purchased) }}
-          {{ form_utils.render_field(form.date_opened) }}
-          {{ form_utils.render_field(form.date_killed) }}
+
+          <div class="d-flex gap-4 mb-1">
+            {{ form_utils.render_checkbox(form.is_single_barrel) }}
+            {{ form_utils.render_checkbox(form.is_private, popover_text=popover_private_bottle) }}
+          </div>
+
+          <hr class="my-3" />
+          <p class="text-uppercase text-muted fw-semibold mb-3" style="font-size:0.7rem; letter-spacing:0.06em;">Timeline</p>
+
+          <div class="row">
+            <div class="col-sm-4">{{ form_utils.render_field(form.date_purchased) }}</div>
+            <div class="col-sm-4">{{ form_utils.render_field(form.date_opened) }}</div>
+            <div class="col-sm-4">{{ form_utils.render_field(form.date_killed) }}</div>
+          </div>
 
           <hr class="my-4" />
 
@@ -54,11 +80,11 @@
   </main>
 
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="imageTerms" tabindex="-1" aria-labelledby="imageTermsLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Image Terms and Conditions</h1>
+          <h1 class="modal-title fs-5" id="imageTermsLabel">Image Terms and Conditions</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
