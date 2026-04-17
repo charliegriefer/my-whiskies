@@ -123,6 +123,23 @@ a:focus, a:hover {
   background: #6c757d;
 }
 
+/* page headers */
+/* ---------------------------------------------------------------------------------------- */
+.page-header-context {
+  font-size: 0.44em;
+  font-weight: 400;
+  color: #6c757d;
+  vertical-align: middle;
+}
+p.page-header-line { margin: 0; }
+.page-header-sep {
+  font-size: 0.44em;
+  font-weight: 400;
+  color: #adb5bd;
+  margin: 0 0.4em;
+  vertical-align: middle;
+}
+
 /* alerts */
 /* ---------------------------------------------------------------------------------------- */
 .alert ul { margin-bottom: 0px; }
