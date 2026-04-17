@@ -132,6 +132,7 @@ a:focus, a:hover {
   vertical-align: middle;
 }
 p.page-header-line { margin: 0; }
+h1 { font-family: 'Cormorant Garamond', Georgia, serif; }
 .page-header-sep {
   font-size: 0.44em;
   font-weight: 400;

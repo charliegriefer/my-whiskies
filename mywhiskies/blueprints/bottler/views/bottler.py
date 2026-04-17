@@ -58,7 +58,7 @@ def bottlers(username: str):
     ctx = dict(
         title=f"{possessive} Whiskies: Bottlers",
         heading_01=f"{possessive} Whiskies",
-        heading_02="Bottlers",
+        heading_02="The Selectors",
         user=user,
         is_my_list=_is_my_list,
         q=q,

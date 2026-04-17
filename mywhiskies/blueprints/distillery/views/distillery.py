@@ -90,7 +90,7 @@ def distilleries(username: str):
     ctx = dict(
         title=f"{possessive} Whiskies: Distilleries",
         heading_01=f"{possessive} Whiskies",
-        heading_02="Distilleries",
+        heading_02="The Sources",
         user=user,
         is_my_list=_is_my_list,
         q=q,
