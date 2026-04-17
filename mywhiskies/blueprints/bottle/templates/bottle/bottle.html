@@ -19,19 +19,24 @@
           <p class="page-header-line"><span class="page-header-context">{{ bottle.user.username }}'s Whiskies</span><span class="page-header-sep">›</span><span class="page-header-context">The Collection</span></p>
           <h1 class="mb-2">{{ bottle.name }}</h1>
 
+          {% set abv_pref = request.cookies.get('abv_display', 'abv') %}
           <div class="d-flex flex-wrap gap-2 align-items-center">
             {% if bottle.is_single_barrel %}
-              <span class="badge rounded-pill bg-secondary">Single Barrel</span>
+              <span class="type-pill type-pill-barrel">Single Barrel</span>
             {% endif %}
             {{ type_pill(bottle.type) }}
             {% if bottle.abv %}
-              <span class="badge rounded-pill bg-secondary">{{ "%.1f"|format(bottle.abv) }}% ABV</span>
+              {% if abv_pref == 'proof' %}
+                <span class="type-pill type-pill-abv">{{ "%.1f"|format(bottle.abv * 2) }}° Proof</span>
+              {% else %}
+                <span class="type-pill type-pill-abv">{{ "%.1f"|format(bottle.abv) }}% ABV</span>
+              {% endif %}
             {% endif %}
             {% for distillery in bottle.distilleries %}
-              <span class="badge rounded-pill bg-secondary">{{ distillery.name }}</span>
+              <span class="type-pill type-pill-distillery">{{ distillery.name }}</span>
             {% endfor %}
             {% if is_my_bottle and bottle.is_private %}
-              <span class="badge rounded-pill bg-danger">Private</span>
+              <span class="type-pill" style="background-color:#fde8e8; color:#991b1b;">Private</span>
             {% endif %}
           </div>
 

@@ -500,11 +500,14 @@ ul.terms li {
   letter-spacing: 0.02em;
 }
 
-.type-pill-bourbon  { background-color: var(--t-pill-bourbon-bg);  color: var(--t-pill-bourbon-text); }
-.type-pill-rye      { background-color: var(--t-pill-rye-bg);      color: var(--t-pill-rye-text); }
-.type-pill-scotch   { background-color: var(--t-pill-scotch-bg);   color: var(--t-pill-scotch-text); }
-.type-pill-american { background-color: var(--t-pill-american-bg); color: var(--t-pill-american-text); }
-.type-pill-other    { background-color: var(--t-pill-other-bg);    color: var(--t-pill-other-text); }
+.type-pill-bourbon     { background-color: var(--t-pill-bourbon-bg);  color: var(--t-pill-bourbon-text); }
+.type-pill-rye         { background-color: var(--t-pill-rye-bg);      color: var(--t-pill-rye-text); }
+.type-pill-scotch      { background-color: var(--t-pill-scotch-bg);   color: var(--t-pill-scotch-text); }
+.type-pill-american    { background-color: var(--t-pill-american-bg); color: var(--t-pill-american-text); }
+.type-pill-other       { background-color: var(--t-pill-other-bg);    color: var(--t-pill-other-text); }
+.type-pill-barrel      { background-color: #f0e0cc; color: #6b3519; }
+.type-pill-abv         { background-color: #fde8e8; color: #991b1b; }
+.type-pill-distillery  { background-color: #fef3cd; color: #7a5000; }
 
 
 /* ===================================================================
