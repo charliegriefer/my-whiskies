@@ -37,6 +37,17 @@ def test_edit_bottle_requires_login(client: FlaskClient, test_user_01: User) -> 
     assert bottle_name == test_user_01.bottles[0].name
 
 
+def test_edit_bottle_page_renders(
+    logged_in_user_01: FlaskClient, test_user_01: User
+) -> None:
+    """GET the edit page while logged in — ensures the form/widget renders without error."""
+    bottle = test_user_01.bottles[0]
+    response = logged_in_user_01.get(
+        url_for("bottle.edit", username=test_user_01.username, user_num=bottle.user_num),
+    )
+    assert response.status_code == 200
+
+
 def test_valid_bottle_edit_form(test_user_01: User, mock_image: str) -> None:
     """Test the validation of a valid bottle edit form with image upload."""
     bottle_to_edit = _get_bottle_by_name(

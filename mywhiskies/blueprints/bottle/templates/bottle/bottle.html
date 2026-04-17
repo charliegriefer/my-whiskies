@@ -40,9 +40,6 @@
             {% endif %}
           </div>
 
-          {% if bottle.url %}
-            <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer" class="small text-muted d-block mt-2">Visit website <i class="bi bi-box-arrow-up-right"></i></a>
-          {% endif %}
         </div>
 
         <div class="col-auto d-flex align-items-center gap-2">
@@ -72,6 +69,16 @@
                 <tr>
                   <td colspan="2" class="pt-0 pb-1">
                     <span class="text-uppercase text-muted fw-semibold" style="font-size:0.7rem; letter-spacing:0.06em;">Details</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Name</td>
+                  <td>
+                    {% if bottle.url %}
+                      <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.name }} <i class="bi bi-box-arrow-up-right"></i></a>
+                    {% else %}
+                      {{ bottle.name }}
+                    {% endif %}
                   </td>
                 </tr>
                 <tr>

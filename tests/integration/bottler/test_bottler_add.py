@@ -15,6 +15,14 @@ new_bottler_formdata = MultiDict(
 )
 
 
+def test_add_bottler_page_renders(
+    logged_in_user_01: FlaskClient, test_user_01: User
+) -> None:
+    """GET the add page while logged in — ensures the form renders without error."""
+    response = logged_in_user_01.get(url_for("bottler.add", username=test_user_01.username))
+    assert response.status_code == 200
+
+
 def test_add_bottler_requires_login(client: FlaskClient) -> None:
     response = client.get(
         url_for("bottler.add", username="skibidi"), follow_redirects=False

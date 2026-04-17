@@ -20,6 +20,21 @@ def test_edit_distillery_requires_login(
     assert url_for("auth.login", _external=False) in response.headers["Location"]
 
 
+def test_edit_distillery_page_renders(
+    logged_in_user_01: FlaskClient, test_user_01: User
+) -> None:
+    """GET the edit page while logged in — ensures the form renders without error."""
+    distillery = test_user_01.distilleries[0]
+    response = logged_in_user_01.get(
+        url_for(
+            "distillery.edit",
+            username=test_user_01.username,
+            user_num=distillery.user_num,
+        )
+    )
+    assert response.status_code == 200
+
+
 def test_valid_distillery_edit_form(
     logged_in_user_01: FlaskClient, test_user_01: User
 ) -> None:

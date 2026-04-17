@@ -20,6 +20,17 @@ def test_edit_bottler_requires_login(client: FlaskClient, test_user_01: User) ->
     assert url_for("auth.login", _external=False) in response.headers["Location"]
 
 
+def test_edit_bottler_page_renders(
+    logged_in_user_01: FlaskClient, test_user_01: User
+) -> None:
+    """GET the edit page while logged in — ensures the form renders without error."""
+    bottler = test_user_01.bottlers[0]
+    response = logged_in_user_01.get(
+        url_for("bottler.edit", username=test_user_01.username, user_num=bottler.user_num)
+    )
+    assert response.status_code == 200
+
+
 def test_valid_bottler_edit_form(
     logged_in_user_01: FlaskClient, test_user_01: User
 ) -> None:

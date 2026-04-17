@@ -15,7 +15,7 @@ class Select2Widget:
             kwargs["data-placeholder"] = kwargs.pop("placeholder")
         kwargs["multiple"] = "multiple"
         html = [f"<select {html_params(name=field.name, **kwargs)}>"]
-        for value, label, selected in field.iter_choices():
+        for value, label, selected, *_ in field.iter_choices():
             selected_attr = "selected" if selected else ""
             html.append(f'<option value="{value}" {selected_attr}>{label}</option>')
         html.append("</select>")

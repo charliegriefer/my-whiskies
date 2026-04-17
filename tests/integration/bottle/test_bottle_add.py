@@ -36,6 +36,14 @@ def create_bottle_formdata(
     return formdata
 
 
+def test_add_bottle_page_renders(
+    logged_in_user_01: FlaskClient, test_user_01: User
+) -> None:
+    """GET the add page while logged in — ensures the form/widget renders without error."""
+    response = logged_in_user_01.get(url_for("bottle.add"))
+    assert response.status_code == 200
+
+
 def test_add_bottle_requires_login(
     app: Flask, client: FlaskClient, test_user_01: User
 ) -> None:
