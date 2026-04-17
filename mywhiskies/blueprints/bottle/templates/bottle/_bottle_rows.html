@@ -324,9 +324,10 @@
 </div>
 
 {# ── Pagination ───────────────────────────────────────────────────────────── #}
+{% if total_pages <= 1 %}<div class="mb-4"></div>{% endif %}
 {% if total_pages > 1 %}
-  <nav aria-label="Bottle list pages">
-    <ul class="pagination pagination-sm justify-content-center">
+  <nav aria-label="Bottle list pages" class="my-4">
+    <ul class="pagination justify-content-center">
       <li class="page-item {{ 'disabled' if page <= 1 }}">
         <a class="page-link"
           hx-get="{{ list_url }}"
