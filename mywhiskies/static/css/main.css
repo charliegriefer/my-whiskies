@@ -127,6 +127,7 @@ a:focus, a:hover {
 /* alerts */
 /* ---------------------------------------------------------------------------------------- */
 .alert ul { margin-bottom: 0px; }
+[data-auto-dismiss] { transition: opacity 1s ease !important; }
 ul.terms li {
   margin-left: 24px;
 }
