@@ -201,7 +201,7 @@
                         <i class="bi bi-pencil"></i>
                       </a>
                       <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete"
-                        @click="deleteUrl = '{{ url_for('bottle.delete', username=bottle.user.username, user_num=bottle.user_num, page=page, per_page=per_page) }}'">
+                        @click="deleteUrl = '{{ url_for('bottle.delete', username=bottle.user.username, user_num=bottle.user_num, next=request.url) }}'">
                         <i class="bi bi-trash"></i>
                       </a>
                     </div>
@@ -261,7 +261,7 @@
                       <i class="bi bi-pencil"></i>
                     </a>
                     <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete"
-                      @click="deleteUrl = '{{ url_for('bottle.delete', username=bottle.user.username, user_num=bottle.user_num, page=page, per_page=per_page) }}'">
+                      @click="deleteUrl = '{{ url_for('bottle.delete', username=bottle.user.username, user_num=bottle.user_num, next=request.url) }}'">
                       <i class="bi bi-trash"></i>
                     </a>
                   </div>

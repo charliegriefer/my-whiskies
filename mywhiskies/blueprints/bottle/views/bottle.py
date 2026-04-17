@@ -214,6 +214,7 @@ def bottle_delete(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     _bottle = db.one_or_404(db.select(Bottle).filter_by(user_id=user.id, user_num=user_num))
     delete_bottle(current_user, _bottle)
-    page = request.args.get("page", 1, type=int)
-    per_page = request.args.get("per_page", type=int)
-    return redirect(url_for("bottle.list", username=current_user.username, page=page, per_page=per_page))
+    next_url = request.args.get("next", "")
+    if next_url and not _is_safe_url(next_url):
+        next_url = ""
+    return redirect(next_url or url_for("bottle.list", username=current_user.username))
