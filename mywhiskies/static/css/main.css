@@ -107,7 +107,6 @@ a:focus, a:hover {
 .carousel.slide {
   width: 100%;
   max-width: 100%;
-  touch-action: pan-y;
 }
 
 .carousel-dot {
