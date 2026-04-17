@@ -131,7 +131,9 @@ a:focus, a:hover {
   color: #6c757d;
   vertical-align: middle;
 }
-p.page-header-line { margin: 0; }
+p.page-header-line { margin: 0; font-size: 0.875rem; }
+p.page-header-line .page-header-context,
+p.page-header-line .page-header-sep { font-size: 1em; }
 h1 { font-family: 'Cormorant Garamond', Georgia, serif; }
 .page-header-sep {
   font-size: 0.44em;
