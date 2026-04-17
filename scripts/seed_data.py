@@ -2,25 +2,34 @@
 Seed the local database with fake distilleries, bottlers, and bottles.
 
 Usage:
-    python scripts/seed_data.py <username>
+    python scripts/seed_data.py <username> [--images]
 
 The user must already exist. All seeded records are attached to that user.
+--images  Fetch random placeholder photos from picsum.photos and upload to S3.
 """
 
+import io
 import random
 import sys
 from datetime import datetime, timedelta
 
+import boto3
+import requests
 from faker import Faker
+from PIL import Image, ImageOps
 
 sys.path.insert(0, ".")
 
 from mywhiskies.app import create_app
 from mywhiskies.extensions import db
 from mywhiskies.models import Bottle, Bottler, Distillery, User
+from mywhiskies.models.bottle import BottleImage
 from mywhiskies.models.bottle import BottleTypes
 
 fake = Faker()
+
+DISPLAY_MAX = 1600
+JPEG_QUALITY = 85
 
 # ---------------------------------------------------------------------------
 # Realistic whisky geography
@@ -89,6 +98,10 @@ BOTTLE_TYPES_BY_REGION = {
 }
 
 
+# ---------------------------------------------------------------------------
+# Name helpers
+# ---------------------------------------------------------------------------
+
 def fake_distillery_name(region_1: str) -> str:
     if region_1 in ("Scotland", "Ireland"):
         prefix = random.choice(DISTILLERY_NAME_PARTS[0])
@@ -117,6 +130,54 @@ def random_past_date(years_back: int = 5) -> datetime:
 
 
 # ---------------------------------------------------------------------------
+# Image helpers
+# ---------------------------------------------------------------------------
+
+def _fetch_jpeg_bytes(width: int = 800, height: int = 600) -> bytes | None:
+    """Download a random image from picsum.photos and return resized JPEG bytes."""
+    try:
+        # picsum.photos/seed/<n>/w/h gives a deterministic-but-varied image
+        seed = random.randint(1, 1000)
+        resp = requests.get(
+            f"https://picsum.photos/seed/{seed}/{width}/{height}",
+            timeout=10,
+        )
+        resp.raise_for_status()
+        img = Image.open(io.BytesIO(resp.content))
+        img = ImageOps.exif_transpose(img)
+        img = img.convert("RGB")
+        img.thumbnail((DISPLAY_MAX, DISPLAY_MAX), resample=Image.Resampling.LANCZOS)
+        out = io.BytesIO()
+        img.save(out, format="JPEG", quality=JPEG_QUALITY, optimize=True, progressive=True)
+        return out.getvalue()
+    except Exception as e:
+        print(f"    Warning: could not fetch image ({e})")
+        return None
+
+
+def upload_bottle_images(app, bottle: Bottle, num_images: int) -> None:
+    """Fetch random images and upload them to S3 for the given bottle."""
+    s3_client = boto3.client("s3")
+    bucket = app.config["BOTTLE_IMAGE_S3_BUCKET"]
+    key = app.config["BOTTLE_IMAGE_S3_KEY"]
+
+    for sequence in range(1, num_images + 1):
+        jpeg_bytes = _fetch_jpeg_bytes()
+        if not jpeg_bytes:
+            continue
+        s3_key = f"{key}/{bottle.id}_{sequence}.jpg"
+        s3_client.put_object(
+            Body=jpeg_bytes,
+            Bucket=bucket,
+            Key=s3_key,
+            ContentType="image/jpeg",
+            CacheControl="public, max-age=31536000",
+        )
+        db.session.add(BottleImage(bottle_id=bottle.id, sequence=sequence))
+    db.session.flush()
+
+
+# ---------------------------------------------------------------------------
 # Seed functions
 # ---------------------------------------------------------------------------
 
@@ -131,7 +192,7 @@ def seed_distilleries(user: User, count: int = 12) -> list[Distillery]:
             region_2=region_2,
             url=None,
             user_id=user.id,
-            user_num=0,  # overwritten by before_insert event
+            user_num=0,
         )
         db.session.add(d)
         distilleries.append(d)
@@ -165,11 +226,13 @@ def seed_bottles(
     distilleries: list[Distillery],
     bottlers: list[Bottler],
     count: int = 40,
+    with_images: bool = False,
+    app=None,
 ) -> None:
     statuses = ["open"] * 10 + ["killed"] * 5 + ["unopen"] * 25
+    bottles = []
 
     for _ in range(count):
-        # pick 1-2 distilleries
         num_distilleries = random.choices([1, 2], weights=[80, 20])[0]
         bottle_distilleries = random.sample(distilleries, min(num_distilleries, len(distilleries)))
         primary = bottle_distilleries[0]
@@ -220,9 +283,18 @@ def seed_bottles(
         )
         b.distilleries = bottle_distilleries
         db.session.add(b)
+        bottles.append(b)
 
     db.session.flush()
     print(f"  Created {count} bottles")
+
+    if with_images:
+        print("  Uploading images to S3 (this may take a moment)...")
+        for i, bottle in enumerate(bottles, 1):
+            num_images = random.choices([1, 2, 3], weights=[60, 30, 10])[0]
+            upload_bottle_images(app, bottle, num_images)
+            print(f"    [{i}/{count}] {bottle.name} — {num_images} image(s)")
+        db.session.flush()
 
 
 # ---------------------------------------------------------------------------
@@ -230,11 +302,12 @@ def seed_bottles(
 # ---------------------------------------------------------------------------
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python scripts/seed_data.py <username>")
+    if len(sys.argv) < 2:
+        print("Usage: python scripts/seed_data.py <username> [--images]")
         sys.exit(1)
 
     username = sys.argv[1]
+    with_images = "--images" in sys.argv
 
     app = create_app()
     with app.app_context():
@@ -246,7 +319,7 @@ def main():
         print(f"Seeding data for user: {user.username}")
         distilleries = seed_distilleries(user)
         bottlers = seed_bottlers(user)
-        seed_bottles(user, distilleries, bottlers)
+        seed_bottles(user, distilleries, bottlers, with_images=with_images, app=app)
         db.session.commit()
         print("Done.")
 
