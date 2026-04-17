@@ -1,4 +1,5 @@
 import time
+from urllib.parse import urlparse
 from uuid import UUID
 
 from flask import abort, g, redirect, render_template, request, url_for
@@ -20,6 +21,12 @@ from mywhiskies.services.bottle.form import prep_bottle_form
 from mywhiskies.services.bottle.image import get_s3_config
 
 _VALID_SORTS = {"name", "type", "abv", "rating", "sb", "private"}
+
+
+def _is_safe_url(url: str) -> bool:
+    """Return True if the URL is local (safe to redirect to)."""
+    parsed = urlparse(url)
+    return not parsed.netloc or parsed.netloc == urlparse(request.host_url).netloc
 _VALID_DIRS = {"asc", "desc"}
 _VALID_PER_PAGE = {25, 50, 100, 10000}
 
@@ -176,10 +183,14 @@ def bottle_edit(username: str, user_num: int):
     _bottle = db.one_or_404(db.select(Bottle).filter_by(user_id=user.id, user_num=user_num))
     _, _, img_s3_url = get_s3_config()
 
+    next_url = request.args.get("next") or request.form.get("next") or ""
+    if next_url and not _is_safe_url(next_url):
+        next_url = ""
+
     form = prep_bottle_form(current_user, BottleEditForm(obj=_bottle))
     if form.validate_on_submit():
         edit_bottle(form, _bottle)
-        return redirect(url_for("bottle.detail", username=username, user_num=user_num))
+        return redirect(next_url or url_for("bottle.detail", username=username, user_num=user_num))
     else:
         form.type.data = _bottle.type.name
         form.distilleries.data = [d.id for d in _bottle.distilleries]
@@ -191,6 +202,7 @@ def bottle_edit(username: str, user_num: int):
         form=form,
         img_s3_url=img_s3_url,
         existing_images=list(_bottle.images),
+        next_url=next_url,
     )
 
 

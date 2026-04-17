@@ -1,5 +1,7 @@
-{% macro cancel_button(current_user, request) %}
-  {% if request.referrer %}
+{% macro cancel_button(current_user, request, next_url=None) %}
+  {% if next_url %}
+    {% set cancel_link = next_url %}
+  {% elif request.referrer %}
     {% set cancel_link = request.referrer %}
   {% else %}
     {% set cancel_link = url_for("core.main") %}
