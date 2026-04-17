@@ -6,6 +6,14 @@
   const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
   const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 
+  // Auto-dismiss flash messages after 5 seconds
+  document.querySelectorAll('[data-auto-dismiss]').forEach(el => {
+    setTimeout(() => {
+      el.classList.remove('show');
+      el.addEventListener('transitionend', () => el.remove(), { once: true });
+    }, 5000);
+  });
+
   // Persist per-page preference in a cookie
   document.addEventListener("change", e => {
     if (e.target.matches("select[name='per_page']"))
