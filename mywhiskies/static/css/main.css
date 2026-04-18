@@ -131,10 +131,13 @@ a:focus, a:hover {
   color: #6c757d;
   vertical-align: middle;
 }
-p.page-header-line { margin: 0; font-size: 0.875rem; }
+p.page-header-line { margin: 0; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 p.page-header-line .page-header-context,
 p.page-header-line .page-header-sep { font-size: 1em; }
 h1 { font-family: 'Cormorant Garamond', Georgia, serif; }
+@media (max-width: 575.98px) {
+  h1 { font-size: 1.9rem; }
+}
 .page-header-sep {
   font-size: 0.44em;
   font-weight: 400;
