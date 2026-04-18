@@ -76,6 +76,7 @@ def list_bottles_by_user(
     if not is_my_list:
         bottles = [b for b in bottles if not b.is_private]
 
+    active_types = {b.type.name for b in bottles}
     has_killed = any(b.date_killed for b in bottles)
 
     if not show_killed:
@@ -115,6 +116,7 @@ def list_bottles_by_user(
         "per_page": per_page,
         "total_pages": total_pages,
         "has_killed": has_killed,
+        "active_types": active_types,
     }
 
 
