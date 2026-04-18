@@ -10,40 +10,12 @@
         <div class="col">
           <h1 class="mb-0"><span class="page-header-context">{{ heading_01 }}</span><span class="page-header-sep">›</span>{{ heading_02 }}</h1>
         </div>
-      </div>
-
-      <hr />
-
-      <!-- Filter controls — stable, outside swap target -->
-      <form id="list-controls" class="row g-2 mb-3 align-items-center">
-
-        <!-- Filter group: search + killed toggle + type filter -->
-        <div class="col-auto">
-          <input type="search" class="form-control" name="q" value="{{ q }}"
-            placeholder="Search..."
-            hx-get="{{ list_url }}"
-            hx-target="#bottle-results"
-            hx-push-url="true"
-            hx-trigger="input changed delay:300ms, search"
-            hx-include="#list-controls, #current-state"
-            hx-vals='{"page": "1"}'>
-        </div>
-
-        {% if has_killed %}
-          <div class="col-auto form-check form-switch ms-1 mb-0">
-            <input type="checkbox" class="form-check-input" id="show_killed"
-              name="killed" value="1" {% if show_killed %}checked{% endif %}
-              hx-get="{{ list_url }}"
-              hx-target="#bottle-results"
-              hx-push-url="true"
-              hx-trigger="change"
-              hx-include="#list-controls, #current-state"
-              hx-vals='{"page": "1"}'>
-            <label class="form-check-label" for="show_killed">Show Killed Bottles</label>
-          </div>
-        {% endif %}
-
-        <div class="col-auto">
+        <div class="col-auto d-flex gap-2 pb-1">
+          {% if is_my_list and total_bottles > 1 %}
+            <button type="button" class="btn btn-primary text-nowrap" id="random-bottle-btn">
+              <i class="bi bi-question-circle"></i> Random Bottle
+            </button>
+          {% endif %}
           <div class="dropdown"
             x-data="{ anyChecked: true }"
             x-init="anyChecked = !!$el.querySelector('.type-filter:checked')">
@@ -51,7 +23,7 @@
               data-bs-toggle="dropdown" data-bs-auto-close="outside">
               <i class="bi bi-funnel"></i> Filter List
             </button>
-            <div class="dropdown-menu p-3" style="min-width: 200px;"
+            <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 200px;"
               @change="anyChecked = !!$el.querySelectorAll('.type-filter:checked').length">
               {% for bt in bottle_types %}
                 {% set has_bottles = bt.name in active_types %}
@@ -82,8 +54,38 @@
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Display group: theme + per page -->
+      <hr />
+
+      <!-- Filter controls — stable, outside swap target -->
+      <form id="list-controls" class="row g-2 mb-3 align-items-center">
+
+        <div class="col-auto">
+          <input type="search" class="form-control" name="q" value="{{ q }}"
+            placeholder="Search..."
+            hx-get="{{ list_url }}"
+            hx-target="#bottle-results"
+            hx-push-url="true"
+            hx-trigger="input changed delay:300ms, search"
+            hx-include="#list-controls, #current-state"
+            hx-vals='{"page": "1"}'>
+        </div>
+
+        {% if has_killed %}
+          <div class="col-auto form-check form-switch ms-1 mb-0">
+            <input type="checkbox" class="form-check-input" id="show_killed"
+              name="killed" value="1" {% if show_killed %}checked{% endif %}
+              hx-get="{{ list_url }}"
+              hx-target="#bottle-results"
+              hx-push-url="true"
+              hx-trigger="change"
+              hx-include="#list-controls, #current-state"
+              hx-vals='{"page": "1"}'>
+            <label class="form-check-label" for="show_killed">Show Killed Bottles</label>
+          </div>
+        {% endif %}
+
         <div class="col-auto ms-auto d-flex gap-2 align-items-center">
           <div class="d-flex align-items-center gap-2">
             <span class="text-muted" style="font-size: 0.7rem; white-space: nowrap;">Theme:</span>
@@ -110,15 +112,6 @@
             <option value="10000" {% if per_page == 10000 %}selected{% endif %}>All</option>
           </select>
         </div>
-
-        {% if is_my_list and total_bottles > 1 %}
-          <div class="col-auto">
-            <span class="vr mx-1"></span>
-            <button type="button" class="btn btn-primary text-nowrap" id="random-bottle-btn">
-              <i class="bi bi-question-circle"></i> Random Bottle
-            </button>
-          </div>
-        {% endif %}
 
       </form>
 
