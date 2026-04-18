@@ -42,7 +42,31 @@
 
         </div>
 
-        <div class="col-auto d-flex align-items-center gap-2">
+        <!-- mobile: kebab dropdown -->
+        <div class="col-auto d-sm-none">
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              {% if is_my_bottle %}
+                <li><a class="dropdown-item" href="{{ url_for('bottle.edit', username=bottle.user.username, user_num=bottle.user_num, next=request.url) }}"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                <li>
+                  <a class="dropdown-item text-danger" href="#"
+                     data-bs-toggle="modal" data-bs-target="#confirmDelete"
+                     @click="deleteUrl = '{{ url_for('bottle.delete', username=bottle.user.username, user_num=bottle.user_num, next=url_for('bottle.list', username=bottle.user.username)) }}'">
+                    <i class="bi bi-trash me-2"></i>Delete
+                  </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+              {% endif %}
+              <li><a class="dropdown-item" href="{{ url_for('bottle.list', username=bottle.user.username) }}"><i class="bi bi-list-ul me-2"></i>{{ btn_label }}</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- desktop: individual buttons -->
+        <div class="col-auto d-none d-sm-flex align-items-center gap-2">
           {% if is_my_bottle %}
             <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('bottle.edit', username=bottle.user.username, user_num=bottle.user_num, next=request.url) }}" role="button"><i class="bi bi-pencil"></i> Edit</a>
             <a href="#" class="btn btn-sm btn-outline-danger" role="button"
@@ -194,7 +218,7 @@
 
           <!--- right column (images) --->
           {% if bottle.image_count %}
-          <div class="col-lg-6 d-flex justify-content-lg-end justify-content-start pe-0">
+          <div class="col-lg-6 d-lg-flex justify-content-lg-end pe-0">
             {% if bottle.image_count > 1 %}
             <div class="bottle-image-panel">
               <div id="bottleCarousel" class="carousel slide carousel-fade" data-bs-ride="false" data-bs-interval="false" data-bs-touch="true">
