@@ -166,9 +166,10 @@ def bottler_add():
         return redirect(url_for("core.main"))
 
     return render_template(
-        "bottler/add.html",
+        "bottler/form.html",
         title=f"{current_user.username}'s Whiskies: Add Bottler",
         user=current_user,
+        bottler=None,
         form=form,
     )
 
@@ -191,7 +192,7 @@ def bottler_edit(username: str, user_num: int):
         return redirect(url_for("bottler.list", username=current_user.username))
 
     return render_template(
-        "bottler/edit.html",
+        "bottler/form.html",
         title=f"{current_user.username}'s Whiskies: Edit Bottler",
         bottler=_bottler,
         form=form,

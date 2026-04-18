@@ -203,9 +203,10 @@ def distillery_add():
         return redirect(url_for("distillery.list", username=current_user.username))
 
     return render_template(
-        "distillery/add.html",
+        "distillery/form.html",
         title=f"{current_user.username}'s Whiskies: Add Distillery",
         user=current_user,
+        distillery=None,
         form=form,
     )
 
@@ -230,7 +231,7 @@ def distillery_edit(username: str, user_num: int):
         return redirect(url_for("distillery.list", username=current_user.username))
 
     return render_template(
-        "distillery/edit.html",
+        "distillery/form.html",
         title=f"{current_user.username}'s Whiskies: Edit Distillery",
         distillery=distillery,
         form=form,

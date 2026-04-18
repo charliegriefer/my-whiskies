@@ -6,8 +6,13 @@
 
       <div class="row mt-4">
         <div class="col">
-          <h3 class="mb-0" style="color:#696969;">{{ user.username }}'s Whiskies: Bottlers</h3>
-          <h1>Add Bottler</h1>
+          {% if bottler %}
+            <p class="page-header-line"><span class="page-header-context">{{ bottler.user.username }}'s Whiskies</span><span class="page-header-sep">›</span><span class="page-header-context">Bottlers</span></p>
+            <h1 class="mb-0">{{ bottler.name }}</h1>
+          {% else %}
+            <p class="page-header-line"><span class="page-header-context">{{ current_user.username }}'s Whiskies</span><span class="page-header-sep">›</span><span class="page-header-context">Bottlers</span></p>
+            <h1 class="mb-0">Add Bottler</h1>
+          {% endif %}
         </div>
       </div>
 

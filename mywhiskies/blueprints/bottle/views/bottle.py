@@ -162,11 +162,13 @@ def bottle_add():
             return redirect(url_for("bottle.list", username=current_user.username))
 
     return render_template(
-        "bottle/add.html",
+        "bottle/form.html",
         title=f"{current_user.username}'s Whiskies: Add Bottle",
+        bottle=None,
         form=form,
         img_s3_url=img_s3_url,
         existing_images=[],
+        next_url="",
     )
 
 
@@ -196,7 +198,7 @@ def bottle_edit(username: str, user_num: int):
         form.distilleries.data = [d.id for d in _bottle.distilleries]
 
     return render_template(
-        "bottle/edit.html",
+        "bottle/form.html",
         title=f"{current_user.username}'s Whiskies: Edit Bottle",
         bottle=_bottle,
         form=form,

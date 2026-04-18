@@ -6,8 +6,13 @@
 
       <div class="row mt-4">
         <div class="col">
-          <h3 class="mb-0" style="color:#696969;">{{ distillery.user.username }}'s Whiskies: Distilleries: Edit</h3>
-          <h1>{{ distillery.name }}</h1>
+          {% if distillery %}
+            <p class="page-header-line"><span class="page-header-context">{{ distillery.user.username }}'s Whiskies</span><span class="page-header-sep">›</span><span class="page-header-context">Distilleries</span></p>
+            <h1 class="mb-0">{{ distillery.name }}</h1>
+          {% else %}
+            <p class="page-header-line"><span class="page-header-context">{{ current_user.username }}'s Whiskies</span><span class="page-header-sep">›</span><span class="page-header-context">Distilleries</span></p>
+            <h1 class="mb-0">Add Distillery</h1>
+          {% endif %}
         </div>
       </div>
 
@@ -26,7 +31,7 @@
             {{ form_utils.render_field(form.region_1, popover_text=popover_location_1) }}
             {{ form_utils.render_field(form.region_2, popover_text=popover_location_2) }}
             {{ form_utils.render_field(form.url) }}
-            
+
             <div class="pt-3 mb-3">
               {{ form.submit(class="btn btn-primary") }}
               {{ buttons.cancel_button(current_user, request) }}
@@ -34,5 +39,6 @@
           </form>
         </div>
       </div>
-    </main>
+    </div>
+  </main>
 {% endblock %}
