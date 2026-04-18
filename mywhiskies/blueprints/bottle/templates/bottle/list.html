@@ -10,13 +10,6 @@
         <div class="col">
           <h1 class="mb-0"><span class="page-header-context">{{ heading_01 }}</span><span class="page-header-sep">›</span>{{ heading_02 }}</h1>
         </div>
-        <div class="col-auto d-flex pb-1 gap-2">
-          {% if is_my_list and total_bottles > 1 %}
-            <button type="button" class="btn btn-primary text-nowrap" id="random-bottle-btn">
-              <i class="bi bi-question-circle"></i> Random Bottle
-            </button>
-          {% endif %}
-        </div>
       </div>
 
       <hr />
@@ -24,7 +17,7 @@
       <!-- Filter controls — stable, outside swap target -->
       <form id="list-controls" class="row g-2 mb-3 align-items-center">
 
-        <!-- Free-text search -->
+        <!-- Filter group: search + killed toggle + type filter -->
         <div class="col-auto">
           <input type="search" class="form-control" name="q" value="{{ q }}"
             placeholder="Search..."
@@ -36,7 +29,6 @@
             hx-vals='{"page": "1"}'>
         </div>
 
-        <!-- Show Killed toggle (only rendered when killed bottles exist) -->
         {% if has_killed %}
           <div class="col-auto form-check form-switch ms-1 mb-0">
             <input type="checkbox" class="form-check-input" id="show_killed"
@@ -51,37 +43,7 @@
           </div>
         {% endif %}
 
-        <!-- Right-side controls -->
-        <div class="col-auto ms-auto d-flex gap-2 align-items-center">
-
-          <!-- Theme picker -->
-          <div class="d-flex align-items-center gap-2 me-1">
-            <span class="text-muted" style="font-size: 0.7rem; white-space: nowrap;">Theme:</span>
-            <button @click="setTheme('clean')" class="theme-swatch"
-              :class="theme === 'clean' ? 'active-swatch' : ''"
-              title="Clean" style="background: #e0e0e0;"></button>
-            <button @click="setTheme('whiskey-bar')" class="theme-swatch"
-              :class="theme === 'whiskey-bar' ? 'active-swatch' : ''"
-              title="Whiskey Bar" style="background: #3d1f00;"></button>
-          </div>
-
-          <!-- Per-page selector -->
-          <select class="form-select form-select-sm" name="per_page" style="width: auto;"
-            hx-get="{{ list_url }}"
-            hx-target="#bottle-results"
-            hx-push-url="true"
-            hx-trigger="change"
-            hx-include="#list-controls, #current-state"
-            hx-vals='{"page": "1"}'>
-            {% for n in [25, 50, 100] %}
-              <option value="{{ n }}" {% if per_page == n %}selected{% endif %}>
-                {{ n }} per page
-              </option>
-            {% endfor %}
-            <option value="10000" {% if per_page == 10000 %}selected{% endif %}>All</option>
-          </select>
-
-          <!-- Type filter dropdown -->
+        <div class="col-auto">
           <div class="dropdown"
             x-data="{ anyChecked: true }"
             x-init="anyChecked = !!$el.querySelector('.type-filter:checked')">
@@ -117,8 +79,45 @@
               </div>
             </div>
           </div>
-
         </div>
+
+        <!-- Display group: theme + per page -->
+        <div class="col-auto ms-auto d-flex gap-2 align-items-center">
+          <div class="d-flex align-items-center gap-2">
+            <span class="text-muted" style="font-size: 0.7rem; white-space: nowrap;">Theme:</span>
+            <button @click="setTheme('clean')" class="theme-swatch"
+              :class="theme === 'clean' ? 'active-swatch' : ''"
+              title="Clean" style="background: #e0e0e0;"></button>
+            <button @click="setTheme('whiskey-bar')" class="theme-swatch"
+              :class="theme === 'whiskey-bar' ? 'active-swatch' : ''"
+              title="Whiskey Bar" style="background: #3d1f00;"></button>
+          </div>
+
+          <select class="form-select form-select-sm" name="per_page" style="width: auto;"
+            hx-get="{{ list_url }}"
+            hx-target="#bottle-results"
+            hx-push-url="true"
+            hx-trigger="change"
+            hx-include="#list-controls, #current-state"
+            hx-vals='{"page": "1"}'>
+            {% for n in [25, 50, 100] %}
+              <option value="{{ n }}" {% if per_page == n %}selected{% endif %}>
+                {{ n }} per page
+              </option>
+            {% endfor %}
+            <option value="10000" {% if per_page == 10000 %}selected{% endif %}>All</option>
+          </select>
+        </div>
+
+        {% if is_my_list and total_bottles > 1 %}
+          <div class="col-auto">
+            <span class="vr mx-1"></span>
+            <button type="button" class="btn btn-primary text-nowrap" id="random-bottle-btn">
+              <i class="bi bi-question-circle"></i> Random Bottle
+            </button>
+          </div>
+        {% endif %}
+
       </form>
 
       <!-- HTMX swap target -->
