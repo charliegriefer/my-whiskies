@@ -200,6 +200,3 @@ log/*
 
 # Docker environment files
 .env.docker
-
-# Claude
-TASKS.md
