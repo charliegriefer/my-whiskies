@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 env:
-  # --- Sensitive: set as a GitHub Secret ---
-  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  # --- Sensitive: set as a GitHub Secret, with fallback for CI ---
+  SECRET_KEY: ${{ secrets.SECRET_KEY || 'ci-fallback-secret-key-not-for-production' }}
 
   # --- Non-sensitive dummy values safe to inline for CI ---
   SQLALCHEMY_DATABASE_URI: "sqlite:///ci_dummy.db"
