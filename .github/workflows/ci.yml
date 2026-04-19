@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  # --- Sensitive: set as a GitHub Secret ---
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+
+  # --- Non-sensitive dummy values safe to inline for CI ---
+  SQLALCHEMY_DATABASE_URI: "sqlite:///ci_dummy.db"
+  SQLALCHEMY_DATABASE_URI_TEST: "sqlite:///test.db"
+  MAIL_SERVER: "localhost"
+  MAIL_USERNAME: "test@example.com"
+  MAIL_PASSWORD: "test-mail-password"
+  LOG_LEVEL: "CRITICAL"
+  LOG_DIR: "/tmp"
+  RECAPTCHA_PUBLIC_KEY: "test-recaptcha-public-key"
+  RECAPTCHA_PRIVATE_KEY: "test-recaptcha-private-key"
+  DEBUG: "False"
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Ruff
+        run: pip install ruff
+
+      - name: Lint with Ruff
+        run: ruff check .
+
+      - name: Check formatting with Ruff
+        run: ruff format --check .
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install system dependencies
+        run: sudo apt-get install -y default-libmysqlclient-dev pkg-config
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest --cov=mywhiskies tests/
