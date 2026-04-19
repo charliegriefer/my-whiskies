@@ -23,8 +23,7 @@ sys.path.insert(0, ".")
 from mywhiskies.app import create_app
 from mywhiskies.extensions import db
 from mywhiskies.models import Bottle, Bottler, Distillery, User
-from mywhiskies.models.bottle import BottleImage
-from mywhiskies.models.bottle import BottleTypes
+from mywhiskies.models.bottle import BottleImage, BottleTypes
 
 fake = Faker()
 
@@ -72,15 +71,33 @@ DISTILLERY_NAME_PARTS = [
 ]
 
 BOURBON_EXPRESSIONS = [
-    "Single Barrel", "Small Batch", "Barrel Proof", "Bottled in Bond",
-    "Four Grain", "Wheated", "High Rye", "Cask Strength", "Reserve",
-    "Select", "Private Selection", "Master's Keep",
+    "Single Barrel",
+    "Small Batch",
+    "Barrel Proof",
+    "Bottled in Bond",
+    "Four Grain",
+    "Wheated",
+    "High Rye",
+    "Cask Strength",
+    "Reserve",
+    "Select",
+    "Private Selection",
+    "Master's Keep",
 ]
 
 SCOTCH_EXPRESSIONS = [
-    "12 Year", "15 Year", "18 Year", "21 Year", "25 Year",
-    "Cask Strength", "Quarter Cask", "Double Matured", "Sherry Cask",
-    "Port Finish", "Rum Cask Finish", "Single Cask",
+    "12 Year",
+    "15 Year",
+    "18 Year",
+    "21 Year",
+    "25 Year",
+    "Cask Strength",
+    "Quarter Cask",
+    "Double Matured",
+    "Sherry Cask",
+    "Port Finish",
+    "Rum Cask Finish",
+    "Single Cask",
 ]
 
 BOTTLE_SIZES = [375, 750, 1000, 1750]
@@ -102,6 +119,7 @@ BOTTLE_TYPES_BY_REGION = {
 # Name helpers
 # ---------------------------------------------------------------------------
 
+
 def fake_distillery_name(region_1: str) -> str:
     if region_1 in ("Scotland", "Ireland"):
         prefix = random.choice(DISTILLERY_NAME_PARTS[0])
@@ -112,7 +130,9 @@ def fake_distillery_name(region_1: str) -> str:
 
 
 def fake_bottler_name() -> str:
-    return f"{fake.last_name()} {random.choice(['Brothers', 'Independent Bottlers', 'Selections', 'Whisky Co.', '& Co.'])}"
+    return (
+        f"{fake.last_name()} {random.choice(['Brothers', 'Independent Bottlers', 'Selections', 'Whisky Co.', '& Co.'])}"
+    )
 
 
 def bottle_name(distillery_name: str, region_1: str) -> str:
@@ -132,6 +152,7 @@ def random_past_date(years_back: int = 5) -> datetime:
 # ---------------------------------------------------------------------------
 # Image helpers
 # ---------------------------------------------------------------------------
+
 
 def _fetch_jpeg_bytes(width: int = 800, height: int = 600) -> bytes | None:
     """Download a random image from picsum.photos and return resized JPEG bytes."""
@@ -180,6 +201,7 @@ def upload_bottle_images(app, bottle: Bottle, num_images: int) -> None:
 # ---------------------------------------------------------------------------
 # Seed functions
 # ---------------------------------------------------------------------------
+
 
 def seed_distilleries(user: User, count: int = 12) -> list[Distillery]:
     distilleries = []
@@ -238,9 +260,7 @@ def seed_bottles(
         primary = bottle_distilleries[0]
 
         region_1 = primary.region_1
-        bottle_type = random.choice(
-            BOTTLE_TYPES_BY_REGION.get(region_1, list(BottleTypes))
-        )
+        bottle_type = random.choice(BOTTLE_TYPES_BY_REGION.get(region_1, list(BottleTypes)))
 
         date_purchased = random_past_date(years_back=6)
         year_barrelled = random.randint(2008, 2020)
@@ -300,6 +320,7 @@ def seed_bottles(
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
+
 
 def main():
     if len(sys.argv) < 2:

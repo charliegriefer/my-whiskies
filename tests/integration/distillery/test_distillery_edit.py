@@ -1,12 +1,11 @@
 from flask import url_for
 from flask.testing import FlaskClient
+
 from mywhiskies.extensions import db
 from mywhiskies.models import Distillery, User
 
 
-def test_edit_distillery_requires_login(
-    client: FlaskClient, test_user_01: User
-) -> None:
+def test_edit_distillery_requires_login(client: FlaskClient, test_user_01: User) -> None:
     distillery = test_user_01.distilleries[0]
     response = client.get(
         url_for(
@@ -20,9 +19,7 @@ def test_edit_distillery_requires_login(
     assert url_for("auth.login", _external=False) in response.headers["Location"]
 
 
-def test_edit_distillery_page_renders(
-    logged_in_user_01: FlaskClient, test_user_01: User
-) -> None:
+def test_edit_distillery_page_renders(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     """GET the edit page while logged in — ensures the form renders without error."""
     distillery = test_user_01.distilleries[0]
     response = logged_in_user_01.get(
@@ -35,9 +32,7 @@ def test_edit_distillery_page_renders(
     assert response.status_code == 200
 
 
-def test_valid_distillery_edit_form(
-    logged_in_user_01: FlaskClient, test_user_01: User
-) -> None:
+def test_valid_distillery_edit_form(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     client = logged_in_user_01
 
     formdata = {
@@ -59,14 +54,9 @@ def test_valid_distillery_edit_form(
     )
 
     assert response.status_code == 200
-    assert (
-        url_for("distillery.list", username=test_user_01.username)
-        in response.request.url
-    )
+    assert url_for("distillery.list", username=test_user_01.username) in response.request.url
 
-    assert f'"{formdata["name"]}" has been successfully updated.' in response.get_data(
-        as_text=True
-    )
+    assert f'"{formdata["name"]}" has been successfully updated.' in response.get_data(as_text=True)
 
     updated_distillery = db.session.get(Distillery, test_user_01.distilleries[0].id)
     assert updated_distillery.name == formdata["name"]
@@ -76,9 +66,7 @@ def test_valid_distillery_edit_form(
     assert updated_distillery.url == formdata["url"]
 
 
-def test_edit_not_my_distillery(
-    logged_in_user_01: FlaskClient, test_user_02: User
-) -> None:
+def test_edit_not_my_distillery(logged_in_user_01: FlaskClient, test_user_02: User) -> None:
     """A logged-in user should not be able to edit another user's distillery."""
     client = logged_in_user_01
     distillery = test_user_02.distilleries[0]

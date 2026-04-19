@@ -11,13 +11,11 @@ from mywhiskies.services.bottle.form import prep_bottle_form
 from mywhiskies.services.bottle.image import add_bottle_images
 
 
-def create_bottle_formdata(
-    test_user: User, file_storage: FileStorage = None
-) -> MultiDict:
+def create_bottle_formdata(test_user: User, file_storage: FileStorage = None) -> MultiDict:
     """Create the form data for adding a bottle."""
     formdata = MultiDict(
         {
-            "name": "Frey Ranch " "Farm Strength" "",
+            "name": "Frey Ranch Farm Strength",
             "type": "BOURBON",
             "year_barrelled": 2018,
             "year_bottled": 2023,
@@ -36,17 +34,13 @@ def create_bottle_formdata(
     return formdata
 
 
-def test_add_bottle_page_renders(
-    logged_in_user_01: FlaskClient, test_user_01: User
-) -> None:
+def test_add_bottle_page_renders(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     """GET the add page while logged in — ensures the form/widget renders without error."""
     response = logged_in_user_01.get(url_for("bottle.add"))
     assert response.status_code == 200
 
 
-def test_add_bottle_requires_login(
-    app: Flask, client: FlaskClient, test_user_01: User
-) -> None:
+def test_add_bottle_requires_login(app: Flask, client: FlaskClient, test_user_01: User) -> None:
     # loading the form should fail.
     response = client.get(
         url_for("bottle.add"),
@@ -71,9 +65,7 @@ def test_add_bottle_requires_login(
 
 def test_valid_bottle_form(app: Flask, test_user_01: User, mock_image: str) -> None:
     with open(mock_image, "rb") as f:
-        file_storage = FileStorage(
-            stream=f, filename="test_image.png", content_type="image/png"
-        )
+        file_storage = FileStorage(stream=f, filename="test_image.png", content_type="image/png")
         formdata = create_bottle_formdata(test_user_01, file_storage)
 
         form = BottleAddForm()
@@ -82,9 +74,7 @@ def test_valid_bottle_form(app: Flask, test_user_01: User, mock_image: str) -> N
 
         assert form.validate(), f"Form validation failed: {form.errors}"
 
-        with patch("boto3.client") as mock_boto_client, patch(
-            "PIL.Image.open"
-        ) as mock_image_open:
+        with patch("boto3.client") as mock_boto_client, patch("PIL.Image.open") as mock_image_open:
             mock_image_obj = MagicMock()
             mock_image_open.return_value = mock_image_obj
             mock_image_obj.width = 800

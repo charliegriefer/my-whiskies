@@ -1,5 +1,6 @@
 from flask import url_for
 from flask.testing import FlaskClient
+
 from mywhiskies.models import User
 from tests.conftest import expected_page_title
 

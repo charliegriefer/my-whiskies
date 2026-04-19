@@ -9,18 +9,14 @@ def yesno(value: Any, yes: str = "Yes", no: str = "No") -> str:
     return yes if value else no
 
 
-def value_or_dash(
-    value: Any, fallback: str = "-", dash_class: str = "text-muted"
-) -> Markup:
+def value_or_dash(value: Any, fallback: str = "-", dash_class: str = "text-muted") -> Markup:
     """Return the value if it is not None or empty, otherwise return a dash with a CSS class."""
     if value is None or (isinstance(value, str) and value.strip() == ""):
         return Markup(f'<span class="{dash_class}">{escape(fallback)}</span>')
     return Markup(escape(value))
 
 
-def multiline_or_dash(
-    value: Any, fallback: str = "-", dash_class: str = "text-muted"
-) -> Markup:
+def multiline_or_dash(value: Any, fallback: str = "-", dash_class: str = "text-muted") -> Markup:
     if value is None or (isinstance(value, str) and value.strip() == ""):
         return Markup(f'<span class="{dash_class}">{escape(fallback)}</span>')
 
@@ -46,9 +42,7 @@ def date_or_dash(
     return Markup(escape(value.strftime(fmt)))
 
 
-def float_or_dash(
-    value: Any, precision: int = 2, fallback: str = "-", dash_class: str = "text-muted"
-) -> Markup:
+def float_or_dash(value: Any, precision: int = 2, fallback: str = "-", dash_class: str = "text-muted") -> Markup:
     """Format a float to the given precision or return a fallback dash wrapped in a span."""
     if value is None:
         return Markup(f'<span class="{dash_class}">{escape(fallback)}</span>')

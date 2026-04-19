@@ -12,8 +12,6 @@ def test_distillery_creation(test_distillery: Distillery) -> None:
     assert test_distillery.region_2 == "AZ"
 
 
-def test_distillery_user_relationship(
-    test_distillery: Distillery, test_user_01: User
-) -> None:
+def test_distillery_user_relationship(test_distillery: Distillery, test_user_01: User) -> None:
     assert test_distillery.user == test_user_01
     assert test_distillery in test_user_01.distilleries

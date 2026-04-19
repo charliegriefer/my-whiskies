@@ -2,6 +2,7 @@ import copy
 
 from flask import url_for
 from flask.testing import FlaskClient
+
 from mywhiskies.extensions import db
 from mywhiskies.models import Bottler, User
 
@@ -20,20 +21,14 @@ def test_edit_bottler_requires_login(client: FlaskClient, test_user_01: User) ->
     assert url_for("auth.login", _external=False) in response.headers["Location"]
 
 
-def test_edit_bottler_page_renders(
-    logged_in_user_01: FlaskClient, test_user_01: User
-) -> None:
+def test_edit_bottler_page_renders(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     """GET the edit page while logged in — ensures the form renders without error."""
     bottler = test_user_01.bottlers[0]
-    response = logged_in_user_01.get(
-        url_for("bottler.edit", username=test_user_01.username, user_num=bottler.user_num)
-    )
+    response = logged_in_user_01.get(url_for("bottler.edit", username=test_user_01.username, user_num=bottler.user_num))
     assert response.status_code == 200
 
 
-def test_valid_bottler_edit_form(
-    logged_in_user_01: FlaskClient, test_user_01: User
-) -> None:
+def test_valid_bottler_edit_form(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     client = logged_in_user_01
 
     bottler_to_edit = test_user_01.bottlers[0]
@@ -58,13 +53,9 @@ def test_valid_bottler_edit_form(
     )
 
     assert response.status_code == 200
-    assert (
-        url_for("bottler.list", username=test_user_01.username) in response.request.url
-    )
+    assert url_for("bottler.list", username=test_user_01.username) in response.request.url
 
-    assert f'"{formdata["name"]}" has been successfully updated.' in response.get_data(
-        as_text=True
-    )
+    assert f'"{formdata["name"]}" has been successfully updated.' in response.get_data(as_text=True)
 
     updated_bottler = db.session.get(Bottler, test_user_01.bottlers[0].id)
     assert bottler_orig.get("name") != updated_bottler.name
@@ -74,9 +65,7 @@ def test_valid_bottler_edit_form(
     assert bottler_orig.get("url") != updated_bottler.url
 
 
-def test_edit_not_my_bottler(
-    logged_in_user_01: FlaskClient, test_user_02: User
-) -> None:
+def test_edit_not_my_bottler(logged_in_user_01: FlaskClient, test_user_02: User) -> None:
     """A logged-in user should not be able to edit another user's bottler."""
     client = logged_in_user_01
     bottler = test_user_02.bottlers[0]

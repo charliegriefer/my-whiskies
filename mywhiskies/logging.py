@@ -19,18 +19,14 @@ def register_logging(app):
 
     # text logging
     text_log = os.path.join(log_dir, "my-whiskies.log")
-    text_handler = TimedRotatingFileHandler(
-        text_log, when="midnight", interval=1, backupCount=30, encoding="utf-8"
-    )
+    text_handler = TimedRotatingFileHandler(text_log, when="midnight", interval=1, backupCount=30, encoding="utf-8")
     text_handler.setLevel(app.config["LOG_LEVEL"])
     text_handler.setFormatter(logging.Formatter(LOG_FORMAT))
     app.logger.addHandler(text_handler)
 
     # JSON structured logging
     json_log = os.path.join(log_dir, "my-whiskies.json.log")
-    json_handler = TimedRotatingFileHandler(
-        json_log, when="midnight", interval=1, backupCount=30, encoding="utf-8"
-    )
+    json_handler = TimedRotatingFileHandler(json_log, when="midnight", interval=1, backupCount=30, encoding="utf-8")
     json_handler.setLevel(app.config["LOG_LEVEL"])
     json_handler.setFormatter(JsonFormatter())
     app.logger.addHandler(json_handler)

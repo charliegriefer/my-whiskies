@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 import pytest
+
 from mywhiskies.extensions import db
 from mywhiskies.models import Bottle, BottleTypes, User
 
@@ -18,6 +19,7 @@ def test_bottle_user_relationship(test_bottle: Bottle, test_user_01: User) -> No
 
 
 # --- before_insert event: user_num auto-increment ---
+
 
 def test_user_num_assigned_on_insert(test_user_01: User) -> None:
     bottle = Bottle(name="New Bottle", type=BottleTypes.RYE, user_id=test_user_01.id)
@@ -37,6 +39,7 @@ def test_user_num_increments_sequentially(test_user_01: User) -> None:
 
 # --- before_insert / before_update event: clean_bottle_data ---
 
+
 def test_clean_bottle_data_strips_name_whitespace(test_user_01: User) -> None:
     bottle = Bottle(name="  Padded Name  ", type=BottleTypes.BOURBON, user_id=test_user_01.id)
     db.session.add(bottle)
@@ -45,9 +48,7 @@ def test_clean_bottle_data_strips_name_whitespace(test_user_01: User) -> None:
 
 
 def test_clean_bottle_data_converts_empty_url_to_none(test_user_01: User) -> None:
-    bottle = Bottle(
-        name="No URL Bottle", type=BottleTypes.BOURBON, user_id=test_user_01.id, url=""
-    )
+    bottle = Bottle(name="No URL Bottle", type=BottleTypes.BOURBON, user_id=test_user_01.id, url="")
     db.session.add(bottle)
     db.session.commit()
     assert bottle.url is None

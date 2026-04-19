@@ -1,17 +1,15 @@
+from urllib.parse import urlparse
+
 from flask import flash, url_for
-from mywhiskies.extensions import db
-from mywhiskies.models import User
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
-from urllib.parse import urlparse
+
+from mywhiskies.extensions import db
+from mywhiskies.models import User
 
 
 def get_user_by_username(username: str) -> User:
-    stmt = (
-        select(User)
-        .options(joinedload(User.bottles))
-        .filter_by(username=username, is_deleted=False)
-    )
+    stmt = select(User).options(joinedload(User.bottles)).filter_by(username=username, is_deleted=False)
     with db.session() as session:
         user = session.execute(stmt).scalars().first()
         return user  # This user object is tied to the session used in this context

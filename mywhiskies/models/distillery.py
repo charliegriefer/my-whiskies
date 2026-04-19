@@ -2,10 +2,11 @@ import uuid
 from typing import TYPE_CHECKING, List, Optional
 
 import sqlalchemy as sa
+from sqlalchemy import ForeignKey, String, Text, UniqueConstraint, event
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Session as OrmSession
 
 from mywhiskies.extensions import db
-from sqlalchemy import ForeignKey, String, Text, UniqueConstraint, event
-from sqlalchemy.orm import Mapped, Session as OrmSession, mapped_column, relationship
 
 if TYPE_CHECKING:
     from mywhiskies.models import Bottle, User
@@ -15,9 +16,7 @@ class Distillery(db.Model):
     __tablename__ = "distillery"
     __table_args__ = (UniqueConstraint("user_id", "user_num", name="uq_distillery_user_num"),)
 
-    id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
-    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name: Mapped[str] = mapped_column(String(65))
     user_num: Mapped[int]
     description: Mapped[Optional[str]] = mapped_column(Text)
@@ -46,14 +45,18 @@ def distillery_before_insert(mapper, connect, target) -> None:
     session = OrmSession.object_session(target)
     pending_max = (
         max(
-            (obj.user_num for obj in session.new
-             if isinstance(obj, Distillery)
-             and obj.user_id == target.user_id
-             and obj is not target
-             and obj.user_num is not None),
+            (
+                obj.user_num
+                for obj in session.new
+                if isinstance(obj, Distillery)
+                and obj.user_id == target.user_id
+                and obj is not target
+                and obj.user_num is not None
+            ),
             default=0,
         )
-        if session is not None else 0
+        if session is not None
+        else 0
     )
     target.user_num = max(db_max, pending_max) + 1
 

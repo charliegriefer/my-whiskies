@@ -1,8 +1,6 @@
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
-from flask.testing import FlaskClient
-
 from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
 from mywhiskies.models import Bottle, BottleTypes, User
 from mywhiskies.services.bottle.bottle import (
@@ -54,15 +52,11 @@ def test_list_bottles_search_by_distillery(test_user_01: User) -> None:
     data = list_bottles_by_user(user=test_user_01, is_my_list=True, q="ironroot")
     all_bottles = [b for g in data["grouped"] for b in g["bottles"]]
     assert len(all_bottles) >= 1
-    assert all(
-        any("ironroot" in d.name.lower() for d in b.distilleries) for b in all_bottles
-    )
+    assert all(any("ironroot" in d.name.lower() for d in b.distilleries) for b in all_bottles)
 
 
 def test_list_bottles_type_filter(test_user_01: User) -> None:
-    data = list_bottles_by_user(
-        user=test_user_01, is_my_list=True, types=[BottleTypes.BOURBON.name]
-    )
+    data = list_bottles_by_user(user=test_user_01, is_my_list=True, types=[BottleTypes.BOURBON.name])
     all_bottles = [b for g in data["grouped"] for b in g["bottles"]]
     assert all(b.type == BottleTypes.BOURBON for b in all_bottles)
 
@@ -96,9 +90,7 @@ def test_list_bottles_for_entity_hides_private_for_guests(test_user_01: User) ->
 
 @patch("mywhiskies.services.bottle.bottle.process_bottle_images")
 @patch("mywhiskies.services.bottle.bottle.flash")
-def test_add_bottle(
-    mock_flash: MagicMock, mock_process_bottle_images: MagicMock, test_user_01: User
-) -> None:
+def test_add_bottle(mock_flash: MagicMock, mock_process_bottle_images: MagicMock, test_user_01: User) -> None:
     mock_process_bottle_images.return_value = (True, None)
     form = MagicMock(spec=BottleAddForm)
     form.distilleries.data = [distillery.id for distillery in test_user_01.distilleries]
@@ -122,9 +114,7 @@ def test_add_bottle(
     form.is_private.data = False
     form.personal_note.data = None
     add_bottle(form, test_user_01)
-    mock_flash.assert_called_once_with(
-        '"Test Bottle" has been successfully added.', "success"
-    )
+    mock_flash.assert_called_once_with('"Test Bottle" has been successfully added.', "success")
 
 
 @patch("mywhiskies.services.bottle.bottle.process_bottle_images")
@@ -158,9 +148,7 @@ def test_edit_bottle(
     form.is_private.data = True
     form.personal_note.data = None
     edit_bottle(form, test_bottle)
-    mock_flash.assert_called_once_with(
-        '"Test Bottle" has been successfully updated.', "success"
-    )
+    mock_flash.assert_called_once_with('"Test Bottle" has been successfully updated.', "success")
 
 
 @patch("mywhiskies.services.bottle.bottle.boto3.client")

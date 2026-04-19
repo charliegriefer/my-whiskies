@@ -1,6 +1,6 @@
+from mywhiskies.forms.bottle import BottleAddForm
 from mywhiskies.models import BottleTypes, User
 from mywhiskies.services.bottle.form import prep_bottle_form
-from mywhiskies.forms.bottle import BottleAddForm
 
 
 def test_bottle_type_choices_first_is_placeholder(app, test_user_01: User) -> None:

@@ -61,9 +61,7 @@ def main(*, dry_run: bool, delete_png: bool) -> int:
     with app.app_context():
         bucket, key_prefix, _ = get_s3_config()
 
-        q = db.session.query(BottleImage).order_by(
-            BottleImage.bottle_id, BottleImage.sequence
-        )
+        q = db.session.query(BottleImage).order_by(BottleImage.bottle_id, BottleImage.sequence)
 
         for bi in q.yield_per(200):
             bottle_id = bi.bottle_id
@@ -88,9 +86,7 @@ def main(*, dry_run: bool, delete_png: bool) -> int:
                 jpg_bytes = make_resized_jpg(png_bytes)
 
                 if dry_run:
-                    print(
-                        f"[DRY RUN] Would write s3://{bucket}/{jpg_key} ({len(jpg_bytes)} bytes)"
-                    )
+                    print(f"[DRY RUN] Would write s3://{bucket}/{jpg_key} ({len(jpg_bytes)} bytes)")
                 else:
                     s3.put_object(
                         Bucket=bucket,

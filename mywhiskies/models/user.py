@@ -6,19 +6,18 @@ from typing import TYPE_CHECKING, List, Optional
 import jwt
 from flask import current_app
 from flask_login import UserMixin
-from mywhiskies.extensions import db, login_manager
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import check_password_hash, generate_password_hash
+
+from mywhiskies.extensions import db, login_manager
 
 if TYPE_CHECKING:
     from mywhiskies.models import Bottle, Bottler, Distillery
 
 
 class User(UserMixin, db.Model):
-    id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
-    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     username: Mapped[str] = mapped_column(String(64), index=True, unique=True)
     email: Mapped[str] = mapped_column(String(120), index=True, unique=True)
     password_hash: Mapped[str] = mapped_column(String(128))
@@ -29,13 +28,9 @@ class User(UserMixin, db.Model):
     deleted_date: Mapped[Optional[datetime]]
 
     # relationships
-    distilleries: Mapped[List["Distillery"]] = relationship(
-        "Distillery", back_populates="user"
-    )
+    distilleries: Mapped[List["Distillery"]] = relationship("Distillery", back_populates="user")
     bottlers: Mapped[List["Bottler"]] = relationship("Bottler", back_populates="user")
-    bottles: Mapped[List["Bottle"]] = relationship(
-        "Bottle", back_populates="user", lazy="select"
-    )
+    bottles: Mapped[List["Bottle"]] = relationship("Bottle", back_populates="user", lazy="select")
 
     def get_mail_confirm_token(self, expires_in: int = 600) -> str:
         payload = {"confirm_reg": self.id, "exp": time() + expires_in}
@@ -44,9 +39,7 @@ class User(UserMixin, db.Model):
     @staticmethod
     def verify_mail_confirm_token(token):
         try:
-            decoded = jwt.decode(
-                token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
-            )
+            decoded = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
             user_id = decoded["confirm_reg"]
             user = db.get_or_404(User, user_id)
             return user
@@ -67,9 +60,7 @@ class User(UserMixin, db.Model):
     @staticmethod
     def verify_reset_password_token(token: str):
         try:
-            decoded = jwt.decode(
-                token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
-            )
+            decoded = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
             user_id = decoded["reset_password"]
             user = db.get_or_404(User, user_id)
             return user
@@ -81,9 +72,7 @@ class User(UserMixin, db.Model):
 class UserLogin(db.Model):
     __tablename__ = "user_login"
     user_id: Mapped[str] = mapped_column(db.ForeignKey("user.id"), primary_key=True)
-    login_date: Mapped[datetime] = mapped_column(
-        default=datetime.utcnow, primary_key=True
-    )
+    login_date: Mapped[datetime] = mapped_column(default=datetime.utcnow, primary_key=True)
     ip_address: Mapped[str] = mapped_column(String(15))
 
 

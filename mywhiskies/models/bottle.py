@@ -6,7 +6,8 @@ from typing import TYPE_CHECKING, List, Optional
 
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, Numeric, String, Text, UniqueConstraint, event
-from sqlalchemy.orm import Mapped, Session as OrmSession, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Session as OrmSession
 
 from mywhiskies.extensions import db
 from mywhiskies.models.core import bottle_distillery  # noqa: F401
@@ -31,27 +32,21 @@ class BottleTypes(enum.Enum):
 
 class BottleImage(db.Model):
     __tablename__ = "bottle_image"
-    id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
-    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     bottle_id: Mapped[str] = mapped_column(ForeignKey("bottle.id"))
     sequence: Mapped[int]
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
 
     bottle: Mapped["Bottle"] = relationship("Bottle", back_populates="images")
 
-    __table_args__ = (
-        sa.UniqueConstraint("bottle_id", "sequence", name="_bottle_sequence_uc"),
-    )
+    __table_args__ = (sa.UniqueConstraint("bottle_id", "sequence", name="_bottle_sequence_uc"),)
 
 
 class Bottle(db.Model):
     __tablename__ = "bottle"
     __table_args__ = (UniqueConstraint("user_id", "user_num", name="uq_bottle_user_num"),)
 
-    id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
-    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     date_created: Mapped[datetime] = mapped_column(default=datetime.utcnow)
     name: Mapped[str] = mapped_column(String(100))
     user_num: Mapped[int]
@@ -68,12 +63,8 @@ class Bottle(db.Model):
     date_purchased: Mapped[Optional[datetime]]
     date_opened: Mapped[Optional[datetime]]
     date_killed: Mapped[Optional[datetime]]
-    is_private: Mapped[bool] = mapped_column(
-        default=False, server_default=sa.text("false"), nullable=False
-    )
-    is_single_barrel: Mapped[bool] = mapped_column(
-        default=False, server_default=sa.text("false"), nullable=False
-    )
+    is_private: Mapped[bool] = mapped_column(default=False, server_default=sa.text("false"), nullable=False)
+    is_single_barrel: Mapped[bool] = mapped_column(default=False, server_default=sa.text("false"), nullable=False)
     personal_note: Mapped[Optional[str]] = mapped_column(Text)
 
     # foreign keys
@@ -88,9 +79,7 @@ class Bottle(db.Model):
         secondary="bottle_distillery",
         order_by="Distillery.name",
     )
-    bottler: Mapped["Bottler"] = relationship(
-        foreign_keys=[bottler_id], back_populates="bottles"
-    )
+    bottler: Mapped["Bottler"] = relationship(foreign_keys=[bottler_id], back_populates="bottles")
     images: Mapped[List["BottleImage"]] = relationship(
         "BottleImage",
         back_populates="bottle",
@@ -125,14 +114,18 @@ def bottle_before_insert(mapper, connect, target) -> None:
     session = OrmSession.object_session(target)
     pending_max = (
         max(
-            (obj.user_num for obj in session.new
-             if isinstance(obj, Bottle)
-             and obj.user_id == target.user_id
-             and obj is not target
-             and obj.user_num is not None),
+            (
+                obj.user_num
+                for obj in session.new
+                if isinstance(obj, Bottle)
+                and obj.user_id == target.user_id
+                and obj is not target
+                and obj.user_num is not None
+            ),
             default=0,
         )
-        if session is not None else 0
+        if session is not None
+        else 0
     )
     target.user_num = max(db_max, pending_max) + 1
 

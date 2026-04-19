@@ -31,11 +31,7 @@ def validate_bottle_purchased_date(form, field):
 
 
 def validate_bottle_opened_date(form, field):
-    if (
-        field.data
-        and form.date_purchased.data
-        and field.data < form.date_purchased.data
-    ):
+    if field.data and form.date_purchased.data and field.data < form.date_purchased.data:
         raise ValidationError("Date Opened cannot precede Date Purchased.")
 
 
@@ -47,11 +43,7 @@ def validate_bottle_killed_date(form, field):
 
 
 def validate_year_bottled_date(form, field):
-    if (
-        field.data
-        and form.year_barrelled.data
-        and field.data < form.year_barrelled.data
-    ):
+    if field.data and form.year_barrelled.data and field.data < form.year_barrelled.data:
         raise ValidationError("Year Bottled cannot precede Year Barrelled.")
 
 
@@ -70,9 +62,7 @@ class BottleAddForm(FlaskForm):
         ],
         render_kw={"placeholder": "URL"},
     )
-    type = SelectField(
-        "Bottle Type:", validators=[InputRequired("Bottle Type is required.")]
-    )
+    type = SelectField("Bottle Type:", validators=[InputRequired("Bottle Type is required.")])
     distilleries = Select2Field(
         "Distilleries",
         choices=[],
@@ -140,25 +130,13 @@ class BottleAddForm(FlaskForm):
     personal_note = TextAreaField("Personal Note:", validators=[Length(0, 65000)])
     review = TextAreaField("Review:", validators=[Length(0, 65000)])
 
-    date_purchased = DateField(
-        "Date Purchased:", validators=[Optional(), validate_bottle_purchased_date]
-    )
-    date_opened = DateField(
-        "Date Opened:", validators=[Optional(), validate_bottle_opened_date]
-    )
-    date_killed = DateField(
-        "Date Killed:", validators=[Optional(), validate_bottle_killed_date]
-    )
+    date_purchased = DateField("Date Purchased:", validators=[Optional(), validate_bottle_purchased_date])
+    date_opened = DateField("Date Opened:", validators=[Optional(), validate_bottle_opened_date])
+    date_killed = DateField("Date Killed:", validators=[Optional(), validate_bottle_killed_date])
 
-    bottle_image_1 = FileField(
-        "Image 1:", validators=[FileAllowed(["jpg", "jpeg", "png"], IMG_MESSAGE)]
-    )
-    bottle_image_2 = FileField(
-        "Image 2:", validators=[FileAllowed(["jpg", "jpeg", "png"], IMG_MESSAGE)]
-    )
-    bottle_image_3 = FileField(
-        "Image 3:", validators=[FileAllowed(["jpg", "jpeg", "png"], IMG_MESSAGE)]
-    )
+    bottle_image_1 = FileField("Image 1:", validators=[FileAllowed(["jpg", "jpeg", "png"], IMG_MESSAGE)])
+    bottle_image_2 = FileField("Image 2:", validators=[FileAllowed(["jpg", "jpeg", "png"], IMG_MESSAGE)])
+    bottle_image_3 = FileField("Image 3:", validators=[FileAllowed(["jpg", "jpeg", "png"], IMG_MESSAGE)])
 
     # Serialized JSON order from the drop zone widget; empty when JS is disabled.
     image_order = HiddenField()

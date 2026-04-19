@@ -1,9 +1,10 @@
 from typing import Any, Dict, List, Tuple
 
 from flask_login import current_user
+from sqlalchemy import func, select
+
 from mywhiskies.extensions import db
 from mywhiskies.models import Bottle, Distillery, User
-from sqlalchemy import func, select
 
 
 def get_index_counts() -> Dict[str, Any]:
@@ -17,9 +18,7 @@ def get_index_counts() -> Dict[str, Any]:
 
 
 def _get_user_count() -> int:
-    return db.session.execute(
-        select(func.count(User.id)).where(User.email_confirmed == 1)
-    ).scalar()
+    return db.session.execute(select(func.count(User.id)).where(User.email_confirmed == 1)).scalar()
 
 
 def _get_distillery_count() -> int:
@@ -46,10 +45,7 @@ def _get_bottle_type_counts() -> List[Tuple[str, int]]:
 
 
 def get_user_by_username(username: str) -> User:
-    if (
-        current_user.is_authenticated
-        and current_user.username.lower() == username.lower()
-    ):
+    if current_user.is_authenticated and current_user.username.lower() == username.lower():
         return current_user
     return db.one_or_404(db.select(User).filter_by(username=username))
 

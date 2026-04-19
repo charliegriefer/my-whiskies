@@ -27,6 +27,8 @@ def _is_safe_url(url: str) -> bool:
     """Return True if the URL is local (safe to redirect to)."""
     parsed = urlparse(url)
     return not parsed.netloc or parsed.netloc == urlparse(request.host_url).netloc
+
+
 _VALID_DIRS = {"asc", "desc"}
 _VALID_PER_PAGE = {25, 50, 100, 10000}
 
@@ -113,9 +115,7 @@ def bottle_random(username: str):
 @bottle_bp.route("/<username:username>/bottle/<uuid:bottle_uuid>", endpoint="detail_legacy")
 def bottle_legacy(username: str, bottle_uuid: UUID):
     _bottle = db.one_or_404(db.select(Bottle).filter_by(id=str(bottle_uuid)))
-    return redirect(
-        url_for("bottle.detail", username=username, user_num=_bottle.user_num), 301
-    )
+    return redirect(url_for("bottle.detail", username=username, user_num=_bottle.user_num), 301)
 
 
 @bottle_bp.route("/<username:username>/bottle/<paddedint:user_num>", endpoint="detail")
@@ -131,9 +131,7 @@ def bottle(username: str, user_num: int):
             abort(404)
 
     g.bottle_og_image_url = (
-        f"{img_s3_url}/{_bottle.id}_1.jpg"
-        if _bottle.images
-        else url_for("static", filename="logo.png", _external=True)
+        f"{img_s3_url}/{_bottle.id}_1.jpg" if _bottle.images else url_for("static", filename="logo.png", _external=True)
     )
 
     return render_template(
@@ -208,9 +206,7 @@ def bottle_edit(username: str, user_num: int):
     )
 
 
-@bottle_bp.route(
-    "/<username:username>/bottle/<paddedint:user_num>/delete", endpoint="delete"
-)
+@bottle_bp.route("/<username:username>/bottle/<paddedint:user_num>/delete", endpoint="delete")
 @login_required
 def bottle_delete(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))

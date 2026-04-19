@@ -1,5 +1,6 @@
 from flask import url_for
 from flask.testing import FlaskClient
+
 from mywhiskies.models import User
 from tests.conftest import expected_page_title
 
@@ -20,9 +21,7 @@ def test_bottler_list(client: FlaskClient, test_user_01: User):
             assert bottler.url in response_data
 
 
-def test_bottler_list_logged_in_elements(
-    logged_in_user_01: FlaskClient, test_user_01: User, test_user_02: User
-):
+def test_bottler_list_logged_in_elements(logged_in_user_01: FlaskClient, test_user_01: User, test_user_02: User):
     client = logged_in_user_01
 
     # get the bottler list page for another user.

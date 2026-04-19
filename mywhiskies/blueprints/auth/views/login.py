@@ -36,8 +36,7 @@ def login():
 
         if user is None or not validate_password(user, form.password.data):
             current_app.logger.warning(
-                f"Invalid login attempt for username '{form.username.data}' "
-                f"from IP {request.remote_addr}"
+                f"Invalid login attempt for username '{form.username.data}' from IP {request.remote_addr}"
             )
             flash("The username and password combination is not recognized.", "danger")
             return redirect(url_for("auth.login"))

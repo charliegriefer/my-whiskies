@@ -1,5 +1,6 @@
 import pytest
 from flask import Flask
+
 from mywhiskies.extensions import db
 from mywhiskies.models import Bottle, BottleTypes, User
 

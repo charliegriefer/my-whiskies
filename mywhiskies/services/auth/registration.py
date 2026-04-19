@@ -37,11 +37,9 @@ def flash_registration_instructions() -> None:
 
 
 def flash_email_verification_error() -> None:
-    link = f"<a href=\"{url_for('auth.resend_register')}\">click here</a>"
+    link = f'<a href="{url_for("auth.resend_register")}">click here</a>'
     flash(
-        Markup(
-            f"There was a problem confirming your registration. Please {link} to re-send the email."
-        ),
+        Markup(f"There was a problem confirming your registration. Please {link} to re-send the email."),
         "danger",
     )
 

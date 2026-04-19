@@ -46,9 +46,7 @@ def list_distilleries(
         distilleries = [d for d in distilleries if q.lower() in d.name.lower()]
 
     total = len(distilleries)
-    distilleries.sort(
-        key=_SORT_FNS.get(sort, _SORT_FNS["name"]), reverse=(direction == "desc")
-    )
+    distilleries.sort(key=_SORT_FNS.get(sort, _SORT_FNS["name"]), reverse=(direction == "desc"))
 
     total_pages = max(1, (total + per_page - 1) // per_page)
     page = min(page, total_pages)
@@ -68,9 +66,7 @@ def add_distillery(form: DistilleryAddForm, user: User) -> None:
     form.populate_obj(distillery_in)
     db.session.add(distillery_in)
     db.session.commit()
-    current_app.logger.info(
-        f"{user.username} added distillery {distillery_in.name} successfully."
-    )
+    current_app.logger.info(f"{user.username} added distillery {distillery_in.name} successfully.")
     flash(f'Distillery "{distillery_in.name}" has been successfully added.', "success")
 
 
@@ -78,9 +74,7 @@ def edit_distillery(form: DistilleryEditForm, distillery: Distillery) -> None:
     form.populate_obj(distillery)
     db.session.add(distillery)
     db.session.commit()
-    current_app.logger.info(
-        f"{distillery.user.username} edited distillery {distillery.name} successfully."
-    )
+    current_app.logger.info(f"{distillery.user.username} edited distillery {distillery.name} successfully.")
     flash(f'Distillery "{distillery.name}" has been successfully updated.', "success")
 
 
@@ -97,11 +91,5 @@ def delete_distillery(user: User, distillery: Distillery) -> None:
     else:
         db.session.delete(distillery)
         db.session.commit()
-        current_app.logger.info(
-            f"{user.username} deleted distillery {distillery.name} successfully."
-        )
-        flash(
-            f'Distillery "{distillery.name}" has been successfully deleted.', "success"
-        )
-
-
+        current_app.logger.info(f"{user.username} deleted distillery {distillery.name} successfully.")
+        flash(f'Distillery "{distillery.name}" has been successfully deleted.', "success")

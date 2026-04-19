@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 from mywhiskies.blueprints.bottler import bottler_bp
 from mywhiskies.extensions import db
 from mywhiskies.forms.bottler import BottlerAddForm, BottlerEditForm
-from mywhiskies.models import Bottle, BottleTypes, Bottler, User
+from mywhiskies.models import Bottler, BottleTypes, User
 from mywhiskies.services import utils
 from mywhiskies.services.bottle.bottle import list_bottles_for_entity
 from mywhiskies.services.bottler.bottler import (
@@ -77,9 +77,7 @@ def bottlers(username: str):
 @bottler_bp.route("/<username:username>/bottler/<uuid:bottler_uuid>", endpoint="detail_legacy")
 def bottler_legacy(username: str, bottler_uuid: UUID):
     _bottler = db.one_or_404(db.select(Bottler).filter_by(id=str(bottler_uuid)))
-    return redirect(
-        url_for("bottler.detail", username=username, user_num=_bottler.user_num), 301
-    )
+    return redirect(url_for("bottler.detail", username=username, user_num=_bottler.user_num), 301)
 
 
 @bottler_bp.route(
@@ -199,9 +197,7 @@ def bottler_edit(username: str, user_num: int):
     )
 
 
-@bottler_bp.route(
-    "/<username:username>/bottler/<paddedint:user_num>/delete", endpoint="delete"
-)
+@bottler_bp.route("/<username:username>/bottler/<paddedint:user_num>/delete", endpoint="delete")
 @login_required
 def bottler_delete(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))

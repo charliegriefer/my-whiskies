@@ -41,6 +41,7 @@ python-dotenv==0.21.1
 pytz==2024.2
 PyYAML==6.0.2
 requests==2.33.1
+ruff==0.15.11
 s3transfer==0.16.0
 six==1.16.0
 SQLAlchemy==2.0.49

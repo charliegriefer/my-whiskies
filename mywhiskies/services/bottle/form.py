@@ -4,9 +4,7 @@ from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
 from mywhiskies.models import BottleTypes, User
 
 
-def prep_bottle_form(
-    user: User, form: Union[BottleAddForm, BottleEditForm]
-) -> Union[BottleAddForm, BottleEditForm]:
+def prep_bottle_form(user: User, form: Union[BottleAddForm, BottleEditForm]) -> Union[BottleAddForm, BottleEditForm]:
 
     _set_up_bottle_type(form)  # set up bottle type dropdown
     _set_up_distilleries(form, user)  # set up distilleries dropdown
@@ -19,15 +17,11 @@ def prep_bottle_form(
 def _set_up_bottle_type(form: Union[BottleAddForm, BottleEditForm]) -> None:
     form.type.choices = [(t.name, t.value) for t in BottleTypes]
     form.type.choices.sort()
-    form.type.choices.append(
-        form.type.choices.pop(form.type.choices.index(("OTHER", "Other")))
-    )
+    form.type.choices.append(form.type.choices.pop(form.type.choices.index(("OTHER", "Other"))))
     form.type.choices.insert(0, ("", "Choose a Bottle Type"))
 
 
-def _set_up_distilleries(
-    form: Union[BottleAddForm, BottleEditForm], user: User
-) -> None:
+def _set_up_distilleries(form: Union[BottleAddForm, BottleEditForm], user: User) -> None:
     distilleries = user.distilleries
     distilleries.sort(key=lambda d: d.name)
     form.distilleries.choices = [(d.id, d.name) for d in distilleries]

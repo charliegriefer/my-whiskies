@@ -9,9 +9,7 @@ from tests.conftest import TEST_USER_PASSWORD
 
 def test_valid_login_form(test_user_01: User) -> None:
     """Test that a valid login form passes validation."""
-    formdata = MultiDict(
-        {"username": test_user_01.username, "password": TEST_USER_PASSWORD}
-    )
+    formdata = MultiDict({"username": test_user_01.username, "password": TEST_USER_PASSWORD})
     form = LoginForm(formdata)
     assert form.validate()
 
@@ -41,10 +39,7 @@ def test_invalid_login(client: FlaskClient, test_user_01: User) -> None:
         follow_redirects=True,
     )
     assert response.status_code == 200
-    assert (
-        "The username and password combination is not recognized"
-        in response.get_data(as_text=True)
-    )
+    assert "The username and password combination is not recognized" in response.get_data(as_text=True)
 
 
 def test_valid_login(client: FlaskClient, test_user_01: User) -> None:

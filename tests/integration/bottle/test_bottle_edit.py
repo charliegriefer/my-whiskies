@@ -37,9 +37,7 @@ def test_edit_bottle_requires_login(client: FlaskClient, test_user_01: User) -> 
     assert bottle_name == test_user_01.bottles[0].name
 
 
-def test_edit_bottle_page_renders(
-    logged_in_user_01: FlaskClient, test_user_01: User
-) -> None:
+def test_edit_bottle_page_renders(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     """GET the edit page while logged in — ensures the form/widget renders without error."""
     bottle = test_user_01.bottles[0]
     response = logged_in_user_01.get(
@@ -50,16 +48,12 @@ def test_edit_bottle_page_renders(
 
 def test_valid_bottle_edit_form(test_user_01: User, mock_image: str) -> None:
     """Test the validation of a valid bottle edit form with image upload."""
-    bottle_to_edit = _get_bottle_by_name(
-        test_user_01.bottles, "Frey Ranch Straight Rye Whiskey"
-    )
+    bottle_to_edit = _get_bottle_by_name(test_user_01.bottles, "Frey Ranch Straight Rye Whiskey")
     bottle_orig = copy.deepcopy(bottle_to_edit.__dict__)
 
     # Create a FileStorage object from a mock image
     with open(mock_image, "rb") as f:
-        file_storage = FileStorage(
-            stream=f, filename="test_image.png", content_type="image/png"
-        )
+        file_storage = FileStorage(stream=f, filename="test_image.png", content_type="image/png")
         # Create form data for editing
         formdata = MultiDict(
             {
@@ -84,9 +78,7 @@ def test_valid_bottle_edit_form(test_user_01: User, mock_image: str) -> None:
 
         assert form.validate(), f"Form validation failed: {form.errors}"
 
-        with patch("boto3.client") as mock_boto_client, patch(
-            "PIL.Image.open"
-        ) as mock_image_open:
+        with patch("boto3.client") as mock_boto_client, patch("PIL.Image.open") as mock_image_open:
             mock_image_obj = MagicMock()
             mock_image_open.return_value = mock_image_obj
             mock_image_obj.width = 800
@@ -96,9 +88,7 @@ def test_valid_bottle_edit_form(test_user_01: User, mock_image: str) -> None:
             mock_boto_client.return_value = mock_s3_client
 
             # Ensure the distillery object is attached to the session
-            bottle_to_edit.distilleries = [
-                db.session.merge(d) for d in bottle_to_edit.distilleries
-            ]
+            bottle_to_edit.distilleries = [db.session.merge(d) for d in bottle_to_edit.distilleries]
 
             # Call the edit bottle function
             edit_bottle(form, bottle_to_edit)
@@ -113,9 +103,7 @@ def test_valid_bottle_edit_form(test_user_01: User, mock_image: str) -> None:
         assert bottle_orig.get("review") != bottle_to_edit.review
 
 
-def test_edit_not_my_bottle(
-    logged_in_user_01: FlaskClient, test_user_01: User, test_user_02: User
-) -> None:
+def test_edit_not_my_bottle(logged_in_user_01: FlaskClient, test_user_01: User, test_user_02: User) -> None:
     """A logged-in user should not be able to edit another user's bottle."""
     client = logged_in_user_01
     bottle = test_user_02.bottles[0]

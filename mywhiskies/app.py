@@ -40,9 +40,7 @@ class UsernameConverter(BaseConverter):
 
 def create_app(settings_override: dict = None, config_class: type = None) -> Flask:
     config_type = os.getenv("CONFIG_TYPE", "config.DevConfig")
-    config_class = config_class or (
-        DevConfig if config_type == "config.DevConfig" else ProdConfig
-    )
+    config_class = config_class or (DevConfig if config_type == "config.DevConfig" else ProdConfig)
 
     app = Flask(__name__, instance_relative_config=True)
     app.url_map.strict_slashes = False

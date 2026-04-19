@@ -9,11 +9,7 @@ from mywhiskies.models import User
 
 
 def find_user_for_password_reset(email: str) -> Optional[User]:
-    return (
-        db.session.execute(db.select(User).filter_by(email=email, is_deleted=False))
-        .scalars()
-        .first()
-    )
+    return db.session.execute(db.select(User).filter_by(email=email, is_deleted=False)).scalars().first()
 
 
 def verify_reset_password_token(token: str) -> Optional[User]:

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from mywhiskies.models import Bottle, User
+from mywhiskies.models import User
 from mywhiskies.services.core.core import get_index_counts, get_live_bottles_for_user
 
 

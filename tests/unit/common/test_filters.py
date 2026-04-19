@@ -1,6 +1,5 @@
 from datetime import date, datetime
 
-import pytest
 from markupsafe import Markup
 
 from mywhiskies.common.filters import (
@@ -11,8 +10,8 @@ from mywhiskies.common.filters import (
     yesno,
 )
 
-
 # --- yesno ---
+
 
 def test_yesno_true():
     assert yesno(True) == "Yes"
@@ -33,6 +32,7 @@ def test_yesno_truthy_values():
 
 
 # --- value_or_dash ---
+
 
 def test_value_or_dash_with_value():
     result = value_or_dash("hello")
@@ -64,6 +64,7 @@ def test_value_or_dash_escapes_html():
 
 # --- multiline_or_dash ---
 
+
 def test_multiline_or_dash_with_none():
     result = multiline_or_dash(None)
     assert "text-muted" in result
@@ -93,6 +94,7 @@ def test_multiline_or_dash_escapes_html():
 
 # --- date_or_dash ---
 
+
 def test_date_or_dash_with_none():
     result = date_or_dash(None)
     assert "text-muted" in result
@@ -120,6 +122,7 @@ def test_date_or_dash_with_invalid_type():
 
 
 # --- float_or_dash ---
+
 
 def test_float_or_dash_with_none():
     result = float_or_dash(None)

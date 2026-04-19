@@ -9,8 +9,6 @@ from mywhiskies.extensions import db
 from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
 from mywhiskies.models import Bottle, Bottler, Distillery, User
 from mywhiskies.services.bottle.image import (
-    add_bottle_images,
-    delete_bottle_images,
     get_s3_config,
     process_bottle_images,
 )
@@ -38,9 +36,7 @@ def _make_groups(bottles: list) -> list:
     """Group bottles by (name, type) into dicts with aggregate display values."""
     bottles_sorted = sorted(bottles, key=lambda b: (b.name.lower(), b.type.name))
     groups = []
-    for _, group_iter in groupby(
-        bottles_sorted, key=lambda b: (b.name.lower(), b.type.name)
-    ):
+    for _, group_iter in groupby(bottles_sorted, key=lambda b: (b.name.lower(), b.type.name)):
         items = list(group_iter)
         abvs = [float(b.abv) for b in items if b.abv]
         stars_vals = [float(b.stars) for b in items if b.stars]
@@ -88,7 +84,8 @@ def list_bottles_by_user(
     if q:
         q_lower = q.lower()
         bottles = [
-            b for b in bottles
+            b
+            for b in bottles
             if q_lower in b.name.lower()
             or (b.description and q_lower in b.description.lower())
             or (b.bottler and q_lower in b.bottler.name.lower())
@@ -147,7 +144,8 @@ def list_bottles_for_entity(
     if q:
         q_lower = q.lower()
         bottles = [
-            b for b in bottles
+            b
+            for b in bottles
             if q_lower in b.name.lower()
             or (b.description and q_lower in b.description.lower())
             or (b.bottler and q_lower in b.bottler.name.lower())
@@ -189,7 +187,8 @@ def get_random_bottle(
     if q:
         q_lower = q.lower()
         bottles = [
-            b for b in bottles
+            b
+            for b in bottles
             if q_lower in b.name.lower()
             or (b.description and q_lower in b.description.lower())
             or (b.bottler and q_lower in b.bottler.name.lower())
@@ -198,14 +197,9 @@ def get_random_bottle(
     return random.choice(bottles) if bottles else None
 
 
-def set_bottle_details(
-    form: BottleAddForm, bottle: Optional[Bottle] = None, user: Optional[User] = None
-) -> Bottle:
+def set_bottle_details(form: BottleAddForm, bottle: Optional[Bottle] = None, user: Optional[User] = None) -> Bottle:
     """Update or create a bottle's details from the form data."""
-    distilleries = [
-        db.session.get(Distillery, distillery_id)
-        for distillery_id in form.distilleries.data
-    ]
+    distilleries = [db.session.get(Distillery, distillery_id) for distillery_id in form.distilleries.data]
     bottler_id = form.bottler_id.data if form.bottler_id.data != "0" else None
     if bottle is None:
         bottle = Bottle(user_id=user.id)
@@ -264,9 +258,7 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
         return
 
     flash(f'"{bottle.name}" has been successfully updated.', "success")
-    current_app.logger.info(
-        f"{bottle.user.username} edited bottle {bottle.name} successfully."
-    )
+    current_app.logger.info(f"{bottle.user.username} edited bottle {bottle.name} successfully.")
 
 
 def delete_bottle(user: User, bottle: Bottle) -> None:
@@ -286,7 +278,5 @@ def delete_bottle(user: User, bottle: Bottle) -> None:
 
     db.session.delete(bottle)
     db.session.commit()
-    current_app.logger.info(
-        f"{user.username} deleted bottle {bottle.name} successfully."
-    )
+    current_app.logger.info(f"{user.username} deleted bottle {bottle.name} successfully.")
     flash("Bottle deleted successfully", "success")

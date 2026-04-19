@@ -76,17 +76,11 @@ def distilleries(username: str):
         per_page=per_page,
     )
 
-    empty_text = (
-        "No distilleries match your search."
-        if q
-        else f"{user.username} has no distilleries. Yet."
-    )
+    empty_text = "No distilleries match your search." if q else f"{user.username} has no distilleries. Yet."
     if data["total"] > 0:
         empty_text = ""
 
-    possessive = (
-        f"{user.username}'" if user.username.endswith("s") else f"{user.username}'s"
-    )
+    possessive = f"{user.username}'" if user.username.endswith("s") else f"{user.username}'s"
     ctx = dict(
         title=f"{possessive} Whiskies: Distilleries",
         heading_01=f"{possessive} Whiskies",
@@ -112,9 +106,7 @@ def distilleries(username: str):
 )
 def distillery_legacy(username: str, distillery_uuid: UUID):
     _distillery = db.one_or_404(db.select(Distillery).filter_by(id=str(distillery_uuid)))
-    return redirect(
-        url_for("distillery.detail", username=username, user_num=_distillery.user_num), 301
-    )
+    return redirect(url_for("distillery.detail", username=username, user_num=_distillery.user_num), 301)
 
 
 @distillery_bp.route(
@@ -124,9 +116,7 @@ def distillery_legacy(username: str, distillery_uuid: UUID):
 )
 def distillery_detail(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
-    _distillery = db.one_or_404(
-        db.select(Distillery).filter_by(user_id=user.id, user_num=user_num)
-    )
+    _distillery = db.one_or_404(db.select(Distillery).filter_by(user_id=user.id, user_num=user_num))
     _is_my_list = utils.is_my_list(username, current_user)
 
     all_type_names = [b.name for b in BottleTypes]
@@ -221,9 +211,7 @@ def distillery_edit(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
     if user.id != current_user.id:
         abort(403)
-    distillery = db.one_or_404(
-        db.select(Distillery).filter_by(user_id=user.id, user_num=user_num)
-    )
+    distillery = db.one_or_404(db.select(Distillery).filter_by(user_id=user.id, user_num=user_num))
     form = DistilleryEditForm(obj=distillery if request.method != "POST" else None)
 
     if form.validate_on_submit():
@@ -238,14 +226,10 @@ def distillery_edit(username: str, user_num: int):
     )
 
 
-@distillery_bp.route(
-    "/<username:username>/distillery/<paddedint:user_num>/delete", endpoint="delete"
-)
+@distillery_bp.route("/<username:username>/distillery/<paddedint:user_num>/delete", endpoint="delete")
 @login_required
 def distillery_delete(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
-    distillery = db.one_or_404(
-        db.select(Distillery).filter_by(user_id=user.id, user_num=user_num)
-    )
+    distillery = db.one_or_404(db.select(Distillery).filter_by(user_id=user.id, user_num=user_num))
     delete_distillery(current_user, distillery)
     return redirect(url_for("distillery.list", username=current_user.username))

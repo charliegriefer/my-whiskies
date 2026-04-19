@@ -66,11 +66,7 @@ def process_bottle_images(form, bottle: Bottle) -> Tuple[bool, Optional[str]]:
 
     # Build map of current existing images.
     existing_map = {img.id: img for img in bottle.images}
-    keep_ids = {
-        item["id"]
-        for item in image_order
-        if item.get("type") == "existing" and item.get("id")
-    }
+    keep_ids = {item["id"] for item in image_order if item.get("type") == "existing" and item.get("id")}
 
     # Delete images that are no longer in the order.
     for img_id, img in list(existing_map.items()):
@@ -273,10 +269,7 @@ def delete_bottle_images(bottle, image_ids=None):
 
     # Resequence remaining images (fetch fresh from DB)
     remaining_images = (
-        db.session.query(BottleImage)
-        .filter(BottleImage.bottle_id == bottle.id)
-        .order_by(BottleImage.sequence)
-        .all()
+        db.session.query(BottleImage).filter(BottleImage.bottle_id == bottle.id).order_by(BottleImage.sequence).all()
     )
 
     for new_seq, img in enumerate(remaining_images, start=1):

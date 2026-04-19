@@ -15,13 +15,9 @@ new_distillery_formdata = MultiDict(
 )
 
 
-def test_add_distillery_page_renders(
-    logged_in_user_01: FlaskClient, test_user_01: User
-) -> None:
+def test_add_distillery_page_renders(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     """GET the add page while logged in — ensures the form renders without error."""
-    response = logged_in_user_01.get(
-        url_for("distillery.add", username=test_user_01.username)
-    )
+    response = logged_in_user_01.get(url_for("distillery.add", username=test_user_01.username))
     assert response.status_code == 200
 
 
@@ -55,15 +51,10 @@ def test_add_distillery(logged_in_user_01: FlaskClient, test_user_01: User) -> N
 
     # Check that the user is redirected to the home page
     assert response.status_code == 200
-    assert (
-        url_for("distillery.list", username=test_user_01.username)
-        in response.request.url
-    )
+    assert url_for("distillery.list", username=test_user_01.username) in response.request.url
 
     # Check that the flash message is in the response data
     distillery_name = new_distillery_formdata["name"]
-    assert f'"{distillery_name}" has been successfully added.' in response.get_data(
-        as_text=True
-    )
+    assert f'"{distillery_name}" has been successfully added.' in response.get_data(as_text=True)
 
     assert len(test_user_01.distilleries) == user_distilleries_count + 1

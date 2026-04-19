@@ -29,9 +29,7 @@ def request_entity_too_large(error):
 @errors.app_errorhandler(500)
 def internal_error(error):
     db.session.rollback()
-    current_app.logger.error(
-        f"500 Internal Server Error at {request.path}: {error}", exc_info=True
-    )
+    current_app.logger.error(f"500 Internal Server Error at {request.path}: {error}", exc_info=True)
     return render_template("errors/500.html"), 500
 
 

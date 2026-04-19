@@ -1,5 +1,6 @@
 from flask import url_for
 from flask.testing import FlaskClient
+
 from mywhiskies.models import User
 
 
@@ -16,9 +17,7 @@ def test_distillery_detail_no_bottles(client: FlaskClient, test_user_02: User) -
     """
     distillery = _get_ironroot(test_user_02)
 
-    response = client.get(
-        url_for("distillery.detail", username=test_user_02.username, user_num=distillery.user_num)
-    )
+    response = client.get(url_for("distillery.detail", username=test_user_02.username, user_num=distillery.user_num))
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "Ironroot Republic" in response_data
@@ -39,9 +38,7 @@ def test_distillery_detail_has_bottle(client: FlaskClient, test_user_01: User) -
     """
     distillery = _get_frey_ranch(test_user_01)
 
-    response = client.get(
-        url_for("distillery.detail", username=test_user_01.username, user_num=distillery.user_num)
-    )
+    response = client.get(url_for("distillery.detail", username=test_user_01.username, user_num=distillery.user_num))
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "Frey Ranch" in response_data
@@ -49,9 +46,7 @@ def test_distillery_detail_has_bottle(client: FlaskClient, test_user_01: User) -
     assert "Random Bottle" not in response_data
 
 
-def test_distillery_detail_no_bottles_my_distillery(
-    logged_in_user_02: FlaskClient, test_user_02: User
-) -> None:
+def test_distillery_detail_no_bottles_my_distillery(logged_in_user_02: FlaskClient, test_user_02: User) -> None:
     """
     A logged-in user viewing one of their own distilleries with no bottles.
 
@@ -70,15 +65,10 @@ def test_distillery_detail_no_bottles_my_distillery(
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "Ironroot Republic" in response_data
-    assert (
-        f"{test_user_02.username} has no bottles from Ironroot Republic"
-        in response_data
-    )
+    assert f"{test_user_02.username} has no bottles from Ironroot Republic" in response_data
 
 
-def test_distillery_detail_bottles_my_distillery(
-    logged_in_user_01: FlaskClient, test_user_01: User
-) -> None:
+def test_distillery_detail_bottles_my_distillery(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     """
     A logged-in user viewing one of their own distilleries with a bottle.
 

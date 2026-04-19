@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict
 
 from flask import current_app, flash
 
@@ -48,18 +48,14 @@ def add_bottler(form: BottlerAddForm, user: User) -> None:
     form.populate_obj(bottler_in)
     db.session.add(bottler_in)
     db.session.commit()
-    current_app.logger.info(
-        f"{user.username} added bottler {bottler_in.name} successfully."
-    )
+    current_app.logger.info(f"{user.username} added bottler {bottler_in.name} successfully.")
     flash(f'"{bottler_in.name}" has been successfully added.', "success")
 
 
 def edit_bottler(form: BottlerEditForm, bottler: Bottler) -> None:
     form.populate_obj(bottler)
     db.session.commit()
-    current_app.logger.info(
-        f"{bottler.user.username} edited bottler {bottler.name} successfully."
-    )
+    current_app.logger.info(f"{bottler.user.username} edited bottler {bottler.name} successfully.")
     flash(f'"{bottler.name}" has been successfully updated.', "success")
 
 
@@ -76,9 +72,5 @@ def delete_bottler(user: User, bottler: Bottler) -> None:
     else:
         db.session.delete(bottler)
         db.session.commit()
-        current_app.logger.info(
-            f"{user.username} deleted bottle {bottler.name} successfully."
-        )
+        current_app.logger.info(f"{user.username} deleted bottle {bottler.name} successfully.")
         flash(f'"{bottler.name}" has been successfully deleted.', "success")
-
-

@@ -25,6 +25,7 @@ Note:
 -----
 - FLASK_ENV is deprecated in Flask 2.3+. Consider migrating to FLASK_DEBUG or FLASK_CONFIG in the future.
 """
+
 import argparse
 import os
 import re
@@ -40,9 +41,7 @@ from mywhiskies.services.bottle.image import get_s3_config
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(
-        ProdConfig if os.getenv("FLASK_ENV") == "production" else DevConfig
-    )
+    app.config.from_object(ProdConfig if os.getenv("FLASK_ENV") == "production" else DevConfig)
     db.init_app(app)
     return app
 
@@ -69,23 +68,17 @@ def clean_orphaned_images(app, dry_run=True):
                         orphaned_keys.append({"Key": key})
 
         if dry_run:
-            print(
-                f"\nDry run complete. {len(orphaned_keys)} orphaned images would be deleted."
-            )
+            print(f"\nDry run complete. {len(orphaned_keys)} orphaned images would be deleted.")
         else:
             for i in range(0, len(orphaned_keys), 1000):
-                batch = orphaned_keys[i: i + 1000]
+                batch = orphaned_keys[i : i + 1000]
                 print(f"Deleting {len(batch)} orphaned keys...")
                 s3.delete_objects(Bucket=bucket, Delete={"Objects": batch})
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Clean orphaned bottle images from S3."
-    )
-    parser.add_argument(
-        "--nuke", action="store_true", help="Actually delete orphaned images."
-    )
+    parser = argparse.ArgumentParser(description="Clean orphaned bottle images from S3.")
+    parser.add_argument("--nuke", action="store_true", help="Actually delete orphaned images.")
     args = parser.parse_args()
 
     app = create_app()

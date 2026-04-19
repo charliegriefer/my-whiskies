@@ -7,10 +7,11 @@ import pytest
 from flask import Flask, url_for
 from flask.testing import FlaskClient
 from flask_login import logout_user
+from sqlalchemy.orm import scoped_session, sessionmaker
+
 from mywhiskies.database import init_db
 from mywhiskies.extensions import db
 from mywhiskies.models import Bottle, Bottler, Distillery, User
-from sqlalchemy.orm import scoped_session, sessionmaker
 
 # Ensure the parent directory is added to the system path before imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -192,7 +193,8 @@ def test_user_02() -> "User":  # noqa: F821
 
 @pytest.fixture
 def logged_in_user_01(
-    client: FlaskClient, test_user_01: "User"  # noqa: F821
+    client: FlaskClient,
+    test_user_01: "User",  # noqa: F821
 ) -> FlaskClient:
     """Log in test_user_01 and return the logged-in client."""
     client.post(
@@ -207,7 +209,8 @@ def logged_in_user_01(
 
 @pytest.fixture
 def logged_in_user_02(
-    client: FlaskClient, test_user_02: "User"  # noqa: F821
+    client: FlaskClient,
+    test_user_02: "User",  # noqa: F821
 ) -> FlaskClient:
     """Log in test_user_02 and return the logged-in client."""
     client.post(

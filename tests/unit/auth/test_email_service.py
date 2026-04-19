@@ -8,9 +8,7 @@ from mywhiskies.services.auth.email import (
 
 
 @patch("mywhiskies.services.auth.email.send_email")
-def test_send_registration_confirmation_email(
-    mock_send_email: MagicMock, test_user_01: User
-) -> None:
+def test_send_registration_confirmation_email(mock_send_email: MagicMock, test_user_01: User) -> None:
     send_registration_confirmation_email(test_user_01)
     mock_send_email.assert_called_once_with(
         "Please Confirm Your Email",
@@ -22,9 +20,7 @@ def test_send_registration_confirmation_email(
 
 
 @patch("mywhiskies.services.auth.email.send_email")
-def test_send_password_reset_email(
-    mock_send_email: MagicMock, test_user_01: User
-) -> None:
+def test_send_password_reset_email(mock_send_email: MagicMock, test_user_01: User) -> None:
     send_password_reset_email(test_user_01)
     mock_send_email.assert_called_once_with(
         "[My Whiskies Online] Reset Your Password",

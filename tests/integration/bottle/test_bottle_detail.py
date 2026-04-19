@@ -1,5 +1,6 @@
 from flask import url_for
 from flask.testing import FlaskClient
+
 from mywhiskies.models import User
 
 
@@ -16,15 +17,11 @@ def test_private_bottle_logged_out(client: FlaskClient, test_user_01: User) -> N
     """
     bottle = _get_ironroot_bottle(test_user_01)
 
-    response = client.get(
-        url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num)
-    )
+    response = client.get(url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num))
     assert response.status_code == 404
 
 
-def test_private_bottle_logged_in(
-    logged_in_user_01: FlaskClient, test_user_01: User
-) -> None:
+def test_private_bottle_logged_in(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     """
     Ensure that a logged in user can view their own private bottle.
 
@@ -36,17 +33,13 @@ def test_private_bottle_logged_in(
         None
     """
     bottle = _get_ironroot_bottle(test_user_01)
-    response = logged_in_user_01.get(
-        url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num)
-    )
+    response = logged_in_user_01.get(url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num))
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "Private" in response_data
 
 
-def test_private_bottle_logged_in_not_my_bottle(
-    logged_in_user_02: FlaskClient, test_user_01: User
-) -> None:
+def test_private_bottle_logged_in_not_my_bottle(logged_in_user_02: FlaskClient, test_user_01: User) -> None:
     """
     Ensure that a logged in user cannot view another user's private bottle.
 
@@ -58,9 +51,7 @@ def test_private_bottle_logged_in_not_my_bottle(
         None
     """
     bottle = _get_ironroot_bottle(test_user_01)
-    response = logged_in_user_02.get(
-        url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num)
-    )
+    response = logged_in_user_02.get(url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num))
     assert response.status_code == 404
 
 
@@ -77,17 +68,13 @@ def test_personal_note_logged_out(client: FlaskClient, test_user_01: User) -> No
     """
     bottle = _get_frey_ranch_bottle(test_user_01)
 
-    response = client.get(
-        url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num)
-    )
+    response = client.get(url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num))
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "Personal Note" not in response_data
 
 
-def test_personal_note_logged_in(
-    logged_in_user_01: FlaskClient, test_user_01: User
-) -> None:
+def test_personal_note_logged_in(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     """
     Ensure that a logged in user can see their own bottle's "personal note".
 
@@ -100,17 +87,13 @@ def test_personal_note_logged_in(
     """
     bottle = _get_frey_ranch_bottle(test_user_01)
 
-    response = logged_in_user_01.get(
-        url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num)
-    )
+    response = logged_in_user_01.get(url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num))
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "Personal Note" in response_data
 
 
-def test_personal_note_logged_in_not_my_bottle(
-    logged_in_user_02: FlaskClient, test_user_01: User
-) -> None:
+def test_personal_note_logged_in_not_my_bottle(logged_in_user_02: FlaskClient, test_user_01: User) -> None:
     """
     Ensure that a logged in user cannot see another user's bottle's "personal note".
 
@@ -123,9 +106,7 @@ def test_personal_note_logged_in_not_my_bottle(
     """
     bottle = _get_frey_ranch_bottle(test_user_01)
 
-    response = logged_in_user_02.get(
-        url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num)
-    )
+    response = logged_in_user_02.get(url_for("bottle.detail", username=test_user_01.username, user_num=bottle.user_num))
     response_data = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "Personal Note" not in response_data

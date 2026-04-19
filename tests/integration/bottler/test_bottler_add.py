@@ -15,18 +15,14 @@ new_bottler_formdata = MultiDict(
 )
 
 
-def test_add_bottler_page_renders(
-    logged_in_user_01: FlaskClient, test_user_01: User
-) -> None:
+def test_add_bottler_page_renders(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     """GET the add page while logged in — ensures the form renders without error."""
     response = logged_in_user_01.get(url_for("bottler.add", username=test_user_01.username))
     assert response.status_code == 200
 
 
 def test_add_bottler_requires_login(client: FlaskClient) -> None:
-    response = client.get(
-        url_for("bottler.add", username="skibidi"), follow_redirects=False
-    )
+    response = client.get(url_for("bottler.add", username="skibidi"), follow_redirects=False)
     assert response.status_code == 302
     assert url_for("auth.login", _external=False) in response.headers["Location"]
 
@@ -56,8 +52,6 @@ def test_add_bottler(logged_in_user_01: FlaskClient, test_user_01: User) -> None
 
     # Check that the flash message is in the response data
     bottler_name = new_bottler_formdata["name"]
-    assert f'"{bottler_name}" has been successfully added.' in response.get_data(
-        as_text=True
-    )
+    assert f'"{bottler_name}" has been successfully added.' in response.get_data(as_text=True)
 
     assert len(test_user_01.bottlers) == user_bottlers_count + 1

@@ -2,13 +2,12 @@ import io
 from unittest.mock import MagicMock, patch
 
 import pytest
+from botocore.exceptions import ClientError
 from flask import Flask
 from PIL import Image
 
 from mywhiskies.extensions import db
 from mywhiskies.models import Bottle, BottleImage, BottleTypes, User
-from botocore.exceptions import ClientError
-
 from mywhiskies.services.bottle.image import (
     _to_resized_jpg_bytes,
     add_bottle_images,
@@ -20,6 +19,7 @@ DISPLAY_MAX = 1600
 
 
 # --- helpers ---
+
 
 def _make_image_file(width=200, height=200, mode="RGB") -> io.BytesIO:
     img = Image.new(mode, (width, height), color=(100, 150, 200))
@@ -62,6 +62,7 @@ def bottle_with_images(app: Flask, test_user_01: User) -> Bottle:
 
 # --- _to_resized_jpg_bytes ---
 
+
 def test_to_resized_jpg_bytes_returns_jpeg(app: Flask) -> None:
     result = _to_resized_jpg_bytes(_make_image_file())
     # JPEG magic bytes
@@ -90,10 +91,9 @@ def test_to_resized_jpg_bytes_handles_rgba(app: Flask) -> None:
 
 # --- resequence_bottle_images ---
 
+
 @patch("mywhiskies.services.bottle.image.boto3.client")
-def test_resequence_no_changes_when_already_sequential(
-    mock_boto: MagicMock, bottle_with_images: Bottle
-) -> None:
+def test_resequence_no_changes_when_already_sequential(mock_boto: MagicMock, bottle_with_images: Bottle) -> None:
     mock_s3 = MagicMock()
     mock_boto.return_value = mock_s3
 
@@ -104,9 +104,7 @@ def test_resequence_no_changes_when_already_sequential(
 
 
 @patch("mywhiskies.services.bottle.image.boto3.client")
-def test_resequence_fixes_gap_in_sequences(
-    mock_boto: MagicMock, app: Flask, test_user_01: User
-) -> None:
+def test_resequence_fixes_gap_in_sequences(mock_boto: MagicMock, app: Flask, test_user_01: User) -> None:
     mock_s3 = MagicMock()
     mock_boto.return_value = mock_s3
 
@@ -134,47 +132,35 @@ def test_resequence_fixes_gap_in_sequences(
 
 # --- delete_bottle_images ---
 
+
 @patch("mywhiskies.services.bottle.image.boto3.client")
-def test_delete_all_images(
-    mock_boto: MagicMock, bottle_with_images: Bottle
-) -> None:
+def test_delete_all_images(mock_boto: MagicMock, bottle_with_images: Bottle) -> None:
     mock_s3 = MagicMock()
     mock_boto.return_value = mock_s3
 
     delete_bottle_images(bottle_with_images)
 
-    remaining = (
-        db.session.query(BottleImage)
-        .filter(BottleImage.bottle_id == bottle_with_images.id)
-        .all()
-    )
+    remaining = db.session.query(BottleImage).filter(BottleImage.bottle_id == bottle_with_images.id).all()
     assert len(remaining) == 0
 
 
 @patch("mywhiskies.services.bottle.image.boto3.client")
-def test_delete_specific_image(
-    mock_boto: MagicMock, bottle_with_images: Bottle
-) -> None:
+def test_delete_specific_image(mock_boto: MagicMock, bottle_with_images: Bottle) -> None:
     mock_s3 = MagicMock()
     mock_boto.return_value = mock_s3
 
     image_to_delete = bottle_with_images.images[0]
     delete_bottle_images(bottle_with_images, image_ids=[image_to_delete.id])
 
-    remaining = (
-        db.session.query(BottleImage)
-        .filter(BottleImage.bottle_id == bottle_with_images.id)
-        .all()
-    )
+    remaining = db.session.query(BottleImage).filter(BottleImage.bottle_id == bottle_with_images.id).all()
     assert len(remaining) == 2
 
 
 # --- add_bottle_images: S3 error path ---
 
+
 @patch("mywhiskies.services.bottle.image.boto3.client")
-def test_add_bottle_images_returns_false_on_s3_error(
-    mock_boto: MagicMock, app: Flask, test_user_01: User
-) -> None:
+def test_add_bottle_images_returns_false_on_s3_error(mock_boto: MagicMock, app: Flask, test_user_01: User) -> None:
     mock_s3 = MagicMock()
     mock_s3.put_object.side_effect = ClientError(
         {"Error": {"Code": "NoSuchBucket", "Message": "Bucket not found"}}, "PutObject"
@@ -190,10 +176,9 @@ def test_add_bottle_images_returns_false_on_s3_error(
     db.session.commit()
 
     form = MagicMock()
-    form.__getitem__ = MagicMock(side_effect=lambda key: (
-        MagicMock(data=_make_image_file()) if key == "bottle_image_1"
-        else MagicMock(data=None)
-    ))
+    form.__getitem__ = MagicMock(
+        side_effect=lambda key: MagicMock(data=_make_image_file()) if key == "bottle_image_1" else MagicMock(data=None)
+    )
 
     result = add_bottle_images(form, bottle)
     assert result is False

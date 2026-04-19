@@ -2,8 +2,8 @@ from unittest.mock import MagicMock
 
 from mywhiskies.services.utils import get_flash_msg, is_my_list
 
-
 # --- is_my_list ---
+
 
 def test_is_my_list_authenticated_matching_username(test_user_01) -> None:
     current_user = MagicMock()
@@ -37,6 +37,7 @@ def test_is_my_list_not_authenticated(test_user_01) -> None:
 
 
 # --- get_flash_msg ---
+
 
 def test_get_flash_msg_with_field_errors() -> None:
     form = MagicMock()

@@ -13,6 +13,7 @@ from datetime import datetime
 
 import boto3
 from flask import current_app
+
 from mywhiskies.extensions import db
 from mywhiskies.models import Bottle, BottleImage
 
@@ -55,24 +56,18 @@ try:
         for obj in response["Contents"]:
             try:
                 # Parse bottle ID and sequence from key
-                if match := re.match(
-                    rf"{s3_key_prefix}/([a-f0-9-]+)_(\d+)\.png", obj["Key"]
-                ):
+                if match := re.match(rf"{s3_key_prefix}/([a-f0-9-]+)_(\d+)\.png", obj["Key"]):
                     bottle_id, sequence = match.groups()
 
                     # Check if bottle exists
                     bottle = db.session.query(Bottle).filter_by(id=bottle_id).first()
                     if not bottle:
-                        print(
-                            f"  - Skipping {obj['Key']}: Bottle {bottle_id} not found"
-                        )
+                        print(f"  - Skipping {obj['Key']}: Bottle {bottle_id} not found")
                         continue
 
                     # Check if record already exists
                     existing = (
-                        db.session.query(BottleImage)
-                        .filter_by(bottle_id=bottle_id, sequence=int(sequence))
-                        .first()
+                        db.session.query(BottleImage).filter_by(bottle_id=bottle_id, sequence=int(sequence)).first()
                     )
 
                     if existing:
@@ -103,9 +98,7 @@ try:
 
         # Final stats
         print(f"Processed {processed} images with {errors} errors")
-        print(
-            f"Current bottle_image records after import: {db.session.query(BottleImage).count()}"
-        )
+        print(f"Current bottle_image records after import: {db.session.query(BottleImage).count()}")
 except Exception as e:
     print(f"Error: {str(e)}")
     # Rollback if needed

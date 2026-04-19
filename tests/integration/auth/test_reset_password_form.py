@@ -9,14 +9,10 @@ from mywhiskies.models import User
 from tests.conftest import TEST_USER_PASSWORD
 
 
-def test_reset_password_valid_token(
-    app: Flask, client: FlaskClient, test_user_01: User
-) -> None:
+def test_reset_password_valid_token(app: Flask, client: FlaskClient, test_user_01: User) -> None:
     with app.app_context():
         response = client.post(
-            url_for(
-                "auth.reset_password", token=test_user_01.get_reset_password_token()
-            ),
+            url_for("auth.reset_password", token=test_user_01.get_reset_password_token()),
             data={"password": "NewPassword123", "password2": "NewPassword123"},
             follow_redirects=True,
         )
@@ -24,11 +20,7 @@ def test_reset_password_valid_token(
         assert "Your password has been reset" in response.get_data(as_text=True)
 
         # verify the password has been updated
-        user = (
-            db.session.execute(select(User).filter_by(username=test_user_01.username))
-            .scalars()
-            .first()
-        )
+        user = db.session.execute(select(User).filter_by(username=test_user_01.username)).scalars().first()
         assert user.check_password("NewPassword123")
         assert not user.check_password(TEST_USER_PASSWORD)
 
@@ -39,9 +31,7 @@ def test_valid_password_reset() -> None:
     assert form.validate()
 
 
-def assert_invalid_password_reset(
-    password: str, password2: str, expected_error: str, field_name: str
-) -> None:
+def assert_invalid_password_reset(password: str, password2: str, expected_error: str, field_name: str) -> None:
     formdata = MultiDict({"password": password, "password2": password2})
     form = ResetPWForm(formdata)
     assert not form.validate()

@@ -1,5 +1,6 @@
 from flask import url_for
 from flask.testing import FlaskClient
+
 from mywhiskies.models import User
 
 
@@ -9,9 +10,7 @@ def test_account_requires_login(client: FlaskClient) -> None:
     assert url_for("auth.login") in response.headers["Location"]
 
 
-def test_account_shows_user_info(
-    logged_in_user_01: FlaskClient, test_user_01: User
-) -> None:
+def test_account_shows_user_info(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     response = logged_in_user_01.get(url_for("user.account"))
     response_data = response.get_data(as_text=True)
 

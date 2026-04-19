@@ -18,9 +18,7 @@ class CustomSMTPHandler(SMTPHandler):
         secure=None,
         timeout=5.0,
     ):
-        super().__init__(
-            mailhost, fromaddr, toaddrs, subject, credentials, secure, timeout
-        )
+        super().__init__(mailhost, fromaddr, toaddrs, subject, credentials, secure, timeout)
         self.credentials = credentials
 
     def emit(self, record):
@@ -28,9 +26,7 @@ class CustomSMTPHandler(SMTPHandler):
             message = self.format(record)
             subject = f"My Whiskies Error: {record.levelname} at {record.pathname}"
 
-            with smtplib.SMTP_SSL(
-                self.mailhost, self.mailport, timeout=self.timeout
-            ) as smtp:
+            with smtplib.SMTP_SSL(self.mailhost, self.mailport, timeout=self.timeout) as smtp:
                 if self.credentials:
                     smtp.login(*self.credentials)
                 msg = f"From: {self.fromaddr}\nTo: {', '.join(self.toaddrs)}\nSubject: {subject}\n\n{message}"

@@ -1,4 +1,5 @@
 from flask import url_for
+
 from mywhiskies.models import User
 from mywhiskies.services.auth.login import (
     check_email_confirmation,

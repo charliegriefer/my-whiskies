@@ -4,6 +4,7 @@ import requests
 from flask import current_app, request, url_for
 from flask_wtf import FlaskForm
 from markupsafe import Markup
+from sqlalchemy import func
 from wtforms import BooleanField, HiddenField, PasswordField, StringField, SubmitField
 from wtforms.fields import EmailField, Label
 from wtforms.validators import (
@@ -14,8 +15,6 @@ from wtforms.validators import (
     Length,
     ValidationError,
 )
-
-from sqlalchemy import func
 
 from mywhiskies.extensions import db
 from mywhiskies.models import User
@@ -51,12 +50,8 @@ class UsernameValidatorMixin:
         m = re.compile(r"^[a-zA-Z0-9_-]+$")
         if not m.match(username.data):
             error_message = "Username does not adhere to the specified requirements."
-        elif db.session.execute(
-            db.select(User).filter(func.lower(User.username) == username.data.lower())
-        ).first():
-            error_message = (
-                f'"{username.data}" is unavailable. Please choose a different username.'
-            )
+        elif db.session.execute(db.select(User).filter(func.lower(User.username) == username.data.lower())).first():
+            error_message = f'"{username.data}" is unavailable. Please choose a different username.'
         if username.data != self.username and len(error_message):
             raise ValidationError(error_message)
 
@@ -96,9 +91,7 @@ class ReCaptchaV3:
             error_msg = CAPTCHA_MESSAGE
 
         if not recaptcha_response:
-            raise ValidationError(
-                error_msg
-            )  # TODO: differentiate between missing and invalid recaptcha
+            raise ValidationError(error_msg)  # TODO: differentiate between missing and invalid recaptcha
 
         r = requests.post(
             "https://www.google.com/recaptcha/api/siteverify",
@@ -112,15 +105,11 @@ class ReCaptchaV3:
         result = r.json()
 
         if not result.get("success"):
-            raise ValidationError(
-                error_msg
-            )  # TODO: differentiate between missing and invalid recaptcha
+            raise ValidationError(error_msg)  # TODO: differentiate between missing and invalid recaptcha
 
         score = result.get("score", 0)
         if score < self.threshold:
-            raise ValidationError(
-                error_msg
-            )  # TODO: differentiate between missing and invalid recaptcha
+            raise ValidationError(error_msg)  # TODO: differentiate between missing and invalid recaptcha
 
         field.data = score
 
@@ -139,17 +128,13 @@ class LoginForm(FlaskForm):
     )
     remember_me = BooleanField("Remember Me")
     g_recaptcha_response = HiddenField("", id="g-recaptcha-response")
-    recaptcha = SubmitField(
-        validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)]
-    )
+    recaptcha = SubmitField(validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)])
     submit = SubmitField("Log In")
 
 
 class ResetPasswordRequestForm(FlaskForm):
     form_name = HiddenField("form_name", default="reset_password_request")
-    g_recaptcha_response = HiddenField(
-        "g-recaptcha-response", id="g-recaptcha-response"
-    )
+    g_recaptcha_response = HiddenField("g-recaptcha-response", id="g-recaptcha-response")
     email = EmailField(
         "Email Address:",
         validators=[
@@ -158,17 +143,13 @@ class ResetPasswordRequestForm(FlaskForm):
         ],
         render_kw={"placeholder": "E-Mail Address"},
     )
-    recaptcha = SubmitField(
-        validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)]
-    )
+    recaptcha = SubmitField(validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)])
     submit = SubmitField("Submit")
 
 
 class ResetPWForm(PasswordValidatorMixin, FlaskForm):
     form_name = HiddenField("form_name", default="reset_pw")
-    g_recaptcha_response = HiddenField(
-        "g-recaptcha-response", id="g-recaptcha-response"
-    )
+    g_recaptcha_response = HiddenField("g-recaptcha-response", id="g-recaptcha-response")
     password = PasswordField(
         "Password:",
         validators=[InputRequired("Password is required.")],
@@ -183,9 +164,7 @@ class ResetPWForm(PasswordValidatorMixin, FlaskForm):
         ],
         render_kw={"placeholder": "Repeat Password"},
     )
-    recaptcha = SubmitField(
-        validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)]
-    )
+    recaptcha = SubmitField(validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)])
     submit = SubmitField("Reset My Password ")
 
 
@@ -228,9 +207,7 @@ class RegistrationForm(UsernameValidatorMixin, PasswordValidatorMixin, FlaskForm
         validators=[DataRequired("You must confirm that you are of legal drinking age.")],
     )
     g_recaptcha_response = HiddenField("", id="g-recaptcha-response")
-    recaptcha = SubmitField(
-        validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)]
-    )
+    recaptcha = SubmitField(validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)])
     submit = SubmitField("Register")
 
     def __init__(self, *args, **kwargs):
@@ -238,9 +215,7 @@ class RegistrationForm(UsernameValidatorMixin, PasswordValidatorMixin, FlaskForm
         self.set_terms_label()
 
     def set_terms_label(self) -> None:
-        txt = Markup(
-            f"I agree to the <a href=\"{url_for('core.terms')}\">Terms of Service</a>"
-        )
+        txt = Markup(f'I agree to the <a href="{url_for("core.terms")}">Terms of Service</a>')
         self.agree_terms.label = Label("agree_terms", txt)
 
     def validate_email(self, email: StringField) -> None:
@@ -252,7 +227,5 @@ class ResendRegEmailForm(FlaskForm):
     form_name = HiddenField("form_name", default="resend_reg_email")
     email = StringField("Email", validators=[InputRequired(), Email()])
     g_recaptcha_response = HiddenField("", id="g-recaptcha-response")
-    recaptcha = SubmitField(
-        validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)]
-    )
+    recaptcha = SubmitField(validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)])
     submit = SubmitField("Resend Verification E-Mail")

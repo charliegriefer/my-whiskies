@@ -7,10 +7,7 @@ from mywhiskies.models import User
 
 def is_my_list(username: str, current_user: User) -> bool:
     # is the current user logged in and viewing their own bottles?
-    return (
-        current_user.is_authenticated
-        and current_user.username.lower() == username.lower()
-    )
+    return current_user.is_authenticated and current_user.username.lower() == username.lower()
 
 
 def handle_form_errors(form: Form) -> None:
