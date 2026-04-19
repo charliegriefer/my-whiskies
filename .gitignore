@@ -202,5 +202,4 @@ log/*
 .env.docker
 
 # Claude
-CLAUDE.md
 TASKS.md
