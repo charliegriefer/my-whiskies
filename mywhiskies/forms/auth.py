@@ -176,7 +176,7 @@ class RegistrationForm(UsernameValidatorMixin, PasswordValidatorMixin, FlaskForm
         render_kw={"placeholder": "Username"},
         description=USERNAME_DESCRIPTION,
     )
-    email = StringField(
+    email = EmailField(
         "Email Address:",
         validators=[
             InputRequired("Email address is required."),
@@ -225,7 +225,7 @@ class RegistrationForm(UsernameValidatorMixin, PasswordValidatorMixin, FlaskForm
 
 class ResendRegEmailForm(FlaskForm):
     form_name = HiddenField("form_name", default="resend_reg_email")
-    email = StringField("Email", validators=[InputRequired(), Email()])
+    email = EmailField("Email", validators=[InputRequired(), Email()])
     g_recaptcha_response = HiddenField("", id="g-recaptcha-response")
     recaptcha = SubmitField(validators=[ReCaptchaV3(action="submit", threshold=CAPTCHA_THRESHOLD)])
     submit = SubmitField("Resend Verification E-Mail")

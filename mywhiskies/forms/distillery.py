@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField
+from wtforms import StringField, SubmitField, TextAreaField, URLField
 from wtforms.validators import URL, InputRequired, Length, Optional
 
 
@@ -24,7 +24,7 @@ class DistilleryAddForm(FlaskForm):
         validators=[InputRequired("Location 2 is required."), Length(max=36)],
         render_kw={"placeholder": "Location 2"},
     )
-    url = StringField(
+    url = URLField(
         "URL:",
         validators=[
             Length(max=64),
