@@ -12,6 +12,7 @@ from wtforms import (
     StringField,
     SubmitField,
     TextAreaField,
+    URLField,
     ValidationError,
 )
 from wtforms.validators import URL, InputRequired, Length, NumberRange, Optional
@@ -48,12 +49,12 @@ def validate_year_bottled_date(form, field):
 
 
 class BottleAddForm(FlaskForm):
-    name = TextAreaField(
+    name = StringField(
         "Name:",
         validators=[InputRequired("Bottle name is required."), Length(max=100)],
         render_kw={"placeholder": "Name"},
     )
-    url = StringField(
+    url = URLField(
         "URL:",
         validators=[
             Length(max=140),
