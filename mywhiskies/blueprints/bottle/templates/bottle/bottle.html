@@ -228,7 +228,7 @@
                       <img
                         alt="{{ bottle.name }}"
                         title="{{ bottle.name }}"
-                        class="bottle-img d-block w-100"
+                        class="bottle-img d-block"
                         src="{{img_s3_url}}/{{ bottle.id }}_{{ n }}.jpg"
                         onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_{{ n }}.png';"
                       />
@@ -266,7 +266,7 @@
             </div>
             {% else %}
               <div class="bottle-image-panel">
-                <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img w-100" src="{{img_s3_url}}/{{ bottle.id }}_1.jpg" onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_1.png';" />
+                <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img" src="{{img_s3_url}}/{{ bottle.id }}_1.jpg" onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_1.png';" />
               </div>
             {% endif %}
           </div>

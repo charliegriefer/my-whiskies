@@ -71,9 +71,10 @@ a:focus, a:hover {
 
 /* bottle image panel — wraps carousel (or single image) + controls */
 .bottle-image-panel {
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 2rem;
   padding: 12px;
-  margin-bottom: 2rem;
   border: 1px solid #e8e8e8;
   border-radius: 6px;
   background: #fafafa;
@@ -87,21 +88,24 @@ a:focus, a:hover {
   border-radius: 4px;
 }
 
-/* Fixed-height carousel so prev/next buttons stay anchored regardless of image dimensions */
+/* Carousel: fixed height, image drives the width */
 #bottleCarousel .carousel-inner {
-  height: 400px;
+  height: 500px;
+  width: fit-content;
+  max-width: 100%;
   overflow: hidden;
 }
 #bottleCarousel .carousel-item {
   height: 100%;
+  width: fit-content !important;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 #bottleCarousel .bottle-img {
   height: 100%;
-  width: 100%;
-  object-fit: contain;
+  width: auto;
+  max-width: 100vw;
 }
 
 .carousel.slide {
