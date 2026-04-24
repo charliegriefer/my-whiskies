@@ -261,13 +261,38 @@
                   el.addEventListener('slide.bs.carousel', e => {
                     dots.forEach((d, i) => d.classList.toggle('active', i === e.to));
                   });
+
+                  // Size the panel to the rendered image width so Prev/Next align with image edges.
+                  // Uses window load (not img.complete) so layout is always computed first.
+                  const panel = el.closest('.bottle-image-panel');
+                  const img = el.querySelector('.carousel-item.active .bottle-img');
+                  if (panel && img) {
+                    function fitPanel() {
+                      const w = img.offsetWidth;
+                      if (w > 0) panel.style.width = w + 'px';
+                    }
+                    window.addEventListener('load', fitPanel);
+                  }
                 })();
               </script>
             </div>
             {% else %}
-              <div class="bottle-image-panel">
-                <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img" src="{{img_s3_url}}/{{ bottle.id }}_1.jpg" onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_1.png';" />
+              <div class="bottle-image-panel" id="singleImagePanel">
+                <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img" id="singleBottleImg"
+                  src="{{img_s3_url}}/{{ bottle.id }}_1.jpg"
+                  onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_1.png';" />
               </div>
+              <script>
+                (function () {
+                  const panel = document.getElementById('singleImagePanel');
+                  const img = document.getElementById('singleBottleImg');
+                  function fitPanel() {
+                    const w = img.offsetWidth;
+                    if (w > 0) panel.style.width = w + 'px';
+                  }
+                  window.addEventListener('load', fitPanel);
+                })();
+              </script>
             {% endif %}
           </div>
           {% endif %}
