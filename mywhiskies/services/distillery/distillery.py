@@ -2,7 +2,8 @@ import json
 import os
 from typing import Dict
 
-from flask import Flask, current_app, flash
+from flask import Flask, current_app, flash, url_for
+from markupsafe import Markup
 from sqlalchemy import insert
 
 from mywhiskies.extensions import db
@@ -67,7 +68,8 @@ def add_distillery(form: DistilleryAddForm, user: User) -> None:
     db.session.add(distillery_in)
     db.session.commit()
     current_app.logger.info(f"{user.username} added distillery {distillery_in.name} successfully.")
-    flash(f'Distillery "{distillery_in.name}" has been successfully added.', "success")
+    url = url_for("distillery.detail", username=user.username, user_num=distillery_in.user_num)
+    flash(Markup(f'Distillery "<a href="{url}">{distillery_in.name}</a>" has been successfully added.'), "success")
 
 
 def edit_distillery(form: DistilleryEditForm, distillery: Distillery) -> None:
@@ -75,7 +77,8 @@ def edit_distillery(form: DistilleryEditForm, distillery: Distillery) -> None:
     db.session.add(distillery)
     db.session.commit()
     current_app.logger.info(f"{distillery.user.username} edited distillery {distillery.name} successfully.")
-    flash(f'Distillery "{distillery.name}" has been successfully updated.', "success")
+    url = url_for("distillery.detail", username=distillery.user.username, user_num=distillery.user_num)
+    flash(Markup(f'Distillery "<a href="{url}">{distillery.name}</a>" has been successfully updated.'), "success")
 
 
 def delete_distillery(user: User, distillery: Distillery) -> None:

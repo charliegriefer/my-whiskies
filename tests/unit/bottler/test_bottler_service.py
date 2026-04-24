@@ -50,7 +50,10 @@ def test_add_bottler(mock_flash: MagicMock, test_user_01: User) -> None:
     form = BottlerAddForm(form_data)
     add_bottler(form, test_user_01)
 
-    mock_flash.assert_called_once_with('"Crowded Barrel Whiskey" has been successfully added.', "success")
+    args, _ = mock_flash.call_args
+    assert "Crowded Barrel Whiskey" in args[0]
+    assert "has been successfully added" in args[0]
+    assert args[1] == "success"
 
 
 @patch("mywhiskies.services.bottler.bottler.flash")
@@ -68,7 +71,10 @@ def test_edit_bottler(mock_flash: MagicMock, test_bottler: Bottler) -> None:
     )
     form = BottlerEditForm(form_data)
     edit_bottler(form, test_bottler)
-    mock_flash.assert_called_once_with('"Single Cask Nation UPDATED" has been successfully updated.', "success")
+    args, _ = mock_flash.call_args
+    assert "Single Cask Nation UPDATED" in args[0]
+    assert "has been successfully updated" in args[0]
+    assert args[1] == "success"
 
     assert original_bottler.get("name") != test_bottler.name
     assert original_bottler.get("region_1") != test_bottler.region_1

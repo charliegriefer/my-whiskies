@@ -52,6 +52,8 @@ def test_add_bottler(logged_in_user_01: FlaskClient, test_user_01: User) -> None
 
     # Check that the flash message is in the response data
     bottler_name = new_bottler_formdata["name"]
-    assert f'"{bottler_name}" has been successfully added.' in response.get_data(as_text=True)
+    response_text = response.get_data(as_text=True)
+    assert bottler_name in response_text
+    assert "has been successfully added" in response_text
 
     assert len(test_user_01.bottlers) == user_bottlers_count + 1

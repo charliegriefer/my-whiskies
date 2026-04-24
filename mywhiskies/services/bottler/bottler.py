@@ -1,6 +1,7 @@
 from typing import Dict
 
-from flask import current_app, flash
+from flask import current_app, flash, url_for
+from markupsafe import Markup
 
 from mywhiskies.extensions import db
 from mywhiskies.forms.bottler import BottlerAddForm, BottlerEditForm
@@ -49,14 +50,16 @@ def add_bottler(form: BottlerAddForm, user: User) -> None:
     db.session.add(bottler_in)
     db.session.commit()
     current_app.logger.info(f"{user.username} added bottler {bottler_in.name} successfully.")
-    flash(f'"{bottler_in.name}" has been successfully added.', "success")
+    url = url_for("bottler.detail", username=user.username, user_num=bottler_in.user_num)
+    flash(Markup(f'"<a href="{url}">{bottler_in.name}</a>" has been successfully added.'), "success")
 
 
 def edit_bottler(form: BottlerEditForm, bottler: Bottler) -> None:
     form.populate_obj(bottler)
     db.session.commit()
     current_app.logger.info(f"{bottler.user.username} edited bottler {bottler.name} successfully.")
-    flash(f'"{bottler.name}" has been successfully updated.', "success")
+    url = url_for("bottler.detail", username=bottler.user.username, user_num=bottler.user_num)
+    flash(Markup(f'"<a href="{url}">{bottler.name}</a>" has been successfully updated.'), "success")
 
 
 def delete_bottler(user: User, bottler: Bottler) -> None:
