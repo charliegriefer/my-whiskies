@@ -9,6 +9,17 @@
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
   const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el))
 
+  // When the browser restores a page from the back/forward cache, any tooltip that was
+  // visible before navigation will still be showing. Dismiss them on pageshow.
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted) {
+      document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+        const tt = bootstrap.Tooltip.getInstance(el);
+        if (tt) tt.hide();
+      });
+    }
+  });
+
   // Auto-dismiss flash messages after 5 seconds
   document.querySelectorAll('[data-auto-dismiss]').forEach(el => {
     setTimeout(() => {
