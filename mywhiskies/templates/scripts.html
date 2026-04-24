@@ -6,6 +6,9 @@
   const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
   const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el))
+
   // Auto-dismiss flash messages after 5 seconds
   document.querySelectorAll('[data-auto-dismiss]').forEach(el => {
     setTimeout(() => {
