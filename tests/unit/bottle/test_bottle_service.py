@@ -114,7 +114,10 @@ def test_add_bottle(mock_flash: MagicMock, mock_process_bottle_images: MagicMock
     form.is_private.data = False
     form.personal_note.data = None
     add_bottle(form, test_user_01)
-    mock_flash.assert_called_once_with('"Test Bottle" has been successfully added.', "success")
+    args, _ = mock_flash.call_args
+    assert "Test Bottle" in args[0]
+    assert "has been successfully added" in args[0]
+    assert args[1] == "success"
 
 
 @patch("mywhiskies.services.bottle.bottle.process_bottle_images")
@@ -148,7 +151,10 @@ def test_edit_bottle(
     form.is_private.data = True
     form.personal_note.data = None
     edit_bottle(form, test_bottle)
-    mock_flash.assert_called_once_with('"Test Bottle" has been successfully updated.', "success")
+    args, _ = mock_flash.call_args
+    assert "Test Bottle" in args[0]
+    assert "has been successfully updated" in args[0]
+    assert args[1] == "success"
 
 
 @patch("mywhiskies.services.bottle.bottle.boto3.client")

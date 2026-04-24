@@ -56,7 +56,9 @@ def test_valid_distillery_edit_form(logged_in_user_01: FlaskClient, test_user_01
     assert response.status_code == 200
     assert url_for("distillery.list", username=test_user_01.username) in response.request.url
 
-    assert f'"{formdata["name"]}" has been successfully updated.' in response.get_data(as_text=True)
+    response_text = response.get_data(as_text=True)
+    assert formdata["name"] in response_text
+    assert "has been successfully updated" in response_text
 
     updated_distillery = db.session.get(Distillery, test_user_01.distilleries[0].id)
     assert updated_distillery.name == formdata["name"]

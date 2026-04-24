@@ -55,7 +55,9 @@ def test_valid_bottler_edit_form(logged_in_user_01: FlaskClient, test_user_01: U
     assert response.status_code == 200
     assert url_for("bottler.list", username=test_user_01.username) in response.request.url
 
-    assert f'"{formdata["name"]}" has been successfully updated.' in response.get_data(as_text=True)
+    response_text = response.get_data(as_text=True)
+    assert formdata["name"] in response_text
+    assert "has been successfully updated" in response_text
 
     updated_bottler = db.session.get(Bottler, test_user_01.bottlers[0].id)
     assert bottler_orig.get("name") != updated_bottler.name

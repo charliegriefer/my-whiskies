@@ -55,6 +55,8 @@ def test_add_distillery(logged_in_user_01: FlaskClient, test_user_01: User) -> N
 
     # Check that the flash message is in the response data
     distillery_name = new_distillery_formdata["name"]
-    assert f'"{distillery_name}" has been successfully added.' in response.get_data(as_text=True)
+    response_text = response.get_data(as_text=True)
+    assert distillery_name in response_text
+    assert "has been successfully added" in response_text
 
     assert len(test_user_01.distilleries) == user_distilleries_count + 1

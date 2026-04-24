@@ -3,7 +3,8 @@ from itertools import groupby
 from typing import Dict, List, Optional, Union
 
 import boto3
-from flask import current_app, flash
+from flask import current_app, flash, url_for
+from markupsafe import Markup
 
 from mywhiskies.extensions import db
 from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
@@ -235,7 +236,8 @@ def add_bottle(form: BottleAddForm, user: User) -> Bottle:
 
     ok, error = process_bottle_images(form, bottle)
     if ok:
-        flash(f'"{bottle.name}" has been successfully added.', "success")
+        url = url_for("bottle.detail", username=bottle.user.username, user_num=bottle.user_num)
+        flash(Markup(f'"<a href="{url}">{bottle.name}</a>" has been successfully added.'), "success")
     else:
         db.session.delete(bottle)
         db.session.commit()
@@ -257,7 +259,8 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
         flash(error or f'An error occurred while updating images for "{bottle.name}".', "danger")
         return
 
-    flash(f'"{bottle.name}" has been successfully updated.', "success")
+    url = url_for("bottle.detail", username=bottle.user.username, user_num=bottle.user_num)
+    flash(Markup(f'"<a href="{url}">{bottle.name}</a>" has been successfully updated.'), "success")
     current_app.logger.info(f"{bottle.user.username} edited bottle {bottle.name} successfully.")
 
 
