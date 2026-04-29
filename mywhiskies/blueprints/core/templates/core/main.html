@@ -48,8 +48,8 @@
               </li>
             </ul>
             {% if not current_user.is_authenticated %}
-            <p class="pt-3 ms-2">
-              Not a member yet? <a href="{{ url_for('auth.register') }}" class="btn btn-primary ms-1 text-decoration-none" role="button">Join Us!</a>
+            <p class="pt-3 ms-2 text-muted" style="font-size: 0.9rem;">
+              Registrations are currently closed as we work towards our first public release. Please check back soon!
             </p>
             {% endif %}
           </div>
