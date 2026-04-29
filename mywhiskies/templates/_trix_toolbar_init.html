@@ -1,0 +1,40 @@
+<script>
+(function () {
+  var toolbarHTML = [
+    '<div class="trix-button-row">',
+    '  <span class="trix-button-group" data-trix-button-group="text-tools">',
+    '    <button type="button" class="trix-button" data-trix-attribute="bold" title="Bold"><i class="bi bi-type-bold"></i></button>',
+    '    <button type="button" class="trix-button" data-trix-attribute="italic" title="Italic"><i class="bi bi-type-italic"></i></button>',
+    '    <button type="button" class="trix-button" data-trix-attribute="strike" title="Strikethrough"><i class="bi bi-type-strikethrough"></i></button>',
+    '  </span>',
+    '  <span class="trix-button-group" data-trix-button-group="link-tools">',
+    '    <button type="button" class="trix-button" data-trix-attribute="href" title="Link"><i class="bi bi-link-45deg"></i></button>',
+    '  </span>',
+    '  <span class="trix-button-group" data-trix-button-group="block-tools">',
+    '    <button type="button" class="trix-button" data-trix-attribute="bullet" title="Bullet list"><i class="bi bi-list-ul"></i></button>',
+    '    <button type="button" class="trix-button" data-trix-attribute="number" title="Numbered list"><i class="bi bi-list-ol"></i></button>',
+    '  </span>',
+    '  <span class="trix-button-group-spacer"></span>',
+    '  <span class="trix-button-group" data-trix-button-group="history-tools">',
+    '    <button type="button" class="trix-button" data-trix-action="undo" title="Undo" disabled><i class="bi bi-arrow-counterclockwise"></i></button>',
+    '    <button type="button" class="trix-button" data-trix-action="redo" title="Redo" disabled><i class="bi bi-arrow-clockwise"></i></button>',
+    '  </span>',
+    '</div>',
+    '<div class="trix-dialogs" data-trix-dialogs>',
+    '  <div class="trix-dialog trix-dialog--link" data-trix-dialog="href" data-trix-dialog-attribute="href">',
+    '    <div class="trix-dialog__link-fields">',
+    '      <input type="url" name="href" class="trix-input trix-input--dialog" placeholder="Enter a URL\u2026" aria-label="URL" required data-trix-input>',
+    '      <div class="trix-button-group">',
+    '        <input type="button" class="trix-button trix-button--dialog" value="Link" data-trix-method="setAttribute">',
+    '        <input type="button" class="trix-button trix-button--dialog" value="Unlink" data-trix-method="removeAttribute">',
+    '      </div>',
+    '    </div>',
+    '  </div>',
+    '</div>'
+  ].join('');
+
+  document.addEventListener('trix-initialize', function (event) {
+    event.target.toolbarElement.innerHTML = toolbarHTML;
+  });
+}());
+</script>

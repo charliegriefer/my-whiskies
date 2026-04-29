@@ -166,12 +166,12 @@
                 </tr>
                 <tr>
                   <td class="text-muted text-nowrap pe-4 fw-normal">Description</td>
-                  <td>{{ bottle.description | multiline_or_dash }}</td>
+                  <td>{{ bottle.description | render_rich_text }}</td>
                 </tr>
                 {% if is_my_bottle %}
                   <tr>
                     <td class="text-muted text-nowrap pe-4 fw-normal">Personal Note</td>
-                    <td>{{ bottle.personal_note | multiline_or_dash }}</td>
+                    <td>{{ bottle.personal_note | render_rich_text }}</td>
                   </tr>
                 {% endif %}
                 <tr>
@@ -190,7 +190,7 @@
                 </tr>
                 <tr>
                   <td class="text-muted text-nowrap pe-4 fw-normal">Review</td>
-                  <td>{{ bottle.review | multiline_or_dash }}</td>
+                  <td>{{ bottle.review | render_rich_text }}</td>
                 </tr>
 
                 <!-- Timeline -->

@@ -1,7 +1,26 @@
+import re
 from datetime import date, datetime
 from typing import Any
 
+import nh3
 from markupsafe import Markup, escape
+
+_RICH_TEXT_ALLOWED_TAGS = {
+    "a",
+    "b",
+    "blockquote",
+    "br",
+    "del",
+    "div",
+    "em",
+    "h1",
+    "li",
+    "ol",
+    "pre",
+    "strong",
+    "ul",
+}
+_RICH_TEXT_ALLOWED_ATTRS = {"a": {"href", "title"}}
 
 
 def yesno(value: Any, yes: str = "Yes", no: str = "No") -> str:
@@ -53,9 +72,34 @@ def float_or_dash(value: Any, precision: int = 2, fallback: str = "-", dash_clas
     return Markup(escape(formatted))
 
 
+def render_rich_text(value: Any, fallback: str = "-", dash_class: str = "text-muted") -> Markup:
+    """Sanitize stored rich-text HTML and return safe Markup, or a styled dash if empty."""
+    if value is None or (isinstance(value, str) and value.strip() == ""):
+        return Markup(f'<span class="{dash_class}">{escape(fallback)}</span>')
+    sanitized = nh3.clean(
+        str(value),
+        tags=_RICH_TEXT_ALLOWED_TAGS,
+        attributes=_RICH_TEXT_ALLOWED_ATTRS,
+    )
+    return Markup(sanitized)
+
+
+def strip_html(value: Any, max_chars: int = 200) -> str:
+    """Strip HTML tags and return plain text, truncated to max_chars. Safe for use in attributes."""
+    if not value:
+        return ""
+    text = re.sub(r"<[^>]+>", "", str(value))
+    text = text.strip()
+    if len(text) > max_chars:
+        text = text[:max_chars].rstrip() + "…"
+    return text
+
+
 def register_filters(app) -> None:
     app.jinja_env.filters["yesno"] = yesno
     app.jinja_env.filters["multiline_or_dash"] = multiline_or_dash
     app.jinja_env.filters["date_or_dash"] = date_or_dash
     app.jinja_env.filters["value_or_dash"] = value_or_dash
     app.jinja_env.filters["float_or_dash"] = float_or_dash
+    app.jinja_env.filters["render_rich_text"] = render_rich_text
+    app.jinja_env.filters["strip_html"] = strip_html

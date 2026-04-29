@@ -1,7 +1,13 @@
 {% extends "_base.html" %}
 
+{% block head_extra %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/trix@2/dist/trix.css">
+{% endblock %}
+
 {% block scripts %}
   {{ super() }}
+  <script src="https://cdn.jsdelivr.net/npm/trix@2/dist/trix.umd.min.js"></script>
+  {% include "_trix_toolbar_init.html" %}
   <script>
   (function () {
     const select = document.getElementById('distilleries');
@@ -102,7 +108,8 @@
 
     <div class="row">
       <div class="col-lg-8">
-        <form method="post" novalidate enctype="multipart/form-data">
+        <form method="post" novalidate enctype="multipart/form-data"
+              x-data @trix-file-accept.window.prevent>
           {% if next_url %}
             <input type="hidden" name="next" value="{{ next_url }}">
           {% endif %}
@@ -132,15 +139,15 @@
           <hr class="my-3" />
           <p class="text-uppercase text-muted fw-semibold mb-3" style="font-size:0.7rem; letter-spacing:0.06em;">Notes</p>
 
-          {{ form_utils.render_field(form.description) }}
-          {{ form_utils.render_field(form.personal_note, popover_text=popover_personal_note) }}
+          {{ form_utils.render_trix_field(form.description) }}
+          {{ form_utils.render_trix_field(form.personal_note, popover_text=popover_personal_note) }}
 
           <div class="row">
             <div class="col-sm-4">{{ form_utils.render_field(form.stars) }}</div>
             <div class="col-sm-4">{{ form_utils.render_field(form.cost) }}</div>
           </div>
 
-          {{ form_utils.render_field(form.review) }}
+          {{ form_utils.render_trix_field(form.review) }}
 
           <div class="d-flex gap-4 mb-1">
             {{ form_utils.render_checkbox(form.is_single_barrel) }}

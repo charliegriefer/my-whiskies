@@ -1,3 +1,20 @@
+{% macro render_trix_field(field, popover_text) %}
+  <div class="mb-3">
+    {{ field.label(class="form-label") }}
+    {{ render_popover(field, popover_text) }}
+    {% if field.flags.required %}<span class="text-danger">*</span>{% endif %}
+    <div class="trix-wrapper{{ ' is-invalid' if field.errors else '' }}">
+      <input type="hidden"
+             id="{{ field.id }}"
+             name="{{ field.name }}"
+             value="{{ field.data or '' }}">
+      <trix-editor input="{{ field.id }}"></trix-editor>
+    </div>
+    {{ render_errors(field) }}
+    {{ render_description(field) }}
+  </div>
+{% endmacro %}
+
 {% macro render_field(field, popover_text) %}
   <div class="mb-3">
     {{ field.label(class="form-label") }}

@@ -214,7 +214,7 @@
                     {% if bottle.description %}
                       data-bs-toggle="tooltip"
                       data-bs-placement="right"
-                      title="{{ bottle.description.split('\n')[0] | truncate(200) }}"
+                      title="{{ bottle.description | strip_html }}"
                     {% endif %}>
                     {{ bottle.name | replace("\n", " ") }}
                   </a>
