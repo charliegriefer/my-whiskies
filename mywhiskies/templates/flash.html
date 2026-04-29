@@ -12,8 +12,8 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
-      {% if category == "message" %}
-        {% set category = "info" %}
+      {% if category == "message" or category == "info" %}
+        {% set category = "secondary" %}
       {% endif %}
       <div class="container mt-4 ps-0">
         <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" data-auto-dismiss>
