@@ -39,10 +39,9 @@ All three must pass cleanly before pushing to main.
 
 ## Task and Issue Workflow
 
-This project uses a hybrid planning/execution system:
+GitHub Issues are the single source of truth for all work — backlog, active, and future milestones:
 
-- **`TASKS.md`** is the backlog and planning layer. It contains feature ideas, design notes, and items not yet ready to work on. Do not treat TASKS.md items as directly actionable.
-- **GitHub Issues** are the execution layer. Active work is tracked as Issues assigned to a milestone (e.g. v0.2.0). Use `gh issue list --milestone v0.2.0` to see what's in scope for the current release.
+- Use `gh issue list --milestone v0.2.0` (or v0.3.0, v0.4.0) to see what's in scope for a given release.
 - When starting a new feature or fix, confirm there is a corresponding GitHub Issue before beginning work.
 - Commit messages should reference the issue number where applicable (e.g. `fix: flash message colors (#130)`).
 
