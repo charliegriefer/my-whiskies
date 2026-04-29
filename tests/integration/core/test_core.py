@@ -10,8 +10,8 @@ def test_main_logged_out(client: FlaskClient) -> None:
 
     assert response.status_code == 200
     assert "My Whiskies Online" in response_data
-    # "Join Us!" register prompt is shown to unauthenticated users
-    assert "Join Us!" in response_data
+    # Registrations are closed; show a notice instead of the "Join Us!" button
+    assert "Registrations are currently closed" in response_data
 
 
 def test_main_logged_in(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
@@ -20,8 +20,8 @@ def test_main_logged_in(logged_in_user_01: FlaskClient, test_user_01: User) -> N
 
     assert response.status_code == 200
     assert test_user_01.username in response_data
-    # "Join Us!" prompt is hidden from authenticated users
-    assert "Join Us!" not in response_data
+    # Closed-registrations notice is only shown to unauthenticated users
+    assert "Registrations are currently closed" not in response_data
 
 
 def test_terms(client: FlaskClient) -> None:
