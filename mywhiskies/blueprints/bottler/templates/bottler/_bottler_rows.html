@@ -16,7 +16,7 @@
       <tr>
 
         {% if is_my_list %}
-          <th class="text-nowrap" style="width: 1%;">&nbsp;</th>
+          <th style="width: 1%;">&nbsp;</th>
         {% endif %}
 
         {# Name — sortable #}
@@ -83,7 +83,7 @@
             {# Edit / Delete — owner only #}
             {% if is_my_list %}
               <td class="text-nowrap">
-                <div class="d-inline-flex align-items-center gap-2">
+                <div class="d-inline-flex align-items-center gap-1">
                   <a href="{{ url_for('bottler.edit', username=bottler.user.username, user_num=bottler.user_num) }}">
                     <i class="bi bi-pencil"></i>
                   </a>
