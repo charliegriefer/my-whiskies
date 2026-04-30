@@ -13,11 +13,13 @@
 
       <hr />
 
-      <div class="row">
-        <div class="col-lg-6">
+      <div class="row pb-5">
+        <div class="col-lg-8">
 
           <!-- Account data card -->
           <div class="card p-4 mb-4">
+
+            <p class="detail-section-label mb-3">Profile</p>
 
             <table class="table table-borderless table-sm mb-0 table-tight">
               <tbody>
@@ -49,27 +51,28 @@
 
             <hr class="my-3">
 
-            <div class="d-flex gap-4">
+            <div class="d-flex gap-5">
               <div class="text-center">
-                <div style="font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1.1;">{{ current_user.bottles|length }}</div>
+                <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent); line-height: 1.1;">{{ current_user.bottles|length }}</div>
                 <div class="text-muted" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Bottle{{ "s" if current_user.bottles|length != 1 }}</div>
               </div>
               <div class="text-center">
-                <div style="font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1.1;">{{ current_user.bottlers|length }}</div>
+                <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent); line-height: 1.1;">{{ current_user.bottlers|length }}</div>
                 <div class="text-muted" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Bottler{{ "s" if current_user.bottlers|length != 1 }}</div>
               </div>
               <div class="text-center">
-                <div style="font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1.1;">{{ current_user.distilleries|length }}</div>
+                <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent); line-height: 1.1;">{{ current_user.distilleries|length }}</div>
                 <div class="text-muted" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">{{ "Distillery" if current_user.distilleries|length == 1 else "Distilleries" }}</div>
               </div>
             </div>
 
-          </div>
+            <hr class="my-3">
 
-          <!-- Export link -->
-          <a href="{{ url_for('user.export_data') }}" class="d-inline-flex align-items-center gap-2">
-            <i class="bi bi-filetype-csv"></i> Export my data (CSV)
-          </a>
+            <a href="{{ url_for('user.export_data') }}" class="d-inline-flex align-items-center gap-2">
+              <i class="bi bi-filetype-csv"></i> Export my data (CSV)
+            </a>
+
+          </div>
 
         </div>
       </div>
