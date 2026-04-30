@@ -419,7 +419,7 @@ ul.terms li {
   --border-2: #3a2510;
   --text-primary: #f5e8d0;
   --text-secondary: #d4b896;
-  --text-muted: #7a5a38;
+  --text-muted: #a07850;
   --text-faint: #3a2010;
   --accent: #c87941;
   --star-color: #c87941;
@@ -531,7 +531,7 @@ ul.terms li {
   --border-2: #253d2e;
   --text-primary: #f0ead8;
   --text-secondary: #c8baa0;
-  --text-muted: #3a5a40;
+  --text-muted: #708a76;
   --text-faint: #253d2e;
   --accent: #c9a84c;
   --star-color: #c9a84c;
@@ -641,6 +641,12 @@ body {
 
 .text-muted {
   color: var(--text-muted, #6c757d) !important;
+}
+
+/* Override Bootstrap's hardcoded --bs-table-color so plain .table inherits theme */
+.table {
+  --bs-table-color: var(--text-primary, #212529);
+  color: var(--text-primary, #212529);
 }
 
 
