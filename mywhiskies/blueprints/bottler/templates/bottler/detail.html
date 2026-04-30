@@ -16,7 +16,9 @@
       <hr />
 
       <!-- Filter controls — stable, outside swap target -->
-      <form id="list-controls" class="row g-2 mb-3 align-items-center">
+      <form id="list-controls" class="row g-2 mb-3 align-items-center"
+        x-data="{ perPage: {{ per_page }} }">
+        <input type="hidden" name="per_page" :value="perPage">
 
         <!-- Free-text search -->
         <div class="col-auto">
@@ -48,21 +50,19 @@
         <!-- Right-side controls -->
         <div class="col-auto ms-auto d-flex gap-2 align-items-center">
 
-          <!-- Per-page selector -->
-          <select class="form-select form-select-sm" name="per_page" style="width: auto;"
-            hx-get="{{ list_url }}"
-            hx-target="#bottle-results"
-            hx-push-url="true"
-            hx-trigger="change"
-            hx-include="#list-controls, #current-state"
-            hx-vals='{"page": "1"}'>
-            {% for n in [25, 50, 100] %}
-              <option value="{{ n }}" {% if per_page == n %}selected{% endif %}>
-                {{ n }} per page
-              </option>
-            {% endfor %}
-            <option value="10000" {% if per_page == 10000 %}selected{% endif %}>All</option>
-          </select>
+          <!-- Per-page pills -->
+          {% for n, label, tip in [(25, '25', '25 results per page'), (50, '50', '50 results per page'), (100, '100', '100 results per page'), (10000, 'All', 'Show all results')] %}
+            <button type="button"
+              class="btn-per-page"
+              :class="perPage === {{ n }} ? 'active' : ''"
+              title="{{ tip }}"
+              @click="perPage = {{ n }}"
+              hx-get="{{ list_url }}"
+              hx-target="#bottle-results"
+              hx-push-url="true"
+              hx-include="#list-controls, #current-state"
+              hx-vals='{"per_page": "{{ n }}", "page": "1"}'>{{ label }}</button>
+          {% endfor %}
 
           <!-- Type filter dropdown -->
           <div class="dropdown"
