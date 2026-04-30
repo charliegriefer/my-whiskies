@@ -1,7 +1,7 @@
 {% extends "_base.html" %}
 
 {% from "macros/value_format.html" import float_with_symbol %}
-{% from "macros/bottle_display.html" import type_pill %}
+{% from "macros/bottle_display.html" import type_pill, render_stars %}
 
 {% set dtfmt = "%d %B %Y" %}
 {% set btn_label = bottle.user.username ~ "'s List" %}
@@ -36,7 +36,7 @@
               <span class="type-pill type-pill-distillery">{{ distillery.name }}</span>
             {% endfor %}
             {% if is_my_bottle and bottle.is_private %}
-              <span class="type-pill" style="background-color:#fde8e8; color:#991b1b;">Private</span>
+              <span class="type-pill type-pill-private">Private</span>
             {% endif %}
           </div>
 
@@ -85,14 +85,39 @@
       <div class="container mt-4 ps-0">
         <div class="row">
           <!--- left column (data) --->
-          <div class="col-lg-6 mb-4 ps-2">
+          <div class="col-lg-7 mb-4 ps-2">
+
+            <!-- Spec tiles -->
+            <div class="spec-tiles">
+              <div class="spec-tile">
+                <div class="spec-tile-label">ABV</div>
+                <div class="spec-tile-value">{{ float_with_symbol(bottle.abv, "%") }}</div>
+              </div>
+              <div class="spec-tile">
+                <div class="spec-tile-label">Proof</div>
+                <div class="spec-tile-value">{{ float_with_symbol(bottle.abv * 2 if bottle.abv else none, "°") }}</div>
+              </div>
+              <div class="spec-tile">
+                <div class="spec-tile-label">Size</div>
+                <div class="spec-tile-value">{{ bottle.size | value_or_dash }}{% if bottle.size %}<small>ml</small>{% endif %}</div>
+              </div>
+              <div class="spec-tile">
+                <div class="spec-tile-label">Yr Barrelled</div>
+                <div class="spec-tile-value">{{ bottle.year_barrelled | value_or_dash }}</div>
+              </div>
+              <div class="spec-tile">
+                <div class="spec-tile-label">Yr Bottled</div>
+                <div class="spec-tile-value">{{ bottle.year_bottled | value_or_dash }}</div>
+              </div>
+            </div>
+
             <table class="table table-borderless table-sm mb-0 table-tight">
               <tbody>
 
                 <!-- Details -->
                 <tr>
                   <td colspan="2" class="pt-0 pb-1">
-                    <span class="text-uppercase text-primary fw-bold" style="font-size:0.7rem; letter-spacing:0.06em;">Details</span>
+                    <span class="detail-section-label">Details</span>
                   </td>
                 </tr>
                 <tr>
@@ -133,31 +158,11 @@
                     {% endif %}
                   </td>
                 </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Size</td>
-                  <td>{{ bottle.size | value_or_dash }}{% if bottle.size %}ml{% endif %}</td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Year Barrelled</td>
-                  <td>{{ bottle.year_barrelled | value_or_dash }}</td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Year Bottled</td>
-                  <td>{{ bottle.year_bottled | value_or_dash }}</td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">ABV</td>
-                  <td>{{ float_with_symbol(bottle.abv, "%") }}</td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Proof</td>
-                  <td>{{ float_with_symbol(bottle.abv * 2 if bottle.abv else none, "º") }}</td>
-                </tr>
 
                 <!-- Notes -->
                 <tr>
                   <td colspan="2" class="pb-1 pt-3">
-                    <span class="text-uppercase text-primary fw-bold" style="font-size:0.7rem; letter-spacing:0.06em;">Notes</span>
+                    <span class="detail-section-label">Notes</span>
                   </td>
                 </tr>
                 <tr>
@@ -177,14 +182,9 @@
                 <tr>
                   <td class="text-muted text-nowrap pe-4 fw-normal">Rating</td>
                   <td>
+                    {{ render_stars(bottle.stars) }}
                     {% if bottle.stars %}
-                      {% set times_ten = bottle.stars * 10 %}
-                      {% set times_ten = times_ten|int %}
-                      {% set the_var = "stars/stars_" + times_ten|string + ".png" %}
-                      <img src="{{ url_for('static', filename=the_var) }}" alt="{{ bottle.stars }} Stars" title="{{ bottle.stars }} Stars" class="mb-1" />
-                    {% else %}
-                      {% set alt = bottle.user.username + " has not rated this bottle." %}
-                      <img src="{{ url_for('static', filename='stars/stars_blank.png') }}" alt="{{ alt }}" title="{{ alt }}" class="mb-1" />
+                      <span class="ms-2 text-muted" style="font-size: 0.8rem;">{{ bottle.stars }} / 5</span>
                     {% endif %}
                   </td>
                 </tr>
@@ -196,7 +196,7 @@
                 <!-- Timeline -->
                 <tr>
                   <td colspan="2" class="pb-1 pt-3">
-                    <span class="text-uppercase text-primary fw-bold" style="font-size:0.7rem; letter-spacing:0.06em;">Timeline</span>
+                    <span class="detail-section-label">Timeline</span>
                   </td>
                 </tr>
                 <tr>
@@ -218,7 +218,7 @@
 
           <!--- right column (images) --->
           {% if bottle.image_count %}
-          <div class="col-lg-6 d-lg-flex justify-content-lg-end pe-0">
+          <div class="col-lg-5 d-lg-flex justify-content-lg-end pe-0">
             {% if bottle.image_count > 1 %}
             <div class="bottle-image-panel">
               <div id="bottleCarousel" class="carousel slide carousel-fade" data-bs-ride="false" data-bs-interval="false" data-bs-touch="true">

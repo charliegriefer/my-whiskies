@@ -126,14 +126,62 @@ a:focus, a:hover {
   margin-top: 0;
 }
 
+/* ===================================================================
+   BOTTLE DETAIL — spec tiles, section headers, image panel
+   =================================================================== */
+
+.spec-tiles {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.spec-tile {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #dee2e6);
+  border-radius: var(--badge-radius, 6px);
+  padding: 0.6rem 0.5rem;
+  text-align: center;
+}
+
+.spec-tile-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, #6c757d);
+  margin-bottom: 0.25rem;
+}
+
+.spec-tile-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary, #212529);
+}
+
+@media (max-width: 575.98px) {
+  .spec-tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.detail-section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent, #337ab7);
+}
+
 /* bottle image panel — wraps carousel (or single image) + controls */
 .bottle-image-panel {
   max-width: 100%;
   margin: 0 auto 2rem;
   padding: 12px;
-  border: 1px solid #e8e8e8;
+  border: 1px solid var(--border, #e8e8e8);
   border-radius: 6px;
-  background: #fafafa;
+  background: var(--surface, #fafafa);
 }
 
 /* bottle image on bottle detail page */
@@ -753,6 +801,12 @@ body {
 .type-pill-american  { background-color: var(--t-pill-american-bg);  color: var(--t-pill-american-text);  border-color: var(--t-pill-american-border, transparent); }
 .type-pill-world     { background-color: var(--t-pill-world-bg);     color: var(--t-pill-world-text);     border-color: var(--t-pill-world-border, transparent); }
 .type-pill-other     { background-color: var(--t-pill-other-bg);     color: var(--t-pill-other-text);     border-color: var(--t-pill-other-border, transparent); }
+
+/* Detail-page header badges */
+.type-pill-barrel     { background-color: var(--surface-2, #f8f9fa); color: var(--accent, #337ab7);         border-color: var(--border-2, #dee2e6); }
+.type-pill-abv        { background-color: var(--surface-2, #f8f9fa); color: var(--text-secondary, #555);     border-color: var(--border, #dee2e6); }
+.type-pill-distillery { background-color: var(--surface-2, #f8f9fa); color: var(--text-secondary, #555);     border-color: var(--border, #dee2e6); }
+.type-pill-private    { background: oklch(97% 0.03 15);              color: oklch(52% 0.18 15);              border-color: oklch(48% 0.18 15); }
 
 /* Per-page pill buttons */
 .btn-per-page {
