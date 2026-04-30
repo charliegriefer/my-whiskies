@@ -257,6 +257,7 @@
               <script>
                 (function () {
                   const el = document.getElementById('bottleCarousel');
+                  bootstrap.Carousel.getOrCreateInstance(el, { ride: false, interval: false, touch: true });
                   const dots = document.querySelectorAll('.carousel-dot');
                   el.addEventListener('slide.bs.carousel', e => {
                     dots.forEach((d, i) => d.classList.toggle('active', i === e.to));
