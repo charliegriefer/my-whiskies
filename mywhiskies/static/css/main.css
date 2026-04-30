@@ -178,10 +178,6 @@ a:focus, a:hover {
 .bottle-image-panel {
   max-width: 100%;
   margin: 0 auto 2rem;
-  padding: 12px;
-  border: 1px solid var(--border, #e8e8e8);
-  border-radius: 6px;
-  background: var(--surface, #fafafa);
 }
 
 /* bottle image on bottle detail page */
@@ -191,13 +187,14 @@ a:focus, a:hover {
   max-width: 100%;
   display: block;
   margin: auto;
-  border-radius: 4px;
+  border-radius: 12px;
 }
 
 /* Carousel: fixed height, image drives the width */
 #bottleCarousel .carousel-inner {
   height: 500px;
   overflow: hidden;
+  border-radius: 12px;
 }
 #bottleCarousel .carousel-item {
   height: 100%;
