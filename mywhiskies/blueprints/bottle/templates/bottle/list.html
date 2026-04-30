@@ -89,10 +89,11 @@
         {% endif %}
 
         <div class="col-auto ms-auto d-flex gap-2 align-items-center">
-          {% for n, label in [(25, '25'), (50, '50'), (100, '100'), (10000, 'All')] %}
+          {% for n, label, tip in [(25, '25', '25 results per page'), (50, '50', '50 results per page'), (100, '100', '100 results per page'), (10000, 'All', 'Show all results')] %}
             <button type="button"
               class="btn-per-page"
               :class="perPage === {{ n }} ? 'active' : ''"
+              title="{{ tip }}"
               @click="perPage = {{ n }}"
               hx-get="{{ list_url }}"
               hx-target="#bottle-results"
