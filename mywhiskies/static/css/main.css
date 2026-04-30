@@ -461,6 +461,9 @@ ul.terms li {
   --t-pill-american-bg: oklch(22% 0.06 270);     --t-pill-american-text: oklch(75% 0.12 270);
   --t-pill-world-bg: oklch(22% 0.06 15);         --t-pill-world-text: oklch(75% 0.12 15);
   --t-pill-other-bg: oklch(22% 0.06 0);          --t-pill-other-text: oklch(75% 0.12 0);
+  --t-pill-sb-bg: oklch(22% 0.06 45);            --t-pill-sb-text: oklch(75% 0.12 45);
+  --t-pill-abv-bg: oklch(22% 0.06 35);           --t-pill-abv-text: oklch(75% 0.12 35);
+  --t-pill-distill-bg: oklch(22% 0.04 220);      --t-pill-distill-text: oklch(75% 0.10 220);
 }
 
 [data-theme="cellar"] {
@@ -514,6 +517,9 @@ ul.terms li {
   --t-pill-american-bg: oklch(96% 0.03 270);     --t-pill-american-text: oklch(35% 0.12 270);
   --t-pill-world-bg: oklch(96% 0.03 15);         --t-pill-world-text: oklch(35% 0.12 15);
   --t-pill-other-bg: oklch(96% 0.03 0);          --t-pill-other-text: oklch(35% 0.12 0);
+  --t-pill-sb-bg: oklch(93% 0.07 65);            --t-pill-sb-text: oklch(35% 0.15 65);
+  --t-pill-abv-bg: oklch(93% 0.07 35);           --t-pill-abv-text: oklch(35% 0.15 35);
+  --t-pill-distill-bg: oklch(93% 0.04 220);      --t-pill-distill-text: oklch(30% 0.12 220);
 }
 
 [data-theme="vault"] {
@@ -567,6 +573,9 @@ ul.terms li {
   --t-pill-american-bg: oklch(18% 0.05 270);     --t-pill-american-text: oklch(65% 0.10 270); --t-pill-american-border: oklch(50% 0.10 270);
   --t-pill-world-bg: oklch(18% 0.05 15);         --t-pill-world-text: oklch(65% 0.10 15);     --t-pill-world-border: oklch(50% 0.10 15);
   --t-pill-other-bg: oklch(18% 0.05 0);          --t-pill-other-text: oklch(65% 0.10 0);      --t-pill-other-border: oklch(50% 0.10 0);
+  --t-pill-sb-bg: oklch(20% 0.06 65);            --t-pill-sb-text: oklch(72% 0.12 65);
+  --t-pill-abv-bg: oklch(20% 0.06 35);           --t-pill-abv-text: oklch(72% 0.12 35);
+  --t-pill-distill-bg: oklch(18% 0.04 220);      --t-pill-distill-text: oklch(70% 0.10 220);
 }
 
 
@@ -800,9 +809,9 @@ body {
 .type-pill-other     { background-color: var(--t-pill-other-bg);     color: var(--t-pill-other-text);     border-color: var(--t-pill-other-border, transparent); }
 
 /* Detail-page header badges */
-.type-pill-barrel     { background-color: var(--surface-2, #f8f9fa); color: var(--accent, #337ab7);         border-color: var(--border-2, #dee2e6); }
-.type-pill-abv        { background-color: var(--surface-2, #f8f9fa); color: var(--text-secondary, #555);     border-color: var(--border, #dee2e6); }
-.type-pill-distillery { background-color: var(--surface-2, #f8f9fa); color: var(--text-secondary, #555);     border-color: var(--border, #dee2e6); }
+.type-pill-barrel     { background-color: var(--t-pill-sb-bg, oklch(93% 0.07 65));      color: var(--t-pill-sb-text, oklch(35% 0.15 65));      border-color: transparent; }
+.type-pill-abv        { background-color: var(--t-pill-abv-bg, oklch(93% 0.07 35));     color: var(--t-pill-abv-text, oklch(35% 0.15 35));     border-color: transparent; }
+.type-pill-distillery { background-color: var(--t-pill-distill-bg, oklch(93% 0.04 220)); color: var(--t-pill-distill-text, oklch(30% 0.12 220)); border-color: transparent; }
 .type-pill-private    { background: oklch(97% 0.03 15);              color: oklch(52% 0.18 15);              border-color: oklch(48% 0.18 15); }
 
 /* Per-page pill buttons */
