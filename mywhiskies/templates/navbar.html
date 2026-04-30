@@ -23,7 +23,8 @@
         </button>
 
         <div class="collapse navbar-collapse flex-grow-1" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <div class="vr mx-3 d-none d-lg-block" style="opacity: 0.2;"></div>
+          <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link" id="nav_home" href="{{ url_for('core.main') }}">Home</a>
             </li>
@@ -56,8 +57,8 @@
             </li>
           </ul>
 
-          <!-- Theme switcher -->
-          <div class="d-flex align-items-center gap-2 mx-2 px-2 py-1 rounded-pill" style="background: var(--surface-2); border: 1px solid var(--border);">
+          <!-- Theme switcher — ms-auto pushes it to the right -->
+          <div class="d-flex align-items-center gap-2 ms-auto mx-3 px-2 py-1 rounded-pill" style="background: var(--surface-2); border: 1px solid var(--border);">
             <button class="theme-swatch" :class="{ 'active-swatch': theme === 'barrel' }"
               style="background: #c87941;" @click="setTheme('barrel')" title="Barrel Room"></button>
             <button class="theme-swatch" :class="{ 'active-swatch': theme === 'cellar' }"
@@ -66,7 +67,7 @@
               style="background: #c9a84c;" @click="setTheme('vault')" title="The Vault"></button>
           </div>
 
-          <ul class="navbar-nav ms-auto me-2">
+          <ul class="navbar-nav me-2">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="bi bi-check-square"></i> {{ username }}
