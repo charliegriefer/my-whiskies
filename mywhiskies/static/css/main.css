@@ -389,11 +389,14 @@ ul.terms li {
   --t-badge-bg: #3a2510;
   --t-badge-text: #c87941;
   --t-expand-color: #c87941;
-  --t-pill-bourbon-bg: oklch(22% 0.06 30);   --t-pill-bourbon-text: oklch(75% 0.12 30);
-  --t-pill-rye-bg: oklch(22% 0.06 130);      --t-pill-rye-text: oklch(75% 0.12 130);
-  --t-pill-scotch-bg: oklch(22% 0.06 210);   --t-pill-scotch-text: oklch(75% 0.12 210);
-  --t-pill-american-bg: oklch(22% 0.06 270); --t-pill-american-text: oklch(75% 0.12 270);
-  --t-pill-other-bg: oklch(22% 0.06 0);      --t-pill-other-text: oklch(75% 0.12 0);
+  --t-pill-bourbon-bg: oklch(22% 0.06 30);       --t-pill-bourbon-text: oklch(75% 0.12 30);
+  --t-pill-tennessee-bg: oklch(22% 0.06 50);     --t-pill-tennessee-text: oklch(75% 0.12 50);
+  --t-pill-rye-bg: oklch(22% 0.06 130);          --t-pill-rye-text: oklch(75% 0.12 130);
+  --t-pill-asm-bg: oklch(22% 0.06 180);          --t-pill-asm-text: oklch(75% 0.12 180);
+  --t-pill-scotch-bg: oklch(22% 0.06 210);       --t-pill-scotch-text: oklch(75% 0.12 210);
+  --t-pill-american-bg: oklch(22% 0.06 270);     --t-pill-american-text: oklch(75% 0.12 270);
+  --t-pill-world-bg: oklch(22% 0.06 15);         --t-pill-world-text: oklch(75% 0.12 15);
+  --t-pill-other-bg: oklch(22% 0.06 0);          --t-pill-other-text: oklch(75% 0.12 0);
 }
 
 [data-theme="cellar"] {
@@ -439,11 +442,14 @@ ul.terms li {
   --t-badge-bg: #dde2ea;
   --t-badge-text: #1e3a5f;
   --t-expand-color: #1e3a5f;
-  --t-pill-bourbon-bg: oklch(96% 0.03 30);   --t-pill-bourbon-text: oklch(35% 0.12 30);
-  --t-pill-rye-bg: oklch(96% 0.03 130);      --t-pill-rye-text: oklch(35% 0.12 130);
-  --t-pill-scotch-bg: oklch(96% 0.03 210);   --t-pill-scotch-text: oklch(35% 0.12 210);
-  --t-pill-american-bg: oklch(96% 0.03 270); --t-pill-american-text: oklch(35% 0.12 270);
-  --t-pill-other-bg: oklch(96% 0.03 0);      --t-pill-other-text: oklch(35% 0.12 0);
+  --t-pill-bourbon-bg: oklch(96% 0.03 30);       --t-pill-bourbon-text: oklch(35% 0.12 30);
+  --t-pill-tennessee-bg: oklch(96% 0.03 50);     --t-pill-tennessee-text: oklch(35% 0.12 50);
+  --t-pill-rye-bg: oklch(96% 0.03 130);          --t-pill-rye-text: oklch(35% 0.12 130);
+  --t-pill-asm-bg: oklch(96% 0.03 180);          --t-pill-asm-text: oklch(35% 0.12 180);
+  --t-pill-scotch-bg: oklch(96% 0.03 210);       --t-pill-scotch-text: oklch(35% 0.12 210);
+  --t-pill-american-bg: oklch(96% 0.03 270);     --t-pill-american-text: oklch(35% 0.12 270);
+  --t-pill-world-bg: oklch(96% 0.03 15);         --t-pill-world-text: oklch(35% 0.12 15);
+  --t-pill-other-bg: oklch(96% 0.03 0);          --t-pill-other-text: oklch(35% 0.12 0);
 }
 
 [data-theme="vault"] {
@@ -489,11 +495,14 @@ ul.terms li {
   --t-badge-bg: #1e3528;
   --t-badge-text: #c9a84c;
   --t-expand-color: #c9a84c;
-  --t-pill-bourbon-bg: oklch(18% 0.05 30);   --t-pill-bourbon-text: oklch(65% 0.10 30);
-  --t-pill-rye-bg: oklch(18% 0.05 130);      --t-pill-rye-text: oklch(65% 0.10 130);
-  --t-pill-scotch-bg: oklch(18% 0.05 210);   --t-pill-scotch-text: oklch(65% 0.10 210);
-  --t-pill-american-bg: oklch(18% 0.05 270); --t-pill-american-text: oklch(65% 0.10 270);
-  --t-pill-other-bg: oklch(18% 0.05 0);      --t-pill-other-text: oklch(65% 0.10 0);
+  --t-pill-bourbon-bg: oklch(18% 0.05 30);       --t-pill-bourbon-text: oklch(65% 0.10 30);   --t-pill-bourbon-border: oklch(50% 0.10 30);
+  --t-pill-tennessee-bg: oklch(18% 0.05 50);     --t-pill-tennessee-text: oklch(65% 0.10 50); --t-pill-tennessee-border: oklch(50% 0.10 50);
+  --t-pill-rye-bg: oklch(18% 0.05 130);          --t-pill-rye-text: oklch(65% 0.10 130);      --t-pill-rye-border: oklch(50% 0.10 130);
+  --t-pill-asm-bg: oklch(18% 0.05 180);          --t-pill-asm-text: oklch(65% 0.10 180);      --t-pill-asm-border: oklch(50% 0.10 180);
+  --t-pill-scotch-bg: oklch(18% 0.05 210);       --t-pill-scotch-text: oklch(65% 0.10 210);   --t-pill-scotch-border: oklch(50% 0.10 210);
+  --t-pill-american-bg: oklch(18% 0.05 270);     --t-pill-american-text: oklch(65% 0.10 270); --t-pill-american-border: oklch(50% 0.10 270);
+  --t-pill-world-bg: oklch(18% 0.05 15);         --t-pill-world-text: oklch(65% 0.10 15);     --t-pill-world-border: oklch(50% 0.10 15);
+  --t-pill-other-bg: oklch(18% 0.05 0);          --t-pill-other-text: oklch(65% 0.10 0);      --t-pill-other-border: oklch(50% 0.10 0);
 }
 
 
@@ -605,6 +614,7 @@ body {
 
 .themed-table tbody tr:hover {
   background-color: var(--t-row-bg-hover);
+  box-shadow: inset 3px 0 0 var(--t-accent);
 }
 
 .themed-table tbody td {
@@ -642,6 +652,7 @@ body {
 
 .themed-table .group-row:hover {
   filter: brightness(0.97);
+  box-shadow: inset 3px 0 0 var(--t-accent);
 }
 
 /* Sub rows */
@@ -659,6 +670,7 @@ body {
 
 .themed-table .sub-row:hover {
   filter: brightness(0.97) !important;
+  box-shadow: inset 3px 0 0 var(--t-accent) !important;
 }
 
 /* Count badge */
@@ -692,6 +704,16 @@ body {
   color: var(--t-sb-color);
 }
 
+/* Killed bottle row */
+.themed-table .killed-row {
+  opacity: 0.52;
+  background-color: var(--t-row-bg-alt) !important;
+}
+
+.themed-table .killed-name {
+  text-decoration: line-through;
+}
+
 /* Type pills */
 .type-pill {
   display: inline-block;
@@ -701,16 +723,36 @@ body {
   font-weight: 600;
   white-space: nowrap;
   letter-spacing: 0.02em;
+  border: 1px solid transparent;
 }
 
-.type-pill-bourbon     { background-color: var(--t-pill-bourbon-bg);  color: var(--t-pill-bourbon-text); }
-.type-pill-rye         { background-color: var(--t-pill-rye-bg);      color: var(--t-pill-rye-text); }
-.type-pill-scotch      { background-color: var(--t-pill-scotch-bg);   color: var(--t-pill-scotch-text); }
-.type-pill-american    { background-color: var(--t-pill-american-bg); color: var(--t-pill-american-text); }
-.type-pill-other       { background-color: var(--t-pill-other-bg);    color: var(--t-pill-other-text); }
-.type-pill-barrel      { background-color: #f0e0cc; color: #6b3519; }
-.type-pill-abv         { background-color: #fde8e8; color: #991b1b; }
-.type-pill-distillery  { background-color: #fef3cd; color: #7a5000; }
+.type-pill-bourbon   { background-color: var(--t-pill-bourbon-bg);   color: var(--t-pill-bourbon-text);   border-color: var(--t-pill-bourbon-border, transparent); }
+.type-pill-tennessee { background-color: var(--t-pill-tennessee-bg); color: var(--t-pill-tennessee-text); border-color: var(--t-pill-tennessee-border, transparent); }
+.type-pill-rye       { background-color: var(--t-pill-rye-bg);       color: var(--t-pill-rye-text);       border-color: var(--t-pill-rye-border, transparent); }
+.type-pill-asm       { background-color: var(--t-pill-asm-bg);       color: var(--t-pill-asm-text);       border-color: var(--t-pill-asm-border, transparent); }
+.type-pill-scotch    { background-color: var(--t-pill-scotch-bg);    color: var(--t-pill-scotch-text);    border-color: var(--t-pill-scotch-border, transparent); }
+.type-pill-american  { background-color: var(--t-pill-american-bg);  color: var(--t-pill-american-text);  border-color: var(--t-pill-american-border, transparent); }
+.type-pill-world     { background-color: var(--t-pill-world-bg);     color: var(--t-pill-world-text);     border-color: var(--t-pill-world-border, transparent); }
+.type-pill-other     { background-color: var(--t-pill-other-bg);     color: var(--t-pill-other-text);     border-color: var(--t-pill-other-border, transparent); }
+
+/* Per-page pill buttons */
+.btn-per-page {
+  background: transparent;
+  border: 1px solid var(--border-2, #dee2e6);
+  border-radius: 20px;
+  color: var(--text-muted, #6c757d);
+  font-size: 0.8rem;
+  padding: 0.2rem 0.75rem;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.btn-per-page:hover,
+.btn-per-page.active {
+  background-color: var(--accent, #1e3a5f);
+  border-color: var(--accent, #1e3a5f);
+  color: var(--surface, #fff);
+}
 
 
 /* ===================================================================
