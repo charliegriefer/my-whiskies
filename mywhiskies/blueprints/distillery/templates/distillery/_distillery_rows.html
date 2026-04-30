@@ -10,7 +10,7 @@
   </p>
 {% endif %}
 
-<div class="table-responsive">
+<div class="table-responsive" x-data>
   <table class="table themed-table">
     <thead>
       <tr>
@@ -75,10 +75,11 @@
 
       </tr>
     </thead>
-    <tbody>
-      {% if distilleries %}
-        {% for distillery in distilleries %}
-          <tr style="{{ 'background-color: var(--t-row-bg-alt);' if loop.index is even else '' }}">
+
+    {% if distilleries %}
+      {% for distillery in distilleries %}
+        <tbody class="{{ 'stripe' if loop.index is even else '' }}">
+          <tr>
 
             {# Edit / Delete — owner only #}
             {% if is_my_list %}
@@ -125,23 +126,27 @@
             </td>
 
           </tr>
-        {% endfor %}
-      {% else %}
+        </tbody>
+      {% endfor %}
+    {% else %}
+      <tbody>
         <tr>
           <td colspan="{{ 4 + (1 if is_my_list else 0) }}"
               class="text-center text-muted py-4">
             {{ empty_text }}
           </td>
         </tr>
-      {% endif %}
-    </tbody>
+      </tbody>
+    {% endif %}
+
   </table>
 </div>
 
 {# Pagination #}
+{% if total_pages <= 1 %}<div class="mb-4"></div>{% endif %}
 {% if total_pages > 1 %}
-  <nav aria-label="Distillery list pages">
-    <ul class="pagination pagination-sm justify-content-center">
+  <nav aria-label="Distillery list pages" class="my-4">
+    <ul class="pagination justify-content-center">
       <li class="page-item {{ 'disabled' if page <= 1 }}">
         <a class="page-link"
           hx-get="{{ url_for('distillery.list', username=user.username) }}"
