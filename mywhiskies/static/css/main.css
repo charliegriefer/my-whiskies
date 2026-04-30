@@ -643,6 +643,29 @@ body {
   color: var(--text-muted, #6c757d) !important;
 }
 
+hr {
+  border-color: var(--border, rgba(0,0,0,.1));
+  opacity: 1;
+}
+
+/* Distillery multi-select badge */
+.badge.bg-primary {
+  background-color: var(--accent, #0d6efd) !important;
+}
+
+/* Distillery search dropdown */
+.list-group-item {
+  background-color: var(--surface, #fff);
+  border-color: var(--border, #dee2e6);
+  color: var(--text-primary, #212529);
+}
+
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+  background-color: var(--surface-2, #f8f9fa);
+  color: var(--text-primary, #212529);
+}
+
 /* Override Bootstrap's hardcoded --bs-table-color so plain .table inherits theme */
 .table {
   --bs-table-color: var(--text-primary, #212529);
