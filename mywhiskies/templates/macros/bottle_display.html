@@ -12,16 +12,17 @@
 {%- endmacro %}
 
 {% macro type_pill(bottle_type) %}
-  {% if bottle_type.name in ['BOURBON', 'TENNESSEE_WHISKEY'] %}
-    {% set pill_cls = 'type-pill-bourbon' %}
-  {% elif bottle_type.name == 'RYE' %}
-    {% set pill_cls = 'type-pill-rye' %}
-  {% elif bottle_type.name == 'SCOTCH' %}
-    {% set pill_cls = 'type-pill-scotch' %}
-  {% elif bottle_type.name in ['AMERICAN_WHISKEY', 'AMERICAN_SINGLE_MALT', 'AMERICAN_LIGHT_WHISKEY'] %}
-    {% set pill_cls = 'type-pill-american' %}
-  {% else %}
-    {% set pill_cls = 'type-pill-other' %}
-  {% endif %}
-  <span class="type-pill {{ pill_cls }}">{{ bottle_type.value }}</span>
+  {% set pill_map = {
+    'BOURBON': 'bourbon',
+    'TENNESSEE_WHISKEY': 'tennessee',
+    'RYE': 'rye',
+    'AMERICAN_SINGLE_MALT': 'asm',
+    'SCOTCH': 'scotch',
+    'AMERICAN_WHISKEY': 'american',
+    'AMERICAN_LIGHT_WHISKEY': 'american',
+    'WORLD_WHISKEY': 'world',
+    'CANADIAN_WHISKEY': 'world',
+    'IRISH_WHISKEY': 'world',
+  } %}
+  <span class="type-pill type-pill-{{ pill_map.get(bottle_type.name, 'other') }}">{{ bottle_type.value }}</span>
 {% endmacro %}

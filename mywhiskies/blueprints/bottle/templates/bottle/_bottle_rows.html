@@ -192,7 +192,7 @@
 
             {# Sub-rows — one per bottle in the group #}
             {% for bottle in group.bottles %}
-              <tr class="sub-row {{ 'sub-stripe' if loop.index is even else '' }}" x-show="open" x-cloak>
+              <tr class="sub-row {{ 'sub-stripe' if loop.index is even else '' }} {{ 'killed-row' if bottle.date_killed else '' }}" x-show="open" x-cloak>
 
                 {% if is_my_list %}
                   <td class="text-nowrap">
@@ -211,6 +211,7 @@
                 <td style="padding-left: 1rem;">
                   <span class="text-muted me-1">•</span>
                   <a href="{{ url_for('bottle.detail', username=bottle.user.username, user_num=bottle.user_num) }}"
+                    class="{{ 'killed-name' if bottle.date_killed else '' }}"
                     {% if bottle.description %}
                       data-bs-toggle="tooltip"
                       data-bs-placement="right"
@@ -218,9 +219,6 @@
                     {% endif %}>
                     {{ bottle.name | replace("\n", " ") }}
                   </a>
-                  {% if bottle.image_count %}
-                    <i class="bi bi-file-image ms-1 text-muted" title="Has Image(s)"></i>
-                  {% endif %}
                 </td>
 
                 <td class="text-center pe-4">
@@ -257,7 +255,7 @@
           {# ── Single bottle: flat row ─────────────────────────────────────── #}
           {% set bottle = group.bottles[0] %}
           <tbody class="{{ 'stripe' if loop.index is even else '' }}">
-            <tr class="{{ 'opacity-50' if bottle.date_killed else '' }}">
+            <tr class="{{ 'killed-row' if bottle.date_killed else '' }}">
 
               {% if is_my_list %}
                 <td class="text-nowrap">
@@ -275,6 +273,7 @@
 
               <td>
                 <a href="{{ url_for('bottle.detail', username=bottle.user.username, user_num=bottle.user_num) }}"
+                  class="{{ 'killed-name' if bottle.date_killed else '' }}"
                   {% if bottle.description %}
                     data-bs-toggle="tooltip"
                     data-bs-placement="right"
@@ -282,9 +281,6 @@
                   {% endif %}>
                   {{ bottle.name | replace("\n", " ") }}
                 </a>
-                {% if bottle.image_count %}
-                  <i class="bi bi-file-image ms-1 text-muted" title="Has Image(s)"></i>
-                {% endif %}
               </td>
 
               <td class="text-center pe-4">

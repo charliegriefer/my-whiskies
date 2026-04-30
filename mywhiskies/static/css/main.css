@@ -2,14 +2,21 @@ html { font-size: 14px; }
 
 body {
   overflow-y: scroll;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body > div.w-100 {
+  flex: 1;
 }
 
 a {
-  color: #337ab7;
+  color: var(--accent, #337ab7);
   text-decoration: none;
 }
 a:focus, a:hover {
-  color: #23527c;
+  color: var(--accent, #23527c);
   text-decoration: underline;
 }
 
@@ -40,43 +47,144 @@ a:focus, a:hover {
 /* nav bar */
 /* ---------------------------------------------------------------------------------------- */
 .navbar {
-  border-bottom: 1px solid #D3D3D3;
+  background-color: var(--nav-bg, #fff);
+  border-bottom: 1px solid var(--border, #D3D3D3);
 }
 
-/* Make sure the logo never gets squished */
-.navbar-brand img {
-  height: 64px;
+.navbar .nav-link,
+.navbar .navbar-brand,
+.navbar .dropdown-toggle {
+  color: var(--text-primary, #212529) !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+  color: var(--accent, #337ab7) !important;
+}
+
+.navbar-toggler {
+  border-color: var(--border, rgba(0,0,0,.1));
+}
+
+/* Light hamburger icon for dark-background themes */
+[data-theme="barrel"] .navbar-toggler-icon,
+[data-theme="vault"] .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(245, 232, 208, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Collapsed nav drawer inherits the navbar bg */
+.navbar-collapse {
+  background-color: var(--nav-bg, #fff);
+}
+
+.dropdown-menu {
+  background-color: var(--surface, #fff);
+  border-color: var(--border, #dee2e6);
+}
+
+.dropdown-item {
+  color: var(--text-primary, #212529);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--surface-2, #f8f9fa);
+  color: var(--text-primary, #212529);
+}
+
+.dropdown-divider {
+  border-color: var(--border, #dee2e6);
+}
+
+/* Logo icon */
+.navbar-logo-img {
+  height: 48px;
   width: auto;
   max-width: none;
 }
 
-/* Slightly smaller logo on phones so it doesn't force wrapping */
-@media (max-width: 575.98px) {
-  .navbar-brand img {
-    height: 52px;
-  }
+/* Logo text — uses theme heading font and primary text color */
+.navbar-brand-text {
+  font-family: var(--heading-font, 'Cormorant Garamond', serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-primary, #212529) !important;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
-#nav_login, #nav_logout {
-  color: #000;
+/* Vault uses italic Cormorant Garamond */
+[data-theme="vault"] .navbar-brand-text {
+  font-style: italic;
+  font-weight: 300;
 }
-#nav_login:hover, #nav_logout:hover {
-  color: #fff !important;
-  text-decoration: none;
+
+/* On phones, hide the text — icon alone is enough */
+@media (max-width: 575.98px) {
+  .navbar-logo-img {
+    height: 40px;
+  }
+  .navbar-brand-text {
+    display: none;
+  }
 }
 
 .container hr {
   margin-top: 0;
 }
 
+/* ===================================================================
+   BOTTLE DETAIL — spec tiles, section headers, image panel
+   =================================================================== */
+
+.spec-tiles {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.spec-tile {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #dee2e6);
+  border-radius: var(--badge-radius, 6px);
+  padding: 0.6rem 0.5rem;
+  text-align: center;
+}
+
+.spec-tile-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, #6c757d);
+  margin-bottom: 0.25rem;
+}
+
+.spec-tile-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary, #212529);
+}
+
+@media (max-width: 575.98px) {
+  .spec-tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.detail-section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent, #337ab7);
+}
+
 /* bottle image panel — wraps carousel (or single image) + controls */
 .bottle-image-panel {
   max-width: 100%;
   margin: 0 auto 2rem;
-  padding: 12px;
-  border: 1px solid #e8e8e8;
-  border-radius: 6px;
-  background: #fafafa;
 }
 
 /* bottle image on bottle detail page */
@@ -86,13 +194,14 @@ a:focus, a:hover {
   max-width: 100%;
   display: block;
   margin: auto;
-  border-radius: 4px;
+  border-radius: 12px;
 }
 
 /* Carousel: fixed height, image drives the width */
 #bottleCarousel .carousel-inner {
   height: 500px;
   overflow: hidden;
+  border-radius: 12px;
 }
 #bottleCarousel .carousel-item {
   height: 100%;
@@ -129,20 +238,21 @@ a:focus, a:hover {
 .page-header-context {
   font-size: 0.44em;
   font-weight: 400;
-  color: #6c757d;
+  color: var(--text-muted, #6c757d);
   vertical-align: middle;
 }
 p.page-header-line { margin: 0; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 p.page-header-line .page-header-context,
 p.page-header-line .page-header-sep { font-size: 1em; }
-h1 { font-family: 'Cormorant Garamond', Georgia, serif; }
+h1, h2, h3, h4, h5, h6 { font-family: var(--heading-font, 'Cormorant Garamond', Georgia, serif); }
+h1, h2, h3, h4, h5, h6 { color: var(--text-primary, #212529); }
 @media (max-width: 575.98px) {
   h1 { font-size: 1.9rem; }
 }
 .page-header-sep {
   font-size: 0.44em;
   font-weight: 400;
-  color: #adb5bd;
+  color: var(--text-faint, #adb5bd);
   margin: 0 0.4em;
   vertical-align: middle;
 }
@@ -303,63 +413,313 @@ ul.terms li {
 
 
 /* ===================================================================
-   TABLE THEMES — CSS custom properties scoped to data-theme
+   SITE THEMES — CSS custom properties scoped to data-theme
+   Page-level tokens + backward-compat table tokens (--t-*)
    =================================================================== */
 
-[data-theme="whiskey-bar"] {
-  --t-header-bg: #3d1f00;
-  --t-header-text: #f5c842;
-  --t-header-text-secondary: #c8a030;
-  --t-row-bg: #ffffff;
-  --t-row-bg-alt: #faf7f2;
-  --t-row-bg-hover: #fdf6ee;
-  --t-row-bg-group: #fef5e4;
-  --t-row-bg-sub: var(--t-row-bg);
-  --t-row-bg-sub-alt: var(--t-row-bg-alt);
-  --t-row-border: #e8ddd0;
-  --t-text-primary: #2c1a00;
-  --t-text-secondary: #5a4030;
-  --t-text-group: #884800;
-  --t-accent: #884800;
-  --t-star-on: #f5a623;
-  --t-star-off: #ddd;
-  --t-sb-color: #884800;
-  --t-badge-bg: #884800;
-  --t-badge-text: #ffd98c;
-  --t-expand-color: #884800;
-  --t-pill-bourbon-bg: #fdf0dc;  --t-pill-bourbon-text: #884800;
-  --t-pill-rye-bg: #eaf3de;      --t-pill-rye-text: #27500a;
-  --t-pill-scotch-bg: #e6f1fb;   --t-pill-scotch-text: #0c447c;
-  --t-pill-american-bg: #eeedfe; --t-pill-american-text: #3c3489;
-  --t-pill-other-bg: #f0ece8;    --t-pill-other-text: #5a4030;
+[data-theme="barrel"] {
+  /* Page-level */
+  --page-bg: #120d07;
+  --surface: #17100a;
+  --surface-2: #1e1208;
+  --border: #2d1c0d;
+  --border-2: #3a2510;
+  --text-primary: #f5e8d0;
+  --text-secondary: #d4b896;
+  --text-muted: #a07850;
+  --text-faint: #3a2010;
+  --accent: #c87941;
+  --star-color: #c87941;
+  --nav-bg: #1a1109;
+  --table-hover: #21150a;
+  --heading-font: 'Playfair Display', serif;
+  --body-font: 'DM Sans', sans-serif;
+  --badge-radius: 6px;
+  --row-height: 44px;
+  --input-bg: #1e1208;
+  --edit-color: #6a9acc;
+  --delete-color: #9a5050;
+  /* Table */
+  --t-header-bg: #1a1109;
+  --t-header-text: #c87941;
+  --t-header-text-secondary: #8a5a28;
+  --t-row-bg: #17100a;
+  --t-row-bg-alt: #1e1208;
+  --t-row-bg-hover: #21150a;
+  --t-row-bg-group: #2d1c0d;
+  --t-row-bg-sub: #17100a;
+  --t-row-bg-sub-alt: #1e1208;
+  --t-row-border: #2d1c0d;
+  --t-text-primary: #f5e8d0;
+  --t-text-secondary: #d4b896;
+  --t-text-group: #c87941;
+  --t-accent: #c87941;
+  --t-star-on: #c87941;
+  --t-star-off: #3a2010;
+  --t-sb-color: #c87941;
+  --t-badge-bg: #3a2510;
+  --t-badge-text: #c87941;
+  --t-expand-color: #c87941;
+  --t-pill-bourbon-bg: oklch(22% 0.06 30);       --t-pill-bourbon-text: oklch(75% 0.12 30);
+  --t-pill-tennessee-bg: oklch(22% 0.06 50);     --t-pill-tennessee-text: oklch(75% 0.12 50);
+  --t-pill-rye-bg: oklch(22% 0.06 130);          --t-pill-rye-text: oklch(75% 0.12 130);
+  --t-pill-asm-bg: oklch(22% 0.06 180);          --t-pill-asm-text: oklch(75% 0.12 180);
+  --t-pill-scotch-bg: oklch(22% 0.06 210);       --t-pill-scotch-text: oklch(75% 0.12 210);
+  --t-pill-american-bg: oklch(22% 0.06 270);     --t-pill-american-text: oklch(75% 0.12 270);
+  --t-pill-world-bg: oklch(22% 0.06 15);         --t-pill-world-text: oklch(75% 0.12 15);
+  --t-pill-other-bg: oklch(22% 0.06 0);          --t-pill-other-text: oklch(75% 0.12 0);
+  --t-pill-sb-bg: oklch(22% 0.06 45);            --t-pill-sb-text: oklch(75% 0.12 45);
+  --t-pill-abv-bg: oklch(22% 0.06 35);           --t-pill-abv-text: oklch(75% 0.12 35);
+  --t-pill-distill-bg: oklch(22% 0.04 220);      --t-pill-distill-text: oklch(75% 0.10 220);
 }
 
-[data-theme="clean"] {
-  --t-header-bg: #d0d0d0;
-  --t-header-text: #333;
-  --t-header-text-secondary: #666;
+[data-theme="cellar"] {
+  /* Page-level */
+  --page-bg: #f4f6f9;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --border: #e0e6ef;
+  --border-2: #dde2ea;
+  --text-primary: #0f1f3d;
+  --text-secondary: #2d3a50;
+  --text-muted: #8896a8;
+  --text-faint: #c5ccd8;
+  --accent: #1e3a5f;
+  --star-color: #1e3a5f;
+  --nav-bg: #ffffff;
+  --table-hover: #f0f5ff;
+  --heading-font: 'Plus Jakarta Sans', sans-serif;
+  --body-font: 'Plus Jakarta Sans', sans-serif;
+  --badge-radius: 8px;
+  --row-height: 44px;
+  --input-bg: #ffffff;
+  --edit-color: #1e3a5f;
+  --delete-color: #b03030;
+  /* Table */
+  --t-header-bg: #1e3a5f;
+  --t-header-text: #ffffff;
+  --t-header-text-secondary: #c5ccd8;
   --t-row-bg: #ffffff;
-  --t-row-bg-alt: #f7f7f7;
-  --t-row-bg-hover: #f5f5f5;
-  --t-row-bg-group: #eef6fc;
-  --t-row-bg-sub: var(--t-row-bg);
-  --t-row-bg-sub-alt: var(--t-row-bg-alt);
-  --t-row-border: #e5e5e5;
-  --t-text-primary: #1a1a1a;
-  --t-text-secondary: #666;
-  --t-text-group: #333;
-  --t-accent: #378add;
-  --t-star-on: #f5a623;
-  --t-star-off: #ddd;
-  --t-sb-color: #378add;
-  --t-badge-bg: #e6f1fb;
-  --t-badge-text: #0c447c;
-  --t-expand-color: #888;
-  --t-pill-bourbon-bg: #faeeda;  --t-pill-bourbon-text: #633806;
-  --t-pill-rye-bg: #eaf3de;      --t-pill-rye-text: #27500a;
-  --t-pill-scotch-bg: #e6f1fb;   --t-pill-scotch-text: #0c447c;
-  --t-pill-american-bg: #eeedfe; --t-pill-american-text: #3c3489;
-  --t-pill-other-bg: #f0f0f0;    --t-pill-other-text: #666;
+  --t-row-bg-alt: #f8fafc;
+  --t-row-bg-hover: #f0f5ff;
+  --t-row-bg-group: #eef3fa;
+  --t-row-bg-sub: #ffffff;
+  --t-row-bg-sub-alt: #f8fafc;
+  --t-row-border: #e0e6ef;
+  --t-text-primary: #0f1f3d;
+  --t-text-secondary: #2d3a50;
+  --t-text-group: #1e3a5f;
+  --t-accent: #1e3a5f;
+  --t-star-on: #1e3a5f;
+  --t-star-off: #c5ccd8;
+  --t-sb-color: #1e3a5f;
+  --t-badge-bg: #dde2ea;
+  --t-badge-text: #1e3a5f;
+  --t-expand-color: #1e3a5f;
+  --t-pill-bourbon-bg: oklch(96% 0.03 30);       --t-pill-bourbon-text: oklch(35% 0.12 30);
+  --t-pill-tennessee-bg: oklch(96% 0.03 50);     --t-pill-tennessee-text: oklch(35% 0.12 50);
+  --t-pill-rye-bg: oklch(96% 0.03 130);          --t-pill-rye-text: oklch(35% 0.12 130);
+  --t-pill-asm-bg: oklch(96% 0.03 180);          --t-pill-asm-text: oklch(35% 0.12 180);
+  --t-pill-scotch-bg: oklch(96% 0.03 210);       --t-pill-scotch-text: oklch(35% 0.12 210);
+  --t-pill-american-bg: oklch(96% 0.03 270);     --t-pill-american-text: oklch(35% 0.12 270);
+  --t-pill-world-bg: oklch(96% 0.03 15);         --t-pill-world-text: oklch(35% 0.12 15);
+  --t-pill-other-bg: oklch(96% 0.03 0);          --t-pill-other-text: oklch(35% 0.12 0);
+  --t-pill-sb-bg: oklch(93% 0.07 65);            --t-pill-sb-text: oklch(35% 0.15 65);
+  --t-pill-abv-bg: oklch(93% 0.07 35);           --t-pill-abv-text: oklch(35% 0.15 35);
+  --t-pill-distill-bg: oklch(93% 0.04 220);      --t-pill-distill-text: oklch(30% 0.12 220);
+}
+
+[data-theme="vault"] {
+  /* Page-level */
+  --page-bg: #0a1810;
+  --surface: #0f1f18;
+  --surface-2: #172b20;
+  --border: #1e3528;
+  --border-2: #253d2e;
+  --text-primary: #f0ead8;
+  --text-secondary: #c8baa0;
+  --text-muted: #708a76;
+  --text-faint: #253d2e;
+  --accent: #c9a84c;
+  --star-color: #c9a84c;
+  --nav-bg: #0f1f18;
+  --table-hover: #121f16;
+  --heading-font: 'Cormorant Garamond', serif;
+  --body-font: 'DM Sans', sans-serif;
+  --badge-radius: 4px;
+  --row-height: 48px;
+  --input-bg: #0f1f18;
+  --edit-color: #5a9a80;
+  --delete-color: #8a4040;
+  /* Table */
+  --t-header-bg: #0a1810;
+  --t-header-text: #c9a84c;
+  --t-header-text-secondary: #8a7040;
+  --t-row-bg: #0f1f18;
+  --t-row-bg-alt: #172b20;
+  --t-row-bg-hover: #121f16;
+  --t-row-bg-group: #1e3528;
+  --t-row-bg-sub: #0f1f18;
+  --t-row-bg-sub-alt: #172b20;
+  --t-row-border: #1e3528;
+  --t-text-primary: #f0ead8;
+  --t-text-secondary: #c8baa0;
+  --t-text-group: #c9a84c;
+  --t-accent: #c9a84c;
+  --t-star-on: #c9a84c;
+  --t-star-off: #253d2e;
+  --t-sb-color: #c9a84c;
+  --t-badge-bg: #1e3528;
+  --t-badge-text: #c9a84c;
+  --t-expand-color: #c9a84c;
+  --t-pill-bourbon-bg: oklch(18% 0.05 30);       --t-pill-bourbon-text: oklch(65% 0.10 30);   --t-pill-bourbon-border: oklch(50% 0.10 30);
+  --t-pill-tennessee-bg: oklch(18% 0.05 50);     --t-pill-tennessee-text: oklch(65% 0.10 50); --t-pill-tennessee-border: oklch(50% 0.10 50);
+  --t-pill-rye-bg: oklch(18% 0.05 130);          --t-pill-rye-text: oklch(65% 0.10 130);      --t-pill-rye-border: oklch(50% 0.10 130);
+  --t-pill-asm-bg: oklch(18% 0.05 180);          --t-pill-asm-text: oklch(65% 0.10 180);      --t-pill-asm-border: oklch(50% 0.10 180);
+  --t-pill-scotch-bg: oklch(18% 0.05 210);       --t-pill-scotch-text: oklch(65% 0.10 210);   --t-pill-scotch-border: oklch(50% 0.10 210);
+  --t-pill-american-bg: oklch(18% 0.05 270);     --t-pill-american-text: oklch(65% 0.10 270); --t-pill-american-border: oklch(50% 0.10 270);
+  --t-pill-world-bg: oklch(18% 0.05 15);         --t-pill-world-text: oklch(65% 0.10 15);     --t-pill-world-border: oklch(50% 0.10 15);
+  --t-pill-other-bg: oklch(18% 0.05 0);          --t-pill-other-text: oklch(65% 0.10 0);      --t-pill-other-border: oklch(50% 0.10 0);
+  --t-pill-sb-bg: oklch(20% 0.06 65);            --t-pill-sb-text: oklch(72% 0.12 65);
+  --t-pill-abv-bg: oklch(20% 0.06 35);           --t-pill-abv-text: oklch(72% 0.12 35);
+  --t-pill-distill-bg: oklch(18% 0.04 220);      --t-pill-distill-text: oklch(70% 0.10 220);
+}
+
+
+/* ===================================================================
+   PAGE-LEVEL THEMING
+   =================================================================== */
+
+body {
+  background-color: var(--page-bg, #fff);
+  color: var(--text-primary, #212529);
+  font-family: var(--body-font, sans-serif);
+}
+
+.site-footer {
+  background-color: var(--surface-2, #f8f9fa) !important;
+  border-color: var(--border, #dee2e6) !important;
+}
+
+.site-footer .text-muted,
+.site-footer .nav-link {
+  color: var(--text-muted, #6c757d) !important;
+}
+
+.card {
+  background-color: var(--surface, #fff);
+  border-color: var(--border, #dee2e6);
+  color: var(--text-primary, #212529);
+}
+
+.card-header {
+  background-color: var(--surface-2, #f8f9fa);
+  border-color: var(--border, #dee2e6);
+}
+
+.modal-content {
+  background-color: var(--surface, #fff);
+  border-color: var(--border, #dee2e6);
+  color: var(--text-primary, #212529);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: var(--border, #dee2e6);
+}
+
+.form-control,
+.form-select {
+  background-color: var(--input-bg, #fff);
+  border-color: var(--border, #dee2e6);
+  color: var(--text-primary, #212529);
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--input-bg, #fff);
+  color: var(--text-primary, #212529);
+  border-color: var(--accent, #86b7fe);
+}
+
+.form-control::placeholder {
+  color: var(--text-muted, #6c757d);
+}
+
+.text-muted {
+  color: var(--text-muted, #6c757d) !important;
+}
+
+hr {
+  border-color: var(--border, rgba(0,0,0,.1));
+  opacity: 1;
+}
+
+/* Distillery multi-select badge */
+.badge.bg-primary {
+  background-color: var(--accent, #0d6efd) !important;
+}
+
+/* Distillery search dropdown */
+.list-group-item {
+  background-color: var(--surface, #fff);
+  border-color: var(--border, #dee2e6);
+  color: var(--text-primary, #212529);
+}
+
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+  background-color: var(--surface-2, #f8f9fa);
+  color: var(--text-primary, #212529);
+}
+
+/* Override Bootstrap's hardcoded --bs-table-color so plain .table inherits theme */
+.table {
+  --bs-table-color: var(--text-primary, #212529);
+  color: var(--text-primary, #212529);
+}
+
+/* Theme all primary buttons using --accent */
+.btn-primary {
+  --bs-btn-bg: var(--accent, #0d6efd);
+  --bs-btn-border-color: var(--accent, #0d6efd);
+  --bs-btn-color: #fff;
+  --bs-btn-hover-bg: var(--accent, #0d6efd);
+  --bs-btn-hover-border-color: var(--accent, #0d6efd);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: var(--accent, #0d6efd);
+  --bs-btn-active-border-color: var(--accent, #0d6efd);
+  --bs-btn-active-color: #fff;
+  --bs-btn-disabled-bg: var(--accent, #0d6efd);
+  --bs-btn-disabled-border-color: var(--accent, #0d6efd);
+}
+.btn-primary:hover,
+.btn-primary:focus-visible,
+.btn-primary:active,
+.show > .btn-primary.dropdown-toggle {
+  filter: brightness(0.88);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--accent, #0d6efd);
+  --bs-btn-border-color: var(--accent, #0d6efd);
+  --bs-btn-hover-bg: var(--accent, #0d6efd);
+  --bs-btn-hover-border-color: var(--accent, #0d6efd);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: var(--accent, #0d6efd);
+  --bs-btn-active-border-color: var(--accent, #0d6efd);
+  --bs-btn-active-color: #fff;
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: var(--text-secondary, #6c757d);
+  --bs-btn-border-color: var(--border-2, #dee2e6);
+  --bs-btn-hover-bg: var(--surface-2, #f8f9fa);
+  --bs-btn-hover-border-color: var(--border-2, #dee2e6);
+  --bs-btn-hover-color: var(--text-primary, #212529);
+  --bs-btn-active-bg: var(--surface-2, #f8f9fa);
+  --bs-btn-active-border-color: var(--border-2, #dee2e6);
+  --bs-btn-active-color: var(--text-primary, #212529);
 }
 
 
@@ -406,6 +766,7 @@ ul.terms li {
 
 .themed-table tbody tr:hover {
   background-color: var(--t-row-bg-hover);
+  box-shadow: inset 3px 0 0 var(--t-accent);
 }
 
 .themed-table tbody td {
@@ -443,6 +804,7 @@ ul.terms li {
 
 .themed-table .group-row:hover {
   filter: brightness(0.97);
+  box-shadow: inset 3px 0 0 var(--t-accent);
 }
 
 /* Sub rows */
@@ -460,6 +822,7 @@ ul.terms li {
 
 .themed-table .sub-row:hover {
   filter: brightness(0.97) !important;
+  box-shadow: inset 3px 0 0 var(--t-accent) !important;
 }
 
 /* Count badge */
@@ -493,6 +856,16 @@ ul.terms li {
   color: var(--t-sb-color);
 }
 
+/* Killed bottle row */
+.themed-table .killed-row {
+  opacity: 0.52;
+  background-color: var(--t-row-bg-alt) !important;
+}
+
+.themed-table .killed-name {
+  text-decoration: line-through;
+}
+
 /* Type pills */
 .type-pill {
   display: inline-block;
@@ -502,16 +875,42 @@ ul.terms li {
   font-weight: 600;
   white-space: nowrap;
   letter-spacing: 0.02em;
+  border: 1px solid transparent;
 }
 
-.type-pill-bourbon     { background-color: var(--t-pill-bourbon-bg);  color: var(--t-pill-bourbon-text); }
-.type-pill-rye         { background-color: var(--t-pill-rye-bg);      color: var(--t-pill-rye-text); }
-.type-pill-scotch      { background-color: var(--t-pill-scotch-bg);   color: var(--t-pill-scotch-text); }
-.type-pill-american    { background-color: var(--t-pill-american-bg); color: var(--t-pill-american-text); }
-.type-pill-other       { background-color: var(--t-pill-other-bg);    color: var(--t-pill-other-text); }
-.type-pill-barrel      { background-color: #f0e0cc; color: #6b3519; }
-.type-pill-abv         { background-color: #fde8e8; color: #991b1b; }
-.type-pill-distillery  { background-color: #fef3cd; color: #7a5000; }
+.type-pill-bourbon   { background-color: var(--t-pill-bourbon-bg);   color: var(--t-pill-bourbon-text);   border-color: var(--t-pill-bourbon-border, transparent); }
+.type-pill-tennessee { background-color: var(--t-pill-tennessee-bg); color: var(--t-pill-tennessee-text); border-color: var(--t-pill-tennessee-border, transparent); }
+.type-pill-rye       { background-color: var(--t-pill-rye-bg);       color: var(--t-pill-rye-text);       border-color: var(--t-pill-rye-border, transparent); }
+.type-pill-asm       { background-color: var(--t-pill-asm-bg);       color: var(--t-pill-asm-text);       border-color: var(--t-pill-asm-border, transparent); }
+.type-pill-scotch    { background-color: var(--t-pill-scotch-bg);    color: var(--t-pill-scotch-text);    border-color: var(--t-pill-scotch-border, transparent); }
+.type-pill-american  { background-color: var(--t-pill-american-bg);  color: var(--t-pill-american-text);  border-color: var(--t-pill-american-border, transparent); }
+.type-pill-world     { background-color: var(--t-pill-world-bg);     color: var(--t-pill-world-text);     border-color: var(--t-pill-world-border, transparent); }
+.type-pill-other     { background-color: var(--t-pill-other-bg);     color: var(--t-pill-other-text);     border-color: var(--t-pill-other-border, transparent); }
+
+/* Detail-page header badges */
+.type-pill-barrel     { background-color: var(--t-pill-sb-bg, oklch(93% 0.07 65));      color: var(--t-pill-sb-text, oklch(35% 0.15 65));      border-color: transparent; }
+.type-pill-abv        { background-color: var(--t-pill-abv-bg, oklch(93% 0.07 35));     color: var(--t-pill-abv-text, oklch(35% 0.15 35));     border-color: transparent; }
+.type-pill-distillery { background-color: var(--t-pill-distill-bg, oklch(93% 0.04 220)); color: var(--t-pill-distill-text, oklch(30% 0.12 220)); border-color: transparent; }
+.type-pill-private    { background: oklch(97% 0.03 15);              color: oklch(52% 0.18 15);              border-color: oklch(48% 0.18 15); }
+
+/* Per-page pill buttons */
+.btn-per-page {
+  background: transparent;
+  border: 1px solid var(--border-2, #dee2e6);
+  border-radius: 20px;
+  color: var(--text-muted, #6c757d);
+  font-size: 0.8rem;
+  padding: 0.2rem 0.75rem;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.btn-per-page:hover,
+.btn-per-page.active {
+  background-color: var(--accent, #1e3a5f);
+  border-color: var(--accent, #1e3a5f);
+  color: var(--surface, #fff);
+}
 
 
 /* ===================================================================
@@ -534,7 +933,7 @@ ul.terms li {
 }
 
 .theme-swatch.active-swatch {
-  outline: 2px solid rgba(255, 255, 255, 0.75);
+  outline: 2px solid var(--text-primary, rgba(255, 255, 255, 0.75));
   outline-offset: 1px;
 }
 
