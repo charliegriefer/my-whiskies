@@ -89,17 +89,36 @@ a:focus, a:hover {
   border-color: var(--border, #dee2e6);
 }
 
-/* Make sure the logo never gets squished */
-.navbar-brand img {
-  height: 64px;
+/* Logo icon */
+.navbar-logo-img {
+  height: 48px;
   width: auto;
   max-width: none;
 }
 
-/* Slightly smaller logo on phones so it doesn't force wrapping */
+/* Logo text — uses theme heading font and primary text color */
+.navbar-brand-text {
+  font-family: var(--heading-font, 'Cormorant Garamond', serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-primary, #212529) !important;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* Vault uses italic Cormorant Garamond */
+[data-theme="vault"] .navbar-brand-text {
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* On phones, hide the text — icon alone is enough */
 @media (max-width: 575.98px) {
-  .navbar-brand img {
-    height: 52px;
+  .navbar-logo-img {
+    height: 40px;
+  }
+  .navbar-brand-text {
+    display: none;
   }
 }
 
