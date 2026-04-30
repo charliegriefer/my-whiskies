@@ -649,6 +649,49 @@ body {
   color: var(--text-primary, #212529);
 }
 
+/* Theme all primary buttons using --accent */
+.btn-primary {
+  --bs-btn-bg: var(--accent, #0d6efd);
+  --bs-btn-border-color: var(--accent, #0d6efd);
+  --bs-btn-color: #fff;
+  --bs-btn-hover-bg: var(--accent, #0d6efd);
+  --bs-btn-hover-border-color: var(--accent, #0d6efd);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: var(--accent, #0d6efd);
+  --bs-btn-active-border-color: var(--accent, #0d6efd);
+  --bs-btn-active-color: #fff;
+  --bs-btn-disabled-bg: var(--accent, #0d6efd);
+  --bs-btn-disabled-border-color: var(--accent, #0d6efd);
+}
+.btn-primary:hover,
+.btn-primary:focus-visible,
+.btn-primary:active,
+.show > .btn-primary.dropdown-toggle {
+  filter: brightness(0.88);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--accent, #0d6efd);
+  --bs-btn-border-color: var(--accent, #0d6efd);
+  --bs-btn-hover-bg: var(--accent, #0d6efd);
+  --bs-btn-hover-border-color: var(--accent, #0d6efd);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: var(--accent, #0d6efd);
+  --bs-btn-active-border-color: var(--accent, #0d6efd);
+  --bs-btn-active-color: #fff;
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: var(--text-secondary, #6c757d);
+  --bs-btn-border-color: var(--border-2, #dee2e6);
+  --bs-btn-hover-bg: var(--surface-2, #f8f9fa);
+  --bs-btn-hover-border-color: var(--border-2, #dee2e6);
+  --bs-btn-hover-color: var(--text-primary, #212529);
+  --bs-btn-active-bg: var(--surface-2, #f8f9fa);
+  --bs-btn-active-border-color: var(--border-2, #dee2e6);
+  --bs-btn-active-color: var(--text-primary, #212529);
+}
+
 
 /* ===================================================================
    THEMED TABLE COMPONENT
