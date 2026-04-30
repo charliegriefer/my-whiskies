@@ -36,19 +36,8 @@
             hx-vals='{"page": "1"}'>
         </div>
 
-        <!-- Theme picker + Per-page selector -->
+        <!-- Per-page selector -->
         <div class="col-auto ms-auto d-flex gap-2 align-items-center">
-
-          <div class="d-flex align-items-center gap-2 me-1">
-            <span class="text-muted" style="font-size: 0.7rem; white-space: nowrap;">Theme:</span>
-            <button @click="setTheme('clean')" class="theme-swatch"
-              :class="theme === 'clean' ? 'active-swatch' : ''"
-              title="Clean" style="background: #e0e0e0;"></button>
-            <button @click="setTheme('whiskey-bar')" class="theme-swatch"
-              :class="theme === 'whiskey-bar' ? 'active-swatch' : ''"
-              title="Whiskey Bar" style="background: #3d1f00;"></button>
-          </div>
-
         <div>
           <select class="form-select form-select-sm" name="per_page" style="width: auto;"
             hx-get="{{ url_for('bottler.list', username=user.username) }}"
