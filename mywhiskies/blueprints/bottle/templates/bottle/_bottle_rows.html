@@ -141,9 +141,6 @@
           </th>
         {% endif %}
 
-        {# Img — always shown #}
-        <th class="text-center" style="width: 1%;"><i class="bi bi-camera opacity-50" title="Images"></i></th>
-
       </tr>
     </thead>
 
@@ -190,12 +187,6 @@
               <td class="text-nowrap">{{ render_stars(group.max_stars) }}</td>
 
               {% if is_my_list %}<td></td>{% endif %}
-
-              <td class="text-center">
-                {% if group.bottles | selectattr('image_count') | list %}
-                  <i class="bi bi-camera text-muted" title="Has Images"></i>
-                {% endif %}
-              </td>
 
             </tr>
 
@@ -254,12 +245,6 @@
                     {% endif %}
                   </td>
                 {% endif %}
-
-                <td class="text-center">
-                  {% if bottle.image_count %}
-                    <i class="bi bi-camera text-muted" title="Has Images"></i>
-                  {% endif %}
-                </td>
 
               </tr>
             {% endfor %}
@@ -323,12 +308,6 @@
                 </td>
               {% endif %}
 
-              <td class="text-center">
-                {% if bottle.image_count %}
-                  <i class="bi bi-camera text-muted" title="Has Images"></i>
-                {% endif %}
-              </td>
-
             </tr>
           </tbody>
 
@@ -339,7 +318,7 @@
       {# ── Empty state ──────────────────────────────────────────────────────── #}
       <tbody>
         <tr>
-          <td colspan="{{ 6 + (2 if is_my_list else 0) }}"
+          <td colspan="{{ 5 + (2 if is_my_list else 0) }}"
               class="text-center text-muted py-4">
             {{ empty_text }}
           </td>
