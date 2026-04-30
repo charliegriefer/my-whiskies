@@ -3,59 +3,77 @@
 {% block app_content %}
   <main class="flex-shrink-0">
     <div class="container ps-0">
-      <div class="row mt-4">
+
+      <div class="row mt-4 align-items-end">
         <div class="col">
-          <h3 class="mb-0" style="color:#696969;">{{ current_user.username }}'s Whiskies:</h3>
-          <h1>My Account</h1>
+          <p class="page-header-line"><span class="page-header-context">{{ current_user.username }}'s Whiskies</span></p>
+          <h1 class="mb-0">My Account</h1>
         </div>
       </div>
 
       <hr />
 
-      <div class="container">
-        <div class="row">
-          <div class="col-md-1 g-0 text-nowrap me-4">Username:</div>
-          <div class="col-md">{{ current_user.username }}</div>
-        </div>
-        <div class="row">
-          <div class="col-md-1 g-0 text-nowrap me-4">E-Mail:</div>
-          <div class="col-md">{{ current_user.email }}</div>
-        </div>
-        
-        <div class="row">&nbsp;</div>
+      <div class="row">
+        <div class="col-lg-6">
 
-        <div class="row">
-          <div class="col-md-1 g-0 text-nowrap me-4">Date Registered:</div>
-          <div class="col-md">{{ current_user.date_registered.strftime("%Y-%m-%d") }}</div>
-        </div>
-        <div class="row">
-          <div class="col-md-1 g-0 text-nowrap me-4">E-Mail Confirmed:</div>
-          <div class="col-md">{{ current_user.email_confirm_date.strftime("%Y-%m-%d") }}</div>
-        </div>
+          <!-- Account data card -->
+          <div class="card p-4 mb-4">
 
-        <div class="row">&nbsp;</div>
+            <table class="table table-borderless table-sm mb-0 table-tight">
+              <tbody>
+                <tr>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Username</td>
+                  <td>{{ current_user.username }}</td>
+                </tr>
+                <tr>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">E-Mail</td>
+                  <td>{{ current_user.email }}</td>
+                </tr>
+              </tbody>
+            </table>
 
-        <div class="row">
-          <div class="col-md-1 g-0 text-nowrap me-4">Bottles:</div>
-          <div class="col-md">{{ current_user.bottles|length }}</div>
-        </div>
-        <div class="row">
-          <div class="col-md-1 g-0 text-nowrap me-4">Bottlers:</div>
-          <div class="col-md">{{ current_user.bottlers|length }}</div>
-        </div>
-        <div class="row">
-          <div class="col-md-1 g-0 text-nowrap me-4">Distilleries:</div>
-          <div class="col-md">{{ current_user.distilleries|length }}</div>
-        </div>
+            <hr class="my-3">
 
-        <div class="row">&nbsp;</div>
+            <table class="table table-borderless table-sm mb-0 table-tight">
+              <tbody>
+                <tr>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">Date Registered</td>
+                  <td>{{ current_user.date_registered.strftime("%d %B %Y") }}</td>
+                </tr>
+                <tr>
+                  <td class="text-muted text-nowrap pe-4 fw-normal">E-Mail Confirmed</td>
+                  <td>{{ current_user.email_confirm_date.strftime("%d %B %Y") }}</td>
+                </tr>
+              </tbody>
+            </table>
 
-        <div class="row">
-          <div class="col-md-1 g-0 text-nowrap me-4">
-            <i class="bi bi-filetype-csv"></i> <a href="{{ url_for('user.export_data') }}">Export my data (CSV)</a>
+            <hr class="my-3">
+
+            <div class="d-flex gap-4">
+              <div class="text-center">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1.1;">{{ current_user.bottles|length }}</div>
+                <div class="text-muted" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Bottle{{ "s" if current_user.bottles|length != 1 }}</div>
+              </div>
+              <div class="text-center">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1.1;">{{ current_user.bottlers|length }}</div>
+                <div class="text-muted" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Bottler{{ "s" if current_user.bottlers|length != 1 }}</div>
+              </div>
+              <div class="text-center">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1.1;">{{ current_user.distilleries|length }}</div>
+                <div class="text-muted" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">{{ "Distillery" if current_user.distilleries|length == 1 else "Distilleries" }}</div>
+              </div>
+            </div>
+
           </div>
-          
+
+          <!-- Export link -->
+          <a href="{{ url_for('user.export_data') }}" class="d-inline-flex align-items-center gap-2">
+            <i class="bi bi-filetype-csv"></i> Export my data (CSV)
+          </a>
+
+        </div>
       </div>
+
     </div>
   </main>
 {% endblock %}
