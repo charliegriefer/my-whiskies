@@ -60,7 +60,13 @@
 
       <!-- Filter controls — stable, outside swap target -->
       <form id="list-controls" class="row g-2 mb-3 align-items-center"
-        x-data="{ perPage: {{ per_page }} }">
+        x-data="{
+          perPage: {{ per_page }},
+          setPerPage(n) {
+            this.perPage = n;
+            document.cookie = 'per_page=' + n + '; path=/; max-age=' + (365 * 24 * 60 * 60);
+          }
+        }">
         <input type="hidden" name="per_page" :value="perPage">
 
         <div class="col-auto">
@@ -94,7 +100,7 @@
               class="btn-per-page"
               :class="perPage === {{ n }} ? 'active' : ''"
               title="{{ tip }}"
-              @click="perPage = {{ n }}"
+              @click="setPerPage({{ n }})"
               hx-get="{{ list_url }}"
               hx-target="#bottle-results"
               hx-push-url="true"
