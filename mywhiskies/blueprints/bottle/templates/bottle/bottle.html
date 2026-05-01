@@ -264,8 +264,8 @@
                   });
 
                   // Size the panel to the rendered image width so Prev/Next align with image edges.
-                  // Uses naturalWidth/naturalHeight so layout state doesn't matter — offsetWidth
-                  // can return 0 if fit-content hasn't recalculated since the image loaded.
+                  // Deferred to window.load so offsetHeight/offsetWidth are reliable regardless
+                  // of whether the image was cached (already complete) or freshly fetched.
                   const panel = el.closest('.bottle-image-panel');
                   const img = el.querySelector('.carousel-item.active .bottle-img');
                   if (panel && img) {
@@ -277,11 +277,7 @@
                       const w = Math.min(renderedW, maxW);
                       if (w > 0) panel.style.width = w + 'px';
                     }
-                    if (img.complete && img.naturalWidth) {
-                      fitPanel();
-                    } else {
-                      img.addEventListener('load', fitPanel);
-                    }
+                    window.addEventListener('load', fitPanel);
                   }
                 })();
               </script>
