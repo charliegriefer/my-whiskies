@@ -57,17 +57,7 @@
             </li>
           </ul>
 
-          <!-- Theme switcher — ms-auto pushes it to the right -->
-          <div class="d-flex align-items-center gap-2 ms-auto mx-3 px-2 py-1 rounded-pill" style="background: var(--surface-2); border: 1px solid var(--border);">
-            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'barrel' }"
-              style="background: #c87941;" @click="setTheme('barrel')" title="Barrel Room"></button>
-            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'cellar' }"
-              style="background: #1e3a5f;" @click="setTheme('cellar')" title="Modern Cellar"></button>
-            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'vault' }"
-              style="background: #c9a84c;" @click="setTheme('vault')" title="The Vault"></button>
-          </div>
-
-          <ul class="navbar-nav me-2">
+          <ul class="navbar-nav ms-lg-auto me-2">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="bi bi-check-square"></i> {{ username }}
@@ -79,6 +69,16 @@
               </ul>
             </li>
           </ul>
+
+          <!-- Theme switcher — desktop: pill after Charlie; mobile: bare swatches at bottom of menu -->
+          <div class="navbar-theme-picker d-flex align-items-center gap-2 mx-3 px-2 py-1 rounded-pill" style="background: var(--surface-2); border: 1px solid var(--border);">
+            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'barrel' }"
+              style="background: #c87941;" @click="setTheme('barrel')" title="Barrel Room"></button>
+            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'cellar' }"
+              style="background: #1e3a5f;" @click="setTheme('cellar')" title="Modern Cellar"></button>
+            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'vault' }"
+              style="background: #c9a84c;" @click="setTheme('vault')" title="The Vault"></button>
+          </div>
         </div>
       {% else %}
         <div class="ms-auto me-2">

@@ -119,13 +119,12 @@ a:focus, a:hover {
   font-weight: 300;
 }
 
-/* On phones, hide the text — icon alone is enough */
 @media (max-width: 575.98px) {
   .navbar-logo-img {
     height: 40px;
   }
   .navbar-brand-text {
-    display: none;
+    font-size: 1.1rem;
   }
 }
 
@@ -139,7 +138,7 @@ a:focus, a:hover {
 
 .spec-tiles {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.6rem;
   margin-bottom: 1.5rem;
 }
@@ -916,6 +915,20 @@ hr {
 /* ===================================================================
    THEME PICKER SWATCHES (navbar)
    =================================================================== */
+
+.navbar-theme-picker {
+  width: fit-content;
+}
+
+@media (max-width: 991.98px) {
+  .navbar-theme-picker {
+    margin-top: 0.5rem !important;
+    margin-left: 0.5rem !important;
+    background: transparent !important;
+    border: none !important;
+    padding-left: 0 !important;
+  }
+}
 
 .theme-swatch {
   width: 16px;

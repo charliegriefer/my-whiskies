@@ -109,6 +109,10 @@
                 <div class="spec-tile-label">Yr Bottled</div>
                 <div class="spec-tile-value">{{ bottle.year_bottled | value_or_dash }}</div>
               </div>
+              <div class="spec-tile">
+                <div class="spec-tile-label">Cost</div>
+                <div class="spec-tile-value">{{ float_with_symbol(bottle.cost, "$", "prefix") }}</div>
+              </div>
             </div>
 
             <table class="table table-borderless table-sm mb-0 table-tight">
@@ -164,10 +168,6 @@
                   <td colspan="2" class="pb-1 pt-3">
                     <span class="detail-section-label">Notes</span>
                   </td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Cost</td>
-                  <td>{{ float_with_symbol(bottle.cost, "$", "prefix") }}</td>
                 </tr>
                 <tr>
                   <td class="text-muted text-nowrap pe-4 fw-normal">Description</td>
