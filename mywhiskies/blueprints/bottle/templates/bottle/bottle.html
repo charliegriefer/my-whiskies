@@ -264,20 +264,13 @@
                   });
 
                   // Size the panel to the rendered image width so Prev/Next align with image edges.
-                  // Deferred to window.load so offsetHeight/offsetWidth are reliable regardless
-                  // of whether the image was cached (already complete) or freshly fetched.
                   const panel = el.closest('.bottle-image-panel');
                   const img = el.querySelector('.carousel-item.active .bottle-img');
                   if (panel && img) {
-                    function fitPanel() {
-                      if (!img.naturalWidth || !img.naturalHeight) return;
-                      const containerH = el.querySelector('.carousel-inner').offsetHeight || 500;
-                      const renderedW = Math.round((img.naturalWidth / img.naturalHeight) * containerH);
-                      const maxW = panel.parentElement ? panel.parentElement.offsetWidth : window.innerWidth;
-                      const w = Math.min(renderedW, maxW);
+                    window.addEventListener('load', function () {
+                      const w = img.offsetWidth;
                       if (w > 0) panel.style.width = w + 'px';
-                    }
-                    window.addEventListener('load', fitPanel);
+                    });
                   }
                 })();
               </script>
