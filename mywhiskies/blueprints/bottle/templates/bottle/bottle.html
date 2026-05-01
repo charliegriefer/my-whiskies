@@ -264,11 +264,16 @@
                   });
 
                   // Size the panel to the rendered image width so Prev/Next align with image edges.
+                  // carousel-inner is fixed at 500px tall (CSS); image is height-constrained,
+                  // so rendered width = (naturalWidth / naturalHeight) * 500, capped at column width.
                   const panel = el.closest('.bottle-image-panel');
                   const img = el.querySelector('.carousel-item.active .bottle-img');
                   if (panel && img) {
                     window.addEventListener('load', function () {
-                      const w = img.offsetWidth;
+                      if (!img.naturalWidth || !img.naturalHeight) return;
+                      const renderedW = Math.round((img.naturalWidth / img.naturalHeight) * 500);
+                      const maxW = panel.offsetWidth;
+                      const w = Math.min(renderedW, maxW);
                       if (w > 0) panel.style.width = w + 'px';
                     });
                   }
