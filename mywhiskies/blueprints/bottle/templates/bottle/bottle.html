@@ -254,31 +254,6 @@
                   Next <i class="bi bi-chevron-right"></i>
                 </button>
               </div>
-              <script>
-                (function () {
-                  const el = document.getElementById('bottleCarousel');
-                  bootstrap.Carousel.getOrCreateInstance(el, { ride: false, interval: false, touch: true });
-                  const dots = document.querySelectorAll('.carousel-dot');
-                  el.addEventListener('slide.bs.carousel', e => {
-                    dots.forEach((d, i) => d.classList.toggle('active', i === e.to));
-                  });
-
-                  // Size the panel to the rendered image width so Prev/Next align with image edges.
-                  // carousel-inner is fixed at 500px tall (CSS); image is height-constrained,
-                  // so rendered width = (naturalWidth / naturalHeight) * 500, capped at column width.
-                  const panel = el.closest('.bottle-image-panel');
-                  const img = el.querySelector('.carousel-item.active .bottle-img');
-                  if (panel && img) {
-                    window.addEventListener('load', function () {
-                      if (!img.naturalWidth || !img.naturalHeight) return;
-                      const renderedW = Math.round((img.naturalWidth / img.naturalHeight) * 500);
-                      const maxW = panel.offsetWidth;
-                      const w = Math.min(renderedW, maxW);
-                      if (w > 0) panel.style.width = w + 'px';
-                    });
-                  }
-                })();
-              </script>
             </div>
             {% else %}
               <div class="bottle-image-panel" id="singleImagePanel">
@@ -333,3 +308,36 @@
   </div>
   </div>
 {% endblock %}
+
+{% if bottle.image_count > 1 %}
+{% block scripts %}
+  {{ super() }}
+  <script>
+    (function () {
+      const el = document.getElementById('bottleCarousel');
+      bootstrap.Carousel.getOrCreateInstance(el, { ride: false, interval: false, touch: true });
+      const dots = document.querySelectorAll('.carousel-dot');
+      el.addEventListener('slide.bs.carousel', e => {
+        dots.forEach((d, i) => d.classList.toggle('active', i === e.to));
+      });
+
+      // Size the panel to the rendered image width so Prev/Next align with image edges.
+      // carousel-inner is fixed at 500px tall (CSS); image is height-constrained,
+      // so rendered width = (naturalWidth / naturalHeight) * 500, capped at column width.
+      // Uses panel.parentElement (the col) not panel itself, since the panel is a flex
+      // item that shrinks to content and has no reliable width before fitPanel runs.
+      const panel = el.closest('.bottle-image-panel');
+      const img = el.querySelector('.carousel-item.active .bottle-img');
+      if (panel && img) {
+        window.addEventListener('load', function () {
+          if (!img.naturalWidth || !img.naturalHeight) return;
+          const renderedW = Math.round((img.naturalWidth / img.naturalHeight) * 500);
+          const maxW = panel.parentElement.offsetWidth;
+          const w = Math.min(renderedW, maxW);
+          if (w > 0) panel.style.width = w + 'px';
+        });
+      }
+    })();
+  </script>
+{% endblock %}
+{% endif %}
