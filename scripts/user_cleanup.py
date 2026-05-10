@@ -25,17 +25,11 @@ KEEP_USERNAMES = {"JMSTURM", "mattmccormick", "Bourbon_ThatsNeat"}
 # ── Tracked users (have login history) + bottle counts ────────────────────────
 print("\n=== Users with login history ===")
 tracked = (
-    db.session.execute(
-        db.select(User).where(User.id.in_(db.select(UserLogin.user_id).distinct()))
-    )
-    .scalars()
-    .all()
+    db.session.execute(db.select(User).where(User.id.in_(db.select(UserLogin.user_id).distinct()))).scalars().all()
 )
 
 for u in sorted(tracked, key=lambda u: len(u.bottles), reverse=True):
-    last = db.session.execute(
-        db.select(func.max(UserLogin.login_date)).where(UserLogin.user_id == u.id)
-    ).scalar()
+    last = db.session.execute(db.select(func.max(UserLogin.login_date)).where(UserLogin.user_id == u.id)).scalar()
     print(f"  {u.username:<30} {len(u.bottles):>4} bottles  last login: {last}")
 
 # ── Inactive users (no login history, not in keep list) ───────────────────────
