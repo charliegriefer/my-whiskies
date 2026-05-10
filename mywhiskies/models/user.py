@@ -20,7 +20,7 @@ class User(UserMixin, db.Model):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     username: Mapped[str] = mapped_column(String(64), index=True, unique=True)
     email: Mapped[str] = mapped_column(String(120), index=True, unique=True)
-    password_hash: Mapped[str] = mapped_column(String(128))
+    password_hash: Mapped[str] = mapped_column(String(256))
     date_registered: Mapped[datetime] = mapped_column(default=datetime.utcnow)
     email_confirmed: Mapped[bool] = mapped_column(default=False)
     email_confirm_date: Mapped[Optional[datetime]]
