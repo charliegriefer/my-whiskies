@@ -18,8 +18,12 @@ collection if you'd like.
 - Random bottle picker — useful when you can't decide what to pour
 - Public and private bottle visibility
 
-![Bottle list](docs/screenshots/bottle_list.png)
-![Bottle detail](docs/screenshots/bottle_detail.png)
+![Bottle list](docs/screenshots/bottle_list_vault.png)
+![Bottle list](docs/screenshots/bottle_list_barrel_room.png)
+![Bottle list](docs/screenshots/bottle_list_cellar.png)
+![Bottle detail](docs/screenshots/bottle_detail_cellar.png)
+![Bottle detail](docs/screenshots/bottle_detail_barrel_room.png)
+![Bottle detail](docs/screenshots/bottle_detail_cellar.png)
 
 ## Tech stack
 
