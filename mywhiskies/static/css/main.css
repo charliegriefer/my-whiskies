@@ -790,6 +790,11 @@ hr {
   background-color: var(--t-row-bg-alt);
 }
 
+.themed-table tbody.stripe > tr:hover {
+  background-color: var(--t-row-bg-hover);
+  box-shadow: inset 3px 0 0 var(--t-accent);
+}
+
 /* Group rows */
 .themed-table .group-row {
   background-color: var(--t-row-bg-group) !important;
@@ -802,7 +807,7 @@ hr {
 }
 
 .themed-table .group-row:hover {
-  filter: brightness(0.97);
+  background-color: var(--t-row-bg-hover) !important;
   box-shadow: inset 3px 0 0 var(--t-accent);
 }
 
@@ -820,7 +825,7 @@ hr {
 }
 
 .themed-table .sub-row:hover {
-  filter: brightness(0.97) !important;
+  background-color: var(--t-row-bg-hover) !important;
   box-shadow: inset 3px 0 0 var(--t-accent) !important;
 }
 
