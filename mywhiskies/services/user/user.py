@@ -1,9 +1,12 @@
 from typing import Optional
 
+import boto3
 import pandas as pd
+from botocore.exceptions import ClientError
+from flask import current_app, flash
 
 from mywhiskies.extensions import db
-from mywhiskies.models import User
+from mywhiskies.models import User, UserLogin
 
 
 def get_user_by_email(email: str) -> Optional[User]:
@@ -53,3 +56,39 @@ def create_export_csv(current_user: User) -> None:
     df = pd.DataFrame(bottles, columns=fieldnames)
     df = df.sort_values(by=["Bottle Name"])
     df.to_csv(f"/tmp/{current_user.id}.csv", index=False)
+
+
+def change_user_password(user: User, current_password: str, new_password: str) -> bool:
+    if not user.check_password(current_password):
+        return False
+    user.set_password(new_password)
+    db.session.commit()
+    flash("Your password has been changed.", "success")
+    return True
+
+
+def delete_user_account(user: User) -> None:
+    s3_client = boto3.client("s3")
+    img_s3_bucket = current_app.config["BOTTLE_IMAGE_S3_BUCKET"]
+    img_s3_key = current_app.config["BOTTLE_IMAGE_S3_KEY"]
+
+    for bottle in list(user.bottles):
+        for img in list(bottle.images):
+            try:
+                s3_client.delete_object(
+                    Bucket=img_s3_bucket,
+                    Key=f"{img_s3_key}/{bottle.id}_{img.sequence}.jpg",
+                )
+            except ClientError:
+                pass
+        db.session.delete(bottle)
+
+    for bottler in list(user.bottlers):
+        db.session.delete(bottler)
+
+    for distillery in list(user.distilleries):
+        db.session.delete(distillery)
+
+    db.session.execute(db.delete(UserLogin).where(UserLogin.user_id == user.id))
+    db.session.delete(user)
+    db.session.commit()

@@ -74,9 +74,71 @@
 
           </div>
 
+          <!-- Danger Zone -->
+          <div class="card p-4 mb-4" style="border-color: oklch(52% 0.18 15);">
+            <p class="detail-section-label mb-3" style="color: oklch(52% 0.18 15);">Danger Zone</p>
+            <div class="d-flex flex-wrap gap-3">
+              <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                <i class="bi bi-key me-1"></i> Change Password
+              </button>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                <i class="bi bi-trash me-1"></i> Delete Account
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
 
     </div>
   </main>
+
+  <!-- Change Password Modal -->
+  <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="post" action="{{ url_for('user.change_password') }}" novalidate>
+          {{ change_password_form.hidden_tag() }}
+          <div class="modal-header">
+            <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            {{ form_utils.render_field(change_password_form.current_password) }}
+            {{ form_utils.render_field(change_password_form.password) }}
+            {{ form_utils.render_field(change_password_form.password2) }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            {{ change_password_form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Account Modal -->
+  <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="post" action="{{ url_for('user.delete_account') }}" novalidate>
+          {{ delete_account_form.hidden_tag() }}
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteAccountModalLabel">Delete Account</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>This will permanently delete your account and all associated data — bottles, distilleries, bottlers, and images. <strong>This cannot be undone.</strong></p>
+            <p>Type <strong>{{ current_user.username }}</strong> below to confirm.</p>
+            {{ form_utils.render_field(delete_account_form.confirm_username) }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            {{ delete_account_form.submit(class="btn btn-danger") }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 {% endblock %}
