@@ -605,6 +605,10 @@ body {
   color: var(--text-muted, #6c757d) !important;
 }
 
+.site-footer .nav-link.bmc-link {
+  color: var(--accent, #337ab7) !important;
+}
+
 .card {
   background-color: var(--surface, #fff);
   border-color: var(--border, #dee2e6);
