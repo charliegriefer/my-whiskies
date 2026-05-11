@@ -49,7 +49,7 @@ SQLAlchemy==2.0.49
 tomli==2.0.2
 typing_extensions==4.15.0
 tzdata==2024.2
-urllib3==2.6.3
+urllib3==2.7.0
 Werkzeug==3.1.8
 WTForms==3.0.1
 zipp==3.23.0
