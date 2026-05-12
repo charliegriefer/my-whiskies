@@ -53,4 +53,4 @@ def test_valid_login(client: FlaskClient, test_user_01: User) -> None:
 
     response_data = response.get_data(as_text=True)
     assert f"{test_user_01.username}&#39;s Whiskies" in response_data
-    assert f"Log Out {test_user_01.username}" in response_data
+    assert "Log Out" in response_data
