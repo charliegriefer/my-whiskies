@@ -149,6 +149,30 @@
 
 {% block scripts %}
   {{ super() }}
+  <style>
+    #bottle-hover-card {
+      position: fixed;
+      z-index: 1080;
+      display: none;
+      width: 500px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: var(--t-text-primary);
+      background: var(--t-row-bg-group);
+      border: 1px solid var(--t-row-border);
+      border-radius: 0.375rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+      pointer-events: auto;
+    }
+    #bottle-hover-card .hc-text {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    #bottle-hover-card ul,
+    #bottle-hover-card ol { padding-left: 1.25rem; margin-bottom: 0; }
+    #bottle-hover-card p:last-child { margin-bottom: 0; }
+  </style>
   <script>
     document.addEventListener('alpine:init', () => {
       Alpine.store('abvDisplay', {
@@ -160,6 +184,101 @@
       });
     });
   </script>
+  <div id="bottle-hover-card" aria-hidden="true"></div>
+  <script>
+    (function () {
+      const card = document.getElementById('bottle-hover-card');
+      let showTimer = null;
+      let hideTimer = null;
+      let active = null;
+
+      function place(el) {
+        const desc = el.dataset.description;
+        const imgSrc = el.dataset.imgSrc;
+        if (!desc && !imgSrc) return;
+        card.innerHTML = '';
+        if (imgSrc && desc) {
+          card.style.display = 'flex';
+          card.style.alignItems = 'flex-start';
+          card.style.gap = '0.6rem';
+          const img = document.createElement('img');
+          img.src = imgSrc;
+          img.style.cssText = 'width:220px;flex-shrink:0;border-radius:0.25rem;display:block;margin-right:0.5rem;';
+          card.appendChild(img);
+          const body = document.createElement('div');
+          body.className = 'hc-text';
+          body.style.cssText = 'flex:1;min-width:0;';
+          body.innerHTML = desc;
+          card.appendChild(body);
+        } else if (imgSrc) {
+          card.style.display = 'block';
+          const img = document.createElement('img');
+          img.src = imgSrc;
+          img.style.cssText = 'width:100%;border-radius:0.25rem;display:block;';
+          card.appendChild(img);
+        } else {
+          card.style.display = 'block';
+          const body = document.createElement('div');
+          body.className = 'hc-text';
+          body.innerHTML = desc;
+          card.appendChild(body);
+        }
+        const gap = 10;
+        const rect = el.getBoundingClientRect();
+        let left = rect.right + gap;
+        if (left + card.offsetWidth > window.innerWidth - gap) {
+          left = rect.left - card.offsetWidth - gap;
+        }
+        let top = rect.top;
+        if (top + card.offsetHeight > window.innerHeight - gap) {
+          top = Math.max(gap, window.innerHeight - card.offsetHeight - gap);
+        }
+        card.style.left = left + 'px';
+        card.style.top = top + 'px';
+      }
+
+      function hide() {
+        clearTimeout(showTimer);
+        clearTimeout(hideTimer);
+        showTimer = hideTimer = null;
+        active = null;
+        card.style.display = 'none';
+        card.style.removeProperty('flex');
+        card.style.removeProperty('align-items');
+        card.style.removeProperty('gap');
+        card.innerHTML = '';
+      }
+
+      function scheduleHide() {
+        clearTimeout(hideTimer);
+        hideTimer = setTimeout(hide, 150);
+      }
+
+      document.addEventListener('mouseover', function (e) {
+        const el = e.target.closest('[data-description], [data-img-src]');
+        if (el === active) return;
+        clearTimeout(showTimer);
+        clearTimeout(hideTimer);
+        if (card.contains(e.target)) return;
+        hide();
+        if (!el) return;
+        active = el;
+        showTimer = setTimeout(() => place(el), 300);
+      });
+
+      document.addEventListener('mouseout', function (e) {
+        const el = e.target.closest('[data-description], [data-img-src]');
+        if (el && el === active) {
+          if (e.relatedTarget && (el.contains(e.relatedTarget) || card.contains(e.relatedTarget))) return;
+          scheduleHide();
+        }
+      });
+
+      card.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+      card.addEventListener('mouseleave', scheduleHide);
+    })();
+  </script>
+
   {% if is_my_list and total > 1 %}
   <script>
     document.getElementById('random-bottle-btn').addEventListener('click', () => {
