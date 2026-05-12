@@ -192,37 +192,7 @@
       let hideTimer = null;
       let active = null;
 
-      function place(el) {
-        const desc = el.dataset.description;
-        const imgSrc = el.dataset.imgSrc;
-        if (!desc && !imgSrc) return;
-        card.innerHTML = '';
-        if (imgSrc && desc) {
-          card.style.display = 'flex';
-          card.style.alignItems = 'flex-start';
-          card.style.gap = '0.6rem';
-          const img = document.createElement('img');
-          img.src = imgSrc;
-          img.style.cssText = 'width:220px;flex-shrink:0;border-radius:0.25rem;display:block;margin-right:0.5rem;';
-          card.appendChild(img);
-          const body = document.createElement('div');
-          body.className = 'hc-text';
-          body.style.cssText = 'flex:1;min-width:0;padding-right:0.5rem;';
-          body.innerHTML = desc;
-          card.appendChild(body);
-        } else if (imgSrc) {
-          card.style.display = 'block';
-          const img = document.createElement('img');
-          img.src = imgSrc;
-          img.style.cssText = 'width:100%;border-radius:0.25rem;display:block;';
-          card.appendChild(img);
-        } else {
-          card.style.display = 'block';
-          const body = document.createElement('div');
-          body.className = 'hc-text';
-          body.innerHTML = desc;
-          card.appendChild(body);
-        }
+      function reposition(el) {
         const gap = 10;
         if (window.innerWidth < 600) {
           card.style.left = gap + 'px';
@@ -246,6 +216,42 @@
           card.style.left = left + 'px';
           card.style.top = top + 'px';
         }
+      }
+
+      function place(el) {
+        const desc = el.dataset.description;
+        const imgSrc = el.dataset.imgSrc;
+        if (!desc && !imgSrc) return;
+        card.innerHTML = '';
+        let img = null;
+        if (imgSrc && desc) {
+          card.style.display = 'flex';
+          card.style.alignItems = 'flex-start';
+          card.style.gap = '0.6rem';
+          img = document.createElement('img');
+          img.src = imgSrc;
+          img.style.cssText = 'width:220px;flex-shrink:0;border-radius:0.25rem;display:block;margin-right:0.5rem;';
+          card.appendChild(img);
+          const body = document.createElement('div');
+          body.className = 'hc-text';
+          body.style.cssText = 'flex:1;min-width:0;padding-right:0.5rem;';
+          body.innerHTML = desc;
+          card.appendChild(body);
+        } else if (imgSrc) {
+          card.style.display = 'block';
+          img = document.createElement('img');
+          img.src = imgSrc;
+          img.style.cssText = 'width:100%;border-radius:0.25rem;display:block;';
+          card.appendChild(img);
+        } else {
+          card.style.display = 'block';
+          const body = document.createElement('div');
+          body.className = 'hc-text';
+          body.innerHTML = desc;
+          card.appendChild(body);
+        }
+        reposition(el);
+        if (img) img.onload = () => { if (active === el) reposition(el); };
       }
 
       function hide() {
