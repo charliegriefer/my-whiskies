@@ -192,11 +192,11 @@
       let hideTimer = null;
       let active = null;
 
-      function reposition(el) {
+      function reposition(el, width) {
         const gap = 10;
         card.style.removeProperty('right');
         card.style.removeProperty('bottom');
-        card.style.width = '500px';
+        card.style.width = width || '500px';
         const rect = el.getBoundingClientRect();
         let left = rect.right + gap;
         if (left + card.offsetWidth > window.innerWidth - gap) {
@@ -242,8 +242,9 @@
           body.innerHTML = desc;
           card.appendChild(body);
         }
-        reposition(el);
-        if (img) img.onload = () => { if (active === el) reposition(el); };
+        const cardWidth = (imgSrc && !desc) ? '260px' : undefined;
+        reposition(el, cardWidth);
+        if (img) img.onload = () => { if (active === el) reposition(el, cardWidth); };
       }
 
       function hide() {
