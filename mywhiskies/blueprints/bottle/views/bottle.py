@@ -68,6 +68,8 @@ def bottles(username: str):
         per_page=per_page,
     )
 
+    _, _, img_s3_url = get_s3_config()
+
     filters_active = bool(q) or set(types) != set(all_type_names)
     if data["total"] == 0:
         empty_text = "No bottles match your filters." if filters_active else f"{user.username} has no bottles. Yet."
@@ -89,6 +91,7 @@ def bottles(username: str):
         direction=direction,
         empty_text=empty_text,
         list_url=url_for("bottle.list", username=user.username),
+        img_s3_url=img_s3_url,
         **data,
     )
 
