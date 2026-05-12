@@ -1,0 +1,14 @@
+<p>Hey {{ user.username }}!</p>
+
+<p>We noticed a login to your My Whiskies Online account from an IP address we haven't seen before:</p>
+
+<p><strong>{{ ip_address }}</strong></p>
+
+<p>If this was you, no action is needed.</p>
+
+<p>If you don't recognize this login, please
+<a href="{{ url_for('auth.reset_password_request', _external=True) }}">reset your password</a>
+immediately.</p>
+
+<p>All the best,</p>
+<p>Your Bartender</p>

@@ -20,6 +20,16 @@ def send_registration_confirmation_email(user: User, is_resend=False) -> None:
         )
 
 
+def send_new_login_alert(user: User, ip_address: str) -> None:
+    send_email(
+        "[My Whiskies Online] New Login From an Unrecognized Location",
+        sender=current_app.config["MAIL_SENDER"],
+        recipients=[user.email],
+        text_body=render_template("email/new_login_alert.txt", user=user, ip_address=ip_address),
+        html_body=render_template("email/new_login_alert.html", user=user, ip_address=ip_address),
+    )
+
+
 def send_password_reset_email(user: User) -> None:
     token = user.get_reset_password_token()
     try:
