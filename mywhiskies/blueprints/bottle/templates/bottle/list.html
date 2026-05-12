@@ -162,7 +162,7 @@
       border: 1px solid var(--t-row-border);
       border-radius: 0.5rem;
       box-shadow: 0 16px 40px rgba(0, 0, 0, .35);
-      pointer-events: none;
+      pointer-events: auto;
       overflow: hidden;
     }
     #bottle-hover-card .hc-cols {
@@ -206,14 +206,13 @@
       gap: 5px;
       font-size: 0.8rem;
       color: var(--t-text-secondary);
+      margin-left: -0.4rem;
     }
     #bottle-hover-card .hc-desc {
       font-size: 0.8125rem;
       color: var(--t-text-secondary);
-      display: -webkit-box;
-      -webkit-line-clamp: 5;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      max-height: 160px;
+      overflow-y: auto;
     }
     #bottle-hover-card .hc-desc p:last-child { margin-bottom: 0; }
     #bottle-hover-card .hc-desc ul,
@@ -237,8 +236,6 @@
       let showTimer = null;
       let hideTimer = null;
       let active = null;
-      let mouseX = 0, mouseY = 0;
-
       const TYPE_CLS = {
         BOURBON: 'bourbon', TENNESSEE_WHISKEY: 'tennessee', RYE: 'rye',
         AMERICAN_SINGLE_MALT: 'asm', SCOTCH: 'scotch', AMERICAN_WHISKEY: 'american',
@@ -263,17 +260,18 @@
         const on = 'style="color:var(--t-star-on)"';
         const off = 'style="color:var(--t-star-off)"';
         return '<span class="text-nowrap">' +
-          '<i class="bi bi-star-fill small" ' + on + '></i>'.repeat(full) +
+          ('<i class="bi bi-star-fill small" ' + on + '></i>').repeat(full) +
           (half ? '<i class="bi bi-star-half small" ' + on + '></i>' : '') +
-          '<i class="bi bi-star small" ' + off + '></i>'.repeat(empty) +
+          ('<i class="bi bi-star small" ' + off + '></i>').repeat(empty) +
           '</span>';
       }
 
-      function reposition() {
+      function reposition(el) {
         const gap = 12;
-        let left = mouseX + 24;
-        let top = mouseY - 40;
-        if (left + card.offsetWidth > window.innerWidth - gap) left = mouseX - card.offsetWidth - 12;
+        const rect = el.getBoundingClientRect();
+        let left = rect.right + gap;
+        let top = rect.top - 20;
+        if (left + card.offsetWidth > window.innerWidth - gap) left = rect.left - card.offsetWidth - gap;
         if (left < gap) left = gap;
         if (top + card.offsetHeight > window.innerHeight - gap) top = window.innerHeight - card.offsetHeight - gap;
         if (top < gap) top = gap;
@@ -335,9 +333,9 @@
         card.innerHTML = '';
         card.style.display = 'block';
         card.appendChild(cols);
-        reposition();
+        reposition(el);
 
-        if (loadPromise) loadPromise.then(() => { if (active === el) reposition(); });
+        if (loadPromise) loadPromise.then(() => { if (active === el) reposition(el); });
       }
 
       function hide() {
@@ -354,17 +352,12 @@
         hideTimer = setTimeout(hide, 300);
       }
 
-      document.addEventListener('mousemove', e => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        if (active && card.style.display !== 'none') reposition();
-      });
-
       document.addEventListener('mouseover', function (e) {
         const el = e.target.closest('[data-description], [data-img-src]');
         if (el === active) return;
         clearTimeout(showTimer);
         clearTimeout(hideTimer);
+        if (card.contains(e.target)) return;
         if (!el) {
           if (active) scheduleHide();
           return;
@@ -377,10 +370,13 @@
       document.addEventListener('mouseout', function (e) {
         const el = e.target.closest('[data-description], [data-img-src]');
         if (el && el === active) {
-          if (e.relatedTarget && el.contains(e.relatedTarget)) return;
+          if (e.relatedTarget && (el.contains(e.relatedTarget) || card.contains(e.relatedTarget))) return;
           scheduleHide();
         }
       });
+
+      card.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+      card.addEventListener('mouseleave', scheduleHide);
     })();
   </script>
 
