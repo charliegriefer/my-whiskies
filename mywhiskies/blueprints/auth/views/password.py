@@ -15,9 +15,6 @@ from mywhiskies.services.auth.password import (
 
 @auth.route("/reset_password_request", methods=["GET", "POST"])
 def reset_password_request():
-    if current_user.is_authenticated:
-        return redirect(url_for("core.main"))
-
     form = ResetPasswordRequestForm()
 
     if form.validate_on_submit():
@@ -33,7 +30,7 @@ def reset_password_request():
 
     return render_template(
         "auth/reset_password_request.html",
-        title="My Whiskies Online: Forgot Password",
+        title="My Whiskies Online: Reset Your Password",
         form=form,
         has_captcha=True,
         recaptcha_public_key=current_app.config["RECAPTCHA_PUBLIC_KEY"],
