@@ -1,4 +1,3 @@
-from datetime import datetime
 from urllib.parse import urlparse
 
 from flask import flash, url_for
@@ -48,8 +47,3 @@ def is_new_ip(user_id: str, ip_address: str) -> bool:
         select(exists().where(UserLogin.user_id == user_id, UserLogin.ip_address == ip_address))
     ).scalar()
     return not known
-
-
-def record_login(user_id: str, ip_address: str) -> None:
-    db.session.add(UserLogin(user_id=user_id, login_date=datetime.utcnow(), ip_address=ip_address))
-    db.session.commit()
