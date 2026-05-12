@@ -224,17 +224,28 @@
           card.appendChild(body);
         }
         const gap = 10;
-        const rect = el.getBoundingClientRect();
-        let left = rect.right + gap;
-        if (left + card.offsetWidth > window.innerWidth - gap) {
-          left = rect.left - card.offsetWidth - gap;
+        if (window.innerWidth < 600) {
+          card.style.left = gap + 'px';
+          card.style.right = gap + 'px';
+          card.style.width = 'auto';
+          card.style.bottom = gap + 'px';
+          card.style.top = 'auto';
+        } else {
+          card.style.removeProperty('right');
+          card.style.removeProperty('bottom');
+          card.style.width = '500px';
+          const rect = el.getBoundingClientRect();
+          let left = rect.right + gap;
+          if (left + card.offsetWidth > window.innerWidth - gap) {
+            left = rect.left - card.offsetWidth - gap;
+          }
+          let top = rect.top;
+          if (top + card.offsetHeight > window.innerHeight - gap) {
+            top = Math.max(gap, window.innerHeight - card.offsetHeight - gap);
+          }
+          card.style.left = left + 'px';
+          card.style.top = top + 'px';
         }
-        let top = rect.top;
-        if (top + card.offsetHeight > window.innerHeight - gap) {
-          top = Math.max(gap, window.innerHeight - card.offsetHeight - gap);
-        }
-        card.style.left = left + 'px';
-        card.style.top = top + 'px';
       }
 
       function hide() {
@@ -246,6 +257,8 @@
         card.style.removeProperty('flex');
         card.style.removeProperty('align-items');
         card.style.removeProperty('gap');
+        card.style.removeProperty('right');
+        card.style.removeProperty('bottom');
         card.innerHTML = '';
       }
 
