@@ -1,6 +1,7 @@
 import csv
 import json
 import zipfile
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from typing import Optional
 
@@ -107,17 +108,31 @@ def create_export_images_zip(user: User) -> str:
     img_s3_key = current_app.config["BOTTLE_IMAGE_S3_KEY"]
     path = f"/tmp/{user.id}_images.zip"
 
-    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as zf:
-        for bottle in user.bottles:
-            for img in bottle.images:
-                s3_object_key = f"{img_s3_key}/{bottle.id}_{img.sequence}.jpg"
-                safe_name = bottle.name.replace("/", "-")
-                filename = f"{safe_name}_{img.sequence}.jpg"
-                try:
-                    obj = s3_client.get_object(Bucket=img_s3_bucket, Key=s3_object_key)
-                    zf.writestr(filename, obj["Body"].read())
-                except ClientError:
-                    pass
+    # Build the full list of (zip_filename, s3_key) pairs up front
+    tasks = []
+    for bottle in user.bottles:
+        safe_name = bottle.name.replace("/", "-").replace(":", "-")
+        for img in bottle.images:
+            zip_filename = f"{bottle.user_num:04d}_{safe_name}_{img.sequence}.jpg"
+            s3_object_key = f"{img_s3_key}/{bottle.id}_{img.sequence}.jpg"
+            tasks.append((zip_filename, s3_object_key))
+
+    def fetch(zip_filename, s3_key):
+        try:
+            obj = s3_client.get_object(Bucket=img_s3_bucket, Key=s3_key)
+            return zip_filename, obj["Body"].read()
+        except ClientError:
+            return zip_filename, None
+
+    # Fetch all images in parallel, then write to zip
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_STORED) as zf:
+        with ThreadPoolExecutor(max_workers=20) as executor:
+            futures = {executor.submit(fetch, zf_name, s3_key): zf_name for zf_name, s3_key in tasks}
+            for future in as_completed(futures):
+                zip_filename, data = future.result()
+                if data:
+                    zf.writestr(zip_filename, data)
+
     return path
 
 
