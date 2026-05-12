@@ -1,0 +1,14 @@
+<p>Hey {{ user.username }}!</p>
+
+<p>We noticed that you haven't logged into your My Whiskies Online account in a while.</p>
+
+<p>To keep our platform tidy, we automatically remove accounts that have been inactive for an extended period.
+<strong>Your account will be permanently deleted in {{ grace_days }} days</strong> unless you log in before then.</p>
+
+<p>If you'd like to keep your account, simply
+<a href="{{ url_for('auth.login', _external=True) }}">log in</a> and everything will be preserved.</p>
+
+<p>If you no longer want the account, no action is needed — it will be removed automatically.</p>
+
+<p>All the best,</p>
+<p>Your Bartender</p>

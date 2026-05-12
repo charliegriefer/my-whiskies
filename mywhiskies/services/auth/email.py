@@ -41,6 +41,16 @@ def send_email_change_confirmation(user: User, new_email: str) -> None:
     )
 
 
+def send_inactive_account_warning(user: User, grace_days: int) -> None:
+    send_email(
+        "[My Whiskies Online] Your Account Will Be Deleted Due to Inactivity",
+        sender=current_app.config["MAIL_SENDER"],
+        recipients=[user.email],
+        text_body=render_template("email/inactive_warning.txt", user=user, grace_days=grace_days),
+        html_body=render_template("email/inactive_warning.html", user=user, grace_days=grace_days),
+    )
+
+
 def send_password_reset_email(user: User) -> None:
     token = user.get_reset_password_token()
     try:
