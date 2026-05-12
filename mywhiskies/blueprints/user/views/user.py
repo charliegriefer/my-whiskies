@@ -2,8 +2,16 @@ from flask import flash, redirect, render_template, send_file, url_for
 from flask_login import current_user, login_required, logout_user
 
 from mywhiskies.blueprints.user import user_bp
-from mywhiskies.forms.user import ChangePasswordForm, DeleteAccountForm
-from mywhiskies.services.user.user import change_user_password, create_export_csv, delete_user_account
+from mywhiskies.forms.user import ChangeEmailForm, ChangePasswordForm, DeleteAccountForm
+from mywhiskies.models import User
+from mywhiskies.services.auth.email import send_email_change_confirmation
+from mywhiskies.services.user.user import (
+    apply_email_change,
+    change_user_password,
+    create_export_csv,
+    delete_user_account,
+    is_email_taken,
+)
 
 
 @user_bp.route("/<username:username>", methods=["GET"])
@@ -18,9 +26,42 @@ def account():
         "user/account.html",
         title="My Whiskies Online: My Account",
         user=current_user,
+        change_email_form=ChangeEmailForm(),
         change_password_form=ChangePasswordForm(),
         delete_account_form=DeleteAccountForm(),
     )
+
+
+@user_bp.route("/account/change_email", methods=["POST"])
+@login_required
+def change_email():
+    form = ChangeEmailForm()
+    if form.validate_on_submit():
+        new_email = form.email.data.strip().lower()
+        if new_email == current_user.email.lower():
+            flash("That is already your current e-mail address.", "warning")
+            return redirect(url_for("user.account"))
+        if is_email_taken(new_email):
+            flash("That e-mail address is already in use.", "danger")
+            return redirect(url_for("user.account"))
+        send_email_change_confirmation(current_user, new_email)
+        flash(f"A confirmation email has been sent to {new_email}. Click the link to complete the change.", "info")
+    else:
+        for field_errors in form.errors.values():
+            for error in field_errors:
+                flash(error, "danger")
+    return redirect(url_for("user.account"))
+
+
+@user_bp.route("/account/confirm_email_change/<token>")
+@login_required
+def confirm_email_change(token: str):
+    user, new_email = User.verify_email_change_token(token)
+    if not user or user.id != current_user.id:
+        flash("The confirmation link is invalid or has expired.", "danger")
+        return redirect(url_for("user.account"))
+    apply_email_change(current_user, new_email)
+    return redirect(url_for("user.account"))
 
 
 @user_bp.route("/account/change_password", methods=["POST"])

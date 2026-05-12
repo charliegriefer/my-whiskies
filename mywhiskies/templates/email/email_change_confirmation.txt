@@ -1,0 +1,11 @@
+Hey {{ user.username }}!
+
+We received a request to change the e-mail address on your My Whiskies Online account.
+To confirm this change, click the following link:
+
+{{ url_for('user.confirm_email_change', token=token, _external=True) }}
+
+This link will expire in 1 hour. If you did not request this change, you can safely ignore this email.
+
+All the best,
+Your Bartender

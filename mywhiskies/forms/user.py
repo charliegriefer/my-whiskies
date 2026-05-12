@@ -1,8 +1,17 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SubmitField
-from wtforms.validators import DataRequired, EqualTo, InputRequired
+from wtforms import EmailField, PasswordField, StringField, SubmitField
+from wtforms.validators import DataRequired, Email, EqualTo, InputRequired
 
 from mywhiskies.forms.auth import PasswordValidatorMixin
+
+
+class ChangeEmailForm(FlaskForm):
+    email = EmailField(
+        "New E-Mail Address:",
+        validators=[DataRequired("Please enter your new e-mail address."), Email()],
+        render_kw={"placeholder": "New e-mail address"},
+    )
+    submit = SubmitField("Send Confirmation Email")
 
 
 class ChangePasswordForm(PasswordValidatorMixin, FlaskForm):

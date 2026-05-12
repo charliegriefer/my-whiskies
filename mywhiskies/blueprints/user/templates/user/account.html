@@ -74,6 +74,16 @@
 
           </div>
 
+          <!-- Account Actions card -->
+          <div class="card p-4 mb-4">
+            <p class="detail-section-label mb-3">Account Settings</p>
+            <div class="d-flex flex-wrap gap-3">
+              <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#changeEmailModal">
+                <i class="bi bi-envelope me-1"></i> Change Email
+              </button>
+            </div>
+          </div>
+
           <!-- Danger Zone -->
           <div class="card p-4 mb-4" style="border-color: oklch(52% 0.18 15);">
             <p class="detail-section-label mb-3" style="color: oklch(52% 0.18 15);">Danger Zone</p>
@@ -92,6 +102,29 @@
 
     </div>
   </main>
+
+  <!-- Change Email Modal -->
+  <div class="modal fade" id="changeEmailModal" tabindex="-1" aria-labelledby="changeEmailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="post" action="{{ url_for('user.change_email') }}" novalidate>
+          {{ change_email_form.hidden_tag() }}
+          <div class="modal-header">
+            <h5 class="modal-title" id="changeEmailModalLabel">Change Email Address</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Enter your new e-mail address below. We'll send a confirmation link to the new address — your email won't change until you click it.</p>
+            {{ form_utils.render_field(change_email_form.email) }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            {{ change_email_form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- Change Password Modal -->
   <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">

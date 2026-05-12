@@ -21,3 +21,17 @@ def test_reset_password_token(test_user_01: User) -> None:
     token = test_user_01.get_reset_password_token()
     user = User.verify_reset_password_token(token)
     assert user == test_user_01
+
+
+def test_email_change_token(test_user_01: User) -> None:
+    new_email = "newemail@example.com"
+    token = test_user_01.get_email_change_token(new_email)
+    user, returned_email = User.verify_email_change_token(token)
+    assert user == test_user_01
+    assert returned_email == new_email
+
+
+def test_email_change_token_invalid() -> None:
+    user, email = User.verify_email_change_token("not-a-valid-token")
+    assert user is None
+    assert email is None
