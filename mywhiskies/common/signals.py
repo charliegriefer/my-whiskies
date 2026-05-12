@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import current_app, request
 
 from mywhiskies.extensions import db
@@ -15,6 +17,11 @@ def log_user_login(sender, user):
 
     login_entry = UserLogin(user_id=user.id, login_date=db.func.now(), ip_address=ip_address)
     db.session.add(login_entry)
+
+    user.last_login_at = datetime.utcnow()
+    if user.warned_at is not None:
+        user.warned_at = None
+
     db.session.commit()
 
     if alert:

@@ -112,6 +112,10 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
     register_extensions(app)
     register_signals(app)
 
+    from mywhiskies.cli import cleanup_inactive_users_command
+
+    app.cli.add_command(cleanup_inactive_users_command)
+
     return app
 
 

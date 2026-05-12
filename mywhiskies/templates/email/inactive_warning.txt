@@ -1,0 +1,15 @@
+Hey {{ user.username }}!
+
+We noticed that you haven't logged into your My Whiskies Online account in a while.
+
+To keep our platform tidy, we automatically remove accounts that have been inactive for an extended period.
+Your account will be permanently deleted in {{ grace_days }} days unless you log in before then.
+
+If you'd like to keep your account, simply log in and everything will be preserved:
+
+{{ url_for('auth.login', _external=True) }}
+
+If you no longer want the account, no action is needed — it will be removed automatically.
+
+All the best,
+Your Bartender

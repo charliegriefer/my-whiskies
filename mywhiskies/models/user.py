@@ -27,6 +27,8 @@ class User(UserMixin, db.Model):
     is_private: Mapped[bool] = mapped_column(default=False)
     is_deleted: Mapped[bool] = mapped_column(default=False)
     deleted_date: Mapped[Optional[datetime]]
+    last_login_at: Mapped[Optional[datetime]]
+    warned_at: Mapped[Optional[datetime]]
 
     # relationships
     distilleries: Mapped[List["Distillery"]] = relationship("Distillery", back_populates="user")

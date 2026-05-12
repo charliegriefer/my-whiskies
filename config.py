@@ -15,6 +15,9 @@ class BaseConfig:
     MAX_UPLOAD_MB = 50
     MAX_CONTENT_LENGTH = MAX_UPLOAD_MB * 1024 * 1024  # images are resized server-side
 
+    INACTIVITY_DAYS = 180
+    INACTIVITY_GRACE_PERIOD_DAYS = 30
+
     # ----------------------------------------------------------------------
     # DATABASE
     # ----------------------------------------------------------------------
