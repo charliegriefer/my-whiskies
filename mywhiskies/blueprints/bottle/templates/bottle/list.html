@@ -264,7 +264,7 @@
 
       function scheduleHide() {
         clearTimeout(hideTimer);
-        hideTimer = setTimeout(hide, 150);
+        hideTimer = setTimeout(hide, 300);
       }
 
       document.addEventListener('mouseover', function (e) {
@@ -273,8 +273,11 @@
         clearTimeout(showTimer);
         clearTimeout(hideTimer);
         if (card.contains(e.target)) return;
+        if (!el) {
+          if (active) scheduleHide();
+          return;
+        }
         hide();
-        if (!el) return;
         active = el;
         showTimer = setTimeout(() => place(el), 300);
       });
