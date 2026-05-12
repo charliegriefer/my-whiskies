@@ -25,10 +25,8 @@ def get_users_to_warn() -> list[User]:
         User.email_confirmed == True,  # noqa: E712
         User.is_deleted == False,  # noqa: E712
         User.warned_at == None,  # noqa: E711
-        db.or_(
-            User.last_login_at < cutoff,
-            db.and_(User.last_login_at == None, User.date_registered < cutoff),  # noqa: E711
-        ),
+        User.last_login_at != None,  # noqa: E711
+        User.last_login_at < cutoff,
     )
     return db.session.execute(stmt).scalars().all()
 

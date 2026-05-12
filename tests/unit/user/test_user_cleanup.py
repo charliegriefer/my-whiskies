@@ -31,10 +31,10 @@ class TestGetUsersToWarn:
         result = get_users_to_warn()
         assert user in result
 
-    def test_includes_user_who_never_logged_in_and_old_registration(self, app):
+    def test_excludes_user_who_never_logged_in(self, app):
         user = _make_user("never_logged_in", "never@example.com", days_ago_registered=200)
         result = get_users_to_warn()
-        assert user in result
+        assert user not in result
 
     def test_excludes_recently_active_user(self, app):
         user = _make_user("active", "active@example.com", days_ago_login=10)
@@ -55,11 +55,6 @@ class TestGetUsersToWarn:
         user = _make_user("deleted_user", "deleted@example.com", days_ago_login=200)
         user.is_deleted = True
         db.session.commit()
-        result = get_users_to_warn()
-        assert user not in result
-
-    def test_excludes_user_registered_recently_never_logged_in(self, app):
-        user = _make_user("new_user", "new@example.com", days_ago_registered=10)
         result = get_users_to_warn()
         assert user not in result
 
