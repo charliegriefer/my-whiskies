@@ -2,7 +2,7 @@ from flask import flash, redirect, render_template, send_file, url_for
 from flask_login import current_user, login_required, logout_user
 
 from mywhiskies.blueprints.user import user_bp
-from mywhiskies.forms.user import ChangeEmailForm, ChangePasswordForm, DeleteAccountForm
+from mywhiskies.forms.user import ChangeEmailForm, ChangePasswordForm, DeleteAccountForm, PrivacyForm
 from mywhiskies.models import User
 from mywhiskies.services.auth.email import send_email_change_confirmation
 from mywhiskies.services.user.user import (
@@ -11,6 +11,7 @@ from mywhiskies.services.user.user import (
     create_export_csv,
     delete_user_account,
     is_email_taken,
+    set_account_privacy,
 )
 
 
@@ -22,14 +23,26 @@ def bottles_redirect(username: str):
 @user_bp.route("/account")
 @login_required
 def account():
+    privacy_form = PrivacyForm()
+    privacy_form.is_private.data = current_user.is_private
     return render_template(
         "user/account.html",
         title="My Whiskies Online: My Account",
         user=current_user,
+        privacy_form=privacy_form,
         change_email_form=ChangeEmailForm(),
         change_password_form=ChangePasswordForm(),
         delete_account_form=DeleteAccountForm(),
     )
+
+
+@user_bp.route("/account/privacy", methods=["POST"])
+@login_required
+def privacy():
+    form = PrivacyForm()
+    if form.validate_on_submit():
+        set_account_privacy(current_user, form.is_private.data)
+    return redirect(url_for("user.account"))
 
 
 @user_bp.route("/account/change_email", methods=["POST"])

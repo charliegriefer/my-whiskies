@@ -36,6 +36,7 @@ _VALID_PER_PAGE = {25, 50, 100, 10000}
 @bottle_bp.route("/<username:username>/bottles", methods=["GET"], endpoint="list")
 def bottles(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
+    utils.check_privacy(user)
     _is_my_list = utils.is_my_list(username, current_user)
 
     all_type_names = [b.name for b in BottleTypes]
@@ -121,6 +122,7 @@ def bottle_legacy(username: str, bottle_uuid: UUID):
 @bottle_bp.route("/<username:username>/bottle/<paddedint:user_num>", endpoint="detail")
 def bottle(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
+    utils.check_privacy(user)
     _bottle = db.one_or_404(db.select(Bottle).filter_by(user_id=user.id, user_num=user_num))
     _, _, img_s3_url = get_s3_config()
     is_my_bottle = current_user.is_authenticated and _bottle.user_id == current_user.id

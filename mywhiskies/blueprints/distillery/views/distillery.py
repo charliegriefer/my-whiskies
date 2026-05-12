@@ -50,6 +50,7 @@ def bulk_distillery_add():
 @distillery_bp.route("/<username>/distilleries", methods=["GET"], endpoint="list")
 def distilleries(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
+    utils.check_privacy(user)
     _is_my_list = utils.is_my_list(username, current_user)
 
     q = request.args.get("q", "").strip()
@@ -116,6 +117,7 @@ def distillery_legacy(username: str, distillery_uuid: UUID):
 )
 def distillery_detail(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
+    utils.check_privacy(user)
     _distillery = db.one_or_404(db.select(Distillery).filter_by(user_id=user.id, user_num=user_num))
     _is_my_list = utils.is_my_list(username, current_user)
 

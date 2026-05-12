@@ -24,6 +24,7 @@ class User(UserMixin, db.Model):
     date_registered: Mapped[datetime] = mapped_column(default=datetime.utcnow)
     email_confirmed: Mapped[bool] = mapped_column(default=False)
     email_confirm_date: Mapped[Optional[datetime]]
+    is_private: Mapped[bool] = mapped_column(default=False)
     is_deleted: Mapped[bool] = mapped_column(default=False)
     deleted_date: Mapped[Optional[datetime]]
 
