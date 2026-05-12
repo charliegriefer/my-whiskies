@@ -1,8 +1,10 @@
+import csv
+import json
+import zipfile
 from datetime import datetime
 from typing import Optional
 
 import boto3
-import pandas as pd
 from botocore.exceptions import ClientError
 from flask import current_app, flash
 
@@ -27,48 +29,96 @@ def get_user_by_email(email: str) -> Optional[User]:
     return db.session.execute(stmt).first()
 
 
-def create_export_csv(current_user: User) -> None:
-    fieldnames = [
-        "Bottle Name",
-        "Bottle Type",
-        "Distilleries",
-        "Year Barrelled",
-        "Year Bottled",
-        "ABV",
-        "Size",
-        "Description",
-        "Review",
-        "Stars",
-        "Cost",
-        "Date Purchased",
-        "Date Opened",
-        "Date Killed",
-    ]
+_CSV_FIELDS = [
+    ("Bottle Name", "name"),
+    ("Bottle Type", "type"),
+    ("Distilleries", "distilleries"),
+    ("Year Barrelled", "year_barrelled"),
+    ("Year Bottled", "year_bottled"),
+    ("ABV", "abv"),
+    ("Size", "size"),
+    ("Description", "description"),
+    ("Review", "review"),
+    ("Personal Note", "personal_note"),
+    ("Stars", "stars"),
+    ("Cost", "cost"),
+    ("Date Purchased", "date_purchased"),
+    ("Date Opened", "date_opened"),
+    ("Date Killed", "date_killed"),
+]
 
-    bottles = []
-    for bottle in current_user.bottles:
-        bottles.append(
-            [
-                bottle.name,
-                bottle.type.value,
-                ", ".join([b.name for b in bottle.distilleries]),
-                bottle.year_barrelled,
-                bottle.year_bottled,
-                f"{bottle.abv:.2f}" if bottle.abv else None,
-                f"{bottle.size}ml" if bottle.size else None,
-                bottle.description,
-                bottle.review,
-                bottle.stars,
-                bottle.cost,
-                bottle.date_purchased,
-                bottle.date_opened,
-                bottle.date_killed,
-            ]
+
+def build_export_bottles(
+    user: User,
+    include_killed: bool = True,
+    include_private: bool = True,
+    include_notes: bool = True,
+) -> list[dict]:
+    rows = []
+    for bottle in sorted(user.bottles, key=lambda b: b.name.lower()):
+        if not include_killed and bottle.date_killed:
+            continue
+        if not include_private and bottle.is_private:
+            continue
+        rows.append(
+            {
+                "name": bottle.name,
+                "type": bottle.type.value,
+                "distilleries": ", ".join(d.name for d in bottle.distilleries),
+                "year_barrelled": bottle.year_barrelled,
+                "year_bottled": bottle.year_bottled,
+                "abv": f"{bottle.abv:.2f}" if bottle.abv else None,
+                "size": f"{bottle.size}ml" if bottle.size else None,
+                "description": bottle.description,
+                "review": bottle.review,
+                "personal_note": bottle.personal_note if include_notes else None,
+                "stars": bottle.stars,
+                "cost": str(bottle.cost) if bottle.cost else None,
+                "date_purchased": str(bottle.date_purchased) if bottle.date_purchased else None,
+                "date_opened": str(bottle.date_opened) if bottle.date_opened else None,
+                "date_killed": str(bottle.date_killed) if bottle.date_killed else None,
+            }
         )
+    return rows
 
-    df = pd.DataFrame(bottles, columns=fieldnames)
-    df = df.sort_values(by=["Bottle Name"])
-    df.to_csv(f"/tmp/{current_user.id}.csv", index=False)
+
+def create_export_csv(user: User, bottles: list[dict]) -> str:
+    path = f"/tmp/{user.id}.csv"
+    headers = [label for label, _ in _CSV_FIELDS]
+    keys = [key for _, key in _CSV_FIELDS]
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(headers)
+        for bottle in bottles:
+            writer.writerow([bottle.get(k) for k in keys])
+    return path
+
+
+def create_export_json(user: User, bottles: list[dict]) -> str:
+    path = f"/tmp/{user.id}.json"
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(bottles, f, indent=2, default=str)
+    return path
+
+
+def create_export_images_zip(user: User) -> str:
+    s3_client = boto3.client("s3")
+    img_s3_bucket = current_app.config["BOTTLE_IMAGE_S3_BUCKET"]
+    img_s3_key = current_app.config["BOTTLE_IMAGE_S3_KEY"]
+    path = f"/tmp/{user.id}_images.zip"
+
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as zf:
+        for bottle in user.bottles:
+            for img in bottle.images:
+                s3_object_key = f"{img_s3_key}/{bottle.id}_{img.sequence}.jpg"
+                safe_name = bottle.name.replace("/", "-")
+                filename = f"{safe_name}_{img.sequence}.jpg"
+                try:
+                    obj = s3_client.get_object(Bucket=img_s3_bucket, Key=s3_object_key)
+                    zf.writestr(filename, obj["Body"].read())
+                except ClientError:
+                    pass
+    return path
 
 
 def set_account_privacy(user: User, is_private: bool) -> None:

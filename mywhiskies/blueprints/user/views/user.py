@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, send_file, url_for
+from flask import flash, redirect, render_template, request, send_file, url_for
 from flask_login import current_user, login_required, logout_user
 
 from mywhiskies.blueprints.user import user_bp
@@ -7,8 +7,11 @@ from mywhiskies.models import User
 from mywhiskies.services.auth.email import send_email_change_confirmation
 from mywhiskies.services.user.user import (
     apply_email_change,
+    build_export_bottles,
     change_user_password,
     create_export_csv,
+    create_export_images_zip,
+    create_export_json,
     delete_user_account,
     is_email_taken,
     set_account_privacy,
@@ -112,11 +115,39 @@ def delete_account():
 @user_bp.route("/export_data")
 @login_required
 def export_data():
-    create_export_csv(current_user)
+    submitted = "submitted" in request.args
+    include_killed = not submitted or "include_killed" in request.args
+    include_private = not submitted or "include_private" in request.args
+    include_notes = not submitted or "include_notes" in request.args
+    fmt = request.args.get("format", "csv")
 
+    bottles = build_export_bottles(current_user, include_killed, include_private, include_notes)
+
+    if fmt == "json":
+        path = create_export_json(current_user, bottles)
+        return send_file(
+            path,
+            as_attachment=True,
+            mimetype="application/json",
+            download_name=f"my_whiskies_{current_user.username}.json",
+        )
+
+    path = create_export_csv(current_user, bottles)
     return send_file(
-        f"/tmp/{current_user.id}.csv",
+        path,
         as_attachment=True,
         mimetype="text/csv",
         download_name=f"my_whiskies_{current_user.username}.csv",
+    )
+
+
+@user_bp.route("/export_images")
+@login_required
+def export_images():
+    path = create_export_images_zip(current_user)
+    return send_file(
+        path,
+        as_attachment=True,
+        mimetype="application/zip",
+        download_name=f"my_whiskies_{current_user.username}_images.zip",
     )
