@@ -68,9 +68,14 @@
 
             <hr class="my-3">
 
-            <a href="{{ url_for('user.export_data') }}" class="d-inline-flex align-items-center gap-2">
-              <i class="bi bi-filetype-csv"></i> Export my data (CSV)
-            </a>
+            <div class="d-flex flex-wrap gap-4">
+              <button type="button" class="btn btn-link p-0 d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#exportDataModal">
+                <i class="bi bi-download"></i> Export my data
+              </button>
+              <a href="{{ url_for('user.export_images') }}" class="d-inline-flex align-items-center gap-2">
+                <i class="bi bi-images"></i> Download my images
+              </a>
+            </div>
 
           </div>
 
@@ -119,6 +124,57 @@
 
     </div>
   </main>
+
+  <!-- Export Data Modal -->
+  <div class="modal fade" id="exportDataModal" tabindex="-1" aria-labelledby="exportDataModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="get" action="{{ url_for('user.export_data') }}">
+          <input type="hidden" name="submitted" value="1">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exportDataModalLabel">Export My Data</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Format</label>
+              <div class="d-flex gap-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="format" id="formatCsv" value="csv" checked>
+                  <label class="form-check-label" for="formatCsv">CSV</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="format" id="formatJson" value="json">
+                  <label class="form-check-label" for="formatJson">JSON</label>
+                </div>
+              </div>
+            </div>
+            <div class="mb-1">
+              <label class="form-label fw-semibold">Include</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="include_killed" id="includeKilled" checked>
+              <label class="form-check-label" for="includeKilled">Killed bottles</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="include_private" id="includePrivate" checked>
+              <label class="form-check-label" for="includePrivate">Private bottles</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="include_notes" id="includeNotes" checked>
+              <label class="form-check-label" for="includeNotes">Personal notes</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-download me-1"></i> Download
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- Change Email Modal -->
   <div class="modal fade" id="changeEmailModal" tabindex="-1" aria-labelledby="changeEmailModalLabel" aria-hidden="true">
