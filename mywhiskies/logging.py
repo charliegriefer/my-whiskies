@@ -9,6 +9,7 @@ LOG_FORMAT = "%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d
 
 
 def register_logging(app):
+    app.logger.handlers.clear()
     if app.testing:
         return
 
