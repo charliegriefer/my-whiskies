@@ -65,7 +65,7 @@
         {{ field.label(class="form-label") }}
         {{ field(class="form-control", accept=".jpg,.jpeg,.png") }}
         <div class="invalid-feedback">
-            This image exceeds the {{ config.MAX_FILE_UPLOAD_MB }}MB limit and may fail to upload.
+            This image exceeds the {{ config.MAX_UPLOAD_MB }}MB limit and may fail to upload.
         </div>
         <button 
             type="button" 

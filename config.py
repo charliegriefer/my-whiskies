@@ -12,7 +12,8 @@ class BaseConfig:
     SECRET_KEY = os.environ["SECRET_KEY"]
     PERMANENT_SESSION_LIFETIME = 86400  # 24 hours
 
-    MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50MB hard cap; images are resized server-side
+    MAX_UPLOAD_MB = 50
+    MAX_CONTENT_LENGTH = MAX_UPLOAD_MB * 1024 * 1024  # images are resized server-side
 
     # ----------------------------------------------------------------------
     # DATABASE

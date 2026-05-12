@@ -11,7 +11,7 @@
 <div class="mb-3">
   <div class="mb-2">
     <span class="fw-bold">Images</span>
-    <span class="text-muted small ms-2">Up to 3 · max {{ config.MAX_FILE_UPLOAD_MB }}MB each · JPG or PNG · drag to reorder</span>
+    <span class="text-muted small ms-2">Up to 3 · max {{ config.MAX_UPLOAD_MB }}MB each · JPG or PNG · drag to reorder</span>
   </div>
 
   <div id="dropzone-error" class="alert alert-danger py-2 mb-2 d-none" role="alert"></div>
@@ -60,8 +60,8 @@
 (function () {
   'use strict';
 
-  const MAX_BYTES = {{ config.MAX_FILE_UPLOAD_BYTES }};
-  const MAX_MB   = {{ config.MAX_FILE_UPLOAD_MB }};
+  const MAX_BYTES = {{ config.MAX_UPLOAD_MB * 1024 * 1024 }};
+  const MAX_MB   = {{ config.MAX_UPLOAD_MB }};
   const MAX_IMGS  = 3;
 
   const zone     = document.getElementById('dropzone-container');
