@@ -81,7 +81,15 @@
           </div>
         </div>
       {% else %}
-        <div class="ms-auto me-2">
+        <div class="ms-auto d-flex align-items-center gap-2 me-2">
+          <div class="navbar-theme-picker d-flex align-items-center gap-2 px-2 py-1 rounded-pill" style="background: var(--surface-2); border: 1px solid var(--border);">
+            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'barrel' }"
+              style="background: #c87941;" @click="setTheme('barrel')" title="Barrel Room"></button>
+            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'cellar' }"
+              style="background: #1e3a5f;" @click="setTheme('cellar')" title="Modern Cellar"></button>
+            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'vault' }"
+              style="background: #c9a84c;" @click="setTheme('vault')" title="The Vault"></button>
+          </div>
           {% if request.endpoint != "auth.login" %}
             <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white text-nowrap" role="button" id="nav_login">Log In</a>
           {% endif %}
