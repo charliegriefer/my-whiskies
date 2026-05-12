@@ -1,4 +1,5 @@
-from flask import flash
+from flask import abort, flash
+from flask_login import current_user as _current_user
 from flask_wtf import FlaskForm as Form
 from markupsafe import Markup
 
@@ -8,6 +9,11 @@ from mywhiskies.models import User
 def is_my_list(username: str, current_user: User) -> bool:
     # is the current user logged in and viewing their own bottles?
     return current_user.is_authenticated and current_user.username.lower() == username.lower()
+
+
+def check_privacy(user: User) -> None:
+    if user.is_private and not (_current_user.is_authenticated and _current_user.id == user.id):
+        abort(404)
 
 
 def handle_form_errors(form: Form) -> None:

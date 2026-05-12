@@ -1,8 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import EmailField, PasswordField, StringField, SubmitField
+from wtforms import BooleanField, EmailField, PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, InputRequired
 
 from mywhiskies.forms.auth import PasswordValidatorMixin
+
+
+class PrivacyForm(FlaskForm):
+    is_private = BooleanField("Private account")
 
 
 class ChangeEmailForm(FlaskForm):

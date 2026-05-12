@@ -62,3 +62,28 @@ def test_confirm_email_change_bad_token(logged_in_user_01: FlaskClient) -> None:
         follow_redirects=True,
     )
     assert b"invalid or has expired" in response.data
+
+
+def test_private_account_hides_from_anonymous(client: FlaskClient, test_user_01: User) -> None:
+    test_user_01.is_private = True
+    assert client.get(url_for("bottle.list", username=test_user_01.username)).status_code == 404
+    assert client.get(url_for("bottler.list", username=test_user_01.username)).status_code == 404
+    assert client.get(url_for("distillery.list", username=test_user_01.username)).status_code == 404
+
+
+def test_private_account_hides_from_other_user(logged_in_user_01: FlaskClient, test_user_02: User) -> None:
+    test_user_02.is_private = True
+    assert logged_in_user_01.get(url_for("bottle.list", username=test_user_02.username)).status_code == 404
+
+
+def test_private_account_visible_to_owner(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
+    test_user_01.is_private = True
+    assert logged_in_user_01.get(url_for("bottle.list", username=test_user_01.username)).status_code == 200
+
+
+def test_set_privacy_toggle(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
+    assert not test_user_01.is_private
+    logged_in_user_01.post(url_for("user.privacy"), data={"is_private": "y"})
+    assert test_user_01.is_private
+    logged_in_user_01.post(url_for("user.privacy"), data={})
+    assert not test_user_01.is_private

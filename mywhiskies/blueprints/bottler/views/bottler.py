@@ -24,6 +24,7 @@ _VALID_PER_PAGE = {25, 50, 100, 10000}
 @bottler_bp.route("/<username:username>/bottlers", methods=["GET"], endpoint="list")
 def bottlers(username: str):
     user = db.one_or_404(db.select(User).filter_by(username=username))
+    utils.check_privacy(user)
     _is_my_list = utils.is_my_list(username, current_user)
 
     q = request.args.get("q", "").strip()
@@ -87,6 +88,7 @@ def bottler_legacy(username: str, bottler_uuid: UUID):
 )
 def bottler(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
+    utils.check_privacy(user)
     _bottler = db.one_or_404(db.select(Bottler).filter_by(user_id=user.id, user_num=user_num))
     _is_my_list = utils.is_my_list(username, current_user)
 

@@ -71,6 +71,11 @@ def create_export_csv(current_user: User) -> None:
     df.to_csv(f"/tmp/{current_user.id}.csv", index=False)
 
 
+def set_account_privacy(user: User, is_private: bool) -> None:
+    user.is_private = is_private
+    db.session.commit()
+
+
 def change_user_password(user: User, current_password: str, new_password: str) -> bool:
     if not user.check_password(current_password):
         return False
