@@ -33,8 +33,8 @@
                 Bottles
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdownBottles">
-                <a class="dropdown-item" href="{{ url_for('bottle.add') }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottle</a>
-                <a class="dropdown-item" href="{{ url_for('bottle.list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Bottles</a>
+                <a class="dropdown-item" href="{{ url_for('bottle.add') }}"><span class="nav-dd-icon">+</span> Add Bottle</a>
+                <a class="dropdown-item" href="{{ url_for('bottle.list', username=username) }}"><span class="nav-dd-icon">≡</span> List Bottles</a>
               </div>
             </li>
             <li class="nav-item dropdown">
@@ -42,8 +42,8 @@
                 Bottlers
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdownBottlers">
-                <a class="dropdown-item" href="{{ url_for('bottler.add') }}"><i class="bi bi-plus-circle pe-1"></i> Add Bottler</a>
-                <a class="dropdown-item" href="{{ url_for('bottler.list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Bottlers</a>
+                <a class="dropdown-item" href="{{ url_for('bottler.add') }}"><span class="nav-dd-icon">+</span> Add Bottler</a>
+                <a class="dropdown-item" href="{{ url_for('bottler.list', username=username) }}"><span class="nav-dd-icon">≡</span> List Bottlers</a>
               </div>
             </li>
             <li class="nav-item dropdown">
@@ -51,33 +51,31 @@
                 Distilleries
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdownDistilleries">
-                <a class="dropdown-item" href="{{ url_for('distillery.add') }}"><i class="bi bi-plus-circle pe-1"></i> Add Distillery</a>
-                <a class="dropdown-item" href="{{ url_for('distillery.list', username=username) }}"><i class="bi bi-list-ul pe-1"></i> List Distilleries</a>
+                <a class="dropdown-item" href="{{ url_for('distillery.add') }}"><span class="nav-dd-icon">+</span> Add Distillery</a>
+                <a class="dropdown-item" href="{{ url_for('distillery.list', username=username) }}"><span class="nav-dd-icon">≡</span> List Distilleries</a>
               </div>
             </li>
           </ul>
 
-          <ul class="navbar-nav ms-lg-auto me-2">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="bi bi-check-square"></i> {{ username }}
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownUser">
-                <li><a class="dropdown-item" href="{{ url_for('user.account') }}"><i class="bi bi-gear pe-1"></i> My Account</a></li>
-                <li><hr class="dropdown-divider mt-2"></li>
-                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}"><i class="bi bi-x-square pe-1"></i> Log Out {{ current_user.username }}</a></li>
-              </ul>
-            </li>
-          </ul>
-
-          <!-- Theme switcher — desktop: pill after Charlie; mobile: bare swatches at bottom of menu -->
-          <div class="navbar-theme-picker d-flex align-items-center gap-2 mx-3 px-2 py-1 rounded-pill" style="background: var(--surface-2); border: 1px solid var(--border);">
+          <!-- Theme switcher — desktop: pill before username; mobile: bare swatches at bottom of menu -->
+          <div class="navbar-theme-picker d-flex align-items-center gap-2 ms-lg-auto mx-3 px-2 py-1 rounded-pill" style="background: var(--surface-2); border: 1px solid var(--border);">
+            <span class="navbar-theme-label">THEME</span>
             <button class="theme-swatch" :class="{ 'active-swatch': theme === 'barrel' }"
               style="background: #c87941;" @click="setTheme('barrel')" title="Barrel Room"></button>
             <button class="theme-swatch" :class="{ 'active-swatch': theme === 'cellar' }"
               style="background: #1e3a5f;" @click="setTheme('cellar')" title="Modern Cellar"></button>
             <button class="theme-swatch" :class="{ 'active-swatch': theme === 'vault' }"
               style="background: #c9a84c;" @click="setTheme('vault')" title="The Vault"></button>
+          </div>
+
+          <div class="dropdown d-flex align-items-center me-2 px-3 py-1 rounded-pill" style="background: var(--surface-2); border: 1px solid var(--border);">
+            <a class="nav-link dropdown-toggle p-0" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownUser">
+              <li><a class="dropdown-item" href="{{ url_for('user.account') }}"><i class="bi bi-person"></i> My Account</a></li>
+              <li><a class="dropdown-item dropdown-item-destructive" href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-right"></i> Log Out</a></li>
+            </ul>
           </div>
         </div>
       {% else %}
