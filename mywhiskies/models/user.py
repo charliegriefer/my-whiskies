@@ -69,6 +69,21 @@ class User(UserMixin, db.Model):
             # TODO: add some logging here!
             return None
 
+    def get_email_change_token(self, new_email: str, expires_in: int = 3600) -> str:
+        payload = {"change_email": self.id, "new_email": new_email, "exp": time() + expires_in}
+        return jwt.encode(payload, current_app.config["SECRET_KEY"], algorithm="HS256")
+
+    @staticmethod
+    def verify_email_change_token(token: str):
+        try:
+            decoded = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
+            user_id = decoded["change_email"]
+            new_email = decoded["new_email"]
+            user = db.get_or_404(User, user_id)
+            return user, new_email
+        except (jwt.exceptions.DecodeError, jwt.exceptions.ExpiredSignatureError, KeyError):
+            return None, None
+
 
 class UserLogin(db.Model):
     __tablename__ = "user_login"

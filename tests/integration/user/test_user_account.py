@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from flask import url_for
 from flask.testing import FlaskClient
 
@@ -21,3 +23,42 @@ def test_account_shows_user_info(logged_in_user_01: FlaskClient, test_user_01: U
     assert str(len(test_user_01.bottles)) in response_data
     assert str(len(test_user_01.bottlers)) in response_data
     assert str(len(test_user_01.distilleries)) in response_data
+
+
+def test_change_email_same_address(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
+    response = logged_in_user_01.post(
+        url_for("user.change_email"),
+        data={"email": test_user_01.email},
+        follow_redirects=True,
+    )
+    assert b"already your current" in response.data
+
+
+def test_change_email_sends_confirmation(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
+    with patch("mywhiskies.blueprints.user.views.user.send_email_change_confirmation") as mock_send:
+        response = logged_in_user_01.post(
+            url_for("user.change_email"),
+            data={"email": "brand_new@example.com"},
+            follow_redirects=True,
+        )
+        mock_send.assert_called_once()
+        assert b"confirmation email has been sent" in response.data
+
+
+def test_confirm_email_change_applies_new_email(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
+    new_email = "confirmed_new@example.com"
+    token = test_user_01.get_email_change_token(new_email)
+    response = logged_in_user_01.get(
+        url_for("user.confirm_email_change", token=token),
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert test_user_01.email == new_email
+
+
+def test_confirm_email_change_bad_token(logged_in_user_01: FlaskClient) -> None:
+    response = logged_in_user_01.get(
+        url_for("user.confirm_email_change", token="invalid-token"),
+        follow_redirects=True,
+    )
+    assert b"invalid or has expired" in response.data

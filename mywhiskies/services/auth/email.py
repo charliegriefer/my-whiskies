@@ -30,6 +30,17 @@ def send_new_login_alert(user: User, ip_address: str) -> None:
     )
 
 
+def send_email_change_confirmation(user: User, new_email: str) -> None:
+    token = user.get_email_change_token(new_email)
+    send_email(
+        "[My Whiskies Online] Confirm Your New Email Address",
+        sender=current_app.config["MAIL_SENDER"],
+        recipients=[new_email],
+        text_body=render_template("email/email_change_confirmation.txt", user=user, token=token),
+        html_body=render_template("email/email_change_confirmation.html", user=user, token=token),
+    )
+
+
 def send_password_reset_email(user: User) -> None:
     token = user.get_reset_password_token()
     try:

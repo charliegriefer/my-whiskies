@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 import boto3
@@ -7,6 +8,18 @@ from flask import current_app, flash
 
 from mywhiskies.extensions import db
 from mywhiskies.models import User, UserLogin
+
+
+def is_email_taken(email: str) -> bool:
+    stmt = db.select(User).filter(User.email == email.strip(), User.is_deleted == False)  # noqa: E712
+    return db.session.execute(stmt).first() is not None
+
+
+def apply_email_change(user: User, new_email: str) -> None:
+    user.email = new_email
+    user.email_confirm_date = datetime.utcnow()
+    db.session.commit()
+    flash("Your e-mail address has been updated.", "success")
 
 
 def get_user_by_email(email: str) -> Optional[User]:
