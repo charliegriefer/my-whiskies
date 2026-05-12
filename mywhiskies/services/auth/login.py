@@ -1,11 +1,13 @@
+from datetime import datetime
 from urllib.parse import urlparse
 
 from flask import flash, url_for
+from sqlalchemy import exists
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
 
 from mywhiskies.extensions import db
-from mywhiskies.models import User
+from mywhiskies.models import User, UserLogin
 
 
 def get_user_by_username(username: str) -> User:
@@ -35,3 +37,19 @@ def determine_next_page(user: User, next_page_param: str) -> str:
     if not next_page_param or urlparse(next_page_param).netloc != "":
         return url_for("core.main")
     return next_page_param
+
+
+def is_new_ip(user_id: str, ip_address: str) -> bool:
+    """Returns True if the user has prior logins but this IP has never been seen before."""
+    has_any = db.session.execute(select(exists().where(UserLogin.user_id == user_id))).scalar()
+    if not has_any:
+        return False
+    known = db.session.execute(
+        select(exists().where(UserLogin.user_id == user_id, UserLogin.ip_address == ip_address))
+    ).scalar()
+    return not known
+
+
+def record_login(user_id: str, ip_address: str) -> None:
+    db.session.add(UserLogin(user_id=user_id, login_date=datetime.utcnow(), ip_address=ip_address))
+    db.session.commit()

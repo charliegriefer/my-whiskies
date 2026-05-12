@@ -7,9 +7,12 @@ from mywhiskies.blueprints.auth import auth
 from mywhiskies.extensions import db
 from mywhiskies.forms.auth import LoginForm
 from mywhiskies.models import User
+from mywhiskies.services.auth.email import send_new_login_alert
 from mywhiskies.services.auth.login import (
     check_email_confirmation,
     determine_next_page,
+    is_new_ip,
+    record_login,
     validate_password,
 )
 
@@ -43,6 +46,11 @@ def login():
 
         if not check_email_confirmation(user):
             return redirect(url_for("auth.login"))
+
+        alert = is_new_ip(user.id, request.remote_addr)
+        record_login(user.id, request.remote_addr)
+        if alert:
+            send_new_login_alert(user, request.remote_addr)
 
         login_user(user, remember=form.remember_me.data)
 

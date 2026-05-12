@@ -1,0 +1,14 @@
+Hey {{ user.username }}!
+
+We noticed a login to your My Whiskies Online account from an IP address we haven't seen before:
+
+{{ ip_address }}
+
+If this was you, no action is needed.
+
+If you don't recognize this login, please reset your password immediately:
+
+{{ url_for('auth.reset_password_request', _external=True) }}
+
+All the best,
+Your Bartender

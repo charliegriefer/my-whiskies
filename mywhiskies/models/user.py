@@ -31,6 +31,7 @@ class User(UserMixin, db.Model):
     distilleries: Mapped[List["Distillery"]] = relationship("Distillery", back_populates="user")
     bottlers: Mapped[List["Bottler"]] = relationship("Bottler", back_populates="user")
     bottles: Mapped[List["Bottle"]] = relationship("Bottle", back_populates="user", lazy="select")
+    logins: Mapped[List["UserLogin"]] = relationship("UserLogin", back_populates="user", lazy="select")
 
     def get_mail_confirm_token(self, expires_in: int = 600) -> str:
         payload = {"confirm_reg": self.id, "exp": time() + expires_in}
@@ -73,7 +74,9 @@ class UserLogin(db.Model):
     __tablename__ = "user_login"
     user_id: Mapped[str] = mapped_column(db.ForeignKey("user.id"), primary_key=True)
     login_date: Mapped[datetime] = mapped_column(default=datetime.utcnow, primary_key=True)
-    ip_address: Mapped[str] = mapped_column(String(15))
+    ip_address: Mapped[str] = mapped_column(String(45))
+
+    user: Mapped["User"] = relationship("User", back_populates="logins")
 
 
 @login_manager.user_loader
