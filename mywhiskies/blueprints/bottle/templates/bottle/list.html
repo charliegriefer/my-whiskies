@@ -154,24 +154,70 @@
       position: fixed;
       z-index: 1080;
       display: none;
-      width: 500px;
-      padding: 0.6rem 0.8rem;
+      width: 400px;
       font-size: 0.875rem;
       line-height: 1.5;
       color: var(--t-text-primary);
       background: var(--t-row-bg-group);
       border: 1px solid var(--t-row-border);
-      border-radius: 0.375rem;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-      pointer-events: auto;
+      border-radius: 0.5rem;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, .35);
+      pointer-events: none;
+      overflow: hidden;
     }
-    #bottle-hover-card .hc-text {
-      max-height: 200px;
-      overflow-y: auto;
+    #bottle-hover-card .hc-cols {
+      display: flex;
+      align-items: stretch;
+      min-height: 180px;
     }
-    #bottle-hover-card ul,
-    #bottle-hover-card ol { padding-left: 1.25rem; margin-bottom: 0; }
-    #bottle-hover-card p:last-child { margin-bottom: 0; }
+    #bottle-hover-card .hc-image-col {
+      width: 140px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--t-row-border);
+      background: var(--t-row-bg-alt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #bottle-hover-card .hc-image-col img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    #bottle-hover-card .hc-content-col {
+      flex: 1;
+      min-width: 0;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    #bottle-hover-card .hc-name {
+      font-weight: 600;
+      color: var(--t-text-primary);
+      line-height: 1.3;
+    }
+    #bottle-hover-card .hc-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.8rem;
+      color: var(--t-text-secondary);
+    }
+    #bottle-hover-card .hc-desc {
+      font-size: 0.8125rem;
+      color: var(--t-text-secondary);
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    #bottle-hover-card .hc-desc p:last-child { margin-bottom: 0; }
+    #bottle-hover-card .hc-desc ul,
+    #bottle-hover-card .hc-desc ol { padding-left: 1.25rem; margin-bottom: 0; }
   </style>
   <script>
     document.addEventListener('alpine:init', () => {
@@ -191,21 +237,46 @@
       let showTimer = null;
       let hideTimer = null;
       let active = null;
+      let mouseX = 0, mouseY = 0;
 
-      function reposition(el) {
-        const gap = 10;
-        card.style.removeProperty('right');
-        card.style.removeProperty('bottom');
-        card.style.width = '500px';
-        const rect = el.getBoundingClientRect();
-        let left = rect.right + gap;
-        if (left + card.offsetWidth > window.innerWidth - gap) {
-          left = rect.left - card.offsetWidth - gap;
-        }
-        let top = rect.top;
-        if (top + card.offsetHeight > window.innerHeight - gap) {
-          top = Math.max(gap, window.innerHeight - card.offsetHeight - gap);
-        }
+      const TYPE_CLS = {
+        BOURBON: 'bourbon', TENNESSEE_WHISKEY: 'tennessee', RYE: 'rye',
+        AMERICAN_SINGLE_MALT: 'asm', SCOTCH: 'scotch', AMERICAN_WHISKEY: 'american',
+        AMERICAN_LIGHT_WHISKEY: 'american', WORLD_WHISKEY: 'world',
+        CANADIAN_WHISKEY: 'world', IRISH_WHISKEY: 'world',
+      };
+
+      const SILHOUETTE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 140" width="70" height="120" aria-hidden="true">
+        <rect x="24" y="2" width="12" height="8" rx="2" fill="var(--t-row-border)" stroke="var(--t-star-off)" stroke-width="1"/>
+        <rect x="22" y="10" width="16" height="26" fill="var(--t-row-border)" stroke="var(--t-star-off)" stroke-width="1"/>
+        <path d="M22 36 L8 60 H52 L38 36 Z" fill="var(--t-row-border)" stroke="var(--t-star-off)" stroke-width="1" stroke-linejoin="round"/>
+        <rect x="8" y="60" width="44" height="76" rx="2" fill="var(--t-row-border)" stroke="var(--t-star-off)" stroke-width="1"/>
+        <rect x="15" y="74" width="30" height="36" rx="1" fill="var(--t-row-bg)" stroke="var(--t-star-off)" stroke-width="0.5" opacity="0.6"/>
+      </svg>`;
+
+      function buildStars(val) {
+        if (!val) return '';
+        const s = parseFloat(val);
+        const full = Math.floor(s);
+        const half = (s - full) >= 0.5 ? 1 : 0;
+        const empty = 5 - full - half;
+        const on = 'style="color:var(--t-star-on)"';
+        const off = 'style="color:var(--t-star-off)"';
+        return '<span class="text-nowrap">' +
+          '<i class="bi bi-star-fill small" ' + on + '></i>'.repeat(full) +
+          (half ? '<i class="bi bi-star-half small" ' + on + '></i>' : '') +
+          '<i class="bi bi-star small" ' + off + '></i>'.repeat(empty) +
+          '</span>';
+      }
+
+      function reposition() {
+        const gap = 12;
+        let left = mouseX + 24;
+        let top = mouseY - 40;
+        if (left + card.offsetWidth > window.innerWidth - gap) left = mouseX - card.offsetWidth - 12;
+        if (left < gap) left = gap;
+        if (top + card.offsetHeight > window.innerHeight - gap) top = window.innerHeight - card.offsetHeight - gap;
+        if (top < gap) top = gap;
         card.style.left = left + 'px';
         card.style.top = top + 'px';
       }
@@ -214,43 +285,59 @@
         const desc = el.dataset.description;
         const imgSrc = el.dataset.imgSrc;
         if (!desc && !imgSrc) return;
-        card.innerHTML = '';
-        let img = null;
-        if (imgSrc && desc) {
-          card.style.display = 'flex';
-          card.style.alignItems = 'flex-start';
-          card.style.gap = '0.6rem';
-          img = document.createElement('img');
-          img.src = imgSrc;
-          img.style.cssText = 'width:220px;flex-shrink:0;border-radius:0.25rem;display:block;margin-right:0.5rem;';
-          card.appendChild(img);
-          const body = document.createElement('div');
-          body.className = 'hc-text';
-          body.style.cssText = 'flex:1;min-width:0;padding-right:0.5rem;';
-          body.innerHTML = desc;
-          card.appendChild(body);
-        } else if (imgSrc) {
-          card.style.display = 'flex';
-          card.style.alignItems = 'flex-start';
-          card.style.gap = '0.6rem';
-          img = document.createElement('img');
-          img.src = imgSrc;
-          img.style.cssText = 'width:220px;flex-shrink:0;border-radius:0.25rem;display:block;margin-right:0.5rem;';
-          card.appendChild(img);
-          const body = document.createElement('div');
-          body.className = 'hc-text';
-          body.style.cssText = 'flex:1;min-width:0;padding-right:0.5rem;';
-          body.innerHTML = '<em style="color:var(--t-text-secondary);">No description available.</em>';
-          card.appendChild(body);
+
+        const typeCls = TYPE_CLS[el.dataset.type] || 'other';
+        const typeLabel = el.dataset.typeLabel || '';
+        const abv = el.dataset.abv ? parseFloat(el.dataset.abv) : null;
+        const proof = abv ? (abv * 2).toFixed(2) + '°' : '';
+
+        // Image column
+        const imgCol = document.createElement('div');
+        imgCol.className = 'hc-image-col';
+        let loadPromise = null;
+        if (imgSrc) {
+          const img = document.createElement('img');
+          img.alt = '';
+          imgCol.appendChild(img);
+          loadPromise = new Promise(resolve => { img.onload = img.onerror = resolve; img.src = imgSrc; });
         } else {
-          card.style.display = 'block';
-          const body = document.createElement('div');
-          body.className = 'hc-text';
-          body.innerHTML = desc;
-          card.appendChild(body);
+          imgCol.innerHTML = SILHOUETTE;
         }
-        reposition(el);
-        if (img) img.onload = () => { if (active === el) reposition(el); };
+
+        // Content column
+        const content = document.createElement('div');
+        content.className = 'hc-content-col';
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'hc-name';
+        nameEl.textContent = el.textContent.trim();
+
+        const meta = document.createElement('div');
+        meta.className = 'hc-meta';
+        let metaHtml = `<span class="type-pill type-pill-${typeCls}">${typeLabel}</span>`;
+        if (proof) metaHtml += `<span>${proof}</span>`;
+        metaHtml += buildStars(el.dataset.stars);
+        meta.innerHTML = metaHtml;
+
+        const descEl = document.createElement('div');
+        descEl.className = 'hc-desc';
+        descEl.innerHTML = desc || '<em style="color:var(--t-text-secondary);">No description available.</em>';
+
+        content.appendChild(nameEl);
+        content.appendChild(meta);
+        content.appendChild(descEl);
+
+        const cols = document.createElement('div');
+        cols.className = 'hc-cols';
+        cols.appendChild(imgCol);
+        cols.appendChild(content);
+
+        card.innerHTML = '';
+        card.style.display = 'block';
+        card.appendChild(cols);
+        reposition();
+
+        if (loadPromise) loadPromise.then(() => { if (active === el) reposition(); });
       }
 
       function hide() {
@@ -259,11 +346,6 @@
         showTimer = hideTimer = null;
         active = null;
         card.style.display = 'none';
-        card.style.removeProperty('flex');
-        card.style.removeProperty('align-items');
-        card.style.removeProperty('gap');
-        card.style.removeProperty('right');
-        card.style.removeProperty('bottom');
         card.innerHTML = '';
       }
 
@@ -272,12 +354,17 @@
         hideTimer = setTimeout(hide, 300);
       }
 
+      document.addEventListener('mousemove', e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (active && card.style.display !== 'none') reposition();
+      });
+
       document.addEventListener('mouseover', function (e) {
         const el = e.target.closest('[data-description], [data-img-src]');
         if (el === active) return;
         clearTimeout(showTimer);
         clearTimeout(hideTimer);
-        if (card.contains(e.target)) return;
         if (!el) {
           if (active) scheduleHide();
           return;
@@ -290,13 +377,10 @@
       document.addEventListener('mouseout', function (e) {
         const el = e.target.closest('[data-description], [data-img-src]');
         if (el && el === active) {
-          if (e.relatedTarget && (el.contains(e.relatedTarget) || card.contains(e.relatedTarget))) return;
+          if (e.relatedTarget && el.contains(e.relatedTarget)) return;
           scheduleHide();
         }
       });
-
-      card.addEventListener('mouseenter', () => clearTimeout(hideTimer));
-      card.addEventListener('mouseleave', scheduleHide);
     })();
   </script>
 

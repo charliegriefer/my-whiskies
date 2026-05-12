@@ -213,7 +213,11 @@
                   <a href="{{ url_for('bottle.detail', username=bottle.user.username, user_num=bottle.user_num) }}"
                     class="{{ 'killed-name' if bottle.date_killed else '' }}"
                     {% if bottle.description %}data-description="{{ bottle.description }}"{% endif %}
-                    {% if bottle.images %}data-img-src="{{ img_s3_url }}/{{ bottle.id }}_1.jpg"{% endif %}>
+                    {% if bottle.images %}data-img-src="{{ img_s3_url }}/{{ bottle.id }}_1.jpg"{% endif %}
+                    data-type="{{ bottle.type.name }}"
+                    data-type-label="{{ bottle.type.value }}"
+                    {% if bottle.abv %}data-abv="{{ bottle.abv }}"{% endif %}
+                    {% if bottle.stars %}data-stars="{{ bottle.stars }}"{% endif %}>
                     {{ bottle.name | replace("\n", " ") }}
                   </a>
                 </td>
@@ -272,7 +276,11 @@
                 <a href="{{ url_for('bottle.detail', username=bottle.user.username, user_num=bottle.user_num) }}"
                   class="{{ 'killed-name' if bottle.date_killed else '' }}"
                   {% if bottle.description %}data-description="{{ bottle.description }}"{% endif %}
-                  {% if bottle.images %}data-img-src="{{ img_s3_url }}/{{ bottle.id }}_1.jpg"{% endif %}>
+                  {% if bottle.images %}data-img-src="{{ img_s3_url }}/{{ bottle.id }}_1.jpg"{% endif %}
+                  data-type="{{ bottle.type.name }}"
+                  data-type-label="{{ bottle.type.value }}"
+                  {% if bottle.abv %}data-abv="{{ bottle.abv }}"{% endif %}
+                  {% if bottle.stars %}data-stars="{{ bottle.stars }}"{% endif %}>
                   {{ bottle.name | replace("\n", " ") }}
                 </a>
               </td>
