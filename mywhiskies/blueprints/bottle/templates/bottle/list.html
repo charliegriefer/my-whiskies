@@ -186,7 +186,7 @@
   </script>
   <div id="bottle-hover-card" aria-hidden="true"></div>
   <script>
-    (function () {
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) (function () {
       const card = document.getElementById('bottle-hover-card');
       let showTimer = null;
       let hideTimer = null;
@@ -194,28 +194,20 @@
 
       function reposition(el) {
         const gap = 10;
-        if (window.innerWidth < 600) {
-          card.style.left = gap + 'px';
-          card.style.right = gap + 'px';
-          card.style.width = 'auto';
-          card.style.bottom = gap + 'px';
-          card.style.top = 'auto';
-        } else {
-          card.style.removeProperty('right');
-          card.style.removeProperty('bottom');
-          card.style.width = '500px';
-          const rect = el.getBoundingClientRect();
-          let left = rect.right + gap;
-          if (left + card.offsetWidth > window.innerWidth - gap) {
-            left = rect.left - card.offsetWidth - gap;
-          }
-          let top = rect.top;
-          if (top + card.offsetHeight > window.innerHeight - gap) {
-            top = Math.max(gap, window.innerHeight - card.offsetHeight - gap);
-          }
-          card.style.left = left + 'px';
-          card.style.top = top + 'px';
+        card.style.removeProperty('right');
+        card.style.removeProperty('bottom');
+        card.style.width = '500px';
+        const rect = el.getBoundingClientRect();
+        let left = rect.right + gap;
+        if (left + card.offsetWidth > window.innerWidth - gap) {
+          left = rect.left - card.offsetWidth - gap;
         }
+        let top = rect.top;
+        if (top + card.offsetHeight > window.innerHeight - gap) {
+          top = Math.max(gap, window.innerHeight - card.offsetHeight - gap);
+        }
+        card.style.left = left + 'px';
+        card.style.top = top + 'px';
       }
 
       function place(el) {
@@ -238,11 +230,18 @@
           body.innerHTML = desc;
           card.appendChild(body);
         } else if (imgSrc) {
-          card.style.display = 'block';
+          card.style.display = 'flex';
+          card.style.alignItems = 'flex-start';
+          card.style.gap = '0.6rem';
           img = document.createElement('img');
           img.src = imgSrc;
-          img.style.cssText = 'width:100%;border-radius:0.25rem;display:block;';
+          img.style.cssText = 'width:220px;flex-shrink:0;border-radius:0.25rem;display:block;margin-right:0.5rem;';
           card.appendChild(img);
+          const body = document.createElement('div');
+          body.className = 'hc-text';
+          body.style.cssText = 'flex:1;min-width:0;padding-right:0.5rem;';
+          body.innerHTML = '<em style="color:var(--t-text-secondary);">No description available.</em>';
+          card.appendChild(body);
         } else {
           card.style.display = 'block';
           const body = document.createElement('div');
