@@ -46,21 +46,6 @@ def process_bottle_images(form, bottle: Bottle) -> Tuple[bool, Optional[str]]:
     if not image_order:
         return True, None
 
-    # Server-side file-size validation before touching anything.
-    max_bytes = current_app.config.get("MAX_FILE_UPLOAD_BYTES", 10 * 1024 * 1024)
-    max_mb = current_app.config.get("MAX_FILE_UPLOAD_MB", 10)
-    for item in image_order:
-        if item.get("type") == "new":
-            slot = item.get("slot")
-            if slot:
-                ff = getattr(form, f"bottle_image_{slot}", None)
-                if ff and ff.data:
-                    ff.data.seek(0, 2)
-                    size = ff.data.tell()
-                    ff.data.seek(0)
-                    if size > max_bytes:
-                        return False, f"One or more images exceed the {max_mb}MB size limit."
-
     s3_client = boto3.client("s3")
     img_s3_bucket, img_s3_key, _ = get_s3_config()
 
@@ -290,7 +275,7 @@ def delete_bottle_images(bottle, image_ids=None):
     db.session.commit()
 
 
-DISPLAY_MAX = 1600
+DISPLAY_MAX = 1200
 JPEG_QUALITY = 85
 
 
