@@ -99,6 +99,8 @@ class ProdConfig(BaseConfig):
 
     BOTTLE_IMAGE_S3_KEY = "prod"
 
+    BASE_URL = "https://my-whiskies.online"
+
 
 class TestConfig(BaseConfig):
     TESTING = True
