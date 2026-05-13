@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from flask import flash, url_for
@@ -51,6 +51,6 @@ def flash_email_verification_success() -> None:
 
 def confirm_user_email(user: User) -> None:
     user.email_confirmed = True
-    user.email_confirm_date = datetime.utcnow()
+    user.email_confirm_date = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.commit()

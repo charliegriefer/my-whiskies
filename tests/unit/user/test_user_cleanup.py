@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 from mywhiskies.extensions import db
@@ -15,11 +15,11 @@ def _make_user(username, email, days_ago_registered=None, days_ago_login=None, w
     user = User(username=username, email=email, email_confirmed=confirmed)
     user.set_password("testpass")
     if days_ago_registered is not None:
-        user.date_registered = datetime.utcnow() - timedelta(days=days_ago_registered)
+        user.date_registered = datetime.now(timezone.utc) - timedelta(days=days_ago_registered)
     if days_ago_login is not None:
-        user.last_login_at = datetime.utcnow() - timedelta(days=days_ago_login)
+        user.last_login_at = datetime.now(timezone.utc) - timedelta(days=days_ago_login)
     if warned_days_ago is not None:
-        user.warned_at = datetime.utcnow() - timedelta(days=warned_days_ago)
+        user.warned_at = datetime.now(timezone.utc) - timedelta(days=warned_days_ago)
     db.session.add(user)
     db.session.commit()
     return user

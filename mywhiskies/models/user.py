@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from time import time
 from typing import TYPE_CHECKING, List, Optional
 
@@ -21,7 +21,7 @@ class User(UserMixin, db.Model):
     username: Mapped[str] = mapped_column(String(64), index=True, unique=True)
     email: Mapped[str] = mapped_column(String(120), index=True, unique=True)
     password_hash: Mapped[str] = mapped_column(String(256))
-    date_registered: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    date_registered: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
     email_confirmed: Mapped[bool] = mapped_column(default=False)
     email_confirm_date: Mapped[Optional[datetime]]
     is_private: Mapped[bool] = mapped_column(default=False)
@@ -91,7 +91,7 @@ class User(UserMixin, db.Model):
 class UserLogin(db.Model):
     __tablename__ = "user_login"
     user_id: Mapped[str] = mapped_column(db.ForeignKey("user.id"), primary_key=True)
-    login_date: Mapped[datetime] = mapped_column(default=datetime.utcnow, primary_key=True)
+    login_date: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc), primary_key=True)
     ip_address: Mapped[str] = mapped_column(String(45))
 
     user: Mapped["User"] = relationship("User", back_populates="logins")
