@@ -46,7 +46,7 @@
 
         {# Single Barrel — sortable #}
         {% set sb_dir = 'desc' if sort == 'sb' and direction == 'asc' else 'asc' %}
-        <th class="text-center text-nowrap" style="width: 50px;">
+        <th class="text-center text-nowrap d-none d-sm-table-cell" style="width: 50px;">
           <a title="Single Barrel" data-bs-toggle="tooltip"
             hx-get="{{ list_url }}"
             hx-target="#bottle-results"
@@ -64,7 +64,7 @@
 
         {# Type — sortable #}
         {% set type_dir = 'desc' if sort == 'type' and direction == 'asc' else 'asc' %}
-        <th style="width: 200px;">
+        <th class="type-col" style="width: 200px;">
           <a hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
@@ -81,7 +81,7 @@
 
         {# ABV/Proof — sortable + display toggle #}
         {% set abv_dir = 'desc' if sort == 'abv' and direction == 'asc' else 'asc' %}
-        <th class="text-end text-nowrap" style="width: 130px;">
+        <th class="text-end text-nowrap d-none d-sm-table-cell" style="width: 130px;">
           <div class="d-inline-flex align-items-center gap-1">
             <select class="form-select form-select-sm"
               style="width: auto; font-size: 0.75rem; padding-top: 0.1rem; padding-bottom: 0.1rem;"
@@ -106,7 +106,7 @@
 
         {# Rating — sortable #}
         {% set rating_dir = 'desc' if sort == 'rating' and direction == 'asc' else 'asc' %}
-        <th style="width: 120px;">
+        <th class="d-none d-sm-table-cell" style="width: 120px;">
           <a hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
@@ -162,7 +162,7 @@
                 <i class="bi expand-chevron ms-1" :class="open ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
               </td>
 
-              <td class="text-center pe-4">
+              <td class="text-center pe-4 d-none d-sm-table-cell">
                 {% if group.all_sb %}
                   <i class="bi bi-check-circle-fill sb-icon" title="All Single Barrel"></i>
                 {% endif %}
@@ -170,7 +170,7 @@
 
               <td>{{ type_pill(group.type) }}</td>
 
-              <td class="text-end pe-4 text-nowrap">
+              <td class="text-end pe-4 text-nowrap d-none d-sm-table-cell">
                 {% if group.abv_min is not none %}
                   {% if group.abv_min == group.abv_max %}
                     <span x-show="$store.abvDisplay.pref === 'abv'">{{ "%.2f" | format(group.abv_min) }}%</span>
@@ -184,7 +184,7 @@
                 {% endif %}
               </td>
 
-              <td class="text-nowrap">{{ render_stars(group.max_stars) }}</td>
+              <td class="text-nowrap d-none d-sm-table-cell">{{ render_stars(group.max_stars) }}</td>
 
               {% if is_my_list %}<td></td>{% endif %}
 
@@ -222,7 +222,7 @@
                   </a>
                 </td>
 
-                <td class="text-center pe-4">
+                <td class="text-center pe-4 d-none d-sm-table-cell">
                   {% if bottle.is_single_barrel %}
                     <i class="bi bi-check-circle-fill sb-icon" title="Single Barrel"></i>
                   {% endif %}
@@ -230,14 +230,14 @@
 
                 <td>{{ type_pill(bottle.type) }}</td>
 
-                <td class="text-end pe-4 text-nowrap">
+                <td class="text-end pe-4 text-nowrap d-none d-sm-table-cell">
                   {% if bottle.abv %}
                     <span x-show="$store.abvDisplay.pref === 'abv'">{{ "%.2f" | format(bottle.abv) }}%</span>
                     <span x-show="$store.abvDisplay.pref === 'proof'">{{ "%.2f" | format(bottle.abv * 2) }}°</span>
                   {% else %}—{% endif %}
                 </td>
 
-                <td class="text-nowrap">{{ render_stars(bottle.stars) }}</td>
+                <td class="text-nowrap d-none d-sm-table-cell">{{ render_stars(bottle.stars) }}</td>
 
                 {% if is_my_list %}
                   <td class="text-center pe-4">
@@ -285,7 +285,7 @@
                 </a>
               </td>
 
-              <td class="text-center pe-4">
+              <td class="text-center pe-4 d-none d-sm-table-cell">
                 {% if bottle.is_single_barrel %}
                   <i class="bi bi-check-circle-fill sb-icon" title="Single Barrel"></i>
                 {% endif %}
@@ -293,14 +293,14 @@
 
               <td>{{ type_pill(bottle.type) }}</td>
 
-              <td class="text-end pe-4 text-nowrap">
+              <td class="text-end pe-4 text-nowrap d-none d-sm-table-cell">
                 {% if bottle.abv %}
                   <span x-show="$store.abvDisplay.pref === 'abv'">{{ "%.2f" | format(bottle.abv) }}%</span>
                   <span x-show="$store.abvDisplay.pref === 'proof'">{{ "%.2f" | format(bottle.abv * 2) }}°</span>
                 {% else %}—{% endif %}
               </td>
 
-              <td>{{ render_stars(bottle.stars) }}</td>
+              <td class="d-none d-sm-table-cell">{{ render_stars(bottle.stars) }}</td>
 
               {% if is_my_list %}
                 <td class="text-center pe-4">
