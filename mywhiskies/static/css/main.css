@@ -777,6 +777,7 @@ hr {
   border-collapse: collapse;
   width: 100%;
   margin-bottom: 0;
+  table-layout: fixed;
 }
 
 .themed-table thead {

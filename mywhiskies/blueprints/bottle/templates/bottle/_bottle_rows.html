@@ -24,7 +24,7 @@
       <tr>
 
         {% if is_my_list %}
-          <th style="width: 1%;">&nbsp;</th>
+          <th style="width: 52px;">&nbsp;</th>
         {% endif %}
 
         {# Name — sortable #}
@@ -46,7 +46,7 @@
 
         {# Single Barrel — sortable #}
         {% set sb_dir = 'desc' if sort == 'sb' and direction == 'asc' else 'asc' %}
-        <th class="text-center text-nowrap" style="width: 1%;">
+        <th class="text-center text-nowrap" style="width: 50px;">
           <a title="Single Barrel" data-bs-toggle="tooltip"
             hx-get="{{ list_url }}"
             hx-target="#bottle-results"
@@ -64,7 +64,7 @@
 
         {# Type — sortable #}
         {% set type_dir = 'desc' if sort == 'type' and direction == 'asc' else 'asc' %}
-        <th>
+        <th style="width: 200px;">
           <a hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
@@ -81,7 +81,7 @@
 
         {# ABV/Proof — sortable + display toggle #}
         {% set abv_dir = 'desc' if sort == 'abv' and direction == 'asc' else 'asc' %}
-        <th class="text-end text-nowrap">
+        <th class="text-end text-nowrap" style="width: 130px;">
           <div class="d-inline-flex align-items-center gap-1">
             <select class="form-select form-select-sm"
               style="width: auto; font-size: 0.75rem; padding-top: 0.1rem; padding-bottom: 0.1rem;"
@@ -106,7 +106,7 @@
 
         {# Rating — sortable #}
         {% set rating_dir = 'desc' if sort == 'rating' and direction == 'asc' else 'asc' %}
-        <th>
+        <th style="width: 120px;">
           <a hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
@@ -124,7 +124,7 @@
         {# Private — sortable, owner only #}
         {% if is_my_list %}
           {% set priv_dir = 'desc' if sort == 'private' and direction == 'asc' else 'asc' %}
-          <th class="text-center text-nowrap" style="width: 1%;">
+          <th class="text-center text-nowrap" style="width: 42px;">
             <a title="Private" data-bs-toggle="tooltip"
               hx-get="{{ list_url }}"
               hx-target="#bottle-results"
