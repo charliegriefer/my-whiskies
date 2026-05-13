@@ -81,6 +81,7 @@ def render_rich_text(value: Any, fallback: str = "-", dash_class: str = "text-mu
         tags=_RICH_TEXT_ALLOWED_TAGS,
         attributes=_RICH_TEXT_ALLOWED_ATTRS,
     )
+    sanitized = re.sub(r"<br\s*/?>\s*<br\s*/?>", '<br><div class="rte-para-break"></div>', sanitized)
     return Markup(sanitized)
 
 

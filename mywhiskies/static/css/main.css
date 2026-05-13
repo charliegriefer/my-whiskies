@@ -26,6 +26,19 @@ a:focus, a:hover {
 
 .popover-body ul { padding-left: 18px; }
 
+.table-tight td ul,
+.table-tight td ol {
+  padding-left: 0;
+  list-style-position: inside;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.rte-para-break {
+  display: block;
+  height: 0.5rem;
+}
+
 .error {
   color: crimson;
 }
