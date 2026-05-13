@@ -37,9 +37,9 @@
             hx-vals='{"sort": "name", "dir": "{{ name_dir }}", "page": "1"}'>
             Name
             {% if sort == 'name' %}
-              <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill"></i>
+              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}" style="font-size: 1em; color: var(--t-header-text); margin-left: 3px;"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up" style="font-size: 0.75em; color: var(--t-header-text-secondary); opacity: 0.35;"></i>
+              <i class="bi bi-arrow-down-up" style="font-size: 1em; color: var(--t-header-text); margin-left: 3px;"></i>
             {% endif %}
           </a>
         </th>
@@ -55,9 +55,9 @@
             hx-vals='{"sort": "sb", "dir": "{{ sb_dir }}", "page": "1"}'>
             SB
             {% if sort == 'sb' %}
-              <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill"></i>
+              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}" style="font-size: 1em; color: var(--t-header-text); margin-left: 3px;"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up" style="font-size: 0.75em; color: var(--t-header-text-secondary); opacity: 0.35;"></i>
+              <i class="bi bi-arrow-down-up" style="font-size: 1em; color: var(--t-header-text); margin-left: 3px;"></i>
             {% endif %}
           </a>
         </th>
@@ -72,9 +72,9 @@
             hx-vals='{"sort": "type", "dir": "{{ type_dir }}", "page": "1"}'>
             Type
             {% if sort == 'type' %}
-              <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill"></i>
+              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}" style="font-size: 1em; color: var(--t-header-text); margin-left: 3px;"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up" style="font-size: 0.75em; color: var(--t-header-text-secondary); opacity: 0.35;"></i>
+              <i class="bi bi-arrow-down-up" style="font-size: 1em; color: var(--t-header-text); margin-left: 3px;"></i>
             {% endif %}
           </a>
         </th>
@@ -96,9 +96,9 @@
               hx-include="#list-controls"
               hx-vals='{"sort": "abv", "dir": "{{ abv_dir }}", "page": "1"}'>
               {% if sort == 'abv' %}
-                <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill"></i>
+                <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}" style="font-size: 1em; color: var(--t-header-text); margin-left: 3px;"></i>
               {% else %}
-                <i class="bi bi-arrow-down-up" style="font-size: 0.75em; color: var(--t-header-text-secondary); opacity: 0.35;"></i>
+                <i class="bi bi-arrow-down-up" style="font-size: 1em; color: var(--t-header-text); margin-left: 3px;"></i>
               {% endif %}
             </a>
           </div>
@@ -114,9 +114,9 @@
             hx-vals='{"sort": "rating", "dir": "{{ rating_dir }}", "page": "1"}'>
             Rating
             {% if sort == 'rating' %}
-              <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill"></i>
+              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}" style="font-size: 1em; color: var(--t-header-text); margin-left: 3px;"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up" style="font-size: 0.75em; color: var(--t-header-text-secondary); opacity: 0.35;"></i>
+              <i class="bi bi-arrow-down-up" style="font-size: 1em; color: var(--t-header-text); margin-left: 3px;"></i>
             {% endif %}
           </a>
         </th>
@@ -133,9 +133,9 @@
               hx-vals='{"sort": "private", "dir": "{{ priv_dir }}", "page": "1"}'>
               <i class="bi bi-incognito"></i>
               {% if sort == 'private' %}
-                <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill"></i>
+                <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}" style="font-size: 1em; color: var(--t-header-text); margin-left: 3px;"></i>
               {% else %}
-                <i class="bi bi-arrow-down-up" style="font-size: 0.75em; color: var(--t-header-text-secondary); opacity: 0.35;"></i>
+                <i class="bi bi-arrow-down-up" style="font-size: 1em; color: var(--t-header-text); margin-left: 3px;"></i>
               {% endif %}
             </a>
           </th>

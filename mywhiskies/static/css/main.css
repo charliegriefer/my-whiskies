@@ -321,8 +321,10 @@ ul.terms li {
 
 
 .tooltip-arrow:before {
-    /* border-top-color: #0d6efd !important; */
-    border-left-color: #337ab7;
+    border-top-color: #337ab7 !important;
+    border-bottom-color: #337ab7 !important;
+    border-left-color: #337ab7 !important;
+    border-right-color: #337ab7 !important;
 }
 
 .tooltip-inner {
@@ -920,7 +922,7 @@ hr {
   display: inline-block;
   padding: 0.15rem 0.5rem;
   border-radius: 0.75rem;
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   font-weight: 600;
   white-space: nowrap;
   letter-spacing: 0.02em;
