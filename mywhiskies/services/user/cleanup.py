@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from flask import current_app
 from sqlalchemy.future import select
@@ -11,12 +11,12 @@ from mywhiskies.services.user.user import delete_user_account
 
 def _inactivity_cutoff() -> datetime:
     days = current_app.config.get("INACTIVITY_DAYS", 180)
-    return datetime.utcnow() - timedelta(days=days)
+    return datetime.now(timezone.utc) - timedelta(days=days)
 
 
 def _grace_cutoff() -> datetime:
     days = current_app.config.get("INACTIVITY_GRACE_PERIOD_DAYS", 30)
-    return datetime.utcnow() - timedelta(days=days)
+    return datetime.now(timezone.utc) - timedelta(days=days)
 
 
 def get_users_to_warn() -> list[User]:
@@ -48,7 +48,7 @@ def warn_inactive_users() -> int:
         email = user.email
         try:
             send_inactive_account_warning(user, grace_days)
-            user.warned_at = datetime.utcnow()
+            user.warned_at = datetime.now(timezone.utc)
             db.session.commit()
             current_app.logger.info(f"Inactivity warning sent to {email}")
         except Exception:

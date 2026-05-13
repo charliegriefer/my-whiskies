@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from flask import current_app, request
 
@@ -18,7 +18,7 @@ def log_user_login(sender, user):
     login_entry = UserLogin(user_id=user.id, login_date=db.func.now(), ip_address=ip_address)
     db.session.add(login_entry)
 
-    user.last_login_at = datetime.utcnow()
+    user.last_login_at = datetime.now(timezone.utc)
     if user.warned_at is not None:
         user.warned_at = None
 

@@ -2,7 +2,7 @@ import csv
 import json
 import zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 import boto3
@@ -20,7 +20,7 @@ def is_email_taken(email: str) -> bool:
 
 def apply_email_change(user: User, new_email: str) -> None:
     user.email = new_email
-    user.email_confirm_date = datetime.utcnow()
+    user.email_confirm_date = datetime.now(timezone.utc)
     db.session.commit()
     flash("Your e-mail address has been updated.", "success")
 
