@@ -1,7 +1,7 @@
 {% extends "_base.html" %}
 
 {% from "macros/value_format.html" import float_with_symbol %}
-{% from "macros/bottle_display.html" import type_pill, render_stars %}
+{% from "macros/bottle_display.html" import render_stars %}
 
 {% set dtfmt = "%d %B %Y" %}
 {% set btn_label = bottle.user.username ~ "'s List" %}
@@ -19,22 +19,10 @@
           <p class="page-header-line"><span class="page-header-context">{{ bottle.user.username }}'s Whiskies</span><span class="page-header-sep">›</span><span class="page-header-context">The Collection</span></p>
           <h1 class="mb-2">{{ bottle.name }}</h1>
 
-          {% set abv_pref = request.cookies.get('abv_display', 'abv') %}
           <div class="d-flex flex-wrap gap-2 align-items-center">
             {% if bottle.is_single_barrel %}
               <span class="type-pill type-pill-barrel">Single Barrel</span>
             {% endif %}
-            {{ type_pill(bottle.type) }}
-            {% if bottle.abv %}
-              {% if abv_pref == 'proof' %}
-                <span class="type-pill type-pill-abv">{{ "%.1f"|format(bottle.abv * 2) }}° Proof</span>
-              {% else %}
-                <span class="type-pill type-pill-abv">{{ "%.1f"|format(bottle.abv) }}% ABV</span>
-              {% endif %}
-            {% endif %}
-            {% for distillery in bottle.distilleries %}
-              <span class="type-pill type-pill-distillery">{{ distillery.name }}</span>
-            {% endfor %}
             {% if is_my_bottle and bottle.is_private %}
               <span class="type-pill type-pill-private">Private</span>
             {% endif %}
@@ -74,8 +62,8 @@
                @click="deleteUrl = '{{ url_for('bottle.delete', username=bottle.user.username, user_num=bottle.user_num, next=url_for('bottle.list', username=bottle.user.username)) }}'">
               <i class="bi bi-trash"></i> Delete
             </a>
-            <span class="vr"></span>
           {% endif %}
+          <span class="vr"></span>
           <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('bottle.list', username=bottle.user.username) }}" role="button"><i class="bi bi-list-ul"></i> {{ btn_label }}</a>
         </div>
       </div>
@@ -128,7 +116,7 @@
                   <td class="text-muted text-nowrap pe-4 fw-normal">Name</td>
                   <td>
                     {% if bottle.url %}
-                      <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.name }} <i class="bi bi-box-arrow-up-right ms-1" style="vertical-align: .075em;"></i></a>
+                      <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.name }} <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75em; vertical-align: 0.1em;"></i></a>
                     {% else %}
                       {{ bottle.name }}
                     {% endif %}
