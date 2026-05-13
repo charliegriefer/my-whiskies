@@ -13,7 +13,7 @@
   <p class="text-muted small mb-2">
     Showing {{ (page - 1) * per_page + 1 }}–{{ [page * per_page, total] | min }}
     of {{ total }} group{{ "s" if total != 1 }}
-    ({{ total_bottles }} bottle{{ "s" if total_bottles != 1 }})
+    ({{ total_bottles }} bottle{{ "s" if total_bottles != 1 }}{% if is_my_list and private_count > 0 %} · {{ private_count }} private{% endif %})
   </p>
 {% endif %}
 
@@ -37,9 +37,9 @@
             hx-vals='{"sort": "name", "dir": "{{ name_dir }}", "page": "1"}'>
             Name
             {% if sort == 'name' %}
-              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+              <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
+              <i class="bi bi-arrow-down-up" style="font-size: 0.75em; color: var(--t-header-text-secondary); opacity: 0.35;"></i>
             {% endif %}
           </a>
         </th>
@@ -55,9 +55,9 @@
             hx-vals='{"sort": "sb", "dir": "{{ sb_dir }}", "page": "1"}'>
             SB
             {% if sort == 'sb' %}
-              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+              <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
+              <i class="bi bi-arrow-down-up" style="font-size: 0.75em; color: var(--t-header-text-secondary); opacity: 0.35;"></i>
             {% endif %}
           </a>
         </th>
@@ -72,9 +72,9 @@
             hx-vals='{"sort": "type", "dir": "{{ type_dir }}", "page": "1"}'>
             Type
             {% if sort == 'type' %}
-              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+              <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
+              <i class="bi bi-arrow-down-up" style="font-size: 0.75em; color: var(--t-header-text-secondary); opacity: 0.35;"></i>
             {% endif %}
           </a>
         </th>
@@ -96,9 +96,9 @@
               hx-include="#list-controls"
               hx-vals='{"sort": "abv", "dir": "{{ abv_dir }}", "page": "1"}'>
               {% if sort == 'abv' %}
-                <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+                <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill"></i>
               {% else %}
-                <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
+                <i class="bi bi-arrow-down-up" style="font-size: 0.75em; color: var(--t-header-text-secondary); opacity: 0.35;"></i>
               {% endif %}
             </a>
           </div>
@@ -114,9 +114,9 @@
             hx-vals='{"sort": "rating", "dir": "{{ rating_dir }}", "page": "1"}'>
             Rating
             {% if sort == 'rating' %}
-              <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+              <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill"></i>
             {% else %}
-              <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
+              <i class="bi bi-arrow-down-up" style="font-size: 0.75em; color: var(--t-header-text-secondary); opacity: 0.35;"></i>
             {% endif %}
           </a>
         </th>
@@ -133,9 +133,9 @@
               hx-vals='{"sort": "private", "dir": "{{ priv_dir }}", "page": "1"}'>
               <i class="bi bi-incognito"></i>
               {% if sort == 'private' %}
-                <i class="bi bi-arrow-{{ 'up' if direction == 'asc' else 'down' }}-short"></i>
+                <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill"></i>
               {% else %}
-                <i class="bi bi-arrow-down-up opacity-50" style="font-size: 0.75em; color: var(--t-header-text-secondary);"></i>
+                <i class="bi bi-arrow-down-up" style="font-size: 0.75em; color: var(--t-header-text-secondary); opacity: 0.35;"></i>
               {% endif %}
             </a>
           </th>
