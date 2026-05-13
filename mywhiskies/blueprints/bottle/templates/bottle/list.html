@@ -380,6 +380,15 @@
     })();
   </script>
 
+  <script>
+    document.body.addEventListener('htmx:beforeSwap', function () {
+      document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+        const tt = bootstrap.Tooltip.getInstance(el);
+        if (tt) tt.hide();
+      });
+    });
+  </script>
+
   {% if is_my_list and total > 1 %}
   <script>
     document.getElementById('random-bottle-btn').addEventListener('click', () => {

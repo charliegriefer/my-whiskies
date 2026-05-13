@@ -101,6 +101,7 @@ def list_bottles_by_user(
 
     total = len(groups)
     total_bottles = sum(g["count"] for g in groups)
+    private_count = sum(1 for g in groups for b in g["bottles"] if b.is_private) if is_my_list else 0
 
     total_pages = max(1, (total + per_page - 1) // per_page)
     page = min(page, total_pages)
@@ -110,6 +111,7 @@ def list_bottles_by_user(
         "grouped": groups[offset : offset + per_page],
         "total": total,
         "total_bottles": total_bottles,
+        "private_count": private_count,
         "page": page,
         "per_page": per_page,
         "total_pages": total_pages,
@@ -161,6 +163,7 @@ def list_bottles_for_entity(
 
     total = len(groups)
     total_bottles = sum(g["count"] for g in groups)
+    private_count = sum(1 for g in groups for b in g["bottles"] if b.is_private) if is_my_list else 0
 
     total_pages = max(1, (total + per_page - 1) // per_page)
     page = min(page, total_pages)
@@ -170,6 +173,7 @@ def list_bottles_for_entity(
         "grouped": groups[offset : offset + per_page],
         "total": total,
         "total_bottles": total_bottles,
+        "private_count": private_count,
         "page": page,
         "per_page": per_page,
         "total_pages": total_pages,
