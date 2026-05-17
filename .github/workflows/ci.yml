@@ -7,10 +7,7 @@ on:
     branches: [main]
 
 env:
-  # --- Sensitive: set as a GitHub Secret, with fallback for CI ---
   SECRET_KEY: ${{ secrets.SECRET_KEY || 'ci-fallback-secret-key-not-for-production' }}
-
-  # --- Non-sensitive dummy values safe to inline for CI ---
   SQLALCHEMY_DATABASE_URI: "sqlite:///ci_dummy.db"
   SQLALCHEMY_DATABASE_URI_TEST: "sqlite:///test.db"
   MAIL_SERVER: "localhost"
@@ -29,18 +26,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install Ruff
-        run: pip install ruff
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
       - name: Lint with Ruff
-        run: ruff check .
+        run: uv run ruff check .
 
       - name: Check formatting with Ruff
-        run: ruff format --check .
+        run: uv run ruff format --check .
 
   test:
     name: Test
@@ -48,15 +41,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
       - name: Install system dependencies
         run: sudo apt-get install -y default-libmysqlclient-dev pkg-config
 
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: uv sync --dev
 
       - name: Run tests
-        run: pytest --cov=mywhiskies tests/
+        run: uv run pytest --cov=mywhiskies tests/
