@@ -63,7 +63,7 @@
               <i class="bi bi-trash"></i> Delete
             </a>
           {% endif %}
-          <span class="vr"></span>
+          {% if is_my_bottle %}<span class="vr"></span>{% endif %}
           <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('bottle.list', username=bottle.user.username) }}" role="button"><i class="bi bi-list-ul"></i> {{ btn_label }}</a>
         </div>
       </div>
