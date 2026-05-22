@@ -1,3 +1,4 @@
+{% from "macros/theme_picker.html" import theme_picker %}
 <nav class="navbar navbar-expand-lg">
   <div class="container mx-auto px-3" style="max-width: 1000px;">
     <a href="{{ url_for('core.main') }}" class="navbar-brand d-flex align-items-center flex-shrink-0 me-2 ms-2">
@@ -58,15 +59,7 @@
           </ul>
 
           <!-- Theme switcher — desktop: pill before username; mobile: bare swatches at bottom of menu -->
-          <div class="navbar-theme-picker d-flex align-items-center gap-2 ms-lg-auto mx-3 px-2 py-1 rounded-pill" style="background: var(--surface-2); border: 1px solid var(--border);">
-            <span class="navbar-theme-label">THEME</span>
-            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'barrel' }"
-              style="background: #c87941;" @click="setTheme('barrel')" title="Barrel Room"></button>
-            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'cellar' }"
-              style="background: #1e3a5f;" @click="setTheme('cellar')" title="Modern Cellar"></button>
-            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'vault' }"
-              style="background: #c9a84c;" @click="setTheme('vault')" title="The Vault"></button>
-          </div>
+          <div class="ms-lg-auto mx-3">{{ theme_picker() }}</div>
 
           <div class="dropdown d-flex align-items-center me-2 px-3 py-1 rounded-pill" style="background: var(--surface-2); border: 1px solid var(--border); width: fit-content;">
             <a class="nav-link dropdown-toggle p-0" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -80,14 +73,7 @@
         </div>
       {% else %}
         <div class="ms-auto d-flex align-items-center gap-2 me-2">
-          <div class="navbar-theme-picker d-flex align-items-center gap-2 px-2 py-1 rounded-pill" style="background: var(--surface-2); border: 1px solid var(--border);">
-            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'barrel' }"
-              style="background: #c87941;" @click="setTheme('barrel')" title="Barrel Room"></button>
-            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'cellar' }"
-              style="background: #1e3a5f;" @click="setTheme('cellar')" title="Modern Cellar"></button>
-            <button class="theme-swatch" :class="{ 'active-swatch': theme === 'vault' }"
-              style="background: #c9a84c;" @click="setTheme('vault')" title="The Vault"></button>
-          </div>
+          {{ theme_picker() }}
           {% if request.endpoint != "auth.login" %}
             <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white text-nowrap" role="button" id="nav_login">Log In</a>
           {% endif %}
