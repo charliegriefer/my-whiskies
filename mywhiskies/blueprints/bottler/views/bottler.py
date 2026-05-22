@@ -203,6 +203,8 @@ def bottler_edit(username: str, user_num: int):
 @login_required
 def bottler_delete(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
+    if user.id != current_user.id:
+        abort(403)
     _bottler = db.one_or_404(db.select(Bottler).filter_by(user_id=user.id, user_num=user_num))
     delete_bottler(current_user, _bottler)
     return redirect(url_for("bottler.list", username=current_user.username))

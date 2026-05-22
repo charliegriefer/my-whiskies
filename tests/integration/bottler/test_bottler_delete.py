@@ -29,9 +29,9 @@ def test_delete_not_my_bottler(logged_in_user_01: FlaskClient, test_user_01: Use
             username=test_user_02.username,
             user_num=bottler.user_num,
         ),
-        follow_redirects=True,
+        follow_redirects=False,
     )
-    assert response.status_code == 200
+    assert response.status_code == 403
 
 
 def test_delete_my_bottler_has_bottles(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
