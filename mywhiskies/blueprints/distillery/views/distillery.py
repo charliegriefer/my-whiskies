@@ -232,6 +232,8 @@ def distillery_edit(username: str, user_num: int):
 @login_required
 def distillery_delete(username: str, user_num: int):
     user = db.one_or_404(db.select(User).filter_by(username=username))
+    if user.id != current_user.id:
+        abort(403)
     distillery = db.one_or_404(db.select(Distillery).filter_by(user_id=user.id, user_num=user_num))
     delete_distillery(current_user, distillery)
     return redirect(url_for("distillery.list", username=current_user.username))

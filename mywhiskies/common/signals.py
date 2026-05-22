@@ -15,7 +15,7 @@ def log_user_login(sender, user):
 
     alert = is_new_ip(user.id, ip_address)
 
-    login_entry = UserLogin(user_id=user.id, login_date=db.func.now(), ip_address=ip_address)
+    login_entry = UserLogin(user_id=user.id, ip_address=ip_address)
     db.session.add(login_entry)
 
     user.last_login_at = datetime.now(timezone.utc)
