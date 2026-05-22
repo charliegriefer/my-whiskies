@@ -161,8 +161,9 @@ def bottle_for_user_02(app, e2e_user_02, distillery_for_user_02):
 
 
 def login(page, username, password):
-    """Fill and submit the login form."""
+    """Fill and submit the login form, then wait until the session is confirmed."""
     page.goto("/login")
     page.fill("input[name=username]", username)
     page.fill("input[name=password]", password)
     page.click("input[type=submit][name=submit]")
+    page.wait_for_selector("#navbarDropdownUser")
