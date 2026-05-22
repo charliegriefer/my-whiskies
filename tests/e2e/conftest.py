@@ -1,8 +1,11 @@
 import os
+import sqlite3
 import threading
 from datetime import datetime
 
 import pytest
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
 from werkzeug.serving import make_server
 
 from config import TestConfig
@@ -18,6 +21,16 @@ class E2EConfig(TestConfig):
     # File-based SQLite so the live server thread can see committed data
     SQLALCHEMY_DATABASE_URI = "sqlite:///e2e_test.db"
     SQLALCHEMY_ENGINE_OPTIONS = {"connect_args": {"check_same_thread": False}}
+
+
+# Enable WAL mode on every SQLite connection so the live server thread and the
+# test thread can write concurrently without blocking each other.
+@event.listens_for(Engine, "connect")
+def set_sqlite_wal_mode(dbapi_connection, connection_record):
+    if isinstance(dbapi_connection, sqlite3.Connection):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.close()
 
 
 # ── Override parent conftest autouse fixtures ────────────────────────────────
