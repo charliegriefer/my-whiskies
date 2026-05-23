@@ -8,7 +8,7 @@ from markupsafe import Markup
 
 from mywhiskies.extensions import db
 from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
-from mywhiskies.models import Bottle, Bottler, Distillery, User
+from mywhiskies.models import BarrelPicker, Bottle, Bottler, Distillery, User
 from mywhiskies.services.bottle.image import (
     get_s3_config,
     process_bottle_images,
@@ -121,7 +121,7 @@ def list_bottles_by_user(
 
 
 def list_bottles_for_entity(
-    entity: Union[Bottler, Distillery],
+    entity: Union[BarrelPicker, Bottler, Distillery],
     is_my_list: bool,
     q: str = "",
     types: Optional[List[str]] = None,
@@ -203,8 +203,8 @@ def get_random_bottle(
 
 
 def set_bottle_details(form: BottleAddForm, bottle: Optional[Bottle] = None, user: Optional[User] = None) -> Bottle:
-    """Update or create a bottle's details from the form data."""
-    distilleries = [db.session.get(Distillery, distillery_id) for distillery_id in form.distilleries.data]
+    distilleries = [db.session.get(Distillery, did) for did in form.distilleries.data]
+    barrel_pickers = [db.session.get(BarrelPicker, pid) for pid in (form.barrel_pickers.data or [])]
     bottler_id = form.bottler_id.data if form.bottler_id.data != "0" else None
     if bottle is None:
         bottle = Bottle(user_id=user.id)
@@ -213,6 +213,7 @@ def set_bottle_details(form: BottleAddForm, bottle: Optional[Bottle] = None, use
     bottle.url = form.url.data
     bottle.type = form.type.data
     bottle.distilleries = distilleries
+    bottle.barrel_pickers = barrel_pickers
     bottle.bottler_id = bottler_id
     bottle.size = form.size.data
     bottle.year_barrelled = form.year_barrelled.data

@@ -1,0 +1,25 @@
+<div class="list-group-item px-0 py-2" id="picker-row-{{ picker.id }}">
+  <div class="d-flex align-items-start justify-content-between gap-3">
+    <p class="small mb-0">
+      {% if picker.bottles %}
+        <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i>
+        <strong>{{ picker.name }}</strong> is associated with {{ picker.bottles | length }} bottle{{ 's' if picker.bottles | length != 1 else '' }}.
+        Deleting it will remove those associations, but the bottles won't be affected.
+      {% else %}
+        Delete <strong>{{ picker.name }}</strong>? This cannot be undone.
+      {% endif %}
+    </p>
+    <div class="d-flex gap-1 flex-shrink-0">
+      <form hx-post="{{ url_for('barrel_picker.delete', user_num=picker.user_num) }}"
+            hx-target="#picker-list"
+            hx-swap="innerHTML">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+      </form>
+      <button type="button" class="btn btn-sm btn-secondary"
+              hx-get="{{ url_for('barrel_picker.manage') }}"
+              hx-target="#manage-modal-body"
+              hx-swap="innerHTML">Cancel</button>
+    </div>
+  </div>
+</div>

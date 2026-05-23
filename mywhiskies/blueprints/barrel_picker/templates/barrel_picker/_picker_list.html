@@ -1,0 +1,35 @@
+{% if barrel_pickers %}
+  <div class="list-group list-group-flush">
+    {% for picker in barrel_pickers %}
+      <div class="list-group-item px-0 py-2" id="picker-row-{{ picker.id }}">
+        <div class="d-flex align-items-center justify-content-between gap-2">
+          <div>
+            <span class="fw-medium">{{ picker.name }}</span>
+            {% if picker.url %}
+              <a href="{{ picker.url }}" target="_blank" rel="noopener noreferrer" class="ms-2 text-muted small">
+                <i class="bi bi-box-arrow-up-right"></i>
+              </a>
+            {% endif %}
+            <span class="text-muted small ms-2">({{ picker.bottles | length }} bottle{{ 's' if picker.bottles | length != 1 else '' }})</span>
+          </div>
+          <div class="d-flex gap-1 flex-shrink-0">
+            <button type="button" class="btn btn-sm btn-outline-secondary"
+                    hx-get="{{ url_for('barrel_picker.edit_form', user_num=picker.user_num) }}"
+                    hx-target="#picker-row-{{ picker.id }}"
+                    hx-swap="outerHTML">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-danger"
+                    hx-get="{{ url_for('barrel_picker.delete_confirm', user_num=picker.user_num) }}"
+                    hx-target="#picker-row-{{ picker.id }}"
+                    hx-swap="outerHTML">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="text-muted small mb-0">No barrel pickers added yet.</p>
+{% endif %}

@@ -6,10 +6,11 @@ from mywhiskies.models import BottleTypes, User
 
 def prep_bottle_form(user: User, form: Union[BottleAddForm, BottleEditForm]) -> Union[BottleAddForm, BottleEditForm]:
 
-    _set_up_bottle_type(form)  # set up bottle type dropdown
-    _set_up_distilleries(form, user)  # set up distilleries dropdown
-    _set_up_bottlers(form, user)  # set up bottlers dropdown
-    _set_up_star_rating(form)  # set up star rating dropdown
+    _set_up_bottle_type(form)
+    _set_up_distilleries(form, user)
+    _set_up_barrel_pickers(form, user)
+    _set_up_bottlers(form, user)
+    _set_up_star_rating(form)
 
     return form
 
@@ -25,6 +26,11 @@ def _set_up_distilleries(form: Union[BottleAddForm, BottleEditForm], user: User)
     distilleries = user.distilleries
     distilleries.sort(key=lambda d: d.name)
     form.distilleries.choices = [(d.id, d.name) for d in distilleries]
+
+
+def _set_up_barrel_pickers(form: Union[BottleAddForm, BottleEditForm], user: User) -> None:
+    pickers = sorted(user.barrel_pickers, key=lambda p: p.name)
+    form.barrel_pickers.choices = [(p.id, p.name) for p in pickers]
 
 
 def _set_up_bottlers(form: Union[BottleAddForm, BottleEditForm], user: User) -> None:
