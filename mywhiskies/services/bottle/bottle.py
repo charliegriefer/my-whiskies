@@ -91,6 +91,7 @@ def list_bottles_by_user(
             or (b.description and q_lower in b.description.lower())
             or (b.bottler and q_lower in b.bottler.name.lower())
             or any(q_lower in d.name.lower() for d in b.distilleries)
+            or any(q_lower in p.name.lower() for p in b.barrel_pickers)
         ]
 
     groups = _make_groups(bottles)
@@ -153,6 +154,7 @@ def list_bottles_for_entity(
             or (b.description and q_lower in b.description.lower())
             or (b.bottler and q_lower in b.bottler.name.lower())
             or any(q_lower in d.name.lower() for d in b.distilleries)
+            or any(q_lower in p.name.lower() for p in b.barrel_pickers)
         ]
 
     groups = _make_groups(bottles)
@@ -198,6 +200,7 @@ def get_random_bottle(
             or (b.description and q_lower in b.description.lower())
             or (b.bottler and q_lower in b.bottler.name.lower())
             or any(q_lower in d.name.lower() for d in b.distilleries)
+            or any(q_lower in p.name.lower() for p in b.barrel_pickers)
         ]
     return random.choice(bottles) if bottles else None
 
