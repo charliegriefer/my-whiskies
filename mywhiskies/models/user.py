@@ -13,7 +13,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from mywhiskies.extensions import db, login_manager
 
 if TYPE_CHECKING:
-    from mywhiskies.models import Bottle, Bottler, Distillery, Picker
+    from mywhiskies.models import BarrelPicker, Bottle, Bottler, Distillery
 
 
 class User(UserMixin, db.Model):
@@ -33,7 +33,7 @@ class User(UserMixin, db.Model):
     # relationships
     distilleries: Mapped[List["Distillery"]] = relationship("Distillery", back_populates="user")
     bottlers: Mapped[List["Bottler"]] = relationship("Bottler", back_populates="user")
-    pickers: Mapped[List["Picker"]] = relationship("Picker", back_populates="user")
+    barrel_pickers: Mapped[List["BarrelPicker"]] = relationship("BarrelPicker", back_populates="user")
     bottles: Mapped[List["Bottle"]] = relationship("Bottle", back_populates="user", lazy="select")
     logins: Mapped[List["UserLogin"]] = relationship("UserLogin", back_populates="user", lazy="select")
 

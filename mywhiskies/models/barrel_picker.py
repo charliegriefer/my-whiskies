@@ -12,9 +12,9 @@ if TYPE_CHECKING:
     from mywhiskies.models import Bottle, User
 
 
-class Picker(db.Model):
-    __tablename__ = "picker"
-    __table_args__ = (UniqueConstraint("user_id", "user_num", name="uq_picker_user_num"),)
+class BarrelPicker(db.Model):
+    __tablename__ = "barrel_picker"
+    __table_args__ = (UniqueConstraint("user_id", "user_num", name="uq_barrel_picker_user_num"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name: Mapped[str] = mapped_column(String(65))
@@ -26,15 +26,17 @@ class Picker(db.Model):
     user_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
 
     # relationships
-    user: Mapped["User"] = relationship(back_populates="pickers")
-    bottles: Mapped[List["Bottle"]] = relationship("Bottle", secondary="bottle_picker", back_populates="pickers")
+    user: Mapped["User"] = relationship(back_populates="barrel_pickers")
+    bottles: Mapped[List["Bottle"]] = relationship(
+        "Bottle", secondary="bottle_barrel_picker", back_populates="barrel_pickers"
+    )
 
 
-@event.listens_for(Picker, "before_insert")
-def picker_before_insert(mapper, connect, target) -> None:
-    clean_picker_data(target)
+@event.listens_for(BarrelPicker, "before_insert")
+def barrel_picker_before_insert(mapper, connect, target) -> None:
+    clean_barrel_picker_data(target)
     result = connect.execute(
-        sa.text("SELECT COALESCE(MAX(user_num), 0) FROM picker WHERE user_id = :uid"),
+        sa.text("SELECT COALESCE(MAX(user_num), 0) FROM barrel_picker WHERE user_id = :uid"),
         {"uid": target.user_id},
     )
     db_max = result.scalar()
@@ -44,7 +46,7 @@ def picker_before_insert(mapper, connect, target) -> None:
             (
                 obj.user_num
                 for obj in session.new
-                if isinstance(obj, Picker)
+                if isinstance(obj, BarrelPicker)
                 and obj.user_id == target.user_id
                 and obj is not target
                 and obj.user_num is not None
@@ -57,12 +59,12 @@ def picker_before_insert(mapper, connect, target) -> None:
     target.user_num = max(db_max, pending_max) + 1
 
 
-@event.listens_for(Picker, "before_update")
-def picker_before_update(mapper, connect, target) -> None:
-    clean_picker_data(target)
+@event.listens_for(BarrelPicker, "before_update")
+def barrel_picker_before_update(mapper, connect, target) -> None:
+    clean_barrel_picker_data(target)
 
 
-def clean_picker_data(target) -> None:
+def clean_barrel_picker_data(target) -> None:
     target.name = target.name.strip()
     if target.description:
         target.description = target.description.strip()
