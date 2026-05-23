@@ -1,0 +1,30 @@
+<div class="list-group-item px-0 py-2" id="picker-row-{{ picker.id }}">
+  <form hx-post="{{ url_for('barrel_picker.modal_edit', user_num=picker.user_num) }}"
+        hx-target="#picker-list"
+        hx-swap="innerHTML">
+    {{ form.csrf_token }}
+    <div class="d-flex gap-2 align-items-start">
+      <div class="flex-grow-1">
+        <input type="text" name="name" value="{{ form.name.data or '' }}"
+               class="form-control form-control-sm{% if form.name.errors %} is-invalid{% endif %}"
+               placeholder="Name" required>
+        {% if form.name.errors %}
+          <div class="invalid-feedback">{{ form.name.errors[0] }}</div>
+        {% endif %}
+        <input type="url" name="url" value="{{ form.url.data or '' }}"
+               class="form-control form-control-sm mt-1{% if form.url.errors %} is-invalid{% endif %}"
+               placeholder="URL (optional)">
+        {% if form.url.errors %}
+          <div class="invalid-feedback">{{ form.url.errors[0] }}</div>
+        {% endif %}
+      </div>
+      <div class="d-flex gap-1 flex-shrink-0">
+        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+        <button type="button" class="btn btn-sm btn-secondary"
+                hx-get="{{ url_for('barrel_picker.manage') }}"
+                hx-target="#manage-modal-body"
+                hx-swap="innerHTML">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -150,6 +150,17 @@
                     {% endif %}
                   </td>
                 </tr>
+                {% if bottle.barrel_pickers %}
+                  <tr>
+                    <td class="text-muted text-nowrap pe-4 fw-normal">Barrel Picked by</td>
+                    <td>
+                      {% for picker in bottle.barrel_pickers %}
+                        <a href="{{ url_for('barrel_picker.detail', username=picker.user.username, user_num=picker.user_num) }}">{{ picker.name }}</a>
+                        {% if not loop.last %}<br />{% endif %}
+                      {% endfor %}
+                    </td>
+                  </tr>
+                {% endif %}
 
                 <!-- Notes -->
                 <tr>

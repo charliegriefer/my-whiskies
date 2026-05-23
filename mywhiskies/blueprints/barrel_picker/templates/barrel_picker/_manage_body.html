@@ -1,0 +1,33 @@
+<div id="picker-list">
+  {% include "barrel_picker/_picker_list.html" %}
+</div>
+
+<hr class="my-3">
+
+<p class="fw-medium mb-2">Add New Barrel Picker</p>
+<form hx-post="{{ url_for('barrel_picker.add') }}"
+      hx-target="#manage-modal-body"
+      hx-swap="innerHTML">
+  {{ add_form.csrf_token }}
+  <div class="row g-2">
+    <div class="col-sm-6">
+      <input type="text" name="name"
+             class="form-control form-control-sm{% if add_form.name.errors %} is-invalid{% endif %}"
+             placeholder="Name (required)" required
+             value="{{ add_form.name.data or '' }}">
+      {% if add_form.name.errors %}
+        <div class="invalid-feedback">{{ add_form.name.errors[0] }}</div>
+      {% endif %}
+    </div>
+    <div class="col-sm-6">
+      <input type="url" name="url"
+             class="form-control form-control-sm{% if add_form.url.errors %} is-invalid{% endif %}"
+             placeholder="URL (optional)"
+             value="{{ add_form.url.data or '' }}">
+      {% if add_form.url.errors %}
+        <div class="invalid-feedback">{{ add_form.url.errors[0] }}</div>
+      {% endif %}
+    </div>
+  </div>
+  <button type="submit" class="btn btn-sm btn-primary mt-2">Add Barrel Picker</button>
+</form>

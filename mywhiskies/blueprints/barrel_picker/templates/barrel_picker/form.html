@@ -1,0 +1,46 @@
+{% extends "_base.html" %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/trix@2/dist/trix.css">
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script src="https://cdn.jsdelivr.net/npm/trix@2/dist/trix.umd.min.js"></script>
+  {% include "_trix_toolbar_init.html" %}
+{% endblock %}
+
+{% block app_content %}
+  <main class="flex-shrink-0">
+    <div class="container ps-0">
+
+      <div class="row mt-4">
+        <div class="col">
+          <p class="page-header-line">
+            <span class="page-header-context">{{ picker.user.username }}'s Whiskies</span>
+            <span class="page-header-sep">›</span>
+            <span class="page-header-context">Barrel Pickers</span>
+          </p>
+          <h1 class="mb-0">{{ picker.name }}</h1>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="row">
+        <div class="col-md-4">
+          <form method="post" novalidate x-data @trix-file-accept.window.prevent>
+            {{ form.csrf_token }}
+            {{ form_utils.render_field(form.name) }}
+            {{ form_utils.render_trix_field(form.description) }}
+            {{ form_utils.render_field(form.url) }}
+            <div class="pt-3 mb-3">
+              {{ form.submit(class="btn btn-primary") }}
+              {{ buttons.cancel_button(current_user, request) }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}

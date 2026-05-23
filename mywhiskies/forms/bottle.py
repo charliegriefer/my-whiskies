@@ -70,6 +70,12 @@ class BottleAddForm(FlaskForm):
         validators=[InputRequired("Distilleries is required.")],
         render_kw={"placeholder": " Choose One or More Distilleries"},
     )
+    barrel_pickers = Select2Field(
+        "Barrel Picked by",
+        choices=[],
+        validators=[Optional()],
+        render_kw={"placeholder": " Choose One or More Barrel Pickers"},
+    )
     bottler_id = SelectField("Bottler:")
     size = IntegerField(
         "Size (ml):",

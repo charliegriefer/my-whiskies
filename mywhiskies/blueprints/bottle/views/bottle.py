@@ -199,6 +199,7 @@ def bottle_edit(username: str, user_num: int):
     else:
         form.type.data = _bottle.type.name
         form.distilleries.data = [d.id for d in _bottle.distilleries]
+        form.barrel_pickers.data = [p.id for p in _bottle.barrel_pickers]
 
     return render_template(
         "bottle/form.html",
