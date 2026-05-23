@@ -8,3 +8,9 @@ bottle_distillery = db.Table(
     Column("bottle_id", ForeignKey("bottle.id"), primary_key=True),
     Column("distillery_id", ForeignKey("distillery.id"), primary_key=True),
 )
+
+bottle_picker = db.Table(
+    "bottle_picker",
+    Column("bottle_id", ForeignKey("bottle.id"), primary_key=True),
+    Column("picker_id", ForeignKey("picker.id"), primary_key=True),
+)

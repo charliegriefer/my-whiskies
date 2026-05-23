@@ -10,10 +10,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm import Session as OrmSession
 
 from mywhiskies.extensions import db
-from mywhiskies.models.core import bottle_distillery  # noqa: F401
+from mywhiskies.models.core import bottle_distillery, bottle_picker  # noqa: F401
 
 if TYPE_CHECKING:
-    from mywhiskies.models import Bottler, Distillery, User
+    from mywhiskies.models import Bottler, Distillery, Picker, User
 
 
 class BottleTypes(enum.Enum):
@@ -78,6 +78,11 @@ class Bottle(db.Model):
         "Distillery",
         secondary="bottle_distillery",
         order_by="Distillery.name",
+    )
+    pickers: Mapped[List["Picker"]] = relationship(
+        "Picker",
+        secondary="bottle_picker",
+        order_by="Picker.name",
     )
     bottler: Mapped["Bottler"] = relationship(foreign_keys=[bottler_id], back_populates="bottles")
     images: Mapped[List["BottleImage"]] = relationship(
