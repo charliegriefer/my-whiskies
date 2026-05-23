@@ -61,7 +61,5 @@ def test_detail_shows_associated_bottle(
 
 
 def test_detail_404_for_unknown_picker(client: FlaskClient, test_user_01: User) -> None:
-    response = client.get(
-        url_for("barrel_picker.detail", username=test_user_01.username, user_num=9999)
-    )
+    response = client.get(url_for("barrel_picker.detail", username=test_user_01.username, user_num=9999))
     assert response.status_code == 404

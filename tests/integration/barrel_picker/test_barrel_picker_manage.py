@@ -6,7 +6,6 @@ from flask.testing import FlaskClient
 from mywhiskies.extensions import db
 from mywhiskies.models import BarrelPicker, User
 
-
 # --- manage ---
 
 
@@ -67,8 +66,9 @@ def test_add_shows_new_picker_in_response(logged_in_user_01: FlaskClient, test_u
         url_for("barrel_picker.add"),
         data={"name": "Spec's Wines Spirits & Finer Foods"},
     )
-    assert "Spec&#39;s Wines Spirits &amp; Finer Foods" in response.get_data(as_text=True) or \
-           "Spec" in response.get_data(as_text=True)
+    assert "Spec&#39;s Wines Spirits &amp; Finer Foods" in response.get_data(
+        as_text=True
+    ) or "Spec" in response.get_data(as_text=True)
 
 
 # --- edit-form ---
@@ -81,12 +81,8 @@ def test_edit_form_requires_login(client: FlaskClient, test_barrel_picker: Barre
     assert response.status_code == 302
 
 
-def test_edit_form_returns_form(
-    logged_in_user_01: FlaskClient, test_barrel_picker: BarrelPicker
-) -> None:
-    response = logged_in_user_01.get(
-        url_for("barrel_picker.edit_form", user_num=test_barrel_picker.user_num)
-    )
+def test_edit_form_returns_form(logged_in_user_01: FlaskClient, test_barrel_picker: BarrelPicker) -> None:
+    response = logged_in_user_01.get(url_for("barrel_picker.edit_form", user_num=test_barrel_picker.user_num))
     assert response.status_code == 200
     assert "Total Beverage Solution" in response.get_data(as_text=True)
 
@@ -101,9 +97,7 @@ def test_modal_edit_requires_login(client: FlaskClient, test_barrel_picker: Barr
     assert response.status_code == 302
 
 
-def test_modal_edit_updates_picker(
-    logged_in_user_01: FlaskClient, test_barrel_picker: BarrelPicker
-) -> None:
+def test_modal_edit_updates_picker(logged_in_user_01: FlaskClient, test_barrel_picker: BarrelPicker) -> None:
     response = logged_in_user_01.post(
         url_for("barrel_picker.modal_edit", user_num=test_barrel_picker.user_num),
         data={"name": "Total Bev UPDATED"},
@@ -113,9 +107,7 @@ def test_modal_edit_updates_picker(
     assert test_barrel_picker.name == "Total Bev UPDATED"
 
 
-def test_modal_edit_wrong_user_404(
-    logged_in_user_02: FlaskClient, test_barrel_picker: BarrelPicker
-) -> None:
+def test_modal_edit_wrong_user_404(logged_in_user_02: FlaskClient, test_barrel_picker: BarrelPicker) -> None:
     response = logged_in_user_02.post(
         url_for("barrel_picker.modal_edit", user_num=test_barrel_picker.user_num),
         data={"name": "Hijacked"},
@@ -133,12 +125,8 @@ def test_delete_confirm_requires_login(client: FlaskClient, test_barrel_picker: 
     assert response.status_code == 302
 
 
-def test_delete_confirm_no_bottles(
-    logged_in_user_01: FlaskClient, test_barrel_picker: BarrelPicker
-) -> None:
-    response = logged_in_user_01.get(
-        url_for("barrel_picker.delete_confirm", user_num=test_barrel_picker.user_num)
-    )
+def test_delete_confirm_no_bottles(logged_in_user_01: FlaskClient, test_barrel_picker: BarrelPicker) -> None:
+    response = logged_in_user_01.get(url_for("barrel_picker.delete_confirm", user_num=test_barrel_picker.user_num))
     body = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "Total Beverage Solution" in body
@@ -151,9 +139,7 @@ def test_delete_confirm_with_bottles_shows_warning(
     test_barrel_picker.bottles = [test_user_01.bottles[0]]
     db.session.commit()
 
-    response = logged_in_user_01.get(
-        url_for("barrel_picker.delete_confirm", user_num=test_barrel_picker.user_num)
-    )
+    response = logged_in_user_01.get(url_for("barrel_picker.delete_confirm", user_num=test_barrel_picker.user_num))
     body = response.get_data(as_text=True)
     assert response.status_code == 200
     assert "associated with" in body
@@ -163,9 +149,7 @@ def test_delete_confirm_with_bottles_shows_warning(
 
 
 def test_delete_requires_login(client: FlaskClient, test_barrel_picker: BarrelPicker) -> None:
-    response = client.get(
-        url_for("barrel_picker.delete", user_num=test_barrel_picker.user_num), follow_redirects=False
-    )
+    response = client.get(url_for("barrel_picker.delete", user_num=test_barrel_picker.user_num), follow_redirects=False)
     assert response.status_code == 302
 
 
@@ -189,19 +173,13 @@ def test_delete_with_bottles_clears_associations(
     db.session.commit()
 
     picker_id = test_barrel_picker.id
-    logged_in_user_01.get(
-        url_for("barrel_picker.delete", user_num=test_barrel_picker.user_num), follow_redirects=True
-    )
+    logged_in_user_01.get(url_for("barrel_picker.delete", user_num=test_barrel_picker.user_num), follow_redirects=True)
     assert db.session.get(BarrelPicker, picker_id) is None
     assert db.session.get(type(bottle), bottle_id) is not None
 
 
-def test_delete_wrong_user_404(
-    logged_in_user_02: FlaskClient, test_barrel_picker: BarrelPicker
-) -> None:
-    response = logged_in_user_02.get(
-        url_for("barrel_picker.delete", user_num=test_barrel_picker.user_num)
-    )
+def test_delete_wrong_user_404(logged_in_user_02: FlaskClient, test_barrel_picker: BarrelPicker) -> None:
+    response = logged_in_user_02.get(url_for("barrel_picker.delete", user_num=test_barrel_picker.user_num))
     assert response.status_code == 404
 
 

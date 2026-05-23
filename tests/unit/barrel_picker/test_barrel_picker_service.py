@@ -55,9 +55,7 @@ def test_delete_barrel_picker_wrong_user(test_user_02: User, test_barrel_picker:
     assert "Permission denied" in message
 
 
-def test_delete_barrel_picker_clears_bottle_associations(
-    test_user_01: User, test_barrel_picker: BarrelPicker
-) -> None:
+def test_delete_barrel_picker_clears_bottle_associations(test_user_01: User, test_barrel_picker: BarrelPicker) -> None:
     bottle = test_user_01.bottles[0]
     test_barrel_picker.bottles = [bottle]
     db.session.commit()
