@@ -125,7 +125,7 @@
               <p>
                 <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i>
                 <strong>{{ picker.name }}</strong> is associated with {{ picker.bottles | length }} bottle{{ 's' if picker.bottles | length != 1 else '' }}.
-                Deleting it will remove those associations, but the bottles won't be affected.
+                Deleting it will remove {{ 'those associations, but the bottles' if picker.bottles | length != 1 else 'that association, but the bottle' }} won't be affected.
               </p>
             {% else %}
               <p>Are you sure you want to delete <strong>{{ picker.name }}</strong>?</p>
