@@ -112,9 +112,15 @@ def barrel_picker_edit(username: str, user_num: int):
     form = BarrelPickerEditForm(obj=picker if request.method != "POST" else None)
 
     if form.validate_on_submit():
-        edit_barrel_picker(form, picker)
-        flash(Markup(f'Barrel picker "<strong>{picker.name}</strong>" has been updated.'), "success")
-        return redirect(url_for("barrel_picker.detail", username=username, user_num=user_num))
+        duplicate = db.session.execute(
+            db.select(BarrelPicker).filter_by(user_id=current_user.id, name=form.name.data.strip())
+        ).scalar_one_or_none()
+        if duplicate and duplicate.id != picker.id:
+            form.name.errors.append("You already have a barrel picker with this name.")
+        else:
+            edit_barrel_picker(form, picker)
+            flash(Markup(f'Barrel picker "<strong>{picker.name}</strong>" has been updated.'), "success")
+            return redirect(url_for("barrel_picker.detail", username=username, user_num=user_num))
 
     possessive = f"{user.username}'" if user.username.endswith("s") else f"{user.username}'s"
     return render_template(
@@ -149,8 +155,14 @@ def barrel_picker_options():
 def barrel_picker_add():
     form = BarrelPickerAddForm()
     if form.validate_on_submit():
-        add_barrel_picker(form, current_user)
-        form = BarrelPickerAddForm(formdata=None)
+        duplicate = db.session.execute(
+            db.select(BarrelPicker).filter_by(user_id=current_user.id, name=form.name.data.strip())
+        ).scalar_one_or_none()
+        if duplicate:
+            form.name.errors.append("You already have a barrel picker with this name.")
+        else:
+            add_barrel_picker(form, current_user)
+            form = BarrelPickerAddForm(formdata=None)
     return render_template(
         "barrel_picker/_manage_body.html",
         barrel_pickers=_sorted_pickers(),
@@ -175,8 +187,14 @@ def barrel_picker_modal_edit(user_num: int):
     picker = db.one_or_404(db.select(BarrelPicker).filter_by(user_id=current_user.id, user_num=user_num))
     form = BarrelPickerEditForm()
     if form.validate_on_submit():
-        edit_barrel_picker(form, picker)
-        return render_template("barrel_picker/_picker_list.html", barrel_pickers=_sorted_pickers())
+        duplicate = db.session.execute(
+            db.select(BarrelPicker).filter_by(user_id=current_user.id, name=form.name.data.strip())
+        ).scalar_one_or_none()
+        if duplicate and duplicate.id != picker.id:
+            form.name.errors.append("You already have a barrel picker with this name.")
+        else:
+            edit_barrel_picker(form, picker)
+            return render_template("barrel_picker/_picker_list.html", barrel_pickers=_sorted_pickers())
 
     response = make_response(render_template("barrel_picker/_edit_row.html", picker=picker, form=form))
     response.headers["HX-Retarget"] = f"#picker-row-{picker.id}"

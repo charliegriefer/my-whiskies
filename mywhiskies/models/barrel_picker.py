@@ -14,7 +14,10 @@ if TYPE_CHECKING:
 
 class BarrelPicker(db.Model):
     __tablename__ = "barrel_picker"
-    __table_args__ = (UniqueConstraint("user_id", "user_num", name="uq_barrel_picker_user_num"),)
+    __table_args__ = (
+        UniqueConstraint("user_id", "user_num", name="uq_barrel_picker_user_num"),
+        UniqueConstraint("user_id", "name", name="uq_barrel_picker_user_name"),
+    )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name: Mapped[str] = mapped_column(String(65))
