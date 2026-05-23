@@ -134,10 +134,8 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <form method="post" action="{{ url_for('barrel_picker.delete', user_num=picker.user_num) }}">
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-              <button type="submit" class="btn btn-danger">Delete Barrel Picker</button>
-            </form>
+            <a class="btn btn-danger"
+               href="{{ url_for('barrel_picker.delete', user_num=picker.user_num) }}">Delete Barrel Picker</a>
           </div>
         </div>
       </div>

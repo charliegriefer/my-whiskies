@@ -191,7 +191,7 @@ def barrel_picker_delete_confirm(user_num: int):
     return render_template("barrel_picker/_delete_confirm_row.html", picker=picker)
 
 
-@barrel_picker_bp.route("/barrel_picker/<paddedint:user_num>/delete", methods=["POST"], endpoint="delete")
+@barrel_picker_bp.route("/barrel_picker/<paddedint:user_num>/delete", endpoint="delete")
 @login_required
 def barrel_picker_delete(user_num: int):
     picker = db.one_or_404(db.select(BarrelPicker).filter_by(user_id=current_user.id, user_num=user_num))
