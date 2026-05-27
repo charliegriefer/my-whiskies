@@ -229,6 +229,46 @@ a:focus, a:hover {
 [data-theme="vault"] .spec-tile { border-left: 3px solid oklch(38% 0.08 var(--type-hue, 0)); }
 [data-theme="vault"] .spec-tile-value { color: oklch(65% 0.10 var(--type-hue, 0)); }
 
+/* Standalone detail cards (Picked By, Rating) */
+.detail-card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #dee2e6);
+  border-radius: var(--badge-radius, 6px);
+  padding: 0.75rem 1rem;
+}
+
+.detail-card-header {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, #6c757d);
+}
+
+.picker-chip {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  background: var(--surface-alt, #f8f9fa);
+  border: 1px solid var(--border, #dee2e6);
+  color: var(--accent, #337ab7);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.picker-chip:hover {
+  background: var(--border, #dee2e6);
+  text-decoration: none;
+}
+
+/* Type-hue left border on detail cards */
+[data-theme="barrel"] .detail-card { border-left: 3px solid oklch(40% 0.10 var(--type-hue, 0)); }
+[data-theme="cellar"] .detail-card { border-left: 3px solid oklch(72% 0.12 var(--type-hue, 0)); }
+[data-theme="vault"]  .detail-card { border-left: 3px solid oklch(38% 0.08 var(--type-hue, 0)); }
+
+/* Rating card: always star-gold regardless of theme */
+[data-theme] .detail-card-rating { border-left-color: #f5c518; }
+
 /* Type ribbon — floats over the top-left of the image panel */
 .bottle-image-panel { position: relative; }
 .bottle-type-ribbon {
@@ -250,6 +290,55 @@ a:focus, a:hover {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--accent, #337ab7);
+}
+
+/* Detail sections — replace the old borderless table */
+.detail-section-hdr {
+  margin-bottom: 0.5rem;
+}
+
+.detail-section-body {
+  border-radius: var(--badge-radius, 6px);
+  overflow: hidden;
+}
+
+/* Cellar theme: wrap each section body in a card */
+[data-theme="cellar"] .detail-section-body {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #dee2e6);
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border, #dee2e6);
+  align-items: start;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+[data-theme="cellar"] .detail-row {
+  padding: 0.7rem 1.1rem;
+}
+
+.detail-row-label {
+  font-size: 0.8rem;
+  color: var(--text-muted, #6c757d);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+[data-theme="cellar"] .detail-row-label {
+  font-weight: 600;
+}
+
+.detail-row-value {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #495057);
+  line-height: 1.5;
 }
 
 /* bottle image panel — wraps carousel (or single image) + controls */
