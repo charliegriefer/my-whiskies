@@ -75,7 +75,7 @@
         <div class="ms-auto d-flex align-items-center gap-2 me-2">
           {{ theme_picker() }}
           {% if request.endpoint != "auth.login" %}
-            <a href="{{ url_for('auth.login') }}" class="btn btn-primary text-white text-nowrap" role="button" id="nav_login">Log In</a>
+            <a href="{{ url_for('auth.login', next=request.path) }}" class="btn btn-primary text-white text-nowrap" role="button" id="nav_login">Log In</a>
           {% endif %}
         </div>
       {% endif %}
