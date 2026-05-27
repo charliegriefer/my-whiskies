@@ -18,8 +18,8 @@ def _parse_body(body: str) -> list[dict]:
 
     for raw in body.splitlines():
         line = raw.strip()
-        if line.startswith("## "):
-            current = {"label": line[3:].strip(), "items": []}
+        if line.startswith("## ") or line.startswith("### "):
+            current = {"label": line.lstrip("#").strip(), "items": []}
             sections.append(current)
         elif line.startswith("- ") or line.startswith("* "):
             if current is None:
@@ -41,7 +41,7 @@ def _parse_body(body: str) -> list[dict]:
                 }
             )
 
-    return sections
+    return [s for s in sections if s["items"]]
 
 
 def get_releases() -> list[dict]:
