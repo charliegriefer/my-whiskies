@@ -1,7 +1,7 @@
 {% extends "_base.html" %}
 
 {% from "macros/value_format.html" import float_with_symbol %}
-{% from "macros/bottle_display.html" import render_stars %}
+{% from "macros/bottle_display.html" import render_stars, type_pill %}
 
 {% set dtfmt = "%d %B %Y" %}
 {% set btn_label = bottle.user.username ~ "'s List" %}
@@ -9,8 +9,22 @@
   {% set btn_label = "My List" %}
 {% endif %}
 
+{% set type_hue_map = {
+  'BOURBON': 30,
+  'TENNESSEE_WHISKEY': 50,
+  'AMERICAN_SINGLE_MALT': 180,
+  'RYE': 130,
+  'SCOTCH': 210,
+  'AMERICAN_WHISKEY': 270,
+  'AMERICAN_LIGHT_WHISKEY': 270,
+  'WORLD_WHISKEY': 15,
+  'CANADIAN_WHISKEY': 15,
+  'IRISH_WHISKEY': 15,
+} %}
+{% set type_hue = type_hue_map.get(bottle.type.name, 0) %}
+
 {% block app_content %}
-  <div x-data="{ deleteUrl: '' }">
+  <div x-data="{ deleteUrl: '' }" style="--type-hue: {{ type_hue }};">
   <main class="flex-shrink-0">
     <div class="container ps-0">
 
@@ -20,6 +34,7 @@
           <h1 class="mb-2">{{ bottle.name }}</h1>
 
           <div class="d-flex flex-wrap gap-2 align-items-center">
+            {{ type_pill(bottle.type) }}
             {% if bottle.is_single_barrel %}
               <span class="type-pill type-pill-barrel">Single Barrel</span>
             {% endif %}
@@ -92,11 +107,11 @@
                 <div class="spec-tile-value">{{ bottle.size | value_or_dash }}{% if bottle.size %}<small>ml</small>{% endif %}</div>
               </div>
               <div class="spec-tile">
-                <div class="spec-tile-label">Yr Barrelled</div>
+                <div class="spec-tile-label">Year Barrelled</div>
                 <div class="spec-tile-value">{{ bottle.year_barrelled | value_or_dash }}</div>
               </div>
               <div class="spec-tile">
-                <div class="spec-tile-label">Yr Bottled</div>
+                <div class="spec-tile-label">Year Bottled</div>
                 <div class="spec-tile-value">{{ bottle.year_bottled | value_or_dash }}</div>
               </div>
               <div class="spec-tile">
@@ -105,116 +120,103 @@
               </div>
             </div>
 
-            <table class="table table-borderless table-sm mb-0 table-tight">
-              <tbody>
-
-                <!-- Details -->
-                <tr>
-                  <td colspan="2" class="pt-0 pb-1">
-                    <span class="detail-section-label">Details</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Name</td>
-                  <td>
+            <!-- Details -->
+            <div class="detail-section mb-4">
+              <div class="detail-section-hdr"><span class="detail-section-label">Details</span></div>
+              <div class="detail-section-body">
+                <div class="detail-row">
+                  <span class="detail-row-label">Name</span>
+                  <span class="detail-row-value">
                     {% if bottle.url %}
                       <a href="{{ bottle.url }}" target="_blank" rel="noopener noreferrer">{{ bottle.name }} <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75em; vertical-align: 0.1em;"></i></a>
                     {% else %}
                       {{ bottle.name }}
                     {% endif %}
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Type</td>
-                  <td>{{ bottle.type.value }}</td>
-                </tr>
-                <tr>
-                  {% if bottle.distilleries|length > 1 %}
-                    {% set label = "Distilleries" %}
-                  {% else %}
-                    {% set label = "Distillery" %}
-                  {% endif %}
-                  <td class="text-muted text-nowrap pe-4 fw-normal">{{ label }}</td>
-                  <td>
+                  </span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-row-label">{{ "Distilleries" if bottle.distilleries|length > 1 else "Distillery" }}</span>
+                  <span class="detail-row-value">
                     {% for distillery in bottle.distilleries %}
                       <a href="{{ url_for('distillery.detail', username=distillery.user.username, user_num=distillery.user_num) }}">{{ distillery.name }}</a>
                       {% if not loop.last %}<br />{% endif %}
                     {% endfor %}
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Bottler</td>
-                  <td>
+                  </span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-row-label">Bottler</span>
+                  <span class="detail-row-value">
                     {% if bottle.bottler_id %}
                       <a href="{{ url_for('bottler.detail', username=bottle.user.username, user_num=bottle.bottler.user_num) }}">{{ bottle.bottler.name }}</a>
                     {% else %}
                       Distillery Bottling
                     {% endif %}
-                  </td>
-                </tr>
-                {% if bottle.barrel_pickers %}
-                  <tr>
-                    <td class="text-muted text-nowrap pe-4 fw-normal">Barrel Picked by</td>
-                    <td>
-                      {% for picker in bottle.barrel_pickers %}
-                        <a href="{{ url_for('barrel_picker.detail', username=picker.user.username, user_num=picker.user_num) }}">{{ picker.name }}</a>
-                        {% if not loop.last %}<br />{% endif %}
-                      {% endfor %}
-                    </td>
-                  </tr>
-                {% endif %}
+                  </span>
+                </div>
+              </div>
+            </div>
 
-                <!-- Notes -->
-                <tr>
-                  <td colspan="2" class="pb-1 pt-3">
-                    <span class="detail-section-label">Notes</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Description</td>
-                  <td>{{ bottle.description | render_rich_text }}</td>
-                </tr>
+            <!-- Notes -->
+            <div class="detail-section mb-4">
+              <div class="detail-section-hdr"><span class="detail-section-label">Notes</span></div>
+              <div class="detail-section-body">
+                <div class="detail-row">
+                  <span class="detail-row-label">Description</span>
+                  <span class="detail-row-value">{{ bottle.description | render_rich_text }}</span>
+                </div>
                 {% if is_my_bottle %}
-                  <tr>
-                    <td class="text-muted text-nowrap pe-4 fw-normal">Personal Note</td>
-                    <td>{{ bottle.personal_note | render_rich_text }}</td>
-                  </tr>
+                  <div class="detail-row">
+                    <span class="detail-row-label">Personal Note</span>
+                    <span class="detail-row-value">{{ bottle.personal_note | render_rich_text }}</span>
+                  </div>
                 {% endif %}
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Rating</td>
-                  <td>
-                    {{ render_stars(bottle.stars) }}
-                    {% if bottle.stars %}
-                      <span class="ms-2 text-muted" style="font-size: 0.8rem;">{{ bottle.stars }} / 5</span>
-                    {% endif %}
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Review</td>
-                  <td>{{ bottle.review | render_rich_text }}</td>
-                </tr>
+                <div class="detail-row">
+                  <span class="detail-row-label">Review</span>
+                  <span class="detail-row-value">{{ bottle.review | render_rich_text }}</span>
+                </div>
+              </div>
+            </div>
 
-                <!-- Timeline -->
-                <tr>
-                  <td colspan="2" class="pb-1 pt-3">
-                    <span class="detail-section-label">Timeline</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Purchased</td>
-                  <td>{{ bottle.date_purchased | date_or_dash }}</td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Opened</td>
-                  <td>{{ bottle.date_opened | date_or_dash }}</td>
-                </tr>
-                <tr>
-                  <td class="text-muted text-nowrap pe-4 fw-normal">Killed</td>
-                  <td>{{ bottle.date_killed | date_or_dash }}</td>
-                </tr>
+            <!-- Timeline -->
+            <div class="detail-section mb-4">
+              <div class="detail-section-hdr"><span class="detail-section-label">Timeline</span></div>
+              <div class="detail-section-body">
+                <div class="detail-row">
+                  <span class="detail-row-label">Purchased</span>
+                  <span class="detail-row-value">{{ bottle.date_purchased | date_or_dash }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-row-label">Opened</span>
+                  <span class="detail-row-value">{{ bottle.date_opened | date_or_dash }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-row-label">Killed</span>
+                  <span class="detail-row-value">{{ bottle.date_killed | date_or_dash }}</span>
+                </div>
+              </div>
+            </div>
 
-              </tbody>
-            </table>
+            {% if bottle.barrel_pickers %}
+            <div class="detail-card mt-3">
+              <div class="detail-card-header">PICKED BY</div>
+              <div class="d-flex flex-wrap gap-2 mt-2">
+                {% for picker in bottle.barrel_pickers %}
+                  <a href="{{ url_for('barrel_picker.detail', username=picker.user.username, user_num=picker.user_num) }}" class="picker-chip">{{ picker.name }}</a>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+
+            <div class="detail-card detail-card-rating mt-3">
+              <div class="d-flex align-items-center gap-3">
+                <span class="detail-card-header">Rating</span>
+                {{ render_stars(bottle.stars) }}
+                {% if bottle.stars %}
+                  <span class="fw-semibold" style="font-size: 0.9rem;">{{ bottle.stars }} / 5</span>
+                {% endif %}
+              </div>
+            </div>
+
           </div>
 
           <!--- right column (images) --->
@@ -222,6 +224,7 @@
           <div class="col-lg-5 d-lg-flex justify-content-lg-end pe-0">
             {% if bottle.image_count > 1 %}
             <div class="bottle-image-panel" style="opacity: 0;">
+              <div class="bottle-type-ribbon">{{ type_pill(bottle.type) }}</div>
               <div id="bottleCarousel" class="carousel slide carousel-fade" data-bs-ride="false" data-bs-interval="false" data-bs-touch="true">
                 <div class="carousel-inner">
                   {% for n in range(1, bottle.image_count + 1) %}
@@ -258,6 +261,7 @@
             </div>
             {% else %}
               <div class="bottle-image-panel" id="singleImagePanel">
+                <div class="bottle-type-ribbon">{{ type_pill(bottle.type) }}</div>
                 <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img" id="singleBottleImg"
                   src="{{img_s3_url}}/{{ bottle.id }}_1.jpg"
                   onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_1.png';" />
