@@ -217,7 +217,8 @@
                     data-type="{{ bottle.type.name }}"
                     data-type-label="{{ bottle.type.value }}"
                     {% if bottle.abv %}data-abv="{{ bottle.abv }}"{% endif %}
-                    {% if bottle.stars %}data-stars="{{ bottle.stars }}"{% endif %}>
+                    {% if bottle.stars %}data-stars="{{ bottle.stars }}"{% endif %}
+                    {% if bottle.barrel_pickers %}data-pickers='{{ bottle.barrel_pickers | map(attribute="name") | list | tojson }}'{% endif %}>
                     {{ bottle.name | replace("\n", " ") }}
                   </a>
                 </td>
@@ -280,7 +281,8 @@
                   data-type="{{ bottle.type.name }}"
                   data-type-label="{{ bottle.type.value }}"
                   {% if bottle.abv %}data-abv="{{ bottle.abv }}"{% endif %}
-                  {% if bottle.stars %}data-stars="{{ bottle.stars }}"{% endif %}>
+                  {% if bottle.stars %}data-stars="{{ bottle.stars }}"{% endif %}
+                  {% if bottle.barrel_pickers %}data-pickers='{{ bottle.barrel_pickers | map(attribute="name") | list | tojson }}'{% endif %}>
                   {{ bottle.name | replace("\n", " ") }}
                 </a>
               </td>

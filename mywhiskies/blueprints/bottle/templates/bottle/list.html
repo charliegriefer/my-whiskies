@@ -285,7 +285,8 @@
       function place(el) {
         const desc = el.dataset.description;
         const imgSrc = el.dataset.imgSrc;
-        if (!desc && !imgSrc) return;
+        const pickers = el.dataset.pickers ? JSON.parse(el.dataset.pickers) : [];
+        if (!desc && !imgSrc && !pickers.length) return;
 
         const typeCls = TYPE_CLS[el.dataset.type] || 'other';
         const typeLabel = el.dataset.typeLabel || '';
@@ -320,12 +321,21 @@
         metaHtml += buildStars(el.dataset.stars);
         meta.innerHTML = metaHtml;
 
+        const pickersEl = pickers.length ? document.createElement('div') : null;
+        if (pickersEl) {
+          pickersEl.className = 'hc-meta';
+          pickersEl.style.marginTop = '0.2rem';
+          pickersEl.innerHTML = '<span style="color:var(--t-text-secondary);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;">Picked by</span> ' +
+            pickers.map(p => `<span>${p}</span>`).join(', ');
+        }
+
         const descEl = document.createElement('div');
         descEl.className = 'hc-desc';
         descEl.innerHTML = desc || '<em style="color:var(--t-text-secondary);">No description available.</em>';
 
         content.appendChild(nameEl);
         content.appendChild(meta);
+        if (pickersEl) content.appendChild(pickersEl);
         content.appendChild(descEl);
 
         const cols = document.createElement('div');
@@ -356,7 +366,7 @@
       }
 
       document.addEventListener('mouseover', function (e) {
-        const el = e.target.closest('[data-description], [data-img-src]');
+        const el = e.target.closest('[data-description], [data-img-src], [data-pickers]');
         if (el === active) return;
         clearTimeout(showTimer);
         clearTimeout(hideTimer);
@@ -371,7 +381,7 @@
       });
 
       document.addEventListener('mouseout', function (e) {
-        const el = e.target.closest('[data-description], [data-img-src]');
+        const el = e.target.closest('[data-description], [data-img-src], [data-pickers]');
         if (el && el === active) {
           if (e.relatedTarget && (el.contains(e.relatedTarget) || card.contains(e.relatedTarget))) return;
           scheduleHide();
