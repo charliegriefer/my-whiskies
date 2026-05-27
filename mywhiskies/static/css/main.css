@@ -219,6 +219,25 @@ a:focus, a:hover {
   color: var(--text-primary, #212529);
 }
 
+/* Type-hue accents on spec tiles — value color + left stripe, per theme */
+[data-theme="barrel"] .spec-tile { border-left: 3px solid oklch(40% 0.10 var(--type-hue, 0)); }
+[data-theme="barrel"] .spec-tile-value { color: oklch(75% 0.12 var(--type-hue, 0)); }
+
+[data-theme="cellar"] .spec-tile { border-left: 3px solid oklch(72% 0.12 var(--type-hue, 0)); }
+[data-theme="cellar"] .spec-tile-value { color: oklch(38% 0.14 var(--type-hue, 0)); }
+
+[data-theme="vault"] .spec-tile { border-left: 3px solid oklch(38% 0.08 var(--type-hue, 0)); }
+[data-theme="vault"] .spec-tile-value { color: oklch(65% 0.10 var(--type-hue, 0)); }
+
+/* Type ribbon — floats over the top-left of the image panel */
+.bottle-image-panel { position: relative; }
+.bottle-type-ribbon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+}
+
 @media (max-width: 575.98px) {
   .spec-tiles {
     grid-template-columns: repeat(2, 1fr);

@@ -1,7 +1,7 @@
 {% extends "_base.html" %}
 
 {% from "macros/value_format.html" import float_with_symbol %}
-{% from "macros/bottle_display.html" import render_stars %}
+{% from "macros/bottle_display.html" import render_stars, type_pill %}
 
 {% set dtfmt = "%d %B %Y" %}
 {% set btn_label = bottle.user.username ~ "'s List" %}
@@ -9,8 +9,22 @@
   {% set btn_label = "My List" %}
 {% endif %}
 
+{% set type_hue_map = {
+  'BOURBON': 30,
+  'TENNESSEE_WHISKEY': 50,
+  'AMERICAN_SINGLE_MALT': 180,
+  'RYE': 130,
+  'SCOTCH': 210,
+  'AMERICAN_WHISKEY': 270,
+  'AMERICAN_LIGHT_WHISKEY': 270,
+  'WORLD_WHISKEY': 15,
+  'CANADIAN_WHISKEY': 15,
+  'IRISH_WHISKEY': 15,
+} %}
+{% set type_hue = type_hue_map.get(bottle.type.name, 0) %}
+
 {% block app_content %}
-  <div x-data="{ deleteUrl: '' }">
+  <div x-data="{ deleteUrl: '' }" style="--type-hue: {{ type_hue }};">
   <main class="flex-shrink-0">
     <div class="container ps-0">
 
@@ -20,6 +34,7 @@
           <h1 class="mb-2">{{ bottle.name }}</h1>
 
           <div class="d-flex flex-wrap gap-2 align-items-center">
+            {{ type_pill(bottle.type) }}
             {% if bottle.is_single_barrel %}
               <span class="type-pill type-pill-barrel">Single Barrel</span>
             {% endif %}
@@ -222,6 +237,7 @@
           <div class="col-lg-5 d-lg-flex justify-content-lg-end pe-0">
             {% if bottle.image_count > 1 %}
             <div class="bottle-image-panel" style="opacity: 0;">
+              <div class="bottle-type-ribbon">{{ type_pill(bottle.type) }}</div>
               <div id="bottleCarousel" class="carousel slide carousel-fade" data-bs-ride="false" data-bs-interval="false" data-bs-touch="true">
                 <div class="carousel-inner">
                   {% for n in range(1, bottle.image_count + 1) %}
@@ -258,6 +274,7 @@
             </div>
             {% else %}
               <div class="bottle-image-panel" id="singleImagePanel">
+                <div class="bottle-type-ribbon">{{ type_pill(bottle.type) }}</div>
                 <img alt="{{ bottle.name }}" title="{{ bottle.name }}" class="bottle-img" id="singleBottleImg"
                   src="{{img_s3_url}}/{{ bottle.id }}_1.jpg"
                   onerror="this.onerror=null; this.src='{{ img_s3_url }}/{{ bottle.id }}_1.png';" />
