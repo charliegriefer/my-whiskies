@@ -3,7 +3,7 @@
     <footer class="d-flex flex-wrap justify-content-between align-items-center my-2 text-muted" style="font-size:smaller;">
       <div class="hstack gap-3">
         <div>&copy; {{ datetime.now().strftime("%Y") }} My Whiskies Online &amp; Good Grief! LLC</div>
-        <div class="text-muted" style="opacity: 0.5;">v0.3.5</div>
+        <a href="{{ url_for('core.changelog') }}" class="text-muted text-decoration-none" style="opacity: 0.5;">v{{ config.APP_VERSION }}</a>
       </div>
 
       <ul class="nav justify-content-end flex-nowrap">
