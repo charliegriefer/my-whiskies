@@ -2,29 +2,57 @@
 
 {% block app_content %}
 <main class="flex-shrink-0">
-  <div class="container">
-    <h1 class="mt-4">Changelog</h1>
-    <hr />
+  <div class="cl-container">
+
+    <div class="cl-page-header">
+      <h1 class="cl-title">Changelog</h1>
+      <span class="cl-subtitle">What's shipped, newest first</span>
+    </div>
+    <div class="cl-page-sep"></div>
 
     {% if releases %}
       {% for release in releases %}
-        <div class="mb-5">
-          <div class="d-flex align-items-baseline gap-3 mb-2">
-            <h2 class="mb-0">{{ release.version }}</h2>
-            <span class="text-muted" style="font-size: 0.9rem;">{{ release.published_at }}</span>
-            <a href="{{ release.url }}" target="_blank" rel="noopener noreferrer"
-               class="text-muted" style="font-size: 0.85rem;">
-              <i class="bi bi-github"></i> View on GitHub
+        <article class="cl-release{% if not loop.last %} cl-release-gap{% endif %}">
+
+          <header class="cl-release-header">
+            <div class="cl-release-meta">
+              <h2 class="cl-version">{{ release.version }}</h2>
+              <span class="cl-date">{{ release.published_at }}</span>
+            </div>
+            <a href="{{ release.url }}" target="_blank" rel="noopener noreferrer" class="cl-gh-btn">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.32c-2.22.48-2.69-1.07-2.69-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.81.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.6 7.6 0 0 1 8 3.84c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.74.54 1.48v2.19c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+              </svg>
+              View on GitHub
             </a>
-          </div>
-          {% if release.name and release.name != release.version %}
-            <p class="text-muted fst-italic mb-2">{{ release.name }}</p>
+          </header>
+
+          {% if release.sections %}
+            <div class="cl-sections">
+              {% for section in release.sections %}
+                <section class="cl-section{% if not loop.first %} cl-section-sep{% endif %}">
+                  <h3 class="cl-section-label">{{ section.label }}</h3>
+                  <ul class="cl-items">
+                    {% for item in section['items'] %}
+                      <li class="cl-item">
+                        <span class="cl-dash" aria-hidden="true">—</span>
+                        <span class="cl-item-text">
+                          {{ item.text }}
+                          {% if item.pr %}
+                            <a href="{{ item.pr_url }}" target="_blank" rel="noopener noreferrer" class="cl-pr-chip">#{{ item.pr }}</a>
+                          {% endif %}
+                        </span>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </section>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-muted fst-italic" style="font-size: 0.9rem;">No release notes.</p>
           {% endif %}
-          <div class="changelog-body">
-            {{ release.body_html | safe }}
-          </div>
-        </div>
-        {% if not loop.last %}<hr class="my-4 opacity-25">{% endif %}
+
+        </article>
       {% endfor %}
     {% else %}
       <p class="text-muted">No releases found. Check back soon.</p>
