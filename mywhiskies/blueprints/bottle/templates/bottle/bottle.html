@@ -30,14 +30,14 @@
 
         </div>
 
-        <!-- mobile: kebab dropdown -->
+        <!-- mobile: kebab dropdown (owner only) or plain button (visitor) -->
         <div class="col-auto d-sm-none">
-          <div class="dropdown">
-            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-three-dots-vertical"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              {% if is_my_bottle %}
+          {% if is_my_bottle %}
+            <div class="dropdown">
+              <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-three-dots-vertical"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" href="{{ url_for('bottle.edit', username=bottle.user.username, user_num=bottle.user_num, next=request.url) }}"><i class="bi bi-pencil me-2"></i>Edit</a></li>
                 <li>
                   <a class="dropdown-item text-danger" href="#"
@@ -47,10 +47,12 @@
                   </a>
                 </li>
                 <li><hr class="dropdown-divider"></li>
-              {% endif %}
-              <li><a class="dropdown-item" href="{{ url_for('bottle.list', username=bottle.user.username) }}"><i class="bi bi-list-ul me-2"></i>{{ btn_label }}</a></li>
-            </ul>
-          </div>
+                <li><a class="dropdown-item" href="{{ url_for('bottle.list', username=bottle.user.username) }}"><i class="bi bi-list-ul me-2"></i>{{ btn_label }}</a></li>
+              </ul>
+            </div>
+          {% else %}
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('bottle.list', username=bottle.user.username) }}" role="button"><i class="bi bi-list-ul"></i> {{ btn_label }}</a>
+          {% endif %}
         </div>
 
         <!-- desktop: individual buttons -->
