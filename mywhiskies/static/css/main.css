@@ -27,7 +27,9 @@ a:focus, a:hover {
 .popover-body ul { padding-left: 18px; }
 
 .table-tight td ul,
-.table-tight td ol {
+.table-tight td ol,
+.detail-row-value ul,
+.detail-row-value ol {
   padding-left: 1.1rem;
   margin-top: 0.4rem;
   margin-bottom: 0.4rem;
