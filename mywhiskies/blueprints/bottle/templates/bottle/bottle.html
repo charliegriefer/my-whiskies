@@ -316,6 +316,7 @@
   <script>
     (function () {
       const el = document.getElementById('bottleCarousel');
+      if (!el) return;
       bootstrap.Carousel.getOrCreateInstance(el, { ride: false, interval: false, touch: true });
       const dots = document.querySelectorAll('.carousel-dot');
       el.addEventListener('slide.bs.carousel', e => {
