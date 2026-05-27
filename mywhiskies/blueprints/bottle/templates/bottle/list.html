@@ -208,6 +208,14 @@
       color: var(--t-text-secondary);
       margin-left: -0.4rem;
     }
+    #bottle-hover-card .hc-pickers {
+      font-size: 0.8rem;
+      color: var(--t-text-secondary);
+    }
+    #bottle-hover-card .hc-pickers .hc-picker-label {
+      font-style: italic;
+      margin-right: 0.2rem;
+    }
     #bottle-hover-card .hc-desc {
       font-size: 0.8125rem;
       color: var(--t-text-secondary);
@@ -285,7 +293,7 @@
       function place(el) {
         const desc = el.dataset.description;
         const imgSrc = el.dataset.imgSrc;
-        if (!desc && !imgSrc) return;
+        const pickers = el.dataset.pickers ? JSON.parse(el.dataset.pickers) : [];
 
         const typeCls = TYPE_CLS[el.dataset.type] || 'other';
         const typeLabel = el.dataset.typeLabel || '';
@@ -320,12 +328,20 @@
         metaHtml += buildStars(el.dataset.stars);
         meta.innerHTML = metaHtml;
 
+        const pickersEl = pickers.length ? document.createElement('div') : null;
+        if (pickersEl) {
+          pickersEl.className = 'hc-pickers';
+          pickersEl.innerHTML = '<span class="hc-picker-label">Picked by</span>' +
+            pickers.map(p => `<span>${p}</span>`).join(', ');
+        }
+
         const descEl = document.createElement('div');
         descEl.className = 'hc-desc';
         descEl.innerHTML = desc || '<em style="color:var(--t-text-secondary);">No description available.</em>';
 
         content.appendChild(nameEl);
         content.appendChild(meta);
+        if (pickersEl) content.appendChild(pickersEl);
         content.appendChild(descEl);
 
         const cols = document.createElement('div');
@@ -356,7 +372,7 @@
       }
 
       document.addEventListener('mouseover', function (e) {
-        const el = e.target.closest('[data-description], [data-img-src]');
+        const el = e.target.closest('[data-type]');
         if (el === active) return;
         clearTimeout(showTimer);
         clearTimeout(hideTimer);
@@ -371,7 +387,7 @@
       });
 
       document.addEventListener('mouseout', function (e) {
-        const el = e.target.closest('[data-description], [data-img-src]');
+        const el = e.target.closest('[data-type]');
         if (el && el === active) {
           if (e.relatedTarget && (el.contains(e.relatedTarget) || card.contains(e.relatedTarget))) return;
           scheduleHide();
