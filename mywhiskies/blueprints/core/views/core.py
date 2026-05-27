@@ -2,6 +2,7 @@ from flask import render_template
 from flask_login import current_user
 
 from mywhiskies.blueprints.core import core_bp
+from mywhiskies.services.core.changelog import get_releases
 from mywhiskies.services.core.core import get_index_counts
 
 
@@ -38,3 +39,12 @@ def privacy():
 @core_bp.route("/cookies")
 def cookies():
     return render_template("core/tos_cookies.html")
+
+
+@core_bp.route("/changelog")
+def changelog():
+    return render_template(
+        "core/changelog.html",
+        title="My Whiskies Online: Changelog",
+        releases=get_releases(),
+    )

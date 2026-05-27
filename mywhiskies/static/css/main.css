@@ -1170,3 +1170,41 @@ trix-editor {
 .trix-wrapper.is-invalid ~ .invalid-feedback {
   display: block;
 }
+
+
+/* ===================================================================
+   CHANGELOG PAGE
+   =================================================================== */
+
+.changelog-body ul {
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.changelog-body li {
+  margin-bottom: 0.25rem;
+  color: var(--text-primary, #212529);
+}
+
+.changelog-body h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary, #6c757d);
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.changelog-body p {
+  color: var(--text-primary, #212529);
+  margin-bottom: 0.5rem;
+}
+
+.changelog-body code {
+  font-size: 0.85em;
+  padding: 0.1em 0.35em;
+  background: var(--surface-2, #f8f9fa);
+  border: 1px solid var(--border, #dee2e6);
+  border-radius: 3px;
+}
