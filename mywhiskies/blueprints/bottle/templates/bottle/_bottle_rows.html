@@ -343,7 +343,7 @@
           hx-get="{{ list_url }}"
           hx-target="#bottle-results"
           hx-push-url="true"
-          hx-include="#list-controls, #current-state"
+          hx-include="#list-controls, #current-state, .type-filter"
           hx-vals='{"page": "{{ page - 1 }}"}'>Previous</a>
       </li>
       {% for p in range(1, total_pages + 1) %}
@@ -352,7 +352,7 @@
             hx-get="{{ list_url }}"
             hx-target="#bottle-results"
             hx-push-url="true"
-            hx-include="#list-controls, #current-state"
+            hx-include="#list-controls, #current-state, .type-filter"
             hx-vals='{"page": "{{ p }}"}'>{{ p }}</a>
         </li>
       {% endfor %}
@@ -361,7 +361,7 @@
           hx-get="{{ list_url }}"
           hx-target="#bottle-results"
           hx-push-url="true"
-          hx-include="#list-controls, #current-state"
+          hx-include="#list-controls, #current-state, .type-filter"
           hx-vals='{"page": "{{ page + 1 }}"}'>Next</a>
       </li>
     </ul>
