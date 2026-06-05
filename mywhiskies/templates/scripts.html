@@ -28,6 +28,17 @@
     }, 1500);
   });
 
+  // ABV/Proof display preference
+  document.addEventListener('alpine:init', () => {
+    Alpine.store('abvDisplay', {
+      pref: document.cookie.split('; ').find(r => r.startsWith('abv_display='))?.split('=')[1] || 'abv',
+      set(val) {
+        this.pref = val;
+        document.cookie = 'abv_display=' + val + '; path=/; max-age=31536000';
+      }
+    });
+  });
+
   // Persist per-page preference in a cookie
   document.addEventListener("change", e => {
     if (e.target.matches("select[name='per_page']"))
