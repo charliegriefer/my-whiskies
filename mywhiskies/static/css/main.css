@@ -1138,8 +1138,8 @@ hr {
 /* Toolbar container */
 trix-toolbar {
   display: block;
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
+  background: var(--surface-2, #f8f9fa);
+  border: 1px solid var(--border, #dee2e6);
   border-bottom: none;
   border-radius: 0.375rem 0.375rem 0 0;
   padding: 4px 6px;
@@ -1173,7 +1173,7 @@ trix-toolbar .trix-button {
   background: transparent;
   border: 1px solid transparent;
   border-radius: 0.25rem;
-  color: #495057;
+  color: var(--text-secondary, #495057);
   padding: 3px 7px;
   font-size: 0.875rem;
   line-height: 1;
@@ -1192,15 +1192,15 @@ trix-toolbar .trix-button::before {
 }
 
 trix-toolbar .trix-button:hover:not(:disabled) {
-  background: #e9ecef;
-  border-color: #dee2e6;
-  color: #212529;
+  background: var(--surface, #fff);
+  border-color: var(--border, #dee2e6);
+  color: var(--text-primary, #212529);
 }
 
 trix-toolbar .trix-button.trix-active {
-  background: #dee2e6;
-  border-color: #adb5bd;
-  color: #212529;
+  background: var(--border, #dee2e6);
+  border-color: var(--border, #dee2e6);
+  color: var(--text-primary, #212529);
 }
 
 trix-toolbar .trix-button:disabled {
@@ -1211,8 +1211,8 @@ trix-toolbar .trix-button:disabled {
 /* Link dialog */
 trix-toolbar .trix-dialog {
   padding: 6px 8px;
-  background: #fff;
-  border: 1px solid #dee2e6;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #dee2e6);
   border-top: none;
   border-radius: 0 0 0.375rem 0.375rem;
 }
@@ -1227,15 +1227,18 @@ trix-toolbar .trix-input--dialog {
   flex: 1;
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
-  border: 1px solid #dee2e6;
+  background: var(--input-bg, #fff);
+  color: var(--text-primary, #212529);
+  border: 1px solid var(--border, #dee2e6);
   border-radius: 0.25rem;
 }
 
 trix-toolbar .trix-button--dialog {
   padding: 0.25rem 0.6rem;
   font-size: 0.8rem;
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
+  background: var(--surface-2, #f8f9fa);
+  color: var(--text-secondary, #495057);
+  border: 1px solid var(--border, #dee2e6);
   border-radius: 0.25rem;
   cursor: pointer;
   text-indent: 0;
@@ -1245,32 +1248,31 @@ trix-toolbar .trix-button--dialog {
 }
 
 trix-toolbar .trix-button--dialog:hover {
-  background: #e9ecef;
+  background: var(--surface, #fff);
 }
 
 /* Editor content area */
 trix-editor {
   display: block;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border, #dee2e6);
   border-radius: 0 0 0.375rem 0.375rem;
   padding: 0.375rem 0.75rem;
   font-size: 0.875rem;
   font-family: inherit;
-  color: #212529;
-  background: #fff;
+  color: var(--text-primary, #212529);
+  background: var(--input-bg, #fff);
   min-height: 120px;
   overflow-y: auto;
 }
 
 /* Focus ring on the whole unit */
 .trix-wrapper:focus-within trix-toolbar {
-  border-color: #86b7fe;
+  border-color: var(--accent, #0d6efd);
 }
 
 .trix-wrapper:focus-within trix-editor {
-  border-color: #86b7fe;
+  border-color: var(--accent, #0d6efd);
   outline: 0;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
 .trix-wrapper.is-invalid trix-editor {
