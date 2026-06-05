@@ -109,6 +109,43 @@
             </form>
           </div>
 
+          <!-- Passkeys card -->
+          <div class="card p-4 mb-4" id="passkeyCard">
+            <p class="detail-section-label mb-1">Passkeys</p>
+            <p class="text-muted mb-3" style="font-size: 0.85rem;">Sign in with your fingerprint, face, or device PIN instead of a password.</p>
+
+            {% if current_user.passkeys %}
+              <ul class="list-unstyled mb-3">
+                {% for pk in current_user.passkeys %}
+                  <li class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                    <div class="d-flex align-items-center gap-2">
+                      <i class="bi bi-fingerprint text-muted"></i>
+                      <span style="font-size: 0.9rem;">{{ pk.nickname or "Passkey" }}</span>
+                      <span class="text-muted" style="font-size: 0.75rem;">Added {{ pk.created_at.strftime("%b %d, %Y") }}</span>
+                    </div>
+                    <form method="post" action="{{ url_for('user.delete_passkey', passkey_id=pk.id) }}">
+                      {{ delete_account_form.hidden_tag() }}
+                      <button type="submit" class="btn btn-link btn-sm text-danger p-0">Remove</button>
+                    </form>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+
+            <div id="passkeyRegisterSection">
+              <div class="d-flex gap-2 align-items-center flex-wrap">
+                <input type="text" id="passkeyNickname" class="form-control form-control-sm" style="max-width: 200px;" placeholder='e.g. "MacBook" (optional)'>
+                <button type="button" id="addPasskeyBtn" class="btn btn-outline-secondary btn-sm">
+                  <i class="bi bi-plus-lg me-1"></i>Add a passkey
+                </button>
+              </div>
+              <div id="passkeyRegisterError" class="text-danger d-none mt-2" style="font-size: 0.85rem;"></div>
+              <div id="passkeyNotSupported" class="text-muted d-none mt-2" style="font-size: 0.85rem;">
+                Your browser does not support passkeys.
+              </div>
+            </div>
+          </div>
+
           <!-- Danger Zone -->
           <div class="card p-4 mb-4" style="border-color: oklch(52% 0.18 15);">
             <p class="detail-section-label mb-3" style="color: oklch(52% 0.18 15);">Danger Zone</p>
@@ -247,4 +284,15 @@
     </div>
   </div>
 
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/passkey_register.js') }}"></script>
+<script>
+  if (!window.PublicKeyCredential) {
+    document.getElementById('passkeyRegisterSection').classList.add('d-none');
+    document.getElementById('passkeyNotSupported').classList.remove('d-none');
+  }
+</script>
 {% endblock %}

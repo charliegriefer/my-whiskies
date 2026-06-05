@@ -25,12 +25,27 @@
               {{ form_utils.render_field(form.username) }}
               {{ form_utils.render_field(form.password) }}
               {{ form_utils.render_checkbox(form.remember_me) }}
-              
+
               <div class="mb-3 pt-3">
                 {{ form.submit(class="btn btn-primary") }}
                 {{ buttons.cancel_button(current_user, request) }}
               </div>
             </form>
+
+            <div id="passkeySection" class="d-none mt-2">
+              <div class="d-flex align-items-center gap-3 my-3">
+                <hr class="flex-grow-1 m-0">
+                <span class="text-muted" style="font-size: 0.8rem; white-space: nowrap;">or</span>
+                <hr class="flex-grow-1 m-0">
+              </div>
+              <button type="button" id="passkeyLoginBtn" class="btn btn-outline-secondary w-100">
+                <i class="bi bi-fingerprint me-2"></i>Sign in with a passkey
+              </button>
+              <div id="passkeyError" class="text-danger d-none mt-2" style="font-size: 0.85rem;"></div>
+              <p class="text-muted mt-2 mb-0" style="font-size: 0.8rem;">
+                No passkey yet? Log in with your password and set one up in <strong>Account Settings</strong>.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -44,4 +59,14 @@
       </div>
     </div>
   </main>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/passkey_auth.js') }}"></script>
+<script>
+  if (window.PublicKeyCredential) {
+    document.getElementById('passkeySection').classList.remove('d-none');
+  }
+</script>
 {% endblock %}

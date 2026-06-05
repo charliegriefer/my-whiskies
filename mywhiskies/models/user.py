@@ -16,6 +16,19 @@ if TYPE_CHECKING:
     from mywhiskies.models import BarrelPicker, Bottle, Bottler, Distillery
 
 
+class PasskeyCredential(db.Model):
+    __tablename__ = "passkey_credential"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id: Mapped[str] = mapped_column(db.ForeignKey("user.id"), nullable=False)
+    credential_id: Mapped[str] = mapped_column(String(256), unique=True, nullable=False)
+    public_key: Mapped[bytes] = mapped_column(db.LargeBinary, nullable=False)
+    sign_count: Mapped[int] = mapped_column(default=0)
+    nickname: Mapped[Optional[str]] = mapped_column(String(64))
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
+
+    user: Mapped["User"] = relationship("User", back_populates="passkeys")
+
+
 class User(UserMixin, db.Model):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     username: Mapped[str] = mapped_column(String(64), index=True, unique=True)
@@ -36,6 +49,9 @@ class User(UserMixin, db.Model):
     barrel_pickers: Mapped[List["BarrelPicker"]] = relationship("BarrelPicker", back_populates="user")
     bottles: Mapped[List["Bottle"]] = relationship("Bottle", back_populates="user", lazy="select")
     logins: Mapped[List["UserLogin"]] = relationship("UserLogin", back_populates="user", lazy="select")
+    passkeys: Mapped[List["PasskeyCredential"]] = relationship(
+        "PasskeyCredential", back_populates="user", lazy="select"
+    )
 
     def get_mail_confirm_token(self, expires_in: int = 600) -> str:
         payload = {"confirm_reg": self.id, "exp": time() + expires_in}

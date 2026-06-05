@@ -2,8 +2,9 @@ from flask import flash, redirect, render_template, request, send_file, url_for
 from flask_login import current_user, login_required, logout_user
 
 from mywhiskies.blueprints.user import user_bp
+from mywhiskies.extensions import db
 from mywhiskies.forms.user import ChangeEmailForm, ChangePasswordForm, DeleteAccountForm, PrivacyForm
-from mywhiskies.models import User
+from mywhiskies.models import PasskeyCredential, User
 from mywhiskies.services.auth.email import send_email_change_confirmation
 from mywhiskies.services.user.user import (
     apply_email_change,
@@ -109,6 +110,16 @@ def delete_account():
     for field_errors in form.errors.values():
         for error in field_errors:
             flash(error, "danger")
+    return redirect(url_for("user.account"))
+
+
+@user_bp.route("/account/passkey/<passkey_id>/delete", methods=["POST"])
+@login_required
+def delete_passkey(passkey_id: str):
+    passkey = PasskeyCredential.query.filter_by(id=passkey_id, user_id=current_user.id).first_or_404()
+    db.session.delete(passkey)
+    db.session.commit()
+    flash("Passkey removed.", "success")
     return redirect(url_for("user.account"))
 
 
