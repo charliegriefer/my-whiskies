@@ -1,15 +1,22 @@
 {% extends "_base.html" %}
 
 {% block app_content %}
-  <main class="flex-shrink-0">
-    <div class="container mt-5 mb-5">
-      <h1>404!</h1>
-      <hr />
+<main class="flex-shrink-0">
+  <div class="cl-container">
 
-        <p>Sorry, but we couldn't find what you were looking for. We don't know why. Sometimes these things happen.</p>
-        <p>If you're so inclined, contact <a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a> with some details about what you were looking for, and we'll check into it.</p>
-        <p><a href="{{ url_for('core.main') }}">Home</a></p>
-
+    <div class="cl-page-header">
+      <h1 class="cl-title">Page Not Found</h1>
+      <span class="cl-subtitle">Error 404</span>
     </div>
-  </main>
+    <div class="cl-page-sep"></div>
+
+    <div class="doc-intro">
+      <p>Sorry, but we couldn't find what you were looking for. We don't know why. Sometimes these things happen.</p>
+      <p>If you're so inclined, contact <a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a> with some details about what you were looking for and we'll check into it.</p>
+    </div>
+
+    <a href="{{ url_for('core.main') }}" class="err-home-link">← Back to Home</a>
+
+  </div>
+</main>
 {% endblock %}

@@ -1462,3 +1462,91 @@ trix-editor {
     flex-wrap: wrap;
   }
 }
+
+/* ===================================================================
+   DOCUMENT / LEGAL PAGES (ToS, Privacy, Cookies)
+   =================================================================== */
+
+.doc-intro {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--text-secondary, #495057);
+  margin-bottom: 32px;
+}
+
+.doc-intro p {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--text-secondary, #495057);
+  margin-bottom: 10px;
+}
+
+.doc-intro p:last-child { margin-bottom: 0; }
+
+.doc-body p {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #495057);
+  margin-bottom: 10px;
+}
+
+.doc-body p:last-child { margin-bottom: 0; }
+
+.doc-body ul {
+  padding-left: 0;
+  list-style: none;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.doc-body li {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--text-secondary, #495057);
+  padding-left: 18px;
+  position: relative;
+}
+
+.doc-body li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--text-faint, #c5ccd8);
+}
+
+.doc-body a {
+  color: var(--accent, #337ab7);
+}
+
+.doc-subhead {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #0f1f3d);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 18px 0 6px;
+}
+
+.doc-subhead:first-child { margin-top: 0; }
+
+/* ===================================================================
+   ERROR PAGES
+   =================================================================== */
+
+.err-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 28px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent, #337ab7);
+  text-decoration: none;
+}
+
+.err-home-link:hover {
+  text-decoration: underline;
+  color: var(--accent, #337ab7);
+}

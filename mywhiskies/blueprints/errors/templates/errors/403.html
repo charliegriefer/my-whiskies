@@ -1,15 +1,22 @@
 {% extends "_base.html" %}
 
 {% block app_content %}
-  <main class="flex-shrink-0">
-    <div class="container mt-5 mb-5">
-      <h1>Access Denied!</h1>
-      <hr />
+<main class="flex-shrink-0">
+  <div class="cl-container">
 
-        <p>You do not have permission to access this resource.</p>
-        <p>If you believe that this is incorrect, please contact <a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a> with some details about how you got here, and we'll check into it.</p>
-        <p><a href="{{ url_for('core.main') }}">Home</a></p>
-
+    <div class="cl-page-header">
+      <h1 class="cl-title">Access Denied</h1>
+      <span class="cl-subtitle">Error 403</span>
     </div>
-  </main>
+    <div class="cl-page-sep"></div>
+
+    <div class="doc-intro">
+      <p>You do not have permission to access this resource.</p>
+      <p>If you believe this is incorrect, please contact <a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a> with some details about how you got here and we'll check into it.</p>
+    </div>
+
+    <a href="{{ url_for('core.main') }}" class="err-home-link">← Back to Home</a>
+
+  </div>
+</main>
 {% endblock %}

@@ -1,15 +1,22 @@
 {% extends "_base.html" %}
 
 {% block app_content %}
-  <main class="flex-shrink-0">
-    <div class="container mt-5 mb-5">
-      <h1>Oh Snap!</h1>
-      <hr />
+<main class="flex-shrink-0">
+  <div class="cl-container">
 
-        <p>It looks like you tried to upload a file that exceeds the maximum allowed size ({{ config.MAX_UPLOAD_MB }}MB).</p>
-        <p>Please resize the image(s) in question and give it another go.</p>
-        <p><a href="{{ url_for('bottle.add') }}">Home</a></p>
-
+    <div class="cl-page-header">
+      <h1 class="cl-title">File Too Large</h1>
+      <span class="cl-subtitle">Error 413</span>
     </div>
-  </main>
+    <div class="cl-page-sep"></div>
+
+    <div class="doc-intro">
+      <p>It looks like you tried to upload a file that exceeds the maximum allowed size ({{ config.MAX_UPLOAD_MB }}MB).</p>
+      <p>Please resize the image(s) in question and give it another go.</p>
+    </div>
+
+    <a href="{{ url_for('bottle.add') }}" class="err-home-link">← Add a Bottle</a>
+
+  </div>
+</main>
 {% endblock %}

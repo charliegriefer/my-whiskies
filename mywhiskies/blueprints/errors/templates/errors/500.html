@@ -1,22 +1,30 @@
 {% extends "_base.html" %}
 
 {% block app_content %}
-  <main class="flex-shrink-0">
-    <div class="container mt-5 mb-5">
-      <h1>Oh Snap!</h1>
-      <hr />
-      <div>
-        <p>Sorry, but this page isn't working properly for some reason. We are now aware of the mistake, and are working to fix it.</p>
+<main class="flex-shrink-0">
+  <div class="cl-container">
 
-        <p>In the meantime, here are some things you can try:</p>
-        <ul>
-          <li><i class="fa-solid fa-arrows-rotate"></i> <b>Refresh the page</b>. Sometimes, this helps.</li>
-          <li><i class="fa-regular fa-clock"></i> <b>Try again</b> in a few minutes.</li>
-          <li><i class="fa-regular fa-envelope"></i> <b>Email us</b> at <a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a> and let us know what happened.</li>
-        </ul>
-        <p><a href="{{ url_for('core.main') }}">Home</a></p>
-      </div>
+    <div class="cl-page-header">
+      <h1 class="cl-title">Something Went Wrong</h1>
+      <span class="cl-subtitle">Error 500</span>
+    </div>
+    <div class="cl-page-sep"></div>
+
+    <div class="doc-intro">
+      <p>Sorry, but this page isn't working properly. We're now aware of the problem and working to fix it.</p>
+      <p>In the meantime, here are a few things you can try:</p>
     </div>
 
-  </main>
+    <div class="doc-body">
+      <ul>
+        <li><strong>Refresh the page.</strong> Sometimes, this helps.</li>
+        <li><strong>Try again</strong> in a few minutes.</li>
+        <li><strong>Email us</strong> at <a href="mailto:bartender@my-whiskies.online">bartender@my-whiskies.online</a> and let us know what happened.</li>
+      </ul>
+    </div>
+
+    <a href="{{ url_for('core.main') }}" class="err-home-link">← Back to Home</a>
+
+  </div>
+</main>
 {% endblock %}
