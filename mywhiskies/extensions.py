@@ -19,6 +19,7 @@ def register_extensions(app):
         BottleImage,
         Bottler,
         Distillery,
+        PasskeyCredential,
         User,
         UserLogin,
         bottle_barrel_picker,

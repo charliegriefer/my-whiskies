@@ -57,6 +57,13 @@ class BaseConfig:
     LOG_DIR = os.environ["LOG_DIR"]
 
     # ----------------------------------------------------------------------
+    # WEBAUTHN / PASSKEYS
+    # ----------------------------------------------------------------------
+    WEBAUTHN_RP_NAME = "My Whiskies Online"
+    WEBAUTHN_RP_ID = os.environ.get("WEBAUTHN_RP_ID", "localhost")
+    WEBAUTHN_ORIGIN = os.environ.get("WEBAUTHN_ORIGIN", "http://localhost:5000")
+
+    # ----------------------------------------------------------------------
     # RECAPTCHA
     # ----------------------------------------------------------------------
     RECAPTCHA_PUBLIC_KEY = os.environ["RECAPTCHA_PUBLIC_KEY"]
