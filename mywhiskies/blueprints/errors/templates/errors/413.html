@@ -2,15 +2,13 @@
 
 {% block app_content %}
 <main class="flex-shrink-0">
-  <div class="cl-container">
+  <div class="tp-container">
 
-    <div class="cl-page-header">
-      <h1 class="cl-title">File Too Large</h1>
-      <span class="cl-subtitle">Error 413</span>
-    </div>
-    <div class="cl-page-sep"></div>
+    <h1 class="tp-title">File Too Large</h1>
+    <div class="tp-rule"></div>
+    <p class="tp-updated">Error 413</p>
 
-    <div class="doc-intro">
+    <div class="tp-body">
       <p>It looks like you tried to upload a file that exceeds the maximum allowed size ({{ config.MAX_UPLOAD_MB }}MB).</p>
       <p>Please resize the image(s) in question and give it another go.</p>
     </div>
