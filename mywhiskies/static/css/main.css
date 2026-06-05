@@ -1464,72 +1464,119 @@ trix-editor {
 }
 
 /* ===================================================================
-   DOCUMENT / LEGAL PAGES (ToS, Privacy, Cookies)
+   TEXT PAGES (Privacy, Terms, Cookies) — single-column reading layout
    =================================================================== */
 
-.doc-intro {
-  font-size: 0.9rem;
-  line-height: 1.65;
-  color: var(--text-secondary, #495057);
-  margin-bottom: 32px;
+.tp-container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 32px 80px;
 }
 
-.doc-intro p {
-  font-size: 0.9rem;
-  line-height: 1.65;
-  color: var(--text-secondary, #495057);
-  margin-bottom: 10px;
+.tp-title {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--text-primary, #0f1f3d);
+  margin: 0 0 14px;
+  letter-spacing: -0.02em;
 }
 
-.doc-intro p:last-child { margin-bottom: 0; }
+.tp-rule {
+  height: 2px;
+  background: var(--accent, #1e3a5f);
+  width: 100%;
+  margin-bottom: 14px;
+}
 
-.doc-body p {
-  font-size: 0.875rem;
+.tp-updated {
+  font-size: 13px;
+  color: var(--text-muted, #8896a8);
+  margin: 0 0 32px;
+}
+
+.tp-intro {
+  font-size: 17px;
   line-height: 1.6;
-  color: var(--text-secondary, #495057);
-  margin-bottom: 10px;
+  color: var(--text-secondary, #2d3a50);
+  margin: 0 0 8px;
 }
 
-.doc-body p:last-child { margin-bottom: 0; }
-
-.doc-body ul {
-  padding-left: 0;
-  list-style: none;
-  margin: 8px 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.tp-section {
+  margin-top: 38px;
 }
 
-.doc-body li {
-  font-size: 0.875rem;
-  line-height: 1.55;
-  color: var(--text-secondary, #495057);
-  padding-left: 18px;
-  position: relative;
-}
-
-.doc-body li::before {
-  content: "—";
-  position: absolute;
-  left: 0;
-  color: var(--text-faint, #c5ccd8);
-}
-
-.doc-body a {
-  color: var(--accent, #337ab7);
-}
-
-.doc-subhead {
-  font-size: 0.75rem;
+.tp-heading {
+  font-size: 21px;
   font-weight: 700;
   color: var(--text-primary, #0f1f3d);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin: 18px 0 6px;
+  margin: 0 0 12px;
+  letter-spacing: -0.01em;
 }
 
-.doc-subhead:first-child { margin-top: 0; }
+.tp-subhead {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary, #0f1f3d);
+  margin: 20px 0 8px;
+}
+
+.tp-subhead:first-child { margin-top: 0; }
+
+.tp-body {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-secondary, #2d3a50);
+}
+
+.tp-body p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-secondary, #2d3a50);
+  margin: 0;
+}
+
+.tp-body p + p,
+.tp-body p + ul { margin-top: 10px; }
+
+.tp-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tp-body li {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-secondary, #2d3a50);
+}
+
+.tp-body li::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-muted, #8896a8);
+  margin-top: 9px;
+  flex-shrink: 0;
+}
+
+.tp-body a {
+  color: var(--link, #1e5fa8);
+  text-decoration: none;
+}
+
+.tp-body a:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .tp-container { padding: 32px 20px 60px; }
+  .tp-title { font-size: 30px; }
+}
 
 /* ===================================================================
    ERROR PAGES
