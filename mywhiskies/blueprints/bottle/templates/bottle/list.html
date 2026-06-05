@@ -42,7 +42,7 @@
                   hx-get="{{ list_url }}"
                   hx-target="#bottle-results"
                   hx-push-url="true"
-                  hx-include="#list-controls, #current-state"
+                  hx-include="#list-controls, #current-state, .type-filter"
                   hx-vals='{"page": "1"}'
                   :disabled="!anyChecked"
                   onclick="bootstrap.Dropdown.getInstance(this.closest('.dropdown').querySelector('.dropdown-toggle'))?.hide()">Apply</button>
@@ -76,7 +76,7 @@
             hx-target="#bottle-results"
             hx-push-url="true"
             hx-trigger="input changed delay:300ms, search"
-            hx-include="#list-controls, #current-state"
+            hx-include="#list-controls, #current-state, .type-filter"
             hx-vals='{"page": "1"}'>
         </div>
 
@@ -88,7 +88,7 @@
               hx-target="#bottle-results"
               hx-push-url="true"
               hx-trigger="change"
-              hx-include="#list-controls, #current-state"
+              hx-include="#list-controls, #current-state, .type-filter"
               hx-vals='{"page": "1"}'>
             <label class="form-check-label" for="show_killed">Show Killed Bottles</label>
           </div>
@@ -104,7 +104,7 @@
               hx-get="{{ list_url }}"
               hx-target="#bottle-results"
               hx-push-url="true"
-              hx-include="#list-controls, #current-state"
+              hx-include="#list-controls, #current-state, .type-filter"
               hx-vals='{"per_page": "{{ n }}", "page": "1"}'>{{ label }}</button>
           {% endfor %}
         </div>
