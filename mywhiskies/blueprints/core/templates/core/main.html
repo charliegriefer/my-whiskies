@@ -1,60 +1,119 @@
 {% extends "_base.html" %}
 
 {% block app_content %}
+  {% set type_slugs = {
+    'BOURBON': 'bourbon',
+    'TENNESSEE_WHISKEY': 'tennessee',
+    'RYE': 'rye',
+    'AMERICAN_SINGLE_MALT': 'asm',
+    'SCOTCH': 'scotch',
+    'AMERICAN_WHISKEY': 'american',
+    'AMERICAN_LIGHT_WHISKEY': 'american',
+    'WORLD_WHISKEY': 'world',
+    'OTHER': 'other'
+  } %}
+  {% set max_count = bottle_type_counts[0][1] if bottle_type_counts else 1 %}
+
   <main class="flex-shrink-0">
-    <div class="container ps-0 mt-4">
+    <div class="hm-wrap">
 
-      <div class="container">
-        <div class="row">
-          <div class="col-8 ms-0 ps-0 pe-5">
-            <p>
-              <span class="fw-bold">My Whiskies Online</span> is a venture started by a whiskey nerd who also happens to be a data nerd.
-              After accumulating more bottles than he could readily keep track of, it became evident that the
-              solution was a database.
-            </p>
-            <p>So the database was created. And then a web front-end. And things were good.</p>
-            <p>But this only ran locally on a laptop, and could only be used by one person (me).</p>
-            <p class="fst-italic">
-              The whiskey community is all about sharing.
-            </p>
-            <p>
-              With that in mind, an effort was underway to build an application that could be used by anybody online.
-            </p>
-            <p>This is that application.</p>
+      <!-- Hero -->
+      <section class="hm-hero">
+        <div>
+          <p class="hm-eyebrow">For everyone who loves whiskey</p>
+          <h1 class="hm-headline">Your whiskey collection, finally organized.</h1>
+          <p class="hm-lede">Catalog every bottle, distillery, and bottler. Track what you've opened, what you've killed, and what's still waiting on the shelf — all in one place, beautifully.</p>
+          {% if not current_user.is_authenticated %}
+            <div class="hm-cta">
+              <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Log In</a>
+              <span class="hm-cta-note">Registrations are currently closed as we near our first public release. Check back soon!</span>
+            </div>
+          {% endif %}
+        </div>
+        <div class="hm-hero-visual">
+          <div class="hm-hero-glow"></div>
+          <img src="{{ url_for('static', filename='glen.svg') }}" alt="Glencairn glass" class="hm-hero-img">
+        </div>
+      </section>
 
-            <span class="fw-bold">My Whiskies Online</span> is made with:
-            <ul class="mt-2">
-              <li><a href="https://www.python.org" target="_blank" rel="noopener noreferrer">Python <i class="bi bi-box-arrow-up-right"></i></a></li>
-              <li><a href="https://flask.palletsprojects.com/en/2.2.x/" target="_blank" rel="noopener noreferrer">Flask <i class="bi bi-box-arrow-up-right"></i></a></li>
-              <li><a href="https://www.mysql.com" target="_blank" rel="noopener noreferrer">MySQL <i class="bi bi-box-arrow-up-right"></i></a></li>
-              <li><a href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">Amazon Web Services <i class="bi bi-box-arrow-up-right"></i></a></li>
-              <li><a href="https://getbootstrap.com" target="_blank" rel="noopener noreferrer">Bootstrap <i class="bi bi-box-arrow-up-right"></i></a></li>
-              <li><i class="bi bi-heart text-danger"></i></li>
-            </ul>
-
-          </div>
-          <div class="col" style="border-left:1px solid gray;">
-            <p class="fw-bold">Data Nerd Stats: <i class="bi bi-bar-chart-line"></i></p>
-            <ul>
-              <li>Number of Users: <span class="text-danger fw-bold">{{ user_count }}</span></li>
-              <li>Distilleries Tracked: <span class="text-danger fw-bold">{{ distillery_count }}</span></li>
-              <li>Photos Uploaded: <span class="text-danger fw-bold">{{ pic_count }}</span></li>
-              <li>Bottles Tracked: <span class="text-danger fw-bold">{{ bottle_count }}</span>
-                <ul>
-                  {% for your_mom in bottle_type_counts %}
-                    <li>{{ your_mom[0].value }}: <span class="text-danger fw-bold">{{ your_mom[1] }}</span></li>
-                  {% endfor %}
-                </ul>
-              </li>
-            </ul>
-            {% if not current_user.is_authenticated %}
-            <p class="pt-3 ms-2 text-muted" style="font-size: 0.9rem;">
-              Registrations are currently closed as we work towards our first public release. Please check back soon!
-            </p>
-            {% endif %}
-          </div>
+      <!-- Stats band -->
+      <div class="stats-band">
+        <div class="stats-band-stat">
+          <div class="sbs-n">{{ user_count }}</div>
+          <div class="sbs-l">Members</div>
+        </div>
+        <div class="stats-band-div"></div>
+        <div class="stats-band-stat">
+          <div class="sbs-n">{{ bottle_count }}</div>
+          <div class="sbs-l">Bottles Tracked</div>
+        </div>
+        <div class="stats-band-div"></div>
+        <div class="stats-band-stat">
+          <div class="sbs-n">{{ distillery_count }}</div>
+          <div class="sbs-l">Distilleries</div>
+        </div>
+        <div class="stats-band-div"></div>
+        <div class="stats-band-stat">
+          <div class="sbs-n">{{ pic_count }}</div>
+          <div class="sbs-l">Photos</div>
         </div>
       </div>
+      <p class="hm-band-cap">Data Nerd Stats — updated live as the community grows</p>
+
+      <!-- The Story -->
+      <section>
+        <p class="hm-sec-label">The Story</p>
+        <h2 class="hm-sec-h2">It started with too many bottles.</h2>
+        <div class="hm-story">
+          <div>
+            <p>My Whiskies Online is a venture started by a whiskey nerd who also happens to be a data nerd. After accumulating more bottles than he could readily keep track of, it became evident that the solution was a database.</p>
+            <p>So the database was created. And then a web front-end. And things were good — but it only ran locally on a laptop, and could only be used by one person.</p>
+          </div>
+          <div>
+            <p class="hm-kicker">The whiskey community is all about sharing.</p>
+            <p>With that in mind, an effort was underway to build an application that anybody could use online.</p>
+            <p>This is that application.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="hm-divider"></div>
+
+      <!-- What everyone's pouring -->
+      <section>
+        <p class="hm-sec-label">Across the Community</p>
+        <h2 class="hm-sec-h2">What everyone's pouring.</h2>
+        <div class="hm-pour-grid">
+          {% for bt in bottle_type_counts %}
+            {% set slug = type_slugs.get(bt[0].name, 'other') %}
+            {% set pct = ((bt[1] / max_count) * 100) | int %}
+            <div class="hm-pour">
+              <div class="hm-pour-name">
+                <span class="hm-pour-dot hm-type-{{ slug }}"></span>
+                {{ bt[0].value }}
+              </div>
+              <div class="hm-pour-track">
+                <div class="hm-pour-fill hm-type-{{ slug }}" style="width: {{ pct }}%;"></div>
+              </div>
+              <div class="hm-pour-count">{{ "{:,}".format(bt[1]) }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <div class="hm-divider"></div>
+
+      <!-- Made with -->
+      <div class="hm-madewith">
+        <span class="hm-madewith-lbl">Made with</span>
+        <span class="hm-chip">Python</span>
+        <span class="hm-chip">Flask</span>
+        <span class="hm-chip">MySQL</span>
+        <span class="hm-chip">AWS</span>
+        <span class="hm-chip">Bootstrap</span>
+        <span class="hm-chip">and a lot of ♥</span>
+      </div>
+
     </div>
   </main>
 {% endblock %}
