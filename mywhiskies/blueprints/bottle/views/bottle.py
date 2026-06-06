@@ -136,7 +136,7 @@ def bottle(username: str, user_num: int):
             abort(404)
 
     g.bottle_og_image_url = (
-        f"{img_s3_url}/{_bottle.id}_1.jpg" if _bottle.images else url_for("static", filename="logo.png", _external=True)
+        f"{img_s3_url}/{_bottle.id}_1.jpg" if _bottle.images else url_for("static", filename="glen.png", _external=True)
     )
 
     return render_template(
