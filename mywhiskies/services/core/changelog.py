@@ -2,6 +2,7 @@ import re
 import time
 
 import requests
+from markupsafe import Markup, escape
 
 _cache: dict = {"data": None, "fetched_at": 0.0}
 _CACHE_TTL = 86400  # 24 hours — resets on server restart (i.e. every deploy)
@@ -33,6 +34,7 @@ def _parse_body(body: str) -> list[dict]:
                     pr = m.group(1)
                     text = text[: m.start()].strip()
                     break
+            text = Markup(re.sub(r"\*\*(.+?)\*\*", lambda mo: f"<strong>{escape(mo.group(1))}</strong>", escape(text)))
             current["items"].append(
                 {
                     "text": text,
