@@ -76,7 +76,23 @@ def list_bottles_by_user(
     active_types = {b.type.name for b in bottles}
     has_killed = any(b.date_killed for b in bottles)
 
+    killed_matches = 0
     if not show_killed:
+        killed = [b for b in bottles if b.date_killed]
+        if types:
+            killed = [b for b in killed if b.type.name in types]
+        if q:
+            q_lower = q.lower()
+            killed = [
+                b
+                for b in killed
+                if q_lower in b.name.lower()
+                or (b.description and q_lower in b.description.lower())
+                or (b.bottler and q_lower in b.bottler.name.lower())
+                or any(q_lower in d.name.lower() for d in b.distilleries)
+                or any(q_lower in p.name.lower() for p in b.barrel_pickers)
+            ]
+        killed_matches = len(killed)
         bottles = [b for b in bottles if not b.date_killed]
 
     if types:
@@ -118,6 +134,7 @@ def list_bottles_by_user(
         "total_pages": total_pages,
         "has_killed": has_killed,
         "active_types": active_types,
+        "killed_matches": killed_matches,
     }
 
 
@@ -139,7 +156,23 @@ def list_bottles_for_entity(
 
     has_killed = any(b.date_killed for b in bottles)
 
+    killed_matches = 0
     if not show_killed:
+        killed = [b for b in bottles if b.date_killed]
+        if types:
+            killed = [b for b in killed if b.type.name in types]
+        if q:
+            q_lower = q.lower()
+            killed = [
+                b
+                for b in killed
+                if q_lower in b.name.lower()
+                or (b.description and q_lower in b.description.lower())
+                or (b.bottler and q_lower in b.bottler.name.lower())
+                or any(q_lower in d.name.lower() for d in b.distilleries)
+                or any(q_lower in p.name.lower() for p in b.barrel_pickers)
+            ]
+        killed_matches = len(killed)
         bottles = [b for b in bottles if not b.date_killed]
 
     if types:
@@ -180,6 +213,7 @@ def list_bottles_for_entity(
         "per_page": per_page,
         "total_pages": total_pages,
         "has_killed": has_killed,
+        "killed_matches": killed_matches,
     }
 
 

@@ -3,6 +3,7 @@ from uuid import UUID
 
 from flask import abort, jsonify, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from markupsafe import Markup
 
 from mywhiskies.blueprints.bottler import bottler_bp
 from mywhiskies.extensions import db
@@ -124,11 +125,18 @@ def bottler(username: str, user_num: int):
 
     filters_active = bool(q) or set(types) != set(all_type_names)
     if data["total"] == 0:
-        empty_text = (
-            "No bottles match your filters."
-            if filters_active
-            else f"{user.username} has no bottles from {_bottler.name}. Yet."
-        )
+        if not filters_active:
+            empty_text = f"{user.username} has no bottles from {_bottler.name}. Yet."
+        elif data["killed_matches"] > 0 and not show_killed:
+            n = data["killed_matches"]
+            bottle_word = "bottle" if n == 1 else "bottles"
+            empty_text = Markup(
+                f"No active bottles match your filters — "
+                f"{n} killed {bottle_word} match. "
+                f"Toggle <strong>Show Killed Bottles</strong> to see them."
+            )
+        else:
+            empty_text = "No bottles match your filters."
     else:
         empty_text = ""
 
