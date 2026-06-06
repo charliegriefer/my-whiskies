@@ -18,6 +18,16 @@
   :data-theme="theme">
   {% include "navbar.html" %}
   {% block content %}
+    {% if session.get('impersonating_as') %}
+      <div class="alert alert-warning alert-dismissible fade show mb-0 rounded-0" role="alert">
+        <div class="mx-auto px-3 d-flex align-items-center gap-2" style="max-width: 1000px;">
+          <i class="bi bi-eye-fill"></i>
+          <span>You are viewing as <strong>{{ current_user.username }}</strong>.</span>
+          <a href="{{ url_for('admin.end_impersonation') }}" class="btn btn-sm btn-warning ms-2">End Session</a>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
     <div class="w-100">
       <div class="mx-auto px-3" style="max-width: 1000px;">
         {% include "flash.html" %}

@@ -8,6 +8,9 @@
           class="me-2 navbar-logo-img"
         />
         <span class="navbar-brand-text d-none d-sm-inline">My Whiskies Online</span>
+        {% if request.path.startswith('/admin') %}
+          <span class="badge bg-danger ms-1" style="font-size: 10px; letter-spacing: 0.05em; vertical-align: middle;">ADMIN</span>
+        {% endif %}
       </a>
 
       {% if current_user.is_authenticated %}
@@ -59,6 +62,9 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownUser">
               <li><a class="dropdown-item" href="{{ url_for('user.account') }}"><i class="bi bi-person"></i> My Account</a></li>
+              {% if current_user.username.lower() == config.get('ADMIN_USERNAME', '').lower() %}
+                <li><a class="dropdown-item" href="{{ url_for('admin.users') }}"><i class="bi bi-shield"></i> Admin</a></li>
+              {% endif %}
               <li><a class="dropdown-item dropdown-item-destructive" href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-right"></i> Log Out</a></li>
             </ul>
           </div>

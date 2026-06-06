@@ -41,6 +41,10 @@ def login():
             flash("The username and password combination is not recognized.", "danger")
             return redirect(url_for("auth.login"))
 
+        if not user.is_active:
+            flash("This account has been disabled. Please contact support.", "danger")
+            return redirect(url_for("auth.login"))
+
         if not check_email_confirmation(user):
             return redirect(url_for("auth.login"))
 
