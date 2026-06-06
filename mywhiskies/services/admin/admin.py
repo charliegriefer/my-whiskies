@@ -15,8 +15,31 @@ def get_user_stats() -> dict:
     }
 
 
-def get_all_users() -> list[User]:
-    return db.session.execute(db.select(User).filter_by(is_deleted=False).order_by(User.username)).scalars().all()
+def get_all_users(sort: str = "username", direction: str = "asc") -> list[User]:
+    users = db.session.execute(db.select(User).filter_by(is_deleted=False)).scalars().all()
+
+    reverse = direction == "desc"
+
+    if sort == "bottles":
+        users.sort(key=lambda u: len(u.bottles), reverse=reverse)
+    elif sort == "registered":
+        users.sort(key=lambda u: u.date_registered or datetime.min, reverse=reverse)
+    elif sort == "last_login":
+        users.sort(key=lambda u: u.last_login_at or datetime.min, reverse=reverse)
+    elif sort == "status":
+
+        def status_key(u):
+            if not u.email_confirmed:
+                return 2
+            if not u.is_active:
+                return 1
+            return 0
+
+        users.sort(key=status_key, reverse=reverse)
+    else:
+        users.sort(key=lambda u: u.username.lower(), reverse=reverse)
+
+    return users
 
 
 def create_user(username: str, email: str, password: str, pre_verified: bool) -> User:

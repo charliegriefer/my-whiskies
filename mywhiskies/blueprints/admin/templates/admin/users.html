@@ -54,16 +54,29 @@
     </div>
 
     <!-- Users table -->
+    {% macro sort_header(label, col, extra_class="") %}
+      {% set next_dir = "desc" if (sort == col and direction == "asc") else "asc" %}
+      <a href="{{ url_for('admin.users', sort=col, dir=next_dir) }}" class="text-decoration-none text-body d-flex align-items-center gap-1 {{ extra_class }}">
+        {{ label }}
+        {% if sort == col %}
+          <i class="bi bi-caret-{{ 'up' if direction == 'asc' else 'down' }}-fill" style="font-size: 10px; opacity: 0.6;"></i>
+        {% else %}
+          <i class="bi bi-caret-up-fill" style="font-size: 10px; opacity: 0.2;"></i>
+        {% endif %}
+      </a>
+    {% endmacro %}
+
     <div class="card mb-5">
       <div class="table-responsive">
         <table class="table table-hover mb-0" style="font-size: 14px;">
           <thead>
             <tr style="border-bottom: 2px solid var(--border);">
-              <th class="ps-3">Username</th>
+              <th class="ps-3">{{ sort_header("Username", "username") }}</th>
               <th>Email</th>
-              <th>Registered</th>
-              <th>Last Login</th>
-              <th>Status</th>
+              <th>{{ sort_header("Bottles", "bottles") }}</th>
+              <th>{{ sort_header("Registered", "registered") }}</th>
+              <th>{{ sort_header("Last Login", "last_login") }}</th>
+              <th>{{ sort_header("Status", "status") }}</th>
               <th class="pe-3 text-end">Actions</th>
             </tr>
           </thead>
@@ -90,6 +103,7 @@
                   {% endif %}
                 </td>
                 <td class="align-middle text-muted">{{ user.email }}</td>
+                <td class="align-middle text-muted">{{ user.bottles | length }}</td>
                 <td class="align-middle text-muted">
                   {{ user.date_registered.strftime('%b %Y') if user.date_registered else '—' }}
                 </td>

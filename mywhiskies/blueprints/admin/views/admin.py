@@ -44,14 +44,24 @@ def users():
             flash(Markup(f"User <strong>{user.username}</strong> has been created."), "success")
             return redirect(url_for("admin.users"))
 
+    _valid_sorts = {"username", "bottles", "registered", "last_login", "status"}
+    sort = request.args.get("sort", "username")
+    if sort not in _valid_sorts:
+        sort = "username"
+    direction = request.args.get("dir", "asc")
+    if direction not in {"asc", "desc"}:
+        direction = "asc"
+
     stats = get_user_stats()
-    all_users = get_all_users()
+    all_users = get_all_users(sort=sort, direction=direction)
     return render_template(
         "admin/users.html",
         title="Admin: Users",
         stats=stats,
         users=all_users,
         form=form,
+        sort=sort,
+        direction=direction,
         admin_username=current_app.config.get("ADMIN_USERNAME", "").lower(),
     )
 
