@@ -146,8 +146,7 @@ a:focus, a:hover {
   font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--text-primary, #212529);
-  opacity: 0.5;
+  color: var(--text-muted, #595f65);
   user-select: none;
 }
 
@@ -646,7 +645,7 @@ ul.terms li {
   --border-2: #dde2ea;
   --text-primary: #0f1f3d;
   --text-secondary: #2d3a50;
-  --text-muted: #8896a8;
+  --text-muted: #617283;
   --text-faint: #c5ccd8;
   --accent: #1e3a5f;
   --star-color: #1e3a5f;
