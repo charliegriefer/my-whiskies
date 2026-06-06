@@ -386,13 +386,13 @@ a:focus, a:hover {
   height: 8px;
   border-radius: 50%;
   border: none;
-  background: #ccc;
+  background: var(--border, #ccc);
   padding: 0;
   transition: background-color 0.2s;
   cursor: pointer;
 }
 .carousel-dot.active {
-  background: #6c757d;
+  background: var(--text-muted, #6c757d);
 }
 
 /* page headers */
@@ -443,14 +443,14 @@ ul.terms li {
 
 
 .tooltip-arrow:before {
-    border-top-color: #337ab7 !important;
-    border-bottom-color: #337ab7 !important;
-    border-left-color: #337ab7 !important;
-    border-right-color: #337ab7 !important;
+    border-top-color: var(--accent, #337ab7) !important;
+    border-bottom-color: var(--accent, #337ab7) !important;
+    border-left-color: var(--accent, #337ab7) !important;
+    border-right-color: var(--accent, #337ab7) !important;
 }
 
 .tooltip-inner {
-    background: #337ab7;
+    background: var(--accent, #337ab7);
     padding: 10px;
     opacity: 1.0;
 }
@@ -483,15 +483,15 @@ ul.terms li {
 
 .image-dropzone {
   min-height: 210px;
-  border: 2px dashed #ccc;
+  border: 2px dashed var(--border, #ccc);
   border-radius: 8px;
   padding: 1rem;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .image-dropzone.dragover {
-  border-color: #0d6efd;
-  background-color: rgba(13, 110, 253, 0.05);
+  border-color: var(--accent, #0d6efd);
+  background-color: var(--surface-2, #f8f9fa);
 }
 
 .dropzone-card {
@@ -503,7 +503,7 @@ ul.terms li {
   cursor: grab;
   user-select: none;
   flex-shrink: 0;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border, #ddd);
 }
 
 .dropzone-card:active { cursor: grabbing; }
@@ -548,22 +548,22 @@ ul.terms li {
 .dropzone-add-card {
   width: 150px;
   height: 180px;
-  border: 2px dashed #adb5bd;
+  border: 2px dashed var(--border, #adb5bd);
   border-radius: 6px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #6c757d;
+  color: var(--text-muted, #6c757d);
   transition: border-color 0.15s ease, color 0.15s ease;
   flex-shrink: 0;
   user-select: none;
 }
 
 .dropzone-add-card:hover {
-  border-color: #0d6efd;
-  color: #0d6efd;
+  border-color: var(--accent, #0d6efd);
+  color: var(--accent, #0d6efd);
 }
 
 .sortable-ghost { opacity: 0.35; }
