@@ -216,7 +216,8 @@ def bottler_quick_add():
             db.session.add(bottler)
             db.session.commit()
             response = make_response(render_template("bottler/_quick_add_success.html", name=bottler.name))
-            response.headers["HX-Trigger"] = json.dumps({"closeModal": {"id": "quickAddBottlerModal"}})
+            trigger = {"closeModal": {"id": "quickAddBottlerModal", "newId": str(bottler.id)}}
+            response.headers["HX-Trigger"] = json.dumps(trigger)
             return response
     return render_template("bottler/_quick_add_form.html", form=form)
 

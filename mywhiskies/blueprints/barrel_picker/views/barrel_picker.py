@@ -244,7 +244,8 @@ def barrel_picker_quick_add():
             db.session.add(picker)
             db.session.commit()
             response = make_response(render_template("barrel_picker/_quick_add_success.html", name=picker.name))
-            response.headers["HX-Trigger"] = json.dumps({"closeModal": {"id": "quickAddBarrelPickerModal"}})
+            trigger = {"closeModal": {"id": "quickAddBarrelPickerModal", "newId": str(picker.id)}}
+            response.headers["HX-Trigger"] = json.dumps(trigger)
             return response
     return render_template("barrel_picker/_quick_add_form.html", form=form)
 

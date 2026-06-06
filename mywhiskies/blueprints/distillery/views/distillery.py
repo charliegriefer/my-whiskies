@@ -245,7 +245,8 @@ def distillery_quick_add():
             db.session.add(distillery)
             db.session.commit()
             response = make_response(render_template("distillery/_quick_add_success.html", name=distillery.name))
-            response.headers["HX-Trigger"] = json.dumps({"closeModal": {"id": "quickAddDistilleryModal"}})
+            trigger = {"closeModal": {"id": "quickAddDistilleryModal", "newId": str(distillery.id)}}
+            response.headers["HX-Trigger"] = json.dumps(trigger)
             return response
     return render_template("distillery/_quick_add_form.html", form=form)
 

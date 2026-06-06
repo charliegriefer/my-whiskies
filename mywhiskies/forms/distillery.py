@@ -49,11 +49,13 @@ class DistilleryQuickAddForm(FlaskForm):
     region_1 = StringField(
         "Location 1:",
         validators=[Optional(), Length(max=36)],
+        filters=(lambda x: x or "",),
         render_kw={"placeholder": "e.g. Bardstown"},
     )
     region_2 = StringField(
         "Location 2:",
         validators=[Optional(), Length(max=36)],
+        filters=(lambda x: x or "",),
         render_kw={"placeholder": "e.g. KY"},
     )
     url = URLField(

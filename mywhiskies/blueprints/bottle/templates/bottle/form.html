@@ -176,6 +176,7 @@
     if (!id) return;
     const el = document.getElementById(id);
     if (el) {
+      if (e.detail.newId) el.dataset.newId = e.detail.newId;
       const m = bootstrap.Modal.getInstance(el);
       if (m) m.hide();
     }
@@ -185,6 +186,8 @@
   document.getElementById('quickAddDistilleryModal').addEventListener('hidden.bs.modal', function() {
     const select = document.getElementById('distilleries');
     const selectedIds = new Set(Array.from(select.options).filter(o => o.selected).map(o => o.value));
+    const newId = this.dataset.newId;
+    if (newId) { selectedIds.add(newId); delete this.dataset.newId; }
     fetch('{{ url_for("distillery.options") }}')
       .then(r => r.json())
       .then(items => {
@@ -204,6 +207,8 @@
   document.getElementById('quickAddBottlerModal').addEventListener('hidden.bs.modal', function() {
     const select = document.getElementById('bottler_id');
     const currentVal = select.value;
+    const newId = this.dataset.newId;
+    if (newId) delete this.dataset.newId;
     fetch('{{ url_for("bottler.options") }}')
       .then(r => r.json())
       .then(items => {
@@ -214,7 +219,7 @@
           const opt = document.createElement('option');
           opt.value = b.id;
           opt.textContent = b.name;
-          if (b.id === currentVal) opt.selected = true;
+          if ((newId && b.id === newId) || (!newId && b.id === currentVal)) opt.selected = true;
           select.appendChild(opt);
         });
       });
@@ -224,6 +229,8 @@
   document.getElementById('quickAddBarrelPickerModal').addEventListener('hidden.bs.modal', function() {
     const select = document.getElementById('barrel_pickers');
     const selectedIds = new Set(Array.from(select.options).filter(o => o.selected).map(o => o.value));
+    const newId = this.dataset.newId;
+    if (newId) { selectedIds.add(newId); delete this.dataset.newId; }
     fetch('{{ url_for("barrel_picker.options") }}')
       .then(r => r.json())
       .then(pickers => {
