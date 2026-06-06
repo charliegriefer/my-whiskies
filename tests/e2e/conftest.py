@@ -12,7 +12,7 @@ from config import TestConfig
 from mywhiskies.app import create_app
 from mywhiskies.database import init_db
 from mywhiskies.extensions import db
-from mywhiskies.models import Bottle, Bottler, Distillery, User, UserLogin
+from mywhiskies.models import BarrelPicker, Bottle, Bottler, Distillery, User, UserLogin
 
 E2E_PASSWORD = "E2eTestPass1"
 
@@ -82,6 +82,24 @@ def base_url(_server_url):
     return _server_url
 
 
+# ── Helpers ──────────────────────────────────────────────────────────────────
+
+
+def _delete_user_and_owned_data(user):
+    """Delete a user and all their owned rows, avoiding NOT NULL FK violations."""
+    for bottle in db.session.query(Bottle).filter_by(user_id=user.id).all():
+        bottle.distilleries = []
+        bottle.barrel_pickers = []
+    db.session.flush()
+    db.session.query(Bottle).filter_by(user_id=user.id).delete()
+    db.session.query(Bottler).filter_by(user_id=user.id).delete()
+    db.session.query(Distillery).filter_by(user_id=user.id).delete()
+    db.session.query(BarrelPicker).filter_by(user_id=user.id).delete()
+    db.session.query(UserLogin).filter_by(user_id=user.id).delete()
+    db.session.delete(user)
+    db.session.commit()
+
+
 # ── Test users (created once for the whole session) ──────────────────────────
 
 
@@ -97,9 +115,7 @@ def e2e_user_01(app):
     db.session.add(user)
     db.session.commit()
     yield user
-    db.session.query(UserLogin).filter_by(user_id=user.id).delete()
-    db.session.delete(user)
-    db.session.commit()
+    _delete_user_and_owned_data(user)
 
 
 @pytest.fixture(scope="session")
@@ -114,9 +130,7 @@ def e2e_user_02(app):
     db.session.add(user)
     db.session.commit()
     yield user
-    db.session.query(UserLogin).filter_by(user_id=user.id).delete()
-    db.session.delete(user)
-    db.session.commit()
+    _delete_user_and_owned_data(user)
 
 
 # ── Per-test data fixtures ────────────────────────────────────────────────────
@@ -152,6 +166,123 @@ def bottler_for_user_02(app, e2e_user_02):
     yield bottler
     db.session.delete(bottler)
     db.session.commit()
+
+
+@pytest.fixture(scope="session")
+def distillery_with_abv_bottle(app, e2e_user_01):
+    """A distillery + bottle with known ABV for ABV/Proof toggle regression tests."""
+    distillery = Distillery(
+        name="E2E ABV Test Distillery",
+        region_1="Testville",
+        region_2="TX",
+        user_id=e2e_user_01.id,
+    )
+    db.session.add(distillery)
+    db.session.commit()
+
+    bottle = Bottle(
+        name="E2E ABV Test Bottle",
+        type="BOURBON",
+        abv=65.0,
+        user_id=e2e_user_01.id,
+    )
+    bottle.distilleries = [distillery]
+    db.session.add(bottle)
+    db.session.commit()
+
+    yield distillery
+
+    bottle.distilleries = []
+    db.session.commit()
+    db.session.delete(bottle)
+    db.session.delete(distillery)
+    db.session.commit()
+
+
+@pytest.fixture
+def distillery_for_user_01(app, e2e_user_01):
+    """A distillery owned by user_01 for CRUD tests."""
+    distillery = Distillery(
+        name="E2E User01 Test Distillery",
+        region_1="Testville",
+        region_2="TX",
+        user_id=e2e_user_01.id,
+    )
+    db.session.add(distillery)
+    db.session.commit()
+    yield distillery
+    db.session.expire_all()
+    try:
+        d = db.session.get(Distillery, distillery.id)
+        if d:
+            db.session.delete(d)
+            db.session.commit()
+    except Exception:
+        db.session.rollback()
+
+
+@pytest.fixture
+def bottler_for_user_01(app, e2e_user_01):
+    """A bottler owned by user_01 for CRUD tests."""
+    bottler = Bottler(
+        name="E2E User01 Test Bottler",
+        region_1="Testville",
+        region_2="TX",
+        user_id=e2e_user_01.id,
+    )
+    db.session.add(bottler)
+    db.session.commit()
+    yield bottler
+    db.session.expire_all()
+    try:
+        b = db.session.get(Bottler, bottler.id)
+        if b:
+            db.session.delete(b)
+            db.session.commit()
+    except Exception:
+        db.session.rollback()
+
+
+@pytest.fixture
+def bottle_for_user_01(app, e2e_user_01):
+    """A bottle owned by user_01 for CRUD tests (includes its own distillery)."""
+    distillery = Distillery(
+        name="E2E Bottle Test Distillery",
+        region_1="Testville",
+        region_2="TX",
+        user_id=e2e_user_01.id,
+    )
+    db.session.add(distillery)
+    db.session.commit()
+
+    bottle = Bottle(
+        name="E2E User01 Test Bottle",
+        type="BOURBON",
+        user_id=e2e_user_01.id,
+    )
+    bottle.distilleries = [distillery]
+    db.session.add(bottle)
+    db.session.commit()
+
+    yield bottle, distillery
+
+    db.session.expire_all()
+    try:
+        bt = db.session.get(Bottle, bottle.id)
+        if bt:
+            bt.distilleries = []
+            db.session.commit()
+            db.session.delete(bt)
+            db.session.commit()
+    except Exception:
+        db.session.rollback()
+    try:
+        d = db.session.get(Distillery, distillery.id)
+        if d:
+            db.session.delete(d)
+            db.session.commit()
+    except Exception:
+        db.session.rollback()
 
 
 @pytest.fixture
