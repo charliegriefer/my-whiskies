@@ -1,0 +1,300 @@
+{% extends "_base.html" %}
+
+{% block app_content %}
+<main class="flex-shrink-0">
+  <div class="container ps-0">
+
+    <div class="row mt-4">
+      <div class="col">
+        <p class="page-header-line">
+          <span class="page-header-context">
+            <a href="{{ url_for('admin.users') }}">Admin</a> &rsaquo; Users
+          </span>
+        </p>
+        <h1 class="mb-0">User Admin</h1>
+      </div>
+      <div class="col-auto d-flex align-items-end pb-1">
+        <button
+          class="btn btn-primary btn-sm"
+          data-bs-toggle="modal"
+          data-bs-target="#addUserModal"
+        >
+          <i class="bi bi-person-plus me-1"></i> Add User
+        </button>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- Stats band -->
+    <div class="stats-band mb-4">
+      <div class="stats-band-stat">
+        <i class="bi bi-people" style="color: var(--accent); font-size: 1rem; margin-bottom: 2px;"></i>
+        <div class="sbs-n">{{ stats.total }}</div>
+        <div class="sbs-l">Total Users</div>
+      </div>
+      <div class="stats-band-div"></div>
+      <div class="stats-band-stat">
+        <i class="bi bi-person-check" style="color: var(--accent); font-size: 1rem; margin-bottom: 2px;"></i>
+        <div class="sbs-n">{{ stats.active }}</div>
+        <div class="sbs-l">Active</div>
+      </div>
+      <div class="stats-band-div"></div>
+      <div class="stats-band-stat">
+        <i class="bi bi-person-slash" style="color: var(--accent); font-size: 1rem; margin-bottom: 2px;"></i>
+        <div class="sbs-n">{{ stats.disabled }}</div>
+        <div class="sbs-l">Disabled</div>
+      </div>
+      <div class="stats-band-div"></div>
+      <div class="stats-band-stat">
+        <i class="bi bi-envelope-exclamation" style="color: var(--accent); font-size: 1rem; margin-bottom: 2px;"></i>
+        <div class="sbs-n">{{ stats.unverified }}</div>
+        <div class="sbs-l">Unverified</div>
+      </div>
+    </div>
+
+    <!-- Users table -->
+    <div class="card mb-5">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0" style="font-size: 14px;">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--border);">
+              <th class="ps-3">Username</th>
+              <th>Email</th>
+              <th>Registered</th>
+              <th>Last Login</th>
+              <th>Status</th>
+              <th class="pe-3 text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+              {% set is_self = user.username.lower() == admin_username %}
+              {% if not user.email_confirmed %}
+                {% set status = "Unverified" %}
+                {% set badge_class = "text-bg-warning" %}
+              {% elif not user.is_active %}
+                {% set status = "Disabled" %}
+                {% set badge_class = "text-bg-secondary" %}
+              {% else %}
+                {% set status = "Active" %}
+                {% set badge_class = "text-bg-success" %}
+              {% endif %}
+              <tr>
+                <td class="ps-3 align-middle">
+                  <a href="{{ url_for('bottle.list', username=user.username) }}" class="fw-semibold text-decoration-none">
+                    {{ user.username }}
+                  </a>
+                  {% if is_self %}
+                    <span class="badge text-bg-primary ms-1" style="font-size: 10px;">you</span>
+                  {% endif %}
+                </td>
+                <td class="align-middle text-muted">{{ user.email }}</td>
+                <td class="align-middle text-muted">
+                  {{ user.date_registered.strftime('%b %Y') if user.date_registered else '—' }}
+                </td>
+                <td class="align-middle text-muted">
+                  {% if user.last_login_at %}
+                    {{ user.last_login_at.strftime('%b %-d, %Y') }}
+                  {% else %}
+                    <span class="text-muted fst-italic">Never</span>
+                  {% endif %}
+                </td>
+                <td class="align-middle">
+                  <span class="badge {{ badge_class }}" style="font-size: 11px;">{{ status }}</span>
+                </td>
+                <td class="pe-3 align-middle text-end">
+                  <div class="d-flex gap-1 justify-content-end">
+
+                    <!-- Impersonate -->
+                    <button
+                      class="btn btn-sm btn-outline-secondary"
+                      title="View as {{ user.username }}"
+                      {% if is_self %}disabled{% else %}
+                      data-bs-toggle="modal"
+                      data-bs-target="#impersonateModal{{ user.id }}"
+                      {% endif %}
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+
+                    <!-- Reset password -->
+                    <form method="post" action="{{ url_for('admin.reset_password', user_id=user.id) }}" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                      <button
+                        type="submit"
+                        class="btn btn-sm btn-outline-secondary"
+                        title="Send password reset email"
+                        {% if is_self %}disabled{% endif %}
+                      >
+                        <i class="bi bi-send"></i>
+                      </button>
+                    </form>
+
+                    <!-- Toggle active -->
+                    <form method="post" action="{{ url_for('admin.toggle_active', user_id=user.id) }}" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                      <button
+                        type="submit"
+                        class="btn btn-sm btn-outline-secondary"
+                        title="{{ 'Disable' if user.is_active else 'Enable' }} {{ user.username }}"
+                        {% if is_self %}disabled{% endif %}
+                      >
+                        <i class="bi bi-toggle-{{ 'on text-success' if user.is_active else 'off text-muted' }}"></i>
+                      </button>
+                    </form>
+
+                    <!-- Delete -->
+                    <button
+                      class="btn btn-sm btn-outline-danger"
+                      title="Delete {{ user.username }}"
+                      {% if is_self %}disabled{% else %}
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteModal{{ user.id }}"
+                      {% endif %}
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="{{ url_for('admin.users') }}" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="modal-header">
+          <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="mb-3">
+            {{ form.username.label(class="form-label") }}
+            {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="username") }}
+            {% for error in form.username.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="user@example.com") }}
+            {% for error in form.email.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Temporary password") }}
+            {% for error in form.password.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="form-check mb-2">
+            {{ form.pre_verified(class="form-check-input") }}
+            {{ form.pre_verified.label(class="form-check-label") }}
+            <div class="form-text">If checked, the user can log in immediately without confirming their email.</div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          {{ form.submit(class="btn btn-primary") }}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Per-user modals -->
+{% for user in users %}
+  {% set is_self = user.username == admin_username %}
+  {% if not is_self %}
+
+    <!-- Impersonate Modal -->
+    <div class="modal fade" id="impersonateModal{{ user.id }}" tabindex="-1" aria-labelledby="impersonateModalLabel{{ user.id }}" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <form method="post" action="{{ url_for('admin.impersonate', user_id=user.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <div class="modal-header">
+              <h5 class="modal-title" id="impersonateModalLabel{{ user.id }}">View as {{ user.username }}?</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p class="mb-0">You'll be logged in as <strong>{{ user.username }}</strong> and can browse their account. Use the banner at the top to end the session.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary btn-sm">
+                <i class="bi bi-eye me-1"></i> View as {{ user.username }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal{{ user.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ user.id }}" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="post" action="{{ url_for('admin.delete_user', user_id=user.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <div class="modal-header">
+              <h5 class="modal-title text-danger" id="deleteModalLabel{{ user.id }}">Delete {{ user.username }}?</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>This will permanently delete <strong>{{ user.username }}</strong>'s account, all their bottles, images, distilleries, bottlers, and barrel pickers. <strong>This cannot be undone.</strong></p>
+              <div class="mb-0">
+                <label for="confirmUsername{{ user.id }}" class="form-label">
+                  Type <strong>{{ user.username }}</strong> to confirm:
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="confirmUsername{{ user.id }}"
+                  name="confirm_username"
+                  autocomplete="off"
+                  placeholder="{{ user.username }}"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-danger btn-sm">
+                <i class="bi bi-trash me-1"></i> Delete {{ user.username }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  {% endif %}
+{% endfor %}
+
+{% if form.errors %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+      modal.show();
+    });
+  </script>
+{% endif %}
+
+{% endblock %}
