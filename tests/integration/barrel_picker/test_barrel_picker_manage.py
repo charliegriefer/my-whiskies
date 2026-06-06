@@ -46,14 +46,14 @@ def test_options_returns_json(
 
 
 def test_add_requires_login(client: FlaskClient) -> None:
-    response = client.post(url_for("barrel_picker.add"), follow_redirects=False)
+    response = client.post(url_for("barrel_picker.modal_add"), follow_redirects=False)
     assert response.status_code == 302
 
 
 def test_add_creates_picker(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     count_before = len(test_user_01.barrel_pickers)
     response = logged_in_user_01.post(
-        url_for("barrel_picker.add"),
+        url_for("barrel_picker.modal_add"),
         data={"name": "New Test Picker"},
     )
     assert response.status_code == 200
@@ -63,7 +63,7 @@ def test_add_creates_picker(logged_in_user_01: FlaskClient, test_user_01: User) 
 
 def test_add_shows_new_picker_in_response(logged_in_user_01: FlaskClient, test_user_01: User) -> None:
     response = logged_in_user_01.post(
-        url_for("barrel_picker.add"),
+        url_for("barrel_picker.modal_add"),
         data={"name": "Spec's Wines Spirits & Finer Foods"},
     )
     assert "Spec&#39;s Wines Spirits &amp; Finer Foods" in response.get_data(

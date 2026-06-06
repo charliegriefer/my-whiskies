@@ -6,9 +6,15 @@ from mywhiskies.extensions import db
 from mywhiskies.forms.barrel_picker import BarrelPickerAddForm, BarrelPickerEditForm
 from mywhiskies.models import BarrelPicker, User
 
+_SORT_FNS = {
+    "name": lambda p: p.name.lower(),
+    "bottles": lambda p: len(p.bottles),
+}
+
 
 def list_barrel_pickers(
     user: User,
+    is_my_list: bool = False,
     q: str = "",
     sort: str = "name",
     direction: str = "asc",
@@ -19,7 +25,7 @@ def list_barrel_pickers(
     if q:
         pickers = [p for p in pickers if q.lower() in p.name.lower()]
     total = len(pickers)
-    pickers.sort(key=lambda p: p.name.lower(), reverse=(direction == "desc"))
+    pickers.sort(key=_SORT_FNS.get(sort, _SORT_FNS["name"]), reverse=(direction == "desc"))
     total_pages = max(1, (total + per_page - 1) // per_page)
     page = min(page, total_pages)
     offset = (page - 1) * per_page

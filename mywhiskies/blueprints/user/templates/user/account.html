@@ -32,6 +32,12 @@
           <div class="sbs-n">{{ current_user.distilleries|length }}</div>
           <div class="sbs-l">{{ "Distillery" if current_user.distilleries|length == 1 else "Distilleries" }}</div>
         </div>
+        <div class="stats-band-div"></div>
+        <div class="stats-band-stat">
+          <i class="bi bi-search" style="color: var(--accent); font-size: 1rem; margin-bottom: 2px;"></i>
+          <div class="sbs-n">{{ current_user.barrel_pickers|length }}</div>
+          <div class="sbs-l">Barrel Picker{{ "s" if current_user.barrel_pickers|length != 1 }}</div>
+        </div>
       </div>
 
       <!-- Two-column layout -->
@@ -177,7 +183,7 @@
             <p class="detail-section-label mb-3" style="color: oklch(52% 0.18 15);">Danger Zone</p>
             <div class="d-flex align-items-center justify-content-between gap-3">
               <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.5;flex:1;">
-                Permanently delete your account and all bottles, bottlers, distilleries, and images.
+                Permanently delete your account and all bottles, bottlers, distilleries, barrel pickers, and images.
               </div>
               <button type="button" class="btn btn-danger btn-sm flex-shrink-0"
                       data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
@@ -302,7 +308,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p>This will permanently delete your account and all associated data — bottles, distilleries, bottlers, and images. <strong>This cannot be undone.</strong></p>
+            <p>This will permanently delete your account and all associated data — bottles, distilleries, bottlers, barrel pickers, and images. <strong>This cannot be undone.</strong></p>
             <p>Type <strong>{{ current_user.username }}</strong> below to confirm.</p>
             {{ form_utils.render_field(delete_account_form.confirm_username) }}
           </div>

@@ -11,16 +11,71 @@ from mywhiskies.services.barrel_picker.barrel_picker import (
     add_barrel_picker,
     delete_barrel_picker,
     edit_barrel_picker,
+    list_barrel_pickers,
 )
 from mywhiskies.services.bottle.bottle import list_bottles_for_entity
 
-_VALID_SORTS = {"name", "type", "abv", "rating"}
+_VALID_SORTS = {"name", "bottles"}
 _VALID_DIRS = {"asc", "desc"}
 _VALID_PER_PAGE = {25, 50, 100, 10000}
 
 
 def _sorted_pickers():
     return sorted(current_user.barrel_pickers, key=lambda p: p.name)
+
+
+@barrel_picker_bp.route("/<username>/barrel-pickers", methods=["GET"], endpoint="list")
+def barrel_picker_list(username: str):
+    user = db.one_or_404(db.select(User).filter_by(username=username))
+    utils.check_privacy(user)
+    _is_my_list = utils.is_my_list(username, current_user)
+
+    q = request.args.get("q", "").strip()
+    sort = request.args.get("sort", "name")
+    if sort not in _VALID_SORTS:
+        sort = "name"
+    direction = request.args.get("dir", "asc")
+    if direction not in _VALID_DIRS:
+        direction = "asc"
+    page = max(1, request.args.get("page", 1, type=int))
+    per_page = request.args.get("per_page", type=int)
+    if per_page not in _VALID_PER_PAGE:
+        per_page = int(request.cookies.get("per_page", 25))
+    if per_page not in _VALID_PER_PAGE:
+        per_page = 25
+
+    data = list_barrel_pickers(
+        user=user,
+        is_my_list=_is_my_list,
+        q=q,
+        sort=sort,
+        direction=direction,
+        page=page,
+        per_page=per_page,
+    )
+
+    empty_text = "No barrel pickers match your search." if q else f"{user.username} has no barrel pickers. Yet."
+    if data["total"] > 0:
+        empty_text = ""
+
+    possessive = f"{user.username}'" if user.username.endswith("s") else f"{user.username}'s"
+    ctx = dict(
+        title=f"{possessive} Whiskies: Barrel Pickers",
+        heading_01=f"{possessive} Whiskies",
+        heading_02="Barrel Pickers",
+        user=user,
+        is_my_list=_is_my_list,
+        q=q,
+        sort=sort,
+        direction=direction,
+        empty_text=empty_text,
+        **data,
+    )
+
+    if request.headers.get("HX-Request"):
+        return render_template("barrel_picker/_barrel_picker_rows.html", **ctx)
+
+    return render_template("barrel_picker/list.html", **ctx)
 
 
 @barrel_picker_bp.route(
@@ -98,8 +153,33 @@ def barrel_picker_detail(username: str, user_num: int):
     return render_template("barrel_picker/detail.html", **ctx)
 
 
+@barrel_picker_bp.route("/barrel-picker/add", methods=["GET", "POST"], endpoint="add")
+@login_required
+def barrel_picker_add_page():
+    form = BarrelPickerAddForm()
+
+    if form.validate_on_submit():
+        duplicate = db.session.execute(
+            db.select(BarrelPicker).filter_by(user_id=current_user.id, name=form.name.data.strip())
+        ).scalar_one_or_none()
+        if duplicate:
+            form.name.errors.append("You already have a barrel picker with this name.")
+        else:
+            picker = add_barrel_picker(form, current_user)
+            flash(Markup(f'Barrel picker "<strong>{picker.name}</strong>" has been added.'), "success")
+            return redirect(url_for("barrel_picker.list", username=current_user.username))
+
+    possessive = f"{current_user.username}'" if current_user.username.endswith("s") else f"{current_user.username}'s"
+    return render_template(
+        "barrel_picker/form.html",
+        title=f"{possessive} Whiskies: Add Barrel Picker",
+        picker=None,
+        form=form,
+    )
+
+
 @barrel_picker_bp.route(
-    "/<username:username>/barrel_picker/<paddedint:user_num>/edit",
+    "/<username:username>/barrel-picker/<paddedint:user_num>/edit",
     methods=["GET", "POST"],
     endpoint="edit",
 )
@@ -120,7 +200,7 @@ def barrel_picker_edit(username: str, user_num: int):
         else:
             edit_barrel_picker(form, picker)
             flash(Markup(f'Barrel picker "<strong>{picker.name}</strong>" has been updated.'), "success")
-            return redirect(url_for("barrel_picker.detail", username=username, user_num=user_num))
+            return redirect(url_for("barrel_picker.list", username=current_user.username))
 
     possessive = f"{user.username}'" if user.username.endswith("s") else f"{user.username}'s"
     return render_template(
@@ -129,6 +209,21 @@ def barrel_picker_edit(username: str, user_num: int):
         picker=picker,
         form=form,
     )
+
+
+@barrel_picker_bp.route(
+    "/<username:username>/barrel-picker/<paddedint:user_num>/delete",
+    endpoint="delete_page",
+)
+@login_required
+def barrel_picker_delete_page(username: str, user_num: int):
+    user = db.one_or_404(db.select(User).filter_by(username=username))
+    if user.id != current_user.id:
+        abort(403)
+    picker = db.one_or_404(db.select(BarrelPicker).filter_by(user_id=user.id, user_num=user_num))
+    ok, message = delete_barrel_picker(current_user, picker)
+    flash(message, "success" if ok else "danger")
+    return redirect(url_for("barrel_picker.list", username=current_user.username))
 
 
 # --- Modal management endpoints ---
@@ -150,7 +245,7 @@ def barrel_picker_options():
     return jsonify([{"id": p.id, "name": p.name} for p in _sorted_pickers()])
 
 
-@barrel_picker_bp.route("/barrel_picker/add", methods=["POST"], endpoint="add")
+@barrel_picker_bp.route("/barrel_picker/add", methods=["POST"], endpoint="modal_add")
 @login_required
 def barrel_picker_add():
     form = BarrelPickerAddForm()
