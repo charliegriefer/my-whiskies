@@ -16,12 +16,13 @@
 
       <div class="row mt-4">
         <div class="col">
-          <p class="page-header-line">
-            <span class="page-header-context">{{ picker.user.username }}'s Whiskies</span>
-            <span class="page-header-sep">›</span>
-            <span class="page-header-context">Barrel Pickers</span>
-          </p>
-          <h1 class="mb-0">{{ picker.name }}</h1>
+          {% if picker %}
+            <p class="page-header-line"><span class="page-header-context">{{ picker.user.username }}'s Whiskies</span><span class="page-header-sep">›</span><span class="page-header-context">Barrel Pickers</span></p>
+            <h1 class="mb-0">{{ picker.name }}</h1>
+          {% else %}
+            <p class="page-header-line"><span class="page-header-context">{{ current_user.username }}'s Whiskies</span><span class="page-header-sep">›</span><span class="page-header-context">Barrel Pickers</span></p>
+            <h1 class="mb-0">Add Barrel Picker</h1>
+          {% endif %}
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 <p class="fw-medium mb-2">Add New Barrel Picker</p>
-<form hx-post="{{ url_for('barrel_picker.add') }}"
+<form hx-post="{{ url_for('barrel_picker.modal_add') }}"
       hx-target="#manage-modal-body"
       hx-swap="innerHTML">
   {{ add_form.csrf_token }}
