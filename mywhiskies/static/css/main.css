@@ -1656,6 +1656,12 @@ trix-editor {
   flex-shrink: 0;
 }
 
+@media (max-width: 600px) {
+  .stats-band { flex-wrap: wrap; gap: 16px 0; justify-content: center; }
+  .stats-band-div { display: none; }
+  .stats-band-stat { flex: 0 0 50%; }
+}
+
 /* ===================================================================
    ACCOUNT PAGE  (user/account.html)
    =================================================================== */
