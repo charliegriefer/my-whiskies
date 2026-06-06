@@ -28,13 +28,18 @@
       <hr />
 
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-lg-6">
           <form method="post" novalidate x-data @trix-file-accept.window.prevent>
             {{ form.csrf_token }}
-            {{ form_utils.render_field(form.name) }}
-            {{ form_utils.render_trix_field(form.description) }}
-            {{ form_utils.render_field(form.url) }}
-            <div class="pt-3 mb-3">
+
+            <div class="card p-4 mb-4">
+              <p class="detail-section-label mb-3">Details</p>
+              {{ form_utils.render_field(form.name) }}
+              {{ form_utils.render_trix_field(form.description) }}
+              {{ form_utils.render_field(form.url) }}
+            </div>
+
+            <div class="mb-3">
               {{ form.submit(class="btn btn-primary") }}
               {{ buttons.cancel_button(current_user, request) }}
             </div>
