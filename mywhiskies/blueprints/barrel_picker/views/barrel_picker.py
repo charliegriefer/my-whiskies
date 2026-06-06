@@ -129,8 +129,10 @@ def barrel_picker_detail(username: str, user_num: int):
             bottle_word = "bottle" if n == 1 else "bottles"
             empty_text = Markup(
                 f"No active bottles match your filters — "
-                f"{n} killed {bottle_word} match. "
-                f"Toggle <strong>Show Killed Bottles</strong> to see them."
+                f"{n} killed {bottle_word} match. Toggle "
+                f'<a href="#" onclick="var cb=document.getElementById(\'show_killed\');'
+                f"if(cb){{cb.checked=true;htmx.trigger(cb,'change');}}return false;\">"
+                f"Show Killed Bottles</a> to see them."
             )
         else:
             empty_text = "No bottles match your filters."
