@@ -3,11 +3,8 @@
 <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_public_key }}"></script>
 {% endfilter %}
 <script>
-  const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
-  const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
-
-  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-  const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el))
+  document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => new bootstrap.Popover(el));
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
 
   // When the browser restores a page from the back/forward cache, any tooltip that was
   // visible before navigation will still be showing. Dismiss them on pageshow.
