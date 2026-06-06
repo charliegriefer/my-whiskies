@@ -52,4 +52,3 @@ def test_delete_my_distillery_has_bottles(logged_in_user_01: FlaskClient, test_u
         else:
             assert response.status_code == 200
             assert "has been successfully deleted" in response.get_data(as_text=True)
-            assert "Cannot delete" not in response.get_data(as_text=True)

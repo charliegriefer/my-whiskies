@@ -16,7 +16,7 @@
       <tr>
 
         {% if is_my_list %}
-          <th style="width: 56px;">&nbsp;</th>
+          <th style="width: 56px;" scope="col"><span class="visually-hidden">Actions</span></th>
         {% endif %}
 
         {# Name — sortable #}
@@ -71,7 +71,7 @@
         </th>
 
         {# URL — not sortable #}
-        <th style="width: 4%;"></th>
+        <th style="width: 4%;" scope="col"><span class="visually-hidden">Link</span></th>
 
       </tr>
     </thead>
@@ -85,17 +85,20 @@
             {% if is_my_list %}
               <td class="text-nowrap">
                 <div class="d-inline-flex align-items-center gap-1">
-                  <a href="{{ url_for('bottler.edit', username=bottler.user.username, user_num=bottler.user_num) }}">
-                    <i class="bi bi-pencil"></i>
+                  <a href="{{ url_for('bottler.edit', username=bottler.user.username, user_num=bottler.user_num) }}"
+                     aria-label="Edit {{ bottler.name }}">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
                   </a>
                   {% if bottler.bottles | length %}
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#cannotDelete">
-                      <i class="bi bi-trash"></i>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#cannotDelete"
+                       aria-label="Cannot delete {{ bottler.name }}">
+                      <i class="bi bi-trash" aria-hidden="true"></i>
                     </a>
                   {% else %}
                     <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete"
+                      aria-label="Delete {{ bottler.name }}"
                       @click="deleteUrl = '{{ url_for('bottler.delete', username=bottler.user.username, user_num=bottler.user_num) }}'">
-                      <i class="bi bi-trash"></i>
+                      <i class="bi bi-trash" aria-hidden="true"></i>
                     </a>
                   {% endif %}
                 </div>

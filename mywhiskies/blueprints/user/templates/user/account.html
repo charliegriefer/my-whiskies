@@ -63,7 +63,7 @@
                   <span style="font-size:13px;color:var(--text-secondary);">{{ current_user.email }}</span>
                   {% if current_user.email_confirm_date %}
                     <span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px 2px 6px;
-                      border-radius:20px;background:oklch(95% 0.04 155);color:#1f8a5b;font-size:11px;font-weight:600;">
+                      border-radius:20px;background:oklch(95% 0.04 155);color:#166534;font-size:11px;font-weight:600;">
                       <i class="bi bi-check-lg" style="font-size:10px;"></i> Verified
                     </span>
                   {% endif %}
@@ -143,8 +143,9 @@
                   <input class="form-check-input" type="checkbox" name="is_private" id="privacyToggle" role="switch"
                          {% if current_user.is_private %}checked{% endif %}
                          onchange="this.form.submit()">
+                  <label class="visually-hidden" for="privacyToggle">Private account</label>
                 </div>
-                <div>
+                <div aria-hidden="true">
                   <div style="font-size:13.5px;font-weight:600;color:var(--text-primary);">Private account</div>
                   <div style="font-size:12px;color:var(--text-muted);margin-top:1px;">Hides your collection from public view</div>
                 </div>

@@ -8,7 +8,7 @@
              id="{{ field.id }}"
              name="{{ field.name }}"
              value="{{ field.data or '' }}">
-      <trix-editor input="{{ field.id }}"></trix-editor>
+      <trix-editor input="{{ field.id }}" aria-label="{{ field.label.text }}"></trix-editor>
     </div>
     {{ render_errors(field) }}
     {{ render_description(field) }}
@@ -81,7 +81,7 @@
 {% macro render_popover(field, popover_text, extra_class="") %}
   {% if popover_text %}
     {% set popover_title = "<i class='bi bi-question-circle pe-1'></i> " ~ field.label.text %}
-    {% set pop = '<a tabindex="-1" href="" class="pe-1 ' ~ extra_class ~ '" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="right" data-bs-html="true" data-bs-title="' ~ popover_title ~ '" data-bs-content="' ~ popover_text ~'" onclick="return false;"><i class="bi bi-question-circle-fill"></i></a>' %}
+    {% set pop = '<a tabindex="-1" href="" class="pe-1 ' ~ extra_class ~ '" aria-label="Help for ' ~ field.label.text ~ '" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="right" data-bs-html="true" data-bs-title="' ~ popover_title ~ '" data-bs-content="' ~ popover_text ~'" onclick="return false;"><i class="bi bi-question-circle-fill" aria-hidden="true"></i></a>' %}
     {{ pop|safe }}
   {% endif %}
 {% endmacro %}
