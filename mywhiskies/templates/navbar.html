@@ -39,21 +39,13 @@
               </div>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBottlers" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Bottlers
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownManage" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Manage
               </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdownBottlers">
-                <a class="dropdown-item" href="{{ url_for('bottler.add') }}"><span class="nav-dd-icon">+</span> Add Bottler</a>
-                <a class="dropdown-item" href="{{ url_for('bottler.list', username=username) }}"><span class="nav-dd-icon">≡</span> List Bottlers</a>
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownDistilleries" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Distilleries
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdownDistilleries">
-                <a class="dropdown-item" href="{{ url_for('distillery.add') }}"><span class="nav-dd-icon">+</span> Add Distillery</a>
-                <a class="dropdown-item" href="{{ url_for('distillery.list', username=username) }}"><span class="nav-dd-icon">≡</span> List Distilleries</a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownManage">
+                <a class="dropdown-item" href="{{ url_for('distillery.list', username=username) }}">Distilleries</a>
+                <a class="dropdown-item" href="{{ url_for('bottler.list', username=username) }}">Bottlers</a>
+                <a class="dropdown-item" href="{{ url_for('barrel_picker.list', username=username) }}">Barrel Pickers</a>
               </div>
             </li>
           </ul>
