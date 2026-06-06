@@ -1,10 +1,12 @@
+import json
+
 from flask import abort, flash, jsonify, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from markupsafe import Markup
 
 from mywhiskies.blueprints.barrel_picker import barrel_picker_bp
 from mywhiskies.extensions import db
-from mywhiskies.forms.barrel_picker import BarrelPickerAddForm, BarrelPickerEditForm
+from mywhiskies.forms.barrel_picker import BarrelPickerAddForm, BarrelPickerEditForm, BarrelPickerQuickAddForm
 from mywhiskies.models import BarrelPicker, BottleTypes, User
 from mywhiskies.services import utils
 from mywhiskies.services.barrel_picker.barrel_picker import (
@@ -224,6 +226,27 @@ def barrel_picker_delete_page(username: str, user_num: int):
     ok, message = delete_barrel_picker(current_user, picker)
     flash(message, "success" if ok else "danger")
     return redirect(url_for("barrel_picker.list", username=current_user.username))
+
+
+@barrel_picker_bp.route("/barrel-picker/quick-add", methods=["GET", "POST"], endpoint="quick_add")
+@login_required
+def barrel_picker_quick_add():
+    form = BarrelPickerQuickAddForm(formdata=request.form if request.method == "POST" else None)
+    if form.validate_on_submit():
+        duplicate = db.session.execute(
+            db.select(BarrelPicker).filter_by(user_id=current_user.id, name=form.name.data.strip())
+        ).scalar_one_or_none()
+        if duplicate:
+            form.name.errors.append("You already have a barrel picker with this name.")
+        else:
+            picker = BarrelPicker(user_id=current_user.id)
+            form.populate_obj(picker)
+            db.session.add(picker)
+            db.session.commit()
+            response = make_response(render_template("barrel_picker/_quick_add_success.html", name=picker.name))
+            response.headers["HX-Trigger"] = json.dumps({"closeModal": {"id": "quickAddBarrelPickerModal"}})
+            return response
+    return render_template("barrel_picker/_quick_add_form.html", form=form)
 
 
 # --- Modal management endpoints ---

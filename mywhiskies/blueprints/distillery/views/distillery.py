@@ -1,11 +1,12 @@
+import json
 from uuid import UUID
 
-from flask import abort, current_app, flash, redirect, render_template, request, url_for
+from flask import abort, current_app, flash, jsonify, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.distillery import distillery_bp
 from mywhiskies.extensions import db
-from mywhiskies.forms.distillery import DistilleryAddForm, DistilleryEditForm
+from mywhiskies.forms.distillery import DistilleryAddForm, DistilleryEditForm, DistilleryQuickAddForm
 from mywhiskies.models import BottleTypes, Distillery, User
 from mywhiskies.services import utils
 from mywhiskies.services.bottle.bottle import list_bottles_for_entity
@@ -226,6 +227,34 @@ def distillery_edit(username: str, user_num: int):
         distillery=distillery,
         form=form,
     )
+
+
+@distillery_bp.route("/distillery/quick-add", methods=["GET", "POST"], endpoint="quick_add")
+@login_required
+def distillery_quick_add():
+    form = DistilleryQuickAddForm(formdata=request.form if request.method == "POST" else None)
+    if form.validate_on_submit():
+        duplicate = db.session.execute(
+            db.select(Distillery).filter_by(user_id=current_user.id, name=form.name.data.strip())
+        ).scalar_one_or_none()
+        if duplicate:
+            form.name.errors.append("You already have a distillery with this name.")
+        else:
+            distillery = Distillery(user_id=current_user.id)
+            form.populate_obj(distillery)
+            db.session.add(distillery)
+            db.session.commit()
+            response = make_response(render_template("distillery/_quick_add_success.html", name=distillery.name))
+            response.headers["HX-Trigger"] = json.dumps({"closeModal": {"id": "quickAddDistilleryModal"}})
+            return response
+    return render_template("distillery/_quick_add_form.html", form=form)
+
+
+@distillery_bp.route("/distillery/options", endpoint="options")
+@login_required
+def distillery_options():
+    distilleries = sorted(current_user.distilleries, key=lambda d: d.name.lower())
+    return jsonify([{"id": d.id, "name": d.name} for d in distilleries])
 
 
 @distillery_bp.route("/<username:username>/distillery/<paddedint:user_num>/delete", endpoint="delete")

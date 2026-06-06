@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/trix@2/dist/trix.umd.min.js"></script>
   {% include "_trix_toolbar_init.html" %}
   <script>
+  // ── Barrel Picker autocomplete widget ────────────────────────────────────────
   function initBarrelPickerWidget() {
     const select = document.getElementById('barrel_pickers');
     if (!select) return;
@@ -87,34 +88,15 @@
     renderBadges();
   }
 
-  initBarrelPickerWidget();
-
-  const managePickersModal = document.getElementById('managePickersModal');
-  if (managePickersModal) {
-    managePickersModal.addEventListener('hidden.bs.modal', function () {
-      const select = document.getElementById('barrel_pickers');
-      const selectedIds = new Set(Array.from(select.options).filter(o => o.selected).map(o => o.value));
-      fetch('{{ url_for("barrel_picker.options") }}')
-        .then(r => r.json())
-        .then(pickers => {
-          select.innerHTML = '';
-          pickers.forEach(p => {
-            const opt = document.createElement('option');
-            opt.value = p.id;
-            opt.textContent = p.name;
-            if (selectedIds.has(p.id)) opt.selected = true;
-            select.appendChild(opt);
-          });
-          initBarrelPickerWidget();
-        });
-    });
-  }
-
-  (function () {
+  // ── Distillery autocomplete widget ───────────────────────────────────────────
+  function initDistilleryWidget() {
     const select = document.getElementById('distilleries');
     if (!select) return;
 
-    // Build widget
+    const old = select.parentElement.querySelector('.distillery-widget');
+    if (old) old.remove();
+    select.style.display = 'none';
+
     const wrapper = document.createElement('div');
     wrapper.className = 'distillery-widget form-control p-2';
 
@@ -124,7 +106,7 @@
     const search = document.createElement('input');
     search.type = 'text';
     search.className = 'form-control form-control-sm mt-2';
-    search.placeholder = 'Search distilleries\u2026';
+    search.placeholder = 'Search distilleries…';
 
     const dropdown = document.createElement('div');
     dropdown.className = 'list-group mt-1 distillery-dropdown';
@@ -132,7 +114,6 @@
 
     wrapper.append(badges, search, dropdown);
     select.after(wrapper);
-    select.style.display = 'none';
 
     function renderBadges() {
       badges.innerHTML = '';
@@ -184,7 +165,79 @@
     document.addEventListener('click', e => { if (!wrapper.contains(e.target)) dropdown.style.display = 'none'; });
 
     renderBadges();
-  })();
+  }
+
+  initBarrelPickerWidget();
+  initDistilleryWidget();
+
+  // ── Quick Add modal: close on HX-Trigger ─────────────────────────────────────
+  document.body.addEventListener('closeModal', function(e) {
+    const id = e.detail && e.detail.id;
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (el) {
+      const m = bootstrap.Modal.getInstance(el);
+      if (m) m.hide();
+    }
+  });
+
+  // ── Quick Add Distillery: refresh widget on modal close ───────────────────────
+  document.getElementById('quickAddDistilleryModal').addEventListener('hidden.bs.modal', function() {
+    const select = document.getElementById('distilleries');
+    const selectedIds = new Set(Array.from(select.options).filter(o => o.selected).map(o => o.value));
+    fetch('{{ url_for("distillery.options") }}')
+      .then(r => r.json())
+      .then(items => {
+        select.innerHTML = '';
+        items.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d.id;
+          opt.textContent = d.name;
+          if (selectedIds.has(d.id)) opt.selected = true;
+          select.appendChild(opt);
+        });
+        initDistilleryWidget();
+      });
+  });
+
+  // ── Quick Add Bottler: refresh select on modal close ─────────────────────────
+  document.getElementById('quickAddBottlerModal').addEventListener('hidden.bs.modal', function() {
+    const select = document.getElementById('bottler_id');
+    const currentVal = select.value;
+    fetch('{{ url_for("bottler.options") }}')
+      .then(r => r.json())
+      .then(items => {
+        const blank = select.options[0];
+        select.innerHTML = '';
+        if (blank && blank.value === '') select.appendChild(blank);
+        items.forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b.id;
+          opt.textContent = b.name;
+          if (b.id === currentVal) opt.selected = true;
+          select.appendChild(opt);
+        });
+      });
+  });
+
+  // ── Quick Add Barrel Picker: refresh widget on modal close ───────────────────
+  document.getElementById('quickAddBarrelPickerModal').addEventListener('hidden.bs.modal', function() {
+    const select = document.getElementById('barrel_pickers');
+    const selectedIds = new Set(Array.from(select.options).filter(o => o.selected).map(o => o.value));
+    fetch('{{ url_for("barrel_picker.options") }}')
+      .then(r => r.json())
+      .then(pickers => {
+        select.innerHTML = '';
+        pickers.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.textContent = p.name;
+          if (selectedIds.has(p.id)) opt.selected = true;
+          select.appendChild(opt);
+        });
+        initBarrelPickerWidget();
+      });
+  });
   </script>
 {% endblock %}
 
@@ -223,20 +276,51 @@
             <p class="detail-section-label mb-3">Details</p>
             {{ form_utils.render_field(form.name) }}
             {{ form_utils.render_field(form.url) }}
-            {{ form_utils.render_field(form.distilleries) }}
+
+            {# Distilleries — with Quick Add trigger #}
             <div class="mb-3">
-              {{ form_utils.render_field(form.barrel_pickers) }}
-              <div class="mt-1">
+              <div class="d-flex justify-content-between align-items-baseline mb-1">
+                <label class="form-label mb-0">Distilleries <span class="text-danger">*</span></label>
                 <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
-                        data-bs-toggle="modal" data-bs-target="#managePickersModal">
-                  <i class="bi bi-gear me-1"></i>Manage Barrel Pickers
+                        data-bs-toggle="modal" data-bs-target="#quickAddDistilleryModal">
+                  <i class="bi bi-gear me-1"></i>Quick Add Distillery
                 </button>
               </div>
+              {{ form.distilleries(class="form-control" + (" is-invalid" if form.distilleries.errors else ""))|safe }}
+              {% for error in form.distilleries.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
             </div>
+
+            {# Barrel Pickers — with Quick Add trigger #}
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-baseline mb-1">
+                <label class="form-label mb-0">Barrel Picked by</label>
+                <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
+                        data-bs-toggle="modal" data-bs-target="#quickAddBarrelPickerModal">
+                  <i class="bi bi-gear me-1"></i>Quick Add Barrel Picker
+                </button>
+              </div>
+              {{ form.barrel_pickers(class="form-control" + (" is-invalid" if form.barrel_pickers.errors else ""))|safe }}
+              {% for error in form.barrel_pickers.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+            </div>
+
             <div class="row">
-              <div class="col-sm-6">{{ form_utils.render_field(form.bottler_id) }}</div>
+              {# Bottler — with Quick Add trigger #}
+              <div class="col-sm-6">
+                <div class="mb-3">
+                  <div class="d-flex justify-content-between align-items-baseline mb-1">
+                    <label class="form-label mb-0">Bottler</label>
+                    <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
+                            data-bs-toggle="modal" data-bs-target="#quickAddBottlerModal">
+                      <i class="bi bi-gear me-1"></i>Quick Add Bottler
+                    </button>
+                  </div>
+                  {{ form.bottler_id(class="form-control" + (" is-invalid" if form.bottler_id.errors else ""))|safe }}
+                  {% for error in form.bottler_id.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                </div>
+              </div>
               <div class="col-sm-6">{{ form_utils.render_field(form.type) }}</div>
             </div>
+
             <div class="row">
               <div class="col-sm-3">{{ form_utils.render_field(form.size) }}</div>
               <div class="col-sm-3">{{ form_utils.render_field(form.abv) }}</div>
@@ -283,17 +367,17 @@
     </div>
   </main>
 
-  <!-- Manage Barrel Pickers modal -->
-  <div class="modal fade" id="managePickersModal" tabindex="-1" aria-labelledby="managePickersLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+  {# ── Quick Add Distillery modal ──────────────────────────────────────────────── #}
+  <div class="modal fade" id="quickAddDistilleryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="managePickersLabel">Manage Barrel Pickers</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title"><i class="bi bi-gear me-2 text-muted"></i>Quick Add Distillery</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body" id="manage-modal-body"
-             hx-get="{{ url_for('barrel_picker.manage') }}"
-             hx-trigger="show.bs.modal from:#managePickersModal"
+        <div class="modal-body" id="quickAddDistilleryBody"
+             hx-get="{{ url_for('distillery.quick_add') }}"
+             hx-trigger="show.bs.modal from:#quickAddDistilleryModal"
              hx-swap="innerHTML">
           <div class="text-center py-3 text-muted">
             <div class="spinner-border spinner-border-sm me-2" role="status"></div>
@@ -304,13 +388,55 @@
     </div>
   </div>
 
-  <!-- Modal -->
+  {# ── Quick Add Bottler modal ─────────────────────────────────────────────────── #}
+  <div class="modal fade" id="quickAddBottlerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-gear me-2 text-muted"></i>Quick Add Bottler</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="quickAddBottlerBody"
+             hx-get="{{ url_for('bottler.quick_add') }}"
+             hx-trigger="show.bs.modal from:#quickAddBottlerModal"
+             hx-swap="innerHTML">
+          <div class="text-center py-3 text-muted">
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            Loading…
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# ── Quick Add Barrel Picker modal ──────────────────────────────────────────── #}
+  <div class="modal fade" id="quickAddBarrelPickerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-gear me-2 text-muted"></i>Quick Add Barrel Picker</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="quickAddBarrelPickerBody"
+             hx-get="{{ url_for('barrel_picker.quick_add') }}"
+             hx-trigger="show.bs.modal from:#quickAddBarrelPickerModal"
+             hx-swap="innerHTML">
+          <div class="text-center py-3 text-muted">
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            Loading…
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# ── Image guidelines modal ──────────────────────────────────────────────────── #}
   <div class="modal fade" id="imageTerms" tabindex="-1" aria-labelledby="imageTermsLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="imageTermsLabel">Image Guidelines</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <p>The following rules apply to all images uploaded to My Whiskies Online. Uploads that violate these guidelines will be removed, and repeated violations may result in account termination.</p>
@@ -321,11 +447,11 @@
           </ul>
           <p>What is not permitted</p>
           <ul>
-            <li>Images you did not take or do not have rights to (no copyrighted or watermarked images)</liL>
-            <li>Photos that include any person or recognizable face</liL>
-            <li>Explicit, adult, or offensive content</liL>
-            <li>Images depicting illegal activity</liL>
-            <li>Photos containing personal information — such as handwritten notes, phone numbers, or personal addresses — that are not part of the bottle label itself</liL>
+            <li>Images you did not take or do not have rights to (no copyrighted or watermarked images)</li>
+            <li>Photos that include any person or recognizable face</li>
+            <li>Explicit, adult, or offensive content</li>
+            <li>Images depicting illegal activity</li>
+            <li>Photos containing personal information — such as handwritten notes, phone numbers, or personal addresses — that are not part of the bottle label itself</li>
           </ul>
         </div>
         <div class="modal-footer">
