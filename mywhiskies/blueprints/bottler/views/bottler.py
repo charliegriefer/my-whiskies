@@ -1,11 +1,12 @@
+import json
 from uuid import UUID
 
-from flask import abort, redirect, render_template, request, url_for
+from flask import abort, jsonify, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.bottler import bottler_bp
 from mywhiskies.extensions import db
-from mywhiskies.forms.bottler import BottlerAddForm, BottlerEditForm
+from mywhiskies.forms.bottler import BottlerAddForm, BottlerEditForm, BottlerQuickAddForm
 from mywhiskies.models import Bottler, BottleTypes, User
 from mywhiskies.services import utils
 from mywhiskies.services.bottle.bottle import list_bottles_for_entity
@@ -197,6 +198,35 @@ def bottler_edit(username: str, user_num: int):
         bottler=_bottler,
         form=form,
     )
+
+
+@bottler_bp.route("/bottler/quick-add", methods=["GET", "POST"], endpoint="quick_add")
+@login_required
+def bottler_quick_add():
+    form = BottlerQuickAddForm(formdata=request.form if request.method == "POST" else None)
+    if form.validate_on_submit():
+        duplicate = db.session.execute(
+            db.select(Bottler).filter_by(user_id=current_user.id, name=form.name.data.strip())
+        ).scalar_one_or_none()
+        if duplicate:
+            form.name.errors.append("You already have a bottler with this name.")
+        else:
+            bottler = Bottler(user_id=current_user.id)
+            form.populate_obj(bottler)
+            db.session.add(bottler)
+            db.session.commit()
+            response = make_response(render_template("bottler/_quick_add_success.html", name=bottler.name))
+            trigger = {"closeModal": {"id": "quickAddBottlerModal", "newId": str(bottler.id)}}
+            response.headers["HX-Trigger"] = json.dumps(trigger)
+            return response
+    return render_template("bottler/_quick_add_form.html", form=form)
+
+
+@bottler_bp.route("/bottler/options", endpoint="options")
+@login_required
+def bottler_options():
+    bottlers = sorted(current_user.bottlers, key=lambda b: b.name.lower())
+    return jsonify([{"id": b.id, "name": b.name} for b in bottlers])
 
 
 @bottler_bp.route("/<username:username>/bottler/<paddedint:user_num>/delete", endpoint="delete")

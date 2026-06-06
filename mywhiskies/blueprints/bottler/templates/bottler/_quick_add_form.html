@@ -1,0 +1,32 @@
+<form hx-post="{{ url_for('bottler.quick_add') }}"
+      hx-target="#quickAddBottlerBody"
+      hx-swap="innerHTML"
+      novalidate>
+  {{ form.csrf_token }}
+  <div class="mb-3">
+    {{ form.name.label(class="form-label") }}<span class="text-danger ms-1">*</span>
+    {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+    {% for error in form.name.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+  </div>
+  <div class="row g-2 mb-3">
+    <div class="col-sm-6">
+      {{ form.region_1.label(class="form-label") }}
+      {{ form.region_1(class="form-control" + (" is-invalid" if form.region_1.errors else "")) }}
+      {% for error in form.region_1.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="col-sm-6">
+      {{ form.region_2.label(class="form-label") }}
+      {{ form.region_2(class="form-control" + (" is-invalid" if form.region_2.errors else "")) }}
+      {% for error in form.region_2.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+    </div>
+  </div>
+  <div class="mb-3">
+    {{ form.url.label(class="form-label") }}
+    {{ form.url(class="form-control" + (" is-invalid" if form.url.errors else "")) }}
+    {% for error in form.url.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+  </div>
+  {{ form.submit(class="btn btn-primary") }}
+</form>
+<p class="text-muted mt-3 mb-0" style="font-size: 0.8rem;">
+  To edit or delete bottlers, visit the <a href="{{ url_for('bottler.list', username=current_user.username) }}">Bottlers page</a>.
+</p>

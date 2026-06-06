@@ -68,8 +68,8 @@ def distillery_before_update(mapper, connect, target) -> None:
 
 def clean_distillery_data(target) -> None:
     target.name = target.name.strip()
-    target.region_1 = target.region_1.strip()
-    target.region_2 = target.region_2.strip()
+    target.region_1 = target.region_1.strip() if target.region_1 else ""
+    target.region_2 = target.region_2.strip() if target.region_2 else ""
     if target.description:
         target.description = target.description.strip()
     if target.url:

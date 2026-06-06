@@ -20,3 +20,17 @@ class BarrelPickerAddForm(FlaskForm):
 
 class BarrelPickerEditForm(BarrelPickerAddForm):
     submit = SubmitField("Save Changes")
+
+
+class BarrelPickerQuickAddForm(FlaskForm):
+    name = StringField(
+        "Name:",
+        validators=[InputRequired("Name is required."), Length(max=65)],
+        render_kw={"placeholder": "Name"},
+    )
+    url = URLField(
+        "URL:",
+        validators=[Length(max=64), URL(message="Please enter a valid URL"), Optional()],
+        render_kw={"placeholder": "https://"},
+    )
+    submit = SubmitField("Add Barrel Picker")
