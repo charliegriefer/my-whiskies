@@ -47,7 +47,7 @@
                   :disabled="!anyChecked"
                   onclick="bootstrap.Dropdown.getInstance(this.closest('.dropdown').querySelector('.dropdown-toggle'))?.hide()">Apply</button>
                 <button type="button" class="btn btn-outline-secondary btn-sm"
-                  @click="$el.closest('.dropdown-menu').querySelectorAll('.type-filter').forEach(cb => cb.checked = true); anyChecked = true">Select All</button>
+                  @click="$el.closest('.dropdown-menu').querySelectorAll('.type-filter:not(:disabled)').forEach(cb => cb.checked = true); anyChecked = true">Select All</button>
                 <button type="button" class="btn btn-outline-secondary btn-sm"
                   @click="$el.closest('.dropdown-menu').querySelectorAll('.type-filter').forEach(cb => cb.checked = false); anyChecked = false">Select None</button>
               </div>

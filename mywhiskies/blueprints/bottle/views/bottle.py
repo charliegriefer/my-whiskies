@@ -4,6 +4,7 @@ from uuid import UUID
 
 from flask import abort, g, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from markupsafe import Markup
 
 from mywhiskies.blueprints.bottle import bottle_bp
 from mywhiskies.extensions import db
@@ -72,7 +73,20 @@ def bottles(username: str):
 
     filters_active = bool(q) or set(types) != set(all_type_names)
     if data["total"] == 0:
-        empty_text = "No bottles match your filters." if filters_active else f"{user.username} has no bottles. Yet."
+        if not filters_active:
+            empty_text = f"{user.username} has no bottles. Yet."
+        elif data["killed_matches"] > 0 and not show_killed:
+            n = data["killed_matches"]
+            bottle_word = "bottle" if n == 1 else "bottles"
+            empty_text = Markup(
+                f"No active bottles match your filters — "
+                f"{n} killed {bottle_word} match. Toggle "
+                f'<a href="#" onclick="var cb=document.getElementById(\'show_killed\');'
+                f"if(cb){{cb.checked=true;htmx.trigger(cb,'change');}}return false;\">"
+                f"Show Killed Bottles</a> to see them."
+            )
+        else:
+            empty_text = "No bottles match your filters."
     else:
         empty_text = ""
 

@@ -121,13 +121,23 @@ def barrel_picker_detail(username: str, user_num: int):
     )
 
     filters_active = bool(q) or set(types) != set(all_type_names)
-    empty_text = ""
     if data["total"] == 0:
-        empty_text = (
-            "No bottles match your filters."
-            if filters_active
-            else f"{user.username} has no bottles picked by {picker.name}. Yet."
-        )
+        if not filters_active:
+            empty_text = f"{user.username} has no bottles picked by {picker.name}. Yet."
+        elif data["killed_matches"] > 0 and not show_killed:
+            n = data["killed_matches"]
+            bottle_word = "bottle" if n == 1 else "bottles"
+            empty_text = Markup(
+                f"No active bottles match your filters — "
+                f"{n} killed {bottle_word} match. Toggle "
+                f'<a href="#" onclick="var cb=document.getElementById(\'show_killed\');'
+                f"if(cb){{cb.checked=true;htmx.trigger(cb,'change');}}return false;\">"
+                f"Show Killed Bottles</a> to see them."
+            )
+        else:
+            empty_text = "No bottles match your filters."
+    else:
+        empty_text = ""
 
     possessive = f"{user.username}'" if user.username.endswith("s") else f"{user.username}'s"
     list_url = url_for("barrel_picker.detail", username=user.username, user_num=picker.user_num)
