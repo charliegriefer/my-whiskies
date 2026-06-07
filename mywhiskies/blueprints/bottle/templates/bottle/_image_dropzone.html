@@ -44,6 +44,15 @@
   </div>
 </div>
 
+{% if current_user.is_pro and not existing_images %}
+<div id="scan-controls" class="d-none mb-3">
+  <button type="button" id="scan-btn" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-stars me-1"></i>Scan Label
+  </button>
+</div>
+<div id="scan-banner" class="d-none py-2 mb-3"></div>
+{% endif %}
+
 {# Hidden file inputs — populated by JS on submit via DataTransfer #}
 <div class="d-none">
   {{ form.bottle_image_1(id="bottle_image_1", accept=".jpg,.jpeg,.png") }}
@@ -60,9 +69,13 @@
 (function () {
   'use strict';
 
-  const MAX_BYTES = {{ config.MAX_UPLOAD_MB * 1024 * 1024 }};
-  const MAX_MB   = {{ config.MAX_UPLOAD_MB }};
-  const MAX_IMGS  = 3;
+  const MAX_BYTES  = {{ config.MAX_UPLOAD_MB * 1024 * 1024 }};
+  const MAX_MB     = {{ config.MAX_UPLOAD_MB }};
+  const MAX_IMGS   = 3;
+  {% if current_user.is_pro and not existing_images %}
+  const SCAN_URL   = '{{ url_for("bottle.scan_label") }}';
+  const CSRF_TOKEN = '{{ csrf_token() }}';
+  {% endif %}
 
   const zone     = document.getElementById('dropzone-container');
   const addCard  = document.getElementById('dropzone-add-card');
@@ -127,6 +140,7 @@
     card.remove();
     serializeOrder();
     updateAddCard();
+    updateScanButton();
   });
 
   // ── On submit: move File objects into the named inputs via DataTransfer ───
@@ -202,6 +216,7 @@
       zone.insertBefore(card, addCard);
       serializeOrder();
       updateAddCard();
+      updateScanButton();
     };
     reader.readAsDataURL(file);
   }
@@ -219,5 +234,96 @@
       '<span class="seq-badge"><i class="bi bi-grip-vertical"></i></span>';
     return d;
   }
+
+  {% if current_user.is_pro and not existing_images %}
+  // ── Scan Label button ─────────────────────────────────────────────────────
+  const scanControls = document.getElementById('scan-controls');
+  const scanBtn      = document.getElementById('scan-btn');
+  const scanBanner   = document.getElementById('scan-banner');
+
+  function updateScanButton() {
+    scanControls.classList.toggle('d-none', Object.keys(pending).length === 0);
+  }
+
+  scanBtn.addEventListener('click', () => {
+    const files = Object.values(pending);
+    if (!files.length) return;
+
+    scanBtn.disabled = true;
+    scanBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>Scanning…';
+    scanBanner.className = 'd-none';
+
+    const fd = new FormData();
+    files.forEach(f => fd.append('image', f));
+
+    fetch(SCAN_URL, { method: 'POST', headers: { 'X-CSRFToken': CSRF_TOKEN }, body: fd })
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(data => applyLabelScan(data))
+      .catch(() => {
+        scanBanner.textContent = 'Label scan failed — please fill in fields manually.';
+        scanBanner.className = 'alert alert-warning py-2 mb-3';
+      })
+      .finally(() => {
+        scanBtn.disabled = true;
+        scanBtn.innerHTML = '<i class="bi bi-check2 me-1"></i>Label Scanned';
+      });
+  });
+
+  function applyLabelScan(data) {
+    const filled = [];
+
+    function highlight(el) {
+      el.style.backgroundColor = '#fffbcc';
+    }
+
+    function tryFill(id, val) {
+      if (val === undefined || val === null || val === '') return;
+      const el = document.getElementById(id);
+      if (el && !el.value) { el.value = val; highlight(el); filled.push(el.labels?.[0]?.textContent?.trim().replace(/:$/, '') || id); }
+    }
+
+    tryFill('name', data.name);
+    tryFill('abv', data.abv);
+    tryFill('size', data.size);
+    tryFill('year_barrelled', data.year_barrelled);
+    tryFill('year_bottled', data.year_bottled);
+
+    if (data.type) {
+      const typeEl = document.getElementById('type');
+      if (typeEl && !typeEl.value) {
+        const opt = Array.from(typeEl.options).find(o => o.text.toLowerCase() === data.type.toLowerCase());
+        if (opt) { typeEl.value = opt.value; highlight(typeEl); filled.push('Type'); }
+      }
+    }
+
+    if (data.distillery) {
+      const sel = document.getElementById('distilleries');
+      if (sel) {
+        const opt = Array.from(sel.options).find(o => o.text.toLowerCase() === data.distillery.toLowerCase());
+        if (opt && !opt.selected) {
+          opt.selected = true;
+          if (typeof initDistilleryWidget === 'function') initDistilleryWidget();
+          const widget = sel.parentElement.querySelector('.distillery-widget');
+          if (widget) highlight(widget);
+          filled.push('Distillery');
+        }
+      }
+    }
+
+    if (data.bottler) {
+      const sel = document.getElementById('bottler_id');
+      if (sel && !sel.value) {
+        const opt = Array.from(sel.options).find(o => o.text.toLowerCase() === data.bottler.toLowerCase());
+        if (opt) { sel.value = opt.value; highlight(sel); filled.push('Bottler'); }
+      }
+    }
+
+    scanBanner.className = filled.length ? 'alert alert-success py-2 mb-3' : 'alert alert-warning py-2 mb-3';
+    scanBanner.textContent = filled.length
+      ? 'AI scan filled in: ' + filled.join(', ') + ' — please verify.'
+      : 'AI scan complete — no fields could be filled automatically.';
+  }
+  {% endif %}
+
 })();
 </script>

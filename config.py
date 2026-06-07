@@ -79,6 +79,11 @@ class BaseConfig:
     BOTTLE_IMAGE_S3_URL = "https://my-whiskies-pics.s3-us-west-1.amazonaws.com"
     BOTTLE_IMAGE_FULL_S3_KEY = "dev-pro-full"
 
+    # ----------------------------------------------------------------------
+    # AI / ANTHROPIC
+    # ----------------------------------------------------------------------
+    ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+
     @staticmethod
     def init_app(app):
         pass

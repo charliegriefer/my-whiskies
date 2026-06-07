@@ -2,7 +2,7 @@ import time
 from urllib.parse import urlparse
 from uuid import UUID
 
-from flask import abort, g, redirect, render_template, request, url_for
+from flask import abort, g, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from markupsafe import Markup
 
@@ -20,6 +20,7 @@ from mywhiskies.services.bottle.bottle import (
 )
 from mywhiskies.services.bottle.form import prep_bottle_form
 from mywhiskies.services.bottle.image import get_s3_config
+from mywhiskies.services.bottle.scan import scan_bottle_label
 
 _VALID_SORTS = {"name", "type", "abv", "rating", "sb", "private"}
 
@@ -224,6 +225,21 @@ def bottle_edit(username: str, user_num: int):
         existing_images=list(_bottle.images),
         next_url=next_url,
     )
+
+
+@bottle_bp.route("/bottle/scan-label", methods=["POST"], endpoint="scan_label")
+@login_required
+def bottle_scan_label():
+    if not current_user.is_pro:
+        abort(403)
+    files = request.files.getlist("image")
+    if not files:
+        return jsonify({"error": "No image provided"}), 400
+    images = [(f.read(), f.mimetype or "image/jpeg") for f in files]
+    result = scan_bottle_label(images)
+    if result is None:
+        return jsonify({"error": "Scan failed"}), 502
+    return jsonify(result)
 
 
 @bottle_bp.route("/<username:username>/bottle/<paddedint:user_num>/delete", endpoint="delete")
