@@ -106,6 +106,7 @@ def create_export_images_zip(user: User) -> str:
     s3_client = boto3.client("s3")
     img_s3_bucket = current_app.config["BOTTLE_IMAGE_S3_BUCKET"]
     img_s3_key = current_app.config["BOTTLE_IMAGE_S3_KEY"]
+    img_full_s3_key = current_app.config["BOTTLE_IMAGE_FULL_S3_KEY"]
     path = f"/tmp/{user.id}_images.zip"
 
     tasks = []
@@ -113,7 +114,8 @@ def create_export_images_zip(user: User) -> str:
         safe_name = bottle.name.replace("/", "-").replace(":", "-")
         for img in bottle.images:
             zip_filename = f"{bottle.user_num:04d}_{safe_name}_{img.sequence}.jpg"
-            s3_object_key = f"{img_s3_key}/{bottle.id}_{img.sequence}.jpg"
+            key_prefix = img_full_s3_key if user.is_pro else img_s3_key
+            s3_object_key = f"{key_prefix}/{bottle.id}_{img.sequence}.jpg"
             tasks.append((zip_filename, s3_object_key))
 
     def fetch(zip_filename, s3_key):
