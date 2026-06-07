@@ -299,7 +299,7 @@
     if (data.distillery) {
       const sel = document.getElementById('distilleries');
       if (sel) {
-        const opt = Array.from(sel.options).find(o => o.text.toLowerCase() === data.distillery.toLowerCase());
+        const opt = fuzzyMatch(Array.from(sel.options), data.distillery);
         if (opt && !opt.selected) {
           opt.selected = true;
           if (typeof initDistilleryWidget === 'function') initDistilleryWidget();
@@ -313,7 +313,7 @@
     if (data.bottler) {
       const sel = document.getElementById('bottler_id');
       if (sel && !sel.value) {
-        const opt = Array.from(sel.options).find(o => o.text.toLowerCase() === data.bottler.toLowerCase());
+        const opt = fuzzyMatch(Array.from(sel.options), data.bottler);
         if (opt) { sel.value = opt.value; highlight(sel); filled.push('Bottler'); }
       }
     }
@@ -322,6 +322,24 @@
     scanBanner.textContent = filled.length
       ? 'AI scan filled in: ' + filled.join(', ') + ' — please verify.'
       : 'AI scan complete — no fields could be filled automatically.';
+  }
+
+  // Returns the best-matching option by word overlap, or null if no meaningful match.
+  function fuzzyMatch(options, query) {
+    const stopWords = new Set(['the', 'a', 'an', 'of', 'and', 'co', 'company', 'distilling', 'distillery', 'brewing', 'whiskey', 'whisky']);
+    function keywords(str) {
+      return str.toLowerCase().split(/\W+/).filter(w => w.length > 1 && !stopWords.has(w));
+    }
+    const qWords = new Set(keywords(query));
+    if (!qWords.size) return null;
+    let best = null, bestScore = 0;
+    for (const opt of options) {
+      const tWords = keywords(opt.text);
+      const matches = tWords.filter(w => qWords.has(w)).length;
+      const score = matches / Math.max(qWords.size, tWords.length);
+      if (score > bestScore) { bestScore = score; best = opt; }
+    }
+    return bestScore >= 0.5 ? best : null;
   }
   {% endif %}
 
