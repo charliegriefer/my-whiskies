@@ -276,7 +276,7 @@ def add_bottle(form: BottleAddForm, user: User) -> Bottle:
     db.session.add(bottle)
     db.session.commit()
 
-    ok, error = process_bottle_images(form, bottle)
+    ok, error = process_bottle_images(form, bottle, is_pro=user.is_pro)
     if ok:
         url = url_for("bottle.detail", username=bottle.user.username, user_num=bottle.user_num)
         flash(Markup(f'"<a href="{url}">{bottle.name}</a>" has been successfully added.'), "success")
@@ -296,7 +296,7 @@ def edit_bottle(form: BottleEditForm, bottle: Bottle) -> None:
     db.session.add(bottle)
     db.session.commit()
 
-    ok, error = process_bottle_images(form, bottle)
+    ok, error = process_bottle_images(form, bottle, is_pro=bottle.user.is_pro)
     if not ok:
         flash(error or f'An error occurred while updating images for "{bottle.name}".', "danger")
         return

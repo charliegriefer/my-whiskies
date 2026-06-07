@@ -152,6 +152,7 @@ def delete_user_account(user: User) -> None:
     s3_client = boto3.client("s3")
     img_s3_bucket = current_app.config["BOTTLE_IMAGE_S3_BUCKET"]
     img_s3_key = current_app.config["BOTTLE_IMAGE_S3_KEY"]
+    img_full_s3_key = current_app.config["BOTTLE_IMAGE_FULL_S3_KEY"]
 
     for bottle in list(user.bottles):
         for img in list(bottle.images):
@@ -159,6 +160,13 @@ def delete_user_account(user: User) -> None:
                 s3_client.delete_object(
                     Bucket=img_s3_bucket,
                     Key=f"{img_s3_key}/{bottle.id}_{img.sequence}.jpg",
+                )
+            except ClientError:
+                pass
+            try:
+                s3_client.delete_object(
+                    Bucket=img_s3_bucket,
+                    Key=f"{img_full_s3_key}/{bottle.id}_{img.sequence}.jpg",
                 )
             except ClientError:
                 pass
