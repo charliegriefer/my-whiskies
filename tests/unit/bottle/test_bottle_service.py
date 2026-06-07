@@ -157,7 +157,7 @@ def test_edit_bottle(
     assert args[1] == "success"
 
 
-@patch("mywhiskies.services.bottle.bottle.boto3.client")
+@patch("mywhiskies.services.bottle.image.boto3.client")
 @patch("mywhiskies.services.bottle.bottle.flash")
 def test_delete_bottle(
     mock_flash: MagicMock,

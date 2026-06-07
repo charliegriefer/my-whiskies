@@ -2,7 +2,6 @@ import random
 from itertools import groupby
 from typing import Dict, List, Optional, Union
 
-import boto3
 from flask import current_app, flash, url_for
 from markupsafe import Markup
 
@@ -10,7 +9,7 @@ from mywhiskies.extensions import db
 from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
 from mywhiskies.models import BarrelPicker, Bottle, Bottler, Distillery, User
 from mywhiskies.services.bottle.image import (
-    get_s3_config,
+    delete_bottle_images,
     process_bottle_images,
 )
 
@@ -311,15 +310,8 @@ def delete_bottle(user: User, bottle: Bottle) -> None:
         flash("There was an issue deleting this bottle.", "danger")
         return
 
-    img_s3_bucket, img_s3_key, _ = get_s3_config()
-
-    if bottle.image_count:
-        s3_client = boto3.client("s3")
-        for i in range(1, bottle.image_count + 1):
-            s3_client.delete_object(
-                Bucket=f"{img_s3_bucket}",
-                Key=f"{img_s3_key}/{bottle.id}_{i}.png",
-            )
+    if bottle.images:
+        delete_bottle_images(bottle)
 
     db.session.delete(bottle)
     db.session.commit()
