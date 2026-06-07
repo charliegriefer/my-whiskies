@@ -11,7 +11,11 @@ _PROMPT = """You are analyzing one or more whiskey bottle label images.
 Extract as much information as you can from the labels.
 Return ONLY a JSON object with these keys (omit any you cannot determine):
 
-- name: the bottle/expression name (string)
+- name: the bottle/expression name as a collector would refer to it — concise, typically 2-6 words. \
+Do not include the distillery name, legal style descriptors (e.g. "Straight", "Kentucky"), or \
+marketing sub-labels (e.g. "Private Barrel Select", "Distiller's Reserve") unless they are the \
+primary product name. Example: "Barrel Strength Rye" not \
+"Straight Rye Whiskey Barrel Strength Single Barrel - Distiller's Reserve Private Barrel Select" (string)
 - distillery: the distillery name (string)
 - bottler: the bottler name if different from the distillery (string)
 - type: one of exactly: Bourbon, Rye, Single Malt Scotch, Blended Scotch, Irish, Japanese, Canadian, Other
@@ -19,6 +23,10 @@ Return ONLY a JSON object with these keys (omit any you cannot determine):
 - size: bottle size in ml as an integer, e.g. 750
 - year_barrelled: four-digit year as an integer
 - year_bottled: four-digit year as an integer
+- is_single_barrel: true if the bottle is explicitly labeled as a single barrel, otherwise false (boolean)
+- description: a concise 3-5 sentence description in third person. Include the mash bill if known, \
+any age statement, and general tasting notes. Draw on general knowledge of the distillery/expression \
+if not visible on the label.
 
 Return only the JSON object, no explanation, no markdown fences."""
 

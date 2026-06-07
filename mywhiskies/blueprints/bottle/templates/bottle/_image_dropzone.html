@@ -288,6 +288,20 @@
     tryFill('year_barrelled', data.year_barrelled);
     tryFill('year_bottled', data.year_bottled);
 
+    if (data.description) {
+      const trix = document.querySelector('trix-editor[input="description"]');
+      if (trix && trix.editor && !trix.editor.getDocument().toString().trim()) {
+        trix.editor.loadHTML('<p>' + data.description.replace(/\n/g, '</p><p>') + '</p>');
+        highlight(trix);
+        filled.push('Description');
+      }
+    }
+
+    if (data.is_single_barrel) {
+      const cb = document.getElementById('is_single_barrel');
+      if (cb && !cb.checked) { cb.checked = true; filled.push('Single Barrel'); }
+    }
+
     if (data.type) {
       const typeEl = document.getElementById('type');
       if (typeEl && !typeEl.value) {
