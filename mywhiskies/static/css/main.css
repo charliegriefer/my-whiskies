@@ -568,6 +568,269 @@ ul.terms li {
 .sortable-ghost { opacity: 0.35; }
 .sortable-drag  { opacity: 0.9; cursor: grabbing !important; }
 
+/* ===================================================================
+   GLEN — AI assistant design tokens and components
+   =================================================================== */
+
+:root {
+  --ai-accent:      oklch(72% 0.14 72);
+  --ai-light:       oklch(97.5% 0.018 72);
+  --ai-border:      oklch(84% 0.1 72);
+  --glen-ok:        oklch(40% 0.14 155);
+  --glen-ok-bg:     oklch(97% 0.025 155);
+  --glen-ok-border: oklch(88% 0.06 155);
+  --glen-navy:      #1e3a5f;
+}
+
+/* Glen intro callout */
+.glen-intro {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 42px 16px 18px;
+  background: var(--ai-light);
+  border: 1px solid var(--ai-border);
+  border-left: 3px solid var(--ai-accent);
+  border-radius: 0 12px 12px 0;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.glen-intro__text-title {
+  font-weight: 800;
+  font-size: 15.5px;
+  color: #0f1f3d;
+  margin-bottom: 3px;
+}
+
+.glen-intro__text-body {
+  font-size: 13.5px;
+  color: #374151;
+  line-height: 1.55;
+}
+
+.glen-intro__dismiss {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #b0bcc8;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.glen-intro__dismiss:hover { color: #374151; }
+
+/* Ask Glen button */
+.btn-glen {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--glen-navy);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-glen:disabled {
+  opacity: 0.75;
+  cursor: default;
+}
+
+.btn-glen--done {
+  background: var(--glen-ok);
+}
+
+.btn-glen__spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  animation: glen-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes glen-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes glen-scanline {
+  0%   { top: 8px; opacity: 0.9; }
+  90%  { top: calc(100% - 8px); opacity: 0.9; }
+  100% { top: calc(100% - 8px); opacity: 0; }
+}
+
+/* Scan-line animation overlay on dropzone cards */
+.dropzone-card .glen-scan-line {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--ai-accent), transparent);
+  border-radius: 2px;
+  animation: glen-scanline 1.8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dropzone-card .glen-scan-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 58, 95, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  z-index: 1;
+}
+
+.dropzone-card .glen-scan-overlay__spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #fff;
+  animation: glen-spin 0.9s linear infinite;
+}
+
+/* AI-filled field indicator — amber left stripe */
+.glen-field-filled {
+  border-left: 3px solid var(--ai-accent) !important;
+}
+
+/* Glen scan banner */
+.glen-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--glen-ok-bg);
+  border: 1px solid var(--glen-ok-border);
+  border-radius: 8px;
+  margin-bottom: 0;
+}
+
+.glen-banner__icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: oklch(88% 0.08 155);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 13px;
+  color: oklch(38% 0.18 155);
+}
+
+.glen-banner__text {
+  font-size: 13px;
+  color: oklch(28% 0.12 155);
+}
+
+/* Glen fuzzy match note */
+.glen-match-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 8px 10px 8px 14px;
+  border-left: 3px solid var(--ai-border);
+  background: var(--ai-light);
+  border-radius: 0 8px 8px 0;
+}
+
+.glen-match-note__text {
+  flex: 1;
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.glen-match-note__muted {
+  font-size: 12px;
+  color: #8896a8;
+}
+
+.glen-match-note__name {
+  font-weight: 700;
+  color: #0f1f3d;
+}
+
+.glen-match-note__matched {
+  font-weight: 600;
+  color: #374151;
+}
+
+.glen-match-note__update {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: #fff;
+  border: 1px solid var(--ai-border);
+  border-radius: 6px;
+  color: oklch(40% 0.12 60);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.glen-match-note__update:hover {
+  background: var(--ai-light);
+  color: oklch(40% 0.12 60);
+}
+
+.glen-match-note__dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #b0bcc8;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.glen-match-note__dismiss:hover { color: #374151; }
+
+.glen-match-confirmed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 7px 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 7px;
+  font-size: 13px;
+  color: #166534;
+}
+
 
 /* ===================================================================
    ALPINE — prevent flash of unstyled content on x-cloak elements
@@ -1251,6 +1514,10 @@ trix-toolbar .trix-button--dialog:hover {
 }
 
 /* Editor content area */
+trix-editor.glen-field-filled {
+  border-left: 3px solid var(--ai-accent) !important;
+}
+
 trix-editor {
   display: block;
   border: 1px solid var(--border, #dee2e6);

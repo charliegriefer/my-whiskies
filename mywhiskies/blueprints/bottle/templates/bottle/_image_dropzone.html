@@ -16,6 +16,17 @@
 
   <div id="dropzone-error" class="alert alert-danger py-2 mb-2 d-none" role="alert"></div>
 
+  {% if current_user.is_pro and not existing_images %}
+  <div id="glen-intro" class="glen-intro" style="display:none;">
+    <img src="{{ url_for('static', filename='glen-avatar.svg') }}" alt="Glen" width="52" style="flex-shrink:0;">
+    <div>
+      <div class="glen-intro__text-title">Hi, I'm Glen!</div>
+      <div class="glen-intro__text-body">Upload a photo of your bottle and I'll fill in the details for you — name, distillery, ABV, and more.</div>
+    </div>
+    <button type="button" class="glen-intro__dismiss" id="glen-intro-dismiss" title="Dismiss">×</button>
+  </div>
+  {% endif %}
+
   <div id="dropzone-container" class="image-dropzone d-flex flex-wrap gap-3 align-items-start">
 
     {% for img in existing_images %}
@@ -46,11 +57,15 @@
 
 {% if current_user.is_pro and not existing_images %}
 <div id="scan-controls" class="d-none mb-3">
-  <button type="button" id="scan-btn" class="btn btn-outline-secondary btn-sm">
-    <i class="bi bi-stars me-1" style="color: #dc3545;"></i>Scan Photo
-  </button>
+  <div class="d-flex align-items-center gap-3 flex-wrap">
+    <button type="button" id="scan-btn" class="btn-glen">
+      <i class="bi bi-stars" aria-hidden="true"></i>
+      Ask Glen
+    </button>
+    <span id="scan-helper" class="small d-none"></span>
+  </div>
 </div>
-<div id="scan-banner" class="d-none py-2 mb-3"></div>
+<div id="scan-banner" class="d-none mb-3"></div>
 {% endif %}
 
 {# Hidden file inputs — populated by JS on submit via DataTransfer #}
@@ -236,12 +251,37 @@
   }
 
   {% if current_user.is_pro and not existing_images %}
-  // ── Scan Label button ─────────────────────────────────────────────────────
+  // ── Glen intro callout ────────────────────────────────────────────────────
+  const GLEN_INTRO_KEY = 'glen_intro_dismissed';
+  const glenIntro      = document.getElementById('glen-intro');
+  const glenIntroDismiss = document.getElementById('glen-intro-dismiss');
+
+  if (glenIntro && !localStorage.getItem(GLEN_INTRO_KEY)) {
+    glenIntro.style.display = 'flex';
+  }
+
+  if (glenIntroDismiss) {
+    glenIntroDismiss.addEventListener('click', () => {
+      localStorage.setItem(GLEN_INTRO_KEY, '1');
+      glenIntro.style.display = 'none';
+    });
+  }
+
+  // ── Ask Glen button ───────────────────────────────────────────────────────
   const scanControls = document.getElementById('scan-controls');
   const scanBtn      = document.getElementById('scan-btn');
+  const scanHelper   = document.getElementById('scan-helper');
   const scanBanner   = document.getElementById('scan-banner');
   const MAX_ATTEMPTS = 3;
   let scanAttempts   = 0;
+
+  const SPARKLE_SVG = '<i class="bi bi-stars" aria-hidden="true"></i>';
+
+  const CHECK_SVG =
+    '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">' +
+      '<circle cx="7" cy="7" r="5.5" stroke="#fff" stroke-width="1.4"/>' +
+      '<path d="M4.5 7l1.8 1.8L9.5 5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '</svg>';
 
   function photoLabel() {
     return Object.keys(pending).length === 1 ? 'Photo' : 'Photos';
@@ -250,9 +290,30 @@
   function updateScanButton() {
     const count = Object.keys(pending).length;
     scanControls.classList.toggle('d-none', count === 0);
-    if (!scanBtn.disabled) {
-      scanBtn.innerHTML = '<i class="bi bi-stars me-1" style="color:#dc3545;"></i>Scan ' + photoLabel();
+    if (!scanBtn.disabled && !scanBtn.classList.contains('btn-glen--done')) {
+      scanBtn.innerHTML = SPARKLE_SVG + ' Ask Glen';
     }
+  }
+
+  function setScanOverlays(active) {
+    zone.querySelectorAll('.dropzone-card').forEach(card => {
+      if (active) {
+        if (!card.querySelector('.glen-scan-line')) {
+          const line = document.createElement('div');
+          line.className = 'glen-scan-line';
+          card.appendChild(line);
+        }
+        if (!card.querySelector('.glen-scan-overlay')) {
+          const overlay = document.createElement('div');
+          overlay.className = 'glen-scan-overlay';
+          overlay.innerHTML = '<div class="glen-scan-overlay__spinner"></div>';
+          card.appendChild(overlay);
+        }
+      } else {
+        card.querySelector('.glen-scan-line')?.remove();
+        card.querySelector('.glen-scan-overlay')?.remove();
+      }
+    });
   }
 
   scanBtn.addEventListener('click', () => {
@@ -261,8 +322,14 @@
 
     scanAttempts++;
     scanBtn.disabled = true;
-    scanBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>Scanning…';
+    scanBtn.classList.remove('btn-glen--done');
+    scanBtn.innerHTML =
+      '<span class="btn-glen__spinner"></span> Glen is scanning…';
+    scanHelper.className = 'small fst-italic text-muted';
+    scanHelper.textContent = 'Analyzing your photos…';
     scanBanner.className = 'd-none';
+
+    setScanOverlays(true);
 
     const fd = new FormData();
     files.forEach(f => fd.append('image', f));
@@ -270,34 +337,49 @@
     fetch(SCAN_URL, { method: 'POST', headers: { 'X-CSRFToken': CSRF_TOKEN }, body: fd })
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then(data => {
+        setScanOverlays(false);
         applyLabelScan(data);
-        scanBtn.innerHTML = '<i class="bi bi-check2 me-1"></i>' + photoLabel() + ' Scanned';
+        scanBtn.classList.add('btn-glen--done');
+        scanBtn.innerHTML = CHECK_SVG + ' Scanned';
+        scanHelper.className = 'small fw-medium';
+        scanHelper.style.color = 'oklch(38% 0.14 155)';
+        scanHelper.textContent = '✓ Fields filled in below — please verify';
       })
       .catch(() => {
+        setScanOverlays(false);
         if (scanAttempts < MAX_ATTEMPTS) {
-          scanBanner.textContent = `Scan failed — try again? (attempt ${scanAttempts} of ${MAX_ATTEMPTS})`;
-          scanBanner.className = 'alert alert-warning py-2 mb-3';
+          showScanError('Scan failed — try again? (attempt ' + scanAttempts + ' of ' + MAX_ATTEMPTS + ')');
           scanBtn.disabled = false;
-          scanBtn.innerHTML = '<i class="bi bi-stars me-1" style="color:#dc3545;"></i>Scan ' + photoLabel();
+          scanBtn.innerHTML = SPARKLE_SVG + ' Ask Glen';
+          scanHelper.className = 'd-none';
         } else {
-          scanBanner.textContent = 'Scan failed after 3 attempts — please fill in fields manually.';
-          scanBanner.className = 'alert alert-warning py-2 mb-3';
-          scanBtn.innerHTML = '<i class="bi bi-x me-1"></i>Scan Unavailable';
+          showScanError('Scan failed after 3 attempts — please fill in fields manually.');
+          scanBtn.innerHTML = '✕ Scan Unavailable';
+          scanHelper.className = 'd-none';
         }
       });
   });
 
+  function showScanError(msg) {
+    scanBanner.className = 'alert alert-warning py-2 mb-3';
+    scanBanner.textContent = msg;
+  }
+
   function applyLabelScan(data) {
     const filled = [];
 
-    function highlight(el) {
-      el.style.backgroundColor = '#fffbcc';
+    function markFilled(el) {
+      el.classList.add('glen-field-filled');
     }
 
     function tryFill(id, val) {
       if (val === undefined || val === null || val === '') return;
       const el = document.getElementById(id);
-      if (el && !el.value) { el.value = val; highlight(el); filled.push(el.labels?.[0]?.textContent?.trim().replace(/:$/, '') || id); }
+      if (el && !el.value) {
+        el.value = val;
+        markFilled(el);
+        filled.push(el.labels?.[0]?.textContent?.trim().replace(/:$/, '') || id);
+      }
     }
 
     tryFill('name', data.name);
@@ -310,7 +392,7 @@
       const trix = document.querySelector('trix-editor[input="description"]');
       if (trix && trix.editor && !trix.editor.getDocument().toString().trim()) {
         trix.editor.loadHTML('<p>' + data.description.replace(/\n/g, '</p><p>') + '</p>');
-        highlight(trix);
+        trix.classList.add('glen-field-filled');
         filled.push('Description');
       }
     }
@@ -324,20 +406,23 @@
       const typeEl = document.getElementById('type');
       if (typeEl && !typeEl.value) {
         const opt = Array.from(typeEl.options).find(o => o.text.toLowerCase() === data.type.toLowerCase());
-        if (opt) { typeEl.value = opt.value; highlight(typeEl); filled.push('Type'); }
+        if (opt) { typeEl.value = opt.value; markFilled(typeEl); filled.push('Type'); }
       }
     }
 
     if (data.distillery) {
       const sel = document.getElementById('distilleries');
       if (sel) {
-        const opt = fuzzyMatch(Array.from(sel.options), data.distillery);
-        if (opt && !opt.selected) {
-          opt.selected = true;
+        const match = fuzzyMatch(Array.from(sel.options), data.distillery);
+        if (match && !match.opt.selected) {
+          match.opt.selected = true;
           if (typeof initDistilleryWidget === 'function') initDistilleryWidget();
           const widget = sel.parentElement.querySelector('.distillery-widget');
-          if (widget) highlight(widget);
+          if (widget) markFilled(widget);
           filled.push('Distillery');
+          if (!match.exact) {
+            showGlenMatchNote(sel.parentElement, match.opt, data.distillery);
+          }
         }
       }
     }
@@ -345,18 +430,73 @@
     if (data.bottler) {
       const sel = document.getElementById('bottler_id');
       if (sel && !sel.value) {
-        const opt = fuzzyMatch(Array.from(sel.options), data.bottler);
-        if (opt) { sel.value = opt.value; highlight(sel); filled.push('Bottler'); }
+        const match = fuzzyMatch(Array.from(sel.options), data.bottler);
+        if (match) { sel.value = match.opt.value; markFilled(sel); filled.push('Bottler'); }
       }
     }
 
-    scanBanner.className = filled.length ? 'alert alert-success py-2 mb-3' : 'alert alert-warning py-2 mb-3';
-    scanBanner.textContent = filled.length
-      ? 'AI scan filled in: ' + filled.join(', ') + ' — please verify.'
-      : 'AI scan complete — no fields could be filled automatically.';
+    if (filled.length) {
+      scanBanner.className = 'glen-banner mb-3';
+      scanBanner.innerHTML =
+        '<span class="glen-banner__icon">✓</span>' +
+        '<span class="glen-banner__text"><strong>Glen</strong> filled in: ' +
+          filled.join(', ') + ' — please verify.</span>';
+    } else {
+      scanBanner.className = 'alert alert-warning py-2 mb-3';
+      scanBanner.textContent = 'Glen scanned — no fields could be filled automatically.';
+    }
   }
 
-  // Returns the best-matching option by word overlap, or null if no meaningful match.
+  function showGlenMatchNote(container, opt, suggested) {
+    const note = document.createElement('div');
+    note.className = 'glen-match-note';
+    note.dataset.distilleryId = opt.value;
+    note.dataset.suggestedName = suggested;
+    note.innerHTML =
+      '<div class="glen-match-note__text">' +
+        '<span class="glen-match-note__muted">Glen suggested </span>' +
+        '<span class="glen-match-note__name">' + suggested + '</span>' +
+        '<span class="glen-match-note__muted"> · matched to </span>' +
+        '<span class="glen-match-note__matched">' + opt.text + '</span>' +
+      '</div>' +
+      '<button type="button" class="glen-match-note__update">Update name</button>' +
+      '<button type="button" class="glen-match-note__dismiss" title="Dismiss">×</button>';
+
+    note.querySelector('.glen-match-note__update').addEventListener('click', () => {
+      const id        = note.dataset.distilleryId;
+      const suggested = note.dataset.suggestedName;
+      const oldName   = opt.text;
+      fetch('/distillery/' + id + '/rename', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+        body: JSON.stringify({ name: suggested })
+      })
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => {
+        opt.text = data.name;
+        if (typeof initDistilleryWidget === 'function') initDistilleryWidget();
+        note.outerHTML =
+          '<div class="glen-match-confirmed">' +
+            '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style="flex-shrink:0">' +
+              '<circle cx="7" cy="7" r="5.5" stroke="#166534" stroke-width="1.3"/>' +
+              '<path d="M4.5 7l1.8 1.8L9.5 5" stroke="#166534" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '</svg>' +
+            'Renamed <strong style="margin:0 3px">' + oldName + '</strong> to <strong style="margin-left:3px">' + data.name + '</strong>' +
+          '</div>';
+      })
+      .catch(() => {
+        note.querySelector('.glen-match-note__text').textContent = 'Rename failed — please update manually.';
+      });
+    });
+
+    note.querySelector('.glen-match-note__dismiss').addEventListener('click', () => {
+      note.remove();
+    });
+
+    container.appendChild(note);
+  }
+
+  // Returns {opt, exact} for the best-matching option by word overlap, or null if no meaningful match.
   function fuzzyMatch(options, query) {
     const stopWords = new Set(['the', 'a', 'an', 'of', 'and', 'co', 'company', 'distilling', 'distillery', 'brewing', 'whiskey', 'whisky']);
     function keywords(str) {
@@ -371,7 +511,8 @@
       const score = matches / Math.max(qWords.size, tWords.length);
       if (score > bestScore) { bestScore = score; best = opt; }
     }
-    return bestScore >= 0.5 ? best : null;
+    if (!best || bestScore < 0.5) return null;
+    return { opt: best, exact: best.text.toLowerCase() === query.toLowerCase() };
   }
   {% endif %}
 

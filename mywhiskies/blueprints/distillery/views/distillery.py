@@ -268,6 +268,20 @@ def distillery_options():
     return jsonify([{"id": d.id, "name": d.name} for d in distilleries])
 
 
+@distillery_bp.route("/distillery/<uuid:distillery_id>/rename", methods=["POST"], endpoint="rename")
+@login_required
+def distillery_rename(distillery_id):
+    distillery = db.one_or_404(db.select(Distillery).filter_by(id=distillery_id))
+    if distillery.user_id != current_user.id:
+        abort(403)
+    name = (request.json or {}).get("name", "").strip()
+    if not name:
+        return jsonify({"error": "Name required"}), 400
+    distillery.name = name
+    db.session.commit()
+    return jsonify({"name": distillery.name})
+
+
 @distillery_bp.route("/<username:username>/distillery/<paddedint:user_num>/delete", endpoint="delete")
 @login_required
 def distillery_delete(username: str, user_num: int):
