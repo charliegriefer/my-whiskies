@@ -66,6 +66,18 @@ def users():
     )
 
 
+@admin_bp.route("/users/<user_id>/toggle-pro", methods=["POST"])
+@login_required
+@admin_required
+def toggle_pro(user_id: str):
+    user = db.get_or_404(User, user_id)
+    user.is_pro = not user.is_pro
+    db.session.commit()
+    verb = "granted" if user.is_pro else "revoked"
+    flash(Markup(f"Pro status {verb} for <strong>{user.username}</strong>."), "success")
+    return redirect(url_for("admin.users"))
+
+
 @admin_bp.route("/users/<user_id>/toggle-active", methods=["POST"])
 @login_required
 @admin_required
