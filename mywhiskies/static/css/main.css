@@ -630,6 +630,29 @@ ul.terms li {
 
 .glen-intro__dismiss:hover { color: #374151; }
 
+/* Glen minimized pill */
+.glen-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 6px;
+  background: var(--ai-light);
+  border: 1px solid var(--ai-border);
+  border-left: 3px solid var(--ai-accent);
+  border-radius: 0 20px 20px 0;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: opacity 0.15s;
+}
+
+.glen-pill:hover { opacity: 0.85; }
+
+.glen-pill__label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+}
+
 /* Ask Glen button */
 .btn-glen {
   display: inline-flex;
