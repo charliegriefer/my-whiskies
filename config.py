@@ -8,7 +8,7 @@ load_dotenv()
 
 class BaseConfig:
     ENV = "development"
-    APP_VERSION = "0.3.6"
+    APP_VERSION = "0.4.0"
 
     SECRET_KEY = os.environ["SECRET_KEY"]
     PERMANENT_SESSION_LIFETIME = 86400  # 24 hours
