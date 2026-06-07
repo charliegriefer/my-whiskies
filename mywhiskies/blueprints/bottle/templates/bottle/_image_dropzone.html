@@ -47,7 +47,7 @@
 {% if current_user.is_pro and not existing_images %}
 <div id="scan-controls" class="d-none mb-3">
   <button type="button" id="scan-btn" class="btn btn-outline-secondary btn-sm">
-    <i class="bi bi-stars me-1" style="color: #dc3545;"></i>Scan Label
+    <i class="bi bi-stars me-1" style="color: #dc3545;"></i>Scan Photo
   </button>
 </div>
 <div id="scan-banner" class="d-none py-2 mb-3"></div>
@@ -240,15 +240,26 @@
   const scanControls = document.getElementById('scan-controls');
   const scanBtn      = document.getElementById('scan-btn');
   const scanBanner   = document.getElementById('scan-banner');
+  const MAX_ATTEMPTS = 3;
+  let scanAttempts   = 0;
+
+  function photoLabel() {
+    return Object.keys(pending).length === 1 ? 'Photo' : 'Photos';
+  }
 
   function updateScanButton() {
-    scanControls.classList.toggle('d-none', Object.keys(pending).length === 0);
+    const count = Object.keys(pending).length;
+    scanControls.classList.toggle('d-none', count === 0);
+    if (!scanBtn.disabled) {
+      scanBtn.innerHTML = '<i class="bi bi-stars me-1" style="color:#dc3545;"></i>Scan ' + photoLabel();
+    }
   }
 
   scanBtn.addEventListener('click', () => {
     const files = Object.values(pending);
     if (!files.length) return;
 
+    scanAttempts++;
     scanBtn.disabled = true;
     scanBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>Scanning…';
     scanBanner.className = 'd-none';
@@ -258,14 +269,21 @@
 
     fetch(SCAN_URL, { method: 'POST', headers: { 'X-CSRFToken': CSRF_TOKEN }, body: fd })
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
-      .then(data => applyLabelScan(data))
-      .catch(() => {
-        scanBanner.textContent = 'Label scan failed — please fill in fields manually.';
-        scanBanner.className = 'alert alert-warning py-2 mb-3';
+      .then(data => {
+        applyLabelScan(data);
+        scanBtn.innerHTML = '<i class="bi bi-check2 me-1"></i>' + photoLabel() + ' Scanned';
       })
-      .finally(() => {
-        scanBtn.disabled = true;
-        scanBtn.innerHTML = '<i class="bi bi-check2 me-1"></i>Label Scanned';
+      .catch(() => {
+        if (scanAttempts < MAX_ATTEMPTS) {
+          scanBanner.textContent = `Scan failed — try again? (attempt ${scanAttempts} of ${MAX_ATTEMPTS})`;
+          scanBanner.className = 'alert alert-warning py-2 mb-3';
+          scanBtn.disabled = false;
+          scanBtn.innerHTML = '<i class="bi bi-stars me-1" style="color:#dc3545;"></i>Scan ' + photoLabel();
+        } else {
+          scanBanner.textContent = 'Scan failed after 3 attempts — please fill in fields manually.';
+          scanBanner.className = 'alert alert-warning py-2 mb-3';
+          scanBtn.innerHTML = '<i class="bi bi-x me-1"></i>Scan Unavailable';
+        }
       });
   });
 
