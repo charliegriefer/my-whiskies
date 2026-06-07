@@ -77,6 +77,7 @@
               <th>{{ sort_header("Registered", "registered") }}</th>
               <th>{{ sort_header("Last Login", "last_login") }}</th>
               <th>{{ sort_header("Status", "status") }}</th>
+              <th class="text-center">Pro</th>
               <th class="pe-3 text-end">Actions</th>
             </tr>
           </thead>
@@ -116,6 +117,19 @@
                 </td>
                 <td class="align-middle">
                   <span class="badge {{ badge_class }}" style="font-size: 11px;">{{ status }}</span>
+                </td>
+                <td class="align-middle text-center">
+                  <form method="post" action="{{ url_for('admin.toggle_pro', user_id=user.id) }}" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <button
+                      type="submit"
+                      class="btn btn-sm btn-link p-0"
+                      title="{{ 'Revoke Pro' if user.is_pro else 'Grant Pro' }}"
+                      style="font-size: 16px; line-height: 1;"
+                    >
+                      <i class="bi bi-star{{ '-fill text-warning' if user.is_pro else ' text-muted' }}"></i>
+                    </button>
+                  </form>
                 </td>
                 <td class="pe-3 align-middle text-end">
                   <div class="d-flex gap-1 justify-content-end">

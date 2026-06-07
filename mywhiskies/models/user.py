@@ -38,6 +38,7 @@ class User(UserMixin, db.Model):
     email_confirmed: Mapped[bool] = mapped_column(default=False)
     email_confirm_date: Mapped[Optional[datetime]]
     is_active: Mapped[bool] = mapped_column(default=True)
+    is_pro: Mapped[bool] = mapped_column(default=False)
     is_private: Mapped[bool] = mapped_column(default=False)
     is_deleted: Mapped[bool] = mapped_column(default=False)
     deleted_date: Mapped[Optional[datetime]]
