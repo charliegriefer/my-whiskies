@@ -77,6 +77,7 @@ class BaseConfig:
     BOTTLE_IMAGE_S3_BUCKET = "my-whiskies-pics"
     BOTTLE_IMAGE_S3_KEY = "dev"
     BOTTLE_IMAGE_S3_URL = "https://my-whiskies-pics.s3-us-west-1.amazonaws.com"
+    BOTTLE_IMAGE_FULL_S3_KEY = "dev-pro-full"
 
     @staticmethod
     def init_app(app):
@@ -108,6 +109,7 @@ class ProdConfig(BaseConfig):
     LOG_BACKTRACE = True
 
     BOTTLE_IMAGE_S3_KEY = "prod"
+    BOTTLE_IMAGE_FULL_S3_KEY = "prod-pro-full"
 
     BASE_URL = "https://my-whiskies.online"
 
