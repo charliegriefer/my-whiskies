@@ -2,7 +2,7 @@
 """Migrate data from local MySQL to PostgreSQL (RDS).
 
 Usage on EC2:
-    python3 scripts/migrate_mysql_to_pg.py <pg_password>
+    python3 scripts/migrate_mysql_to_pg.py <pg_password> <mysql_password>
 
 Prerequisites:
     1. flask db upgrade (run with PostgreSQL DATABASE_URL set) to create schema
@@ -44,8 +44,8 @@ TABLES = [
 ]
 
 
-def migrate(pg_password: str) -> None:
-    mysql = MySQLdb.connect(host=MYSQL_HOST, user=MYSQL_USER, db=MYSQL_DB)
+def migrate(pg_password: str, mysql_password: str = "") -> None:
+    mysql = MySQLdb.connect(host=MYSQL_HOST, user=MYSQL_USER, passwd=mysql_password, db=MYSQL_DB)
     pg = psycopg2.connect(
         host=PG_HOST,
         port=PG_PORT,
@@ -97,8 +97,8 @@ def migrate(pg_password: str) -> None:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 migrate_mysql_to_pg.py <pg_password>")
+    if len(sys.argv) < 2:
+        print("Usage: python3 migrate_mysql_to_pg.py <pg_password> [mysql_password]")
         sys.exit(1)
     print("Starting migration...\n")
-    migrate(sys.argv[1])
+    migrate(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else "")
