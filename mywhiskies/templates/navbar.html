@@ -2,12 +2,7 @@
 <nav class="navbar navbar-expand-lg">
   <div class="container mx-auto px-3" style="max-width: 1000px;">
     <a href="{{ url_for('core.main') }}" class="navbar-brand d-flex align-items-center flex-shrink-0 me-2 ms-2">
-        <img
-          src="{{ url_for('static', filename='glen.svg') }}"
-          alt=""
-          class="me-2 navbar-logo-img"
-        />
-        <span class="navbar-brand-text d-none d-sm-inline">My Whiskies Online</span>
+        {% include 'macros/_logo.html' %}
         {% if request.path.startswith('/admin') %}
           <span class="badge bg-danger ms-1" style="font-size: 10px; letter-spacing: 0.05em; vertical-align: middle;">ADMIN</span>
         {% endif %}

@@ -150,35 +150,70 @@ a:focus, a:hover {
   user-select: none;
 }
 
-/* Logo icon */
-.navbar-logo-img {
-  height: 48px;
+/* ── Glass SVG icon ──────────────────────────────────────────────────── */
+
+.navbar-logo-svg {
+  height: 44px;
   width: auto;
-  max-width: none;
+  flex-shrink: 0;
+  display: block;
 }
 
-/* Logo text — uses theme heading font and primary text color */
-.navbar-brand-text {
-  font-family: var(--heading-font, 'Cormorant Garamond', serif);
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: var(--text-primary, #212529);
-  line-height: 1.2;
-  white-space: nowrap;
-}
-
-/* Vault uses italic Cormorant Garamond */
-[data-theme="vault"] .navbar-brand-text {
-  font-style: italic;
-  font-weight: 300;
+.glass-body {
+  fill: var(--text-primary, #231f20);
 }
 
 @media (max-width: 575.98px) {
-  .navbar-logo-img {
-    height: 40px;
+  .navbar-logo-svg {
+    height: 38px;
   }
-  .navbar-brand-text {
-    font-size: 1.1rem;
+}
+
+
+/* ── Wordmark ────────────────────────────────────────────────────────── */
+
+.navbar-wordmark {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.wordmark-main {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-primary, #231f20);
+  line-height: 1;
+  white-space: nowrap;
+  font-style: normal;
+}
+
+.wordmark-rule {
+  display: block;
+  height: 1px;
+  background: currentColor;
+  color: var(--text-primary, #231f20);
+  opacity: 0.28;
+}
+
+.wordmark-sub {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 8.5px;
+  font-weight: 300;
+  letter-spacing: 0.52em;
+  text-transform: uppercase;
+  color: var(--text-primary, #231f20);
+  opacity: 0.7;
+  line-height: 1;
+  white-space: nowrap;
+  font-style: normal;
+}
+
+@media (max-width: 575.98px) {
+  .navbar-wordmark {
+    display: none;
   }
 }
 
