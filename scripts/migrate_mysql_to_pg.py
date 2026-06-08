@@ -53,7 +53,12 @@ TABLES = [
 
 
 def migrate(
-    pg_host: str, pg_user: str | None, pg_password: str, pg_sslmode: str, mysql_password: str = "", mysql_user: str = MYSQL_USER
+    pg_host: str,
+    pg_user: str | None,
+    pg_password: str,
+    pg_sslmode: str,
+    mysql_password: str = "",
+    mysql_user: str = MYSQL_USER,
 ) -> None:
     mysql = MySQLdb.connect(host=MYSQL_HOST, user=mysql_user, passwd=mysql_password, db=MYSQL_DB)
     pg_kwargs = dict(host=pg_host, port=PG_PORT, dbname=PG_DB, sslmode=pg_sslmode)
