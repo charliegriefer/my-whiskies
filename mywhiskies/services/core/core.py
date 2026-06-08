@@ -18,7 +18,7 @@ def get_index_counts() -> Dict[str, Any]:
 
 
 def _get_user_count() -> int:
-    return db.session.execute(select(func.count(User.id)).where(User.email_confirmed == 1)).scalar()
+    return db.session.execute(select(func.count(User.id)).where(User.email_confirmed == True)).scalar()  # noqa: E712
 
 
 def _get_distillery_count() -> int:
