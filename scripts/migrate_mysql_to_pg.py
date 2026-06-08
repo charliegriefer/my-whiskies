@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
-"""Migrate data from local MySQL to PostgreSQL (RDS).
+"""Migrate data from local MySQL to PostgreSQL.
 
-Usage on EC2:
-    python3 scripts/migrate_mysql_to_pg.py <pg_password> <mysql_password>
+Usage:
+    # Local (no passwords needed if MySQL has no password):
+    python3 scripts/migrate_mysql_to_pg.py
+
+    # RDS (pg_password required):
+    python3 scripts/migrate_mysql_to_pg.py --pg-password <pw> [--mysql-password <pw>]
+    python3 scripts/migrate_mysql_to_pg.py --rds
 
 Prerequisites:
-    1. flask db upgrade (run with PostgreSQL DATABASE_URL set) to create schema
-    2. pip install psycopg2-binary (already in pyproject.toml)
+    1. Create the schema first: python3 -c "from mywhiskies.app import create_app; ..."
+    2. flask db stamp head
 """
 
-import sys
+import argparse
 
 import MySQLdb
 import MySQLdb.cursors
@@ -20,10 +25,12 @@ MYSQL_HOST = "localhost"
 MYSQL_USER = "charlie"
 MYSQL_DB = "my-whiskies"
 
-PG_HOST = "my-whiskies-db.cajbdipwrxli.us-west-1.rds.amazonaws.com"
+PG_HOST_LOCAL = "localhost"
+PG_HOST_RDS = "my-whiskies-db.cajbdipwrxli.us-west-1.rds.amazonaws.com"
 PG_PORT = 5432
 PG_DB = "mywhiskies"
-PG_USER = "postgres"
+PG_USER_LOCAL = None  # uses OS user
+PG_USER_RDS = "postgres"
 
 # MySQL stores booleans as TINYINT(1); PostgreSQL needs actual bool values
 BOOL_COLS = {
@@ -45,16 +52,14 @@ TABLES = [
 ]
 
 
-def migrate(pg_password: str, mysql_password: str = "") -> None:
+def migrate(pg_host: str, pg_user: str | None, pg_password: str, pg_sslmode: str, mysql_password: str = "") -> None:
     mysql = MySQLdb.connect(host=MYSQL_HOST, user=MYSQL_USER, passwd=mysql_password, db=MYSQL_DB)
-    pg = psycopg2.connect(
-        host=PG_HOST,
-        port=PG_PORT,
-        dbname=PG_DB,
-        user=PG_USER,
-        password=pg_password,
-        sslmode="require",
-    )
+    pg_kwargs = dict(host=pg_host, port=PG_PORT, dbname=PG_DB, sslmode=pg_sslmode)
+    if pg_user:
+        pg_kwargs["user"] = pg_user
+    if pg_password:
+        pg_kwargs["password"] = pg_password
+    pg = psycopg2.connect(**pg_kwargs)
     pg.autocommit = False
 
     my_cur = mysql.cursor(MySQLdb.cursors.DictCursor)
@@ -98,8 +103,16 @@ def migrate(pg_password: str, mysql_password: str = "") -> None:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python3 migrate_mysql_to_pg.py <pg_password> [mysql_password]")
-        sys.exit(1)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--rds", action="store_true", help="Target RDS instead of local PostgreSQL")
+    parser.add_argument("--pg-password", default="", help="PostgreSQL password (required for RDS)")
+    parser.add_argument("--mysql-password", default="", help="MySQL password if set")
+    args = parser.parse_args()
+
+    if args.rds:
+        pg_host, pg_user, pg_sslmode = PG_HOST_RDS, PG_USER_RDS, "require"
+    else:
+        pg_host, pg_user, pg_sslmode = PG_HOST_LOCAL, PG_USER_LOCAL, "disable"
+
     print("Starting migration...\n")
-    migrate(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else "")
+    migrate(pg_host, pg_user, args.pg_password, pg_sslmode, args.mysql_password)
