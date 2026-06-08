@@ -52,8 +52,10 @@ TABLES = [
 ]
 
 
-def migrate(pg_host: str, pg_user: str | None, pg_password: str, pg_sslmode: str, mysql_password: str = "") -> None:
-    mysql = MySQLdb.connect(host=MYSQL_HOST, user=MYSQL_USER, passwd=mysql_password, db=MYSQL_DB)
+def migrate(
+    pg_host: str, pg_user: str | None, pg_password: str, pg_sslmode: str, mysql_password: str = "", mysql_user: str = MYSQL_USER
+) -> None:
+    mysql = MySQLdb.connect(host=MYSQL_HOST, user=mysql_user, passwd=mysql_password, db=MYSQL_DB)
     pg_kwargs = dict(host=pg_host, port=PG_PORT, dbname=PG_DB, sslmode=pg_sslmode)
     if pg_user:
         pg_kwargs["user"] = pg_user
@@ -106,6 +108,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--rds", action="store_true", help="Target RDS instead of local PostgreSQL")
     parser.add_argument("--pg-password", default="", help="PostgreSQL password (required for RDS)")
+    parser.add_argument("--mysql-user", default=MYSQL_USER, help=f"MySQL username (default: {MYSQL_USER})")
     parser.add_argument("--mysql-password", default="", help="MySQL password if set")
     args = parser.parse_args()
 
@@ -115,4 +118,4 @@ if __name__ == "__main__":
         pg_host, pg_user, pg_sslmode = PG_HOST_LOCAL, PG_USER_LOCAL, "disable"
 
     print("Starting migration...\n")
-    migrate(pg_host, pg_user, args.pg_password, pg_sslmode, args.mysql_password)
+    migrate(pg_host, pg_user, args.pg_password, pg_sslmode, args.mysql_password, args.mysql_user)
