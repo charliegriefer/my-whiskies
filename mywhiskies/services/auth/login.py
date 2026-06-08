@@ -1,7 +1,7 @@
 from urllib.parse import urlparse
 
 from flask import flash, url_for
-from sqlalchemy import exists
+from sqlalchemy import exists, func
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
 
@@ -10,7 +10,11 @@ from mywhiskies.models import User, UserLogin
 
 
 def get_user_by_username(username: str) -> User:
-    stmt = select(User).options(joinedload(User.bottles)).filter_by(username=username, is_deleted=False)
+    stmt = (
+        select(User)
+        .options(joinedload(User.bottles))
+        .filter(func.lower(User.username) == username.lower(), User.is_deleted == False)  # noqa: E712
+    )
     with db.session() as session:
         user = session.execute(stmt).scalars().first()
         return user  # This user object is tied to the session used in this context

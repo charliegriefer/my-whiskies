@@ -2,8 +2,14 @@ from flask import abort, flash
 from flask_login import current_user as _current_user
 from flask_wtf import FlaskForm as Form
 from markupsafe import Markup
+from sqlalchemy import func
 
+from mywhiskies.extensions import db
 from mywhiskies.models import User
+
+
+def get_user_or_404(username: str) -> User:
+    return db.one_or_404(db.select(User).filter(func.lower(User.username) == username.lower()))
 
 
 def is_my_list(username: str, current_user: User) -> bool:

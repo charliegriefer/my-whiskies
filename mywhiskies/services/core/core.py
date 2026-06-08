@@ -47,7 +47,9 @@ def _get_bottle_type_counts() -> List[Tuple[str, int]]:
 def get_user_by_username(username: str) -> User:
     if current_user.is_authenticated and current_user.username.lower() == username.lower():
         return current_user
-    return db.one_or_404(db.select(User).filter_by(username=username))
+    from mywhiskies.services.utils import get_user_or_404
+
+    return get_user_or_404(username)
 
 
 def get_live_bottles_for_user(user: User) -> List["Bottle"]:

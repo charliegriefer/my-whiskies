@@ -7,7 +7,7 @@ from markupsafe import Markup
 from mywhiskies.blueprints.barrel_picker import barrel_picker_bp
 from mywhiskies.extensions import db
 from mywhiskies.forms.barrel_picker import BarrelPickerAddForm, BarrelPickerEditForm, BarrelPickerQuickAddForm
-from mywhiskies.models import BarrelPicker, BottleTypes, User
+from mywhiskies.models import BarrelPicker, BottleTypes
 from mywhiskies.services import utils
 from mywhiskies.services.barrel_picker.barrel_picker import (
     add_barrel_picker,
@@ -28,7 +28,7 @@ def _sorted_pickers():
 
 @barrel_picker_bp.route("/<username>/barrel-pickers", methods=["GET"], endpoint="list")
 def barrel_picker_list(username: str):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     utils.check_privacy(user)
     _is_my_list = utils.is_my_list(username, current_user)
 
@@ -86,7 +86,7 @@ def barrel_picker_list(username: str):
     endpoint="detail",
 )
 def barrel_picker_detail(username: str, user_num: int):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     utils.check_privacy(user)
     picker = db.one_or_404(db.select(BarrelPicker).filter_by(user_id=user.id, user_num=user_num))
     _is_my_list = utils.is_my_list(username, current_user)
@@ -197,7 +197,7 @@ def barrel_picker_add_page():
 )
 @login_required
 def barrel_picker_edit(username: str, user_num: int):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     if user.id != current_user.id:
         abort(403)
     picker = db.one_or_404(db.select(BarrelPicker).filter_by(user_id=user.id, user_num=user_num))
@@ -229,7 +229,7 @@ def barrel_picker_edit(username: str, user_num: int):
 )
 @login_required
 def barrel_picker_delete_page(username: str, user_num: int):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     if user.id != current_user.id:
         abort(403)
     picker = db.one_or_404(db.select(BarrelPicker).filter_by(user_id=user.id, user_num=user_num))

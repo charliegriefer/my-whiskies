@@ -1,6 +1,6 @@
 from flask import current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_user, logout_user
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import joinedload
 
 from mywhiskies.blueprints.auth import auth
@@ -26,7 +26,7 @@ def login():
             (
                 db.session.execute(
                     select(User)
-                    .filter_by(username=form.username.data, is_deleted=False)
+                    .filter(func.lower(User.username) == form.username.data.lower(), User.is_deleted == False)  # noqa: E712
                     .options(joinedload(User.distilleries))
                 )
             )

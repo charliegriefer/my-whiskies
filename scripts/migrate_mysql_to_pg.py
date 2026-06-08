@@ -8,6 +8,7 @@ Prerequisites:
     1. flask db upgrade (run with PostgreSQL DATABASE_URL set) to create schema
     2. pip install psycopg2-binary (already in pyproject.toml)
 """
+
 import sys
 
 import MySQLdb

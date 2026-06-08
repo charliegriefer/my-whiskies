@@ -8,7 +8,7 @@ from markupsafe import Markup
 from mywhiskies.blueprints.distillery import distillery_bp
 from mywhiskies.extensions import db
 from mywhiskies.forms.distillery import DistilleryAddForm, DistilleryEditForm, DistilleryQuickAddForm
-from mywhiskies.models import BottleTypes, Distillery, User
+from mywhiskies.models import BottleTypes, Distillery
 from mywhiskies.services import utils
 from mywhiskies.services.bottle.bottle import list_bottles_for_entity
 from mywhiskies.services.distillery.distillery import (
@@ -51,7 +51,7 @@ def bulk_distillery_add():
 
 @distillery_bp.route("/<username>/distilleries", methods=["GET"], endpoint="list")
 def distilleries(username: str):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     utils.check_privacy(user)
     _is_my_list = utils.is_my_list(username, current_user)
 
@@ -118,7 +118,7 @@ def distillery_legacy(username: str, distillery_uuid: UUID):
     endpoint="detail",
 )
 def distillery_detail(username: str, user_num: int):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     utils.check_privacy(user)
     _distillery = db.one_or_404(db.select(Distillery).filter_by(user_id=user.id, user_num=user_num))
     _is_my_list = utils.is_my_list(username, current_user)
@@ -221,7 +221,7 @@ def distillery_add():
 )
 @login_required
 def distillery_edit(username: str, user_num: int):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     if user.id != current_user.id:
         abort(403)
     distillery = db.one_or_404(db.select(Distillery).filter_by(user_id=user.id, user_num=user_num))
@@ -285,7 +285,7 @@ def distillery_rename(distillery_id):
 @distillery_bp.route("/<username:username>/distillery/<paddedint:user_num>/delete", endpoint="delete")
 @login_required
 def distillery_delete(username: str, user_num: int):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     if user.id != current_user.id:
         abort(403)
     distillery = db.one_or_404(db.select(Distillery).filter_by(user_id=user.id, user_num=user_num))

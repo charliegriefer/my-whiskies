@@ -8,7 +8,7 @@ from markupsafe import Markup
 from mywhiskies.blueprints.bottler import bottler_bp
 from mywhiskies.extensions import db
 from mywhiskies.forms.bottler import BottlerAddForm, BottlerEditForm, BottlerQuickAddForm
-from mywhiskies.models import Bottler, BottleTypes, User
+from mywhiskies.models import Bottler, BottleTypes
 from mywhiskies.services import utils
 from mywhiskies.services.bottle.bottle import list_bottles_for_entity
 from mywhiskies.services.bottler.bottler import (
@@ -25,7 +25,7 @@ _VALID_PER_PAGE = {25, 50, 100, 10000}
 
 @bottler_bp.route("/<username:username>/bottlers", methods=["GET"], endpoint="list")
 def bottlers(username: str):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     utils.check_privacy(user)
     _is_my_list = utils.is_my_list(username, current_user)
 
@@ -89,7 +89,7 @@ def bottler_legacy(username: str, bottler_uuid: UUID):
     endpoint="detail",
 )
 def bottler(username: str, user_num: int):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     utils.check_privacy(user)
     _bottler = db.one_or_404(db.select(Bottler).filter_by(user_id=user.id, user_num=user_num))
     _is_my_list = utils.is_my_list(username, current_user)
@@ -192,7 +192,7 @@ def bottler_add():
 )
 @login_required
 def bottler_edit(username: str, user_num: int):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     if user.id != current_user.id:
         abort(403)
     _bottler = db.one_or_404(db.select(Bottler).filter_by(user_id=user.id, user_num=user_num))
@@ -242,7 +242,7 @@ def bottler_options():
 @bottler_bp.route("/<username:username>/bottler/<paddedint:user_num>/delete", endpoint="delete")
 @login_required
 def bottler_delete(username: str, user_num: int):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     if user.id != current_user.id:
         abort(403)
     _bottler = db.one_or_404(db.select(Bottler).filter_by(user_id=user.id, user_num=user_num))

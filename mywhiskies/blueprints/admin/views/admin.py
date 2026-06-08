@@ -35,7 +35,7 @@ def users():
         username = form.username.data.strip().lower()
         email = form.email.data.strip().lower()
 
-        if db.session.execute(db.select(User).filter_by(username=username)).scalar_one_or_none():
+        if db.session.execute(db.select(User).filter(db.func.lower(User.username) == username)).scalar_one_or_none():
             form.username.errors.append("Username already taken.")
         elif db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none():
             form.email.errors.append("Email already in use.")

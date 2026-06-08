@@ -9,7 +9,7 @@ from markupsafe import Markup
 from mywhiskies.blueprints.bottle import bottle_bp
 from mywhiskies.extensions import db
 from mywhiskies.forms.bottle import BottleAddForm, BottleEditForm
-from mywhiskies.models import Bottle, BottleTypes, User
+from mywhiskies.models import Bottle, BottleTypes
 from mywhiskies.services import utils
 from mywhiskies.services.bottle.bottle import (
     add_bottle,
@@ -37,7 +37,7 @@ _VALID_PER_PAGE = {25, 50, 100, 10000}
 
 @bottle_bp.route("/<username:username>/bottles", methods=["GET"], endpoint="list")
 def bottles(username: str):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     utils.check_privacy(user)
     _is_my_list = utils.is_my_list(username, current_user)
 
@@ -119,7 +119,7 @@ def bottles(username: str):
 @bottle_bp.route("/<username:username>/bottle/random", endpoint="random")
 @login_required
 def bottle_random(username: str):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     if user.id != current_user.id:
         abort(403)
     q = request.args.get("q", "").strip()
@@ -139,7 +139,7 @@ def bottle_legacy(username: str, bottle_uuid: UUID):
 
 @bottle_bp.route("/<username:username>/bottle/<paddedint:user_num>", endpoint="detail")
 def bottle(username: str, user_num: int):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     utils.check_privacy(user)
     _bottle = db.one_or_404(db.select(Bottle).filter_by(user_id=user.id, user_num=user_num))
     _, _, img_s3_url = get_s3_config()
@@ -197,7 +197,7 @@ def bottle_add():
 )
 @login_required
 def bottle_edit(username: str, user_num: int):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     if user.id != current_user.id:
         abort(403)
     _bottle = db.one_or_404(db.select(Bottle).filter_by(user_id=user.id, user_num=user_num))
@@ -245,7 +245,7 @@ def bottle_scan_label():
 @bottle_bp.route("/<username:username>/bottle/<paddedint:user_num>/delete", endpoint="delete")
 @login_required
 def bottle_delete(username: str, user_num: int):
-    user = db.one_or_404(db.select(User).filter_by(username=username))
+    user = utils.get_user_or_404(username)
     if user.id != current_user.id:
         abort(403)
     _bottle = db.one_or_404(db.select(Bottle).filter_by(user_id=user.id, user_num=user_num))
