@@ -30,6 +30,7 @@ dependencies = [
     "WTForms==3.0.1",
     "pytest-playwright>=0.8.0",
     "anthropic>=0.107.0",
+    "psycopg2-binary>=2.9.12",
 ]
 
 [dependency-groups]
