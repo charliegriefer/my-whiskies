@@ -31,6 +31,7 @@ dependencies = [
     "pytest-playwright>=0.8.0",
     "anthropic>=0.107.0",
     "psycopg2-binary>=2.9.12",
+    "stripe>=11.0.0",
 ]
 
 [dependency-groups]

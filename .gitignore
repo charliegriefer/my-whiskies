@@ -202,3 +202,11 @@ log/*
 .env.docker
 localhost+1.pem
 localhost+1-key.pem
+
+
+# Stripe AI Agent Skills
+.agents/
+.claude/
+.continue/
+.pi/
+skills-lock.json

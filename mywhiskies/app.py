@@ -101,6 +101,8 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
     from mywhiskies.blueprints.distillery import distillery_bp
     from mywhiskies.blueprints.distillery.views import distillery  # noqa: F401
     from mywhiskies.blueprints.errors.views import errors
+    from mywhiskies.blueprints.payments import payments_bp
+    from mywhiskies.blueprints.payments.views import payments  # noqa: F401
     from mywhiskies.blueprints.user import user_bp
     from mywhiskies.blueprints.user.views import user  # noqa: F401
 
@@ -112,6 +114,7 @@ def create_app(settings_override: dict = None, config_class: type = None) -> Fla
     app.register_blueprint(bottler_bp)
     app.register_blueprint(distillery_bp)
     app.register_blueprint(errors)
+    app.register_blueprint(payments_bp)
     app.register_blueprint(user_bp)
 
     register_filters(app)
