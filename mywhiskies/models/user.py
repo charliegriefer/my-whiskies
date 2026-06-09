@@ -39,6 +39,8 @@ class User(UserMixin, db.Model):
     email_confirm_date: Mapped[Optional[datetime]]
     is_active: Mapped[bool] = mapped_column(default=True)
     is_pro: Mapped[bool] = mapped_column(default=False)
+    stripe_customer_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    stripe_subscription_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     is_private: Mapped[bool] = mapped_column(default=False)
     is_deleted: Mapped[bool] = mapped_column(default=False)
     deleted_date: Mapped[Optional[datetime]]

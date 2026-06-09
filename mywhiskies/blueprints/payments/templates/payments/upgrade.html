@@ -1,0 +1,67 @@
+{% extends "_base.html" %}
+
+{% block app_content %}
+<main class="flex-shrink-0 py-5">
+  <div class="text-center mb-5">
+    <p class="hm-sec-label">Upgrade</p>
+    <h1 class="hm-sec-h2">Go Pro.</h1>
+    <p class="text-muted" style="max-width: 480px; margin: 0 auto;">Unlock full-size photo retention and everything else we add to Pro — for less than a dram a month.</p>
+  </div>
+
+  <div class="d-flex flex-column flex-md-row justify-content-center gap-4 mb-5">
+
+    <!-- Monthly -->
+    <div class="card" style="max-width: 320px; width: 100%;">
+      <div class="card-body p-4">
+        <p class="text-uppercase fw-semibold mb-1" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-secondary);">Monthly</p>
+        <div class="d-flex align-items-end gap-1 mb-3">
+          <span style="font-size: 2.5rem; font-weight: 700; line-height: 1; color: var(--text-primary);">$4.99</span>
+          <span class="text-muted mb-1">/ month</span>
+        </div>
+        <ul class="list-unstyled mb-4" style="font-size: 0.9rem;">
+          <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Unlimited bottle tracking</li>
+          <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Distilleries, bottlers &amp; barrel pickers</li>
+          <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Full-size photo retention</li>
+          <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Early access to new features</li>
+        </ul>
+        <form method="POST" action="{{ url_for('payments.checkout') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="price_id" value="{{ monthly_price_id }}">
+          <button type="submit" class="btn btn-primary w-100">Subscribe Monthly</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Annual -->
+    <div class="card border-primary" style="max-width: 320px; width: 100%;">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start mb-1">
+          <p class="text-uppercase fw-semibold mb-0" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-secondary);">Annual</p>
+          <span class="badge bg-primary" style="font-size: 0.7rem;">Best Value</span>
+        </div>
+        <div class="d-flex align-items-end gap-1 mb-3">
+          <span style="font-size: 2.5rem; font-weight: 700; line-height: 1; color: var(--text-primary);">$49.99</span>
+          <span class="text-muted mb-1">/ year</span>
+        </div>
+        <p class="text-muted mb-3" style="font-size: 0.8rem;">~$4.17/month — save 2 months vs monthly</p>
+        <ul class="list-unstyled mb-4" style="font-size: 0.9rem;">
+          <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Unlimited bottle tracking</li>
+          <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Distilleries, bottlers &amp; barrel pickers</li>
+          <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Full-size photo retention</li>
+          <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Early access to new features</li>
+        </ul>
+        <form method="POST" action="{{ url_for('payments.checkout') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="price_id" value="{{ annual_price_id }}">
+          <button type="submit" class="btn btn-primary w-100">Subscribe Annually</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="text-center text-muted" style="font-size: 0.85rem;">
+    Cancel any time. Payments handled securely by <a href="https://stripe.com" target="_blank" rel="noopener">Stripe</a>.
+  </p>
+</main>
+{% endblock %}

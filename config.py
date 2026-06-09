@@ -80,6 +80,15 @@ class BaseConfig:
     BOTTLE_IMAGE_FULL_S3_KEY = "dev-pro-full"
 
     # ----------------------------------------------------------------------
+    # STRIPE
+    # ----------------------------------------------------------------------
+    STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY", "")
+    STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
+    STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
+    STRIPE_PRICE_MONTHLY = os.environ.get("STRIPE_PRICE_MONTHLY", "")
+    STRIPE_PRICE_ANNUAL = os.environ.get("STRIPE_PRICE_ANNUAL", "")
+
+    # ----------------------------------------------------------------------
     # AI / ANTHROPIC
     # ----------------------------------------------------------------------
     ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
