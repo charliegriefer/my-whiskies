@@ -79,10 +79,10 @@ def webhook():
 def _handle_checkout_completed(session):
     from mywhiskies.models import User
 
-    user = db.session.get(User, session.get("client_reference_id"))
+    user = db.session.get(User, session.client_reference_id)
     if user:
-        user.stripe_customer_id = session.get("customer")
-        user.stripe_subscription_id = session.get("subscription")
+        user.stripe_customer_id = session.customer
+        user.stripe_subscription_id = session.subscription
         user.is_pro = True
         db.session.commit()
 
@@ -90,7 +90,7 @@ def _handle_checkout_completed(session):
 def _handle_subscription_deleted(subscription):
     from mywhiskies.models import User
 
-    user = User.query.filter_by(stripe_subscription_id=subscription["id"]).first()
+    user = User.query.filter_by(stripe_subscription_id=subscription.id).first()
     if user:
         user.is_pro = False
         user.stripe_subscription_id = None
