@@ -133,9 +133,17 @@
       savePngBtn.disabled = true;
       savePngBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Saving…';
       html2canvas(document.querySelector('main'), { scale: 2, useCORS: true }).then(function (canvas) {
+        const pad = 60;
+        const out = document.createElement('canvas');
+        out.width  = canvas.width  + pad * 2;
+        out.height = canvas.height + pad * 2;
+        const ctx = out.getContext('2d');
+        ctx.fillStyle = '#f4f6f9';
+        ctx.fillRect(0, 0, out.width, out.height);
+        ctx.drawImage(canvas, pad, pad);
         const link = document.createElement('a');
         link.download = 'my-whiskies-insights.png';
-        link.href = canvas.toDataURL('image/png');
+        link.href = out.toDataURL('image/png');
         link.click();
         savePngBtn.disabled = false;
         savePngBtn.innerHTML = '<i class="bi bi-download me-1"></i>Save as PNG';
