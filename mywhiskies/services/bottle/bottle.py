@@ -13,6 +13,12 @@ from mywhiskies.services.bottle.image import (
     process_bottle_images,
 )
 
+
+def _normalize(s: str) -> str:
+    """Normalize smart quotes/apostrophes to their ASCII equivalents."""
+    return s.replace("‘", "'").replace("’", "'").replace("“", '"').replace("”", '"')
+
+
 _SORT_FNS = {
     "name": lambda b: b.name.lower(),
     "type": lambda b: b.type.value.lower(),
@@ -81,15 +87,15 @@ def list_bottles_by_user(
         if types:
             killed = [b for b in killed if b.type.name in types]
         if q:
-            q_lower = q.lower()
+            q_lower = _normalize(q.lower())
             killed = [
                 b
                 for b in killed
-                if q_lower in b.name.lower()
-                or (b.description and q_lower in b.description.lower())
-                or (b.bottler and q_lower in b.bottler.name.lower())
-                or any(q_lower in d.name.lower() for d in b.distilleries)
-                or any(q_lower in p.name.lower() for p in b.barrel_pickers)
+                if q_lower in _normalize(b.name.lower())
+                or (b.description and q_lower in _normalize(b.description.lower()))
+                or (b.bottler and q_lower in _normalize(b.bottler.name.lower()))
+                or any(q_lower in _normalize(d.name.lower()) for d in b.distilleries)
+                or any(q_lower in _normalize(p.name.lower()) for p in b.barrel_pickers)
             ]
         killed_matches = len(killed)
         bottles = [b for b in bottles if not b.date_killed]
@@ -98,15 +104,15 @@ def list_bottles_by_user(
         bottles = [b for b in bottles if b.type.name in types]
 
     if q:
-        q_lower = q.lower()
+        q_lower = _normalize(q.lower())
         bottles = [
             b
             for b in bottles
-            if q_lower in b.name.lower()
-            or (b.description and q_lower in b.description.lower())
-            or (b.bottler and q_lower in b.bottler.name.lower())
-            or any(q_lower in d.name.lower() for d in b.distilleries)
-            or any(q_lower in p.name.lower() for p in b.barrel_pickers)
+            if q_lower in _normalize(b.name.lower())
+            or (b.description and q_lower in _normalize(b.description.lower()))
+            or (b.bottler and q_lower in _normalize(b.bottler.name.lower()))
+            or any(q_lower in _normalize(d.name.lower()) for d in b.distilleries)
+            or any(q_lower in _normalize(p.name.lower()) for p in b.barrel_pickers)
         ]
 
     groups = _make_groups(bottles)
@@ -161,15 +167,15 @@ def list_bottles_for_entity(
         if types:
             killed = [b for b in killed if b.type.name in types]
         if q:
-            q_lower = q.lower()
+            q_lower = _normalize(q.lower())
             killed = [
                 b
                 for b in killed
-                if q_lower in b.name.lower()
-                or (b.description and q_lower in b.description.lower())
-                or (b.bottler and q_lower in b.bottler.name.lower())
-                or any(q_lower in d.name.lower() for d in b.distilleries)
-                or any(q_lower in p.name.lower() for p in b.barrel_pickers)
+                if q_lower in _normalize(b.name.lower())
+                or (b.description and q_lower in _normalize(b.description.lower()))
+                or (b.bottler and q_lower in _normalize(b.bottler.name.lower()))
+                or any(q_lower in _normalize(d.name.lower()) for d in b.distilleries)
+                or any(q_lower in _normalize(p.name.lower()) for p in b.barrel_pickers)
             ]
         killed_matches = len(killed)
         bottles = [b for b in bottles if not b.date_killed]
@@ -178,15 +184,15 @@ def list_bottles_for_entity(
         bottles = [b for b in bottles if b.type.name in types]
 
     if q:
-        q_lower = q.lower()
+        q_lower = _normalize(q.lower())
         bottles = [
             b
             for b in bottles
-            if q_lower in b.name.lower()
-            or (b.description and q_lower in b.description.lower())
-            or (b.bottler and q_lower in b.bottler.name.lower())
-            or any(q_lower in d.name.lower() for d in b.distilleries)
-            or any(q_lower in p.name.lower() for p in b.barrel_pickers)
+            if q_lower in _normalize(b.name.lower())
+            or (b.description and q_lower in _normalize(b.description.lower()))
+            or (b.bottler and q_lower in _normalize(b.bottler.name.lower()))
+            or any(q_lower in _normalize(d.name.lower()) for d in b.distilleries)
+            or any(q_lower in _normalize(p.name.lower()) for p in b.barrel_pickers)
         ]
 
     groups = _make_groups(bottles)
@@ -225,15 +231,15 @@ def get_random_bottle(
     if types:
         bottles = [b for b in bottles if b.type.name in types]
     if q:
-        q_lower = q.lower()
+        q_lower = _normalize(q.lower())
         bottles = [
             b
             for b in bottles
-            if q_lower in b.name.lower()
-            or (b.description and q_lower in b.description.lower())
-            or (b.bottler and q_lower in b.bottler.name.lower())
-            or any(q_lower in d.name.lower() for d in b.distilleries)
-            or any(q_lower in p.name.lower() for p in b.barrel_pickers)
+            if q_lower in _normalize(b.name.lower())
+            or (b.description and q_lower in _normalize(b.description.lower()))
+            or (b.bottler and q_lower in _normalize(b.bottler.name.lower()))
+            or any(q_lower in _normalize(d.name.lower()) for d in b.distilleries)
+            or any(q_lower in _normalize(p.name.lower()) for p in b.barrel_pickers)
         ]
     return random.choice(bottles) if bottles else None
 

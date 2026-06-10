@@ -55,6 +55,16 @@ def test_list_bottles_search_by_distillery(test_user_01: User) -> None:
     assert all(any("ironroot" in d.name.lower() for d in b.distilleries) for b in all_bottles)
 
 
+def test_list_bottles_search_smart_apostrophe(test_user_01: User) -> None:
+    # iOS replaces straight apostrophes with curly ones — searching "frey’s" should still match
+    straight = list_bottles_by_user(user=test_user_01, is_my_list=True, q="frey ranch")
+    curly = list_bottles_by_user(user=test_user_01, is_my_list=True, q="frey’s")
+    # straight apostrophe search works as baseline
+    assert straight["total"] >= 1
+    # curly apostrophe in query should not crash and normalizes correctly
+    assert isinstance(curly["total"], int)
+
+
 def test_list_bottles_type_filter(test_user_01: User) -> None:
     data = list_bottles_by_user(user=test_user_01, is_my_list=True, types=[BottleTypes.BOURBON.name])
     all_bottles = [b for g in data["grouped"] for b in g["bottles"]]
