@@ -2286,3 +2286,21 @@ trix-editor {
   .add-bottle-page .card { padding: 20px !important; }
   .add-bottle-page h1 { font-size: 1.5rem; }
 }
+
+/* ===================================================================
+   INSIGHTS PAGE  (user/insights.html)
+   =================================================================== */
+
+.insights-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.insights-chart-wrap {
+  position: relative;
+  width: 100%;
+}

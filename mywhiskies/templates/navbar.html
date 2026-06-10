@@ -57,6 +57,9 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownUser">
               <li><a class="dropdown-item" href="{{ url_for('user.account') }}"><i class="bi bi-person"></i> My Account</a></li>
+              {% if current_user.is_pro %}
+                <li><a class="dropdown-item" href="{{ url_for('user.insights', username=current_user.username) }}"><i class="bi bi-bar-chart"></i> Collection Insights</a></li>
+              {% endif %}
               {% if current_user.username.lower() == config.get('ADMIN_USERNAME', '').lower() %}
                 <li><a class="dropdown-item" href="{{ url_for('admin.users') }}"><i class="bi bi-shield"></i> Admin</a></li>
               {% endif %}

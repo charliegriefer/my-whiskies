@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, request, send_file, url_for
+from flask import abort, flash, redirect, render_template, request, send_file, url_for
 from flask_login import current_user, login_required, logout_user
 
 from mywhiskies.blueprints.user import user_bp
@@ -6,6 +6,7 @@ from mywhiskies.extensions import db
 from mywhiskies.forms.user import ChangeEmailForm, ChangePasswordForm, DeleteAccountForm, PrivacyForm
 from mywhiskies.models import PasskeyCredential, User
 from mywhiskies.services.auth.email import send_email_change_confirmation
+from mywhiskies.services.user.insights import get_collection_insights
 from mywhiskies.services.user.user import (
     apply_email_change,
     build_export_bottles,
@@ -22,6 +23,25 @@ from mywhiskies.services.user.user import (
 @user_bp.route("/<username:username>", methods=["GET"])
 def bottles_redirect(username: str):
     return redirect(url_for("bottle.list", username=username))
+
+
+@user_bp.route("/<username:username>/insights")
+@login_required
+def insights(username: str):
+    if current_user.username.lower() != username.lower():
+        abort(403)
+    if not current_user.is_pro:
+        flash("Collection Insights is a Pro feature. Upgrade to unlock it.", "info")
+        return redirect(url_for("payments.upgrade"))
+    data = get_collection_insights(current_user)
+    possessive = f"{current_user.username}'" if current_user.username.endswith("s") else f"{current_user.username}'s"
+    return render_template(
+        "user/insights.html",
+        title="Collection Insights — My Whiskies Online",
+        user=current_user,
+        possessive=possessive,
+        insights=data,
+    )
 
 
 @user_bp.route("/account")
