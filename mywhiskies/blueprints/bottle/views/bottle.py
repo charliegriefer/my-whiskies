@@ -2,7 +2,7 @@ import time
 from urllib.parse import urlparse
 from uuid import UUID
 
-from flask import abort, g, jsonify, redirect, render_template, request, url_for
+from flask import abort, current_app, flash, g, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from markupsafe import Markup
 
@@ -171,6 +171,14 @@ def bottle_add():
     if not current_user.distilleries:
         return redirect(url_for("distillery.no_distilleries"))
 
+    limit = current_app.config["FREE_TIER_BOTTLE_LIMIT"]
+    if not current_user.is_pro and len(current_user.bottles) >= limit:
+        flash(
+            f"You've reached the {limit}-bottle limit for free accounts. Upgrade to Pro for unlimited bottles.",
+            "warning",
+        )
+        return redirect(url_for("payments.upgrade"))
+
     form = prep_bottle_form(current_user, BottleAddForm())
     _, _, img_s3_url = get_s3_config()
 
@@ -231,7 +239,8 @@ def bottle_edit(username: str, user_num: int):
 @login_required
 def bottle_scan_label():
     if not current_user.is_pro:
-        abort(403)
+        if current_user.glen_scan_count >= current_app.config["FREE_TIER_SCAN_LIMIT"]:
+            return jsonify({"error": "scan_limit_reached"}), 403
     files = request.files.getlist("image")
     if not files:
         return jsonify({"error": "No image provided"}), 400
@@ -239,6 +248,9 @@ def bottle_scan_label():
     result = scan_bottle_label(images)
     if result is None:
         return jsonify({"error": "Scan failed"}), 502
+    if not current_user.is_pro:
+        current_user.glen_scan_count += 1
+        db.session.commit()
     return jsonify(result)
 
 

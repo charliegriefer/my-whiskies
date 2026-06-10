@@ -21,6 +21,9 @@ class BaseConfig:
     INACTIVITY_DAYS = 180
     INACTIVITY_GRACE_PERIOD_DAYS = 30
 
+    FREE_TIER_BOTTLE_LIMIT = 100
+    FREE_TIER_SCAN_LIMIT = 10
+
     # ----------------------------------------------------------------------
     # DATABASE
     # ----------------------------------------------------------------------
