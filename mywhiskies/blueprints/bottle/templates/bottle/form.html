@@ -56,7 +56,6 @@
         b.appendChild(x);
         badges.appendChild(b);
       });
-      updatePreview();
     }
 
     function renderDropdown(q) {
@@ -136,7 +135,6 @@
         b.appendChild(x);
         badges.appendChild(b);
       });
-      updatePreview();
     }
 
     function renderDropdown(q) {
@@ -248,141 +246,6 @@
       });
   });
 
-  // ── Live preview ──────────────────────────────────────────────────────────────
-  function updatePreview() {
-    const nameEl  = document.getElementById('preview-name');
-    const distEl  = document.getElementById('preview-distillery');
-    const chipAbv  = document.getElementById('chip-abv');
-    const chipSize = document.getElementById('chip-size');
-    const chipType = document.getElementById('chip-type');
-    const chipYear = document.getElementById('chip-year');
-    const bottlerRow  = document.getElementById('preview-bottler-row');
-    const bottlerSpan = document.getElementById('preview-bottler');
-    if (!nameEl) return; // preview card not present (shouldn't happen, but guard anyway)
-
-    // Name
-    const nameVal = (document.getElementById('name') || {}).value || '';
-    if (nameVal.trim()) {
-      nameEl.textContent = nameVal.trim();
-      nameEl.classList.remove('empty');
-    } else {
-      nameEl.textContent = 'Bottle name';
-      nameEl.classList.add('empty');
-    }
-
-    // Distillery — read from hidden select
-    const distSelect = document.getElementById('distilleries');
-    const distNames = distSelect
-      ? Array.from(distSelect.options).filter(o => o.selected).map(o => o.text)
-      : [];
-    if (distNames.length) {
-      distEl.textContent = distNames.join(' · ');
-      distEl.classList.remove('empty');
-    } else {
-      distEl.textContent = 'Distillery';
-      distEl.classList.add('empty');
-    }
-
-    // ABV chip
-    const abvVal = ((document.getElementById('abv') || {}).value || '').trim();
-    if (abvVal) {
-      chipAbv.innerHTML = '<i class="bi bi-droplet"></i> ' + parseFloat(abvVal).toFixed(1) + '%';
-      chipAbv.classList.remove('empty');
-    } else {
-      chipAbv.innerHTML = '<i class="bi bi-droplet"></i> ABV';
-      chipAbv.classList.add('empty');
-    }
-
-    // Size chip
-    const sizeVal = ((document.getElementById('size') || {}).value || '').trim();
-    if (sizeVal) {
-      chipSize.innerHTML = '<i class="bi bi-rulers"></i> ' + sizeVal + 'ml';
-      chipSize.classList.remove('empty');
-    } else {
-      chipSize.innerHTML = '<i class="bi bi-rulers"></i> ml';
-      chipSize.classList.add('empty');
-    }
-
-    // Type chip — use option label text, not raw value
-    const typeSelect = document.getElementById('type');
-    const typeText = typeSelect && typeSelect.selectedIndex > 0
-      ? typeSelect.options[typeSelect.selectedIndex].text : '';
-    if (typeText) {
-      chipType.innerHTML = '<i class="bi bi-tag"></i> ' + typeText;
-      chipType.classList.remove('empty');
-    } else {
-      chipType.innerHTML = '<i class="bi bi-tag"></i> Type';
-      chipType.classList.add('empty');
-    }
-
-    // Year chip
-    const barrel  = ((document.getElementById('year_barrelled') || {}).value || '');
-    const bottled = ((document.getElementById('year_bottled')   || {}).value || '');
-    if (barrel && bottled) {
-      const age = parseInt(bottled) - parseInt(barrel);
-      chipYear.innerHTML = '<i class="bi bi-calendar3"></i> ' + age + ' yr · ' + bottled;
-      chipYear.classList.remove('empty');
-    } else if (bottled) {
-      chipYear.innerHTML = '<i class="bi bi-calendar3"></i> ' + bottled;
-      chipYear.classList.remove('empty');
-    } else if (barrel) {
-      chipYear.innerHTML = '<i class="bi bi-calendar3"></i> Est. ' + barrel;
-      chipYear.classList.remove('empty');
-    } else {
-      chipYear.innerHTML = '<i class="bi bi-calendar3"></i> Year';
-      chipYear.classList.add('empty');
-    }
-
-    // Bottler row
-    const bottlerSelect = document.getElementById('bottler_id');
-    const bottlerText = bottlerSelect && bottlerSelect.selectedIndex > 0
-      ? bottlerSelect.options[bottlerSelect.selectedIndex].text : '';
-    if (bottlerText) {
-      bottlerSpan.textContent = bottlerText;
-      bottlerRow.style.display = '';
-    } else {
-      bottlerRow.style.display = 'none';
-    }
-  }
-
-  // Wire up live-preview event listeners
-  ['name', 'size', 'abv'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', updatePreview);
-  });
-  ['bottler_id', 'type', 'year_barrelled', 'year_bottled'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('change', updatePreview);
-  });
-
-  // Update preview image by watching the dropzone for card add/remove
-  (function () {
-    const zone = document.getElementById('dropzone-container');
-    const previewImg = document.getElementById('preview-img');
-    const previewPlaceholder = document.getElementById('preview-img-placeholder');
-    if (!zone || !previewImg || !previewPlaceholder) return;
-
-    function syncPreviewImage() {
-      const firstImg = zone.querySelector('.dropzone-card img');
-      if (firstImg && firstImg.src && !firstImg.src.endsWith('#')) {
-        previewImg.src = firstImg.src;
-        previewImg.style.display = 'block';
-        previewPlaceholder.style.display = 'none';
-      } else {
-        previewImg.style.display = 'none';
-        previewPlaceholder.style.display = 'flex';
-      }
-    }
-
-    // Seed from any existing images rendered server-side
-    syncPreviewImage();
-
-    // Keep in sync as cards are added or removed
-    new MutationObserver(syncPreviewImage).observe(zone, { childList: true, subtree: true });
-  })();
-
-  // Initial render
-  updatePreview();
   </script>
 {% endblock %}
 
@@ -417,12 +280,9 @@
         {% endif %}
       {% endif %}
 
-      <div class="form-grid">
-
-        {# ── Left column: form cards ──────────────────────────────────────── #}
-        <div class="form-col">
-          <form method="post" novalidate enctype="multipart/form-data"
-                x-data @trix-file-accept.window.prevent>
+      <div class="form-col">
+        <form method="post" novalidate enctype="multipart/form-data"
+              x-data @trix-file-accept.window.prevent>
             {% if next_url %}
               <input type="hidden" name="next" value="{{ next_url }}">
             {% endif %}
@@ -438,33 +298,41 @@
 
             <div class="card p-4 mb-4">
               <p class="detail-section-label mb-3">Details</p>
-              {{ form_utils.render_field(form.name) }}
-              {{ form_utils.render_field(form.url) }}
 
-              {# Distilleries — with Quick Add trigger #}
-              <div class="mb-3">
-                <div class="d-flex justify-content-between align-items-baseline mb-1">
-                  <label class="form-label mb-0" for="distilleries">Distilleries <span class="text-danger">*</span></label>
-                  <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
-                          data-bs-toggle="modal" data-bs-target="#quickAddDistilleryModal">
-                    <i class="bi bi-gear me-1"></i>Quick Add Distillery
-                  </button>
-                </div>
-                {{ form.distilleries(class="form-control" + (" is-invalid" if form.distilleries.errors else ""))|safe }}
-                {% for error in form.distilleries.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+              {# Name + URL — same row #}
+              <div class="row g-3">
+                <div class="col-sm-7">{{ form_utils.render_field(form.name) }}</div>
+                <div class="col-sm-5">{{ form_utils.render_field(form.url) }}</div>
               </div>
 
-              {# Barrel Pickers — with Quick Add trigger #}
-              <div class="mb-3">
-                <div class="d-flex justify-content-between align-items-baseline mb-1">
-                  <label class="form-label mb-0" for="barrel_pickers">Barrel Picked by</label>
-                  <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
-                          data-bs-toggle="modal" data-bs-target="#quickAddBarrelPickerModal">
-                    <i class="bi bi-gear me-1"></i>Quick Add Barrel Picker
-                  </button>
+              {# Distilleries + Barrel Pickers — same row #}
+              <div class="row g-3">
+                <div class="col-sm-6">
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-baseline mb-1">
+                      <label class="form-label mb-0" for="distilleries">Distilleries <span class="text-danger">*</span></label>
+                      <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
+                              data-bs-toggle="modal" data-bs-target="#quickAddDistilleryModal">
+                        <i class="bi bi-gear me-1"></i>Quick Add
+                      </button>
+                    </div>
+                    {{ form.distilleries(class="form-control" + (" is-invalid" if form.distilleries.errors else ""))|safe }}
+                    {% for error in form.distilleries.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                  </div>
                 </div>
-                {{ form.barrel_pickers(class="form-control" + (" is-invalid" if form.barrel_pickers.errors else ""))|safe }}
-                {% for error in form.barrel_pickers.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                <div class="col-sm-6">
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-baseline mb-1">
+                      <label class="form-label mb-0" for="barrel_pickers">Barrel Picked by</label>
+                      <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
+                              data-bs-toggle="modal" data-bs-target="#quickAddBarrelPickerModal">
+                        <i class="bi bi-gear me-1"></i>Quick Add
+                      </button>
+                    </div>
+                    {{ form.barrel_pickers(class="form-control" + (" is-invalid" if form.barrel_pickers.errors else ""))|safe }}
+                    {% for error in form.barrel_pickers.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                  </div>
+                </div>
               </div>
 
               <div class="row">
@@ -522,55 +390,7 @@
               {{ buttons.cancel_button(current_user, request, next_url=next_url) }}
             </div>
           </form>
-        </div>
-
-        {# ── Right column: live preview card ──────────────────────────────── #}
-        <div class="preview-col">
-          <div class="preview-sticky">
-            <div class="preview-card">
-
-              <div class="preview-card-header">
-                <span class="preview-title">Preview</span>
-                <span class="preview-live">
-                  <span class="preview-live-dot"></span>
-                  Live
-                </span>
-              </div>
-
-              <div class="preview-image-area" id="preview-image-area">
-                <img id="preview-img" alt="">
-                <div class="preview-image-placeholder" id="preview-img-placeholder">
-                  <svg width="48" height="60" viewBox="0 0 48 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 4 C8 12 6 18 8 26 C10 34 17 39 22 44 L22 54 L16 54 L16 58 L32 58 L32 54 L26 54 L26 44 C31 39 38 34 40 26 C42 18 40 12 38 4 Z" stroke="#adb5bd" stroke-width="2" fill="none" stroke-linejoin="round"/>
-                  </svg>
-                  <span>Add an image to see a preview</span>
-                </div>
-              </div>
-
-              <div class="preview-body">
-                <div class="preview-name empty" id="preview-name">Bottle name</div>
-                <div class="preview-distillery empty" id="preview-distillery">Distillery</div>
-                <div class="preview-meta">
-                  <span class="preview-chip empty" id="chip-abv"><i class="bi bi-droplet"></i> ABV</span>
-                  <span class="preview-chip empty" id="chip-size"><i class="bi bi-rulers"></i> ml</span>
-                  <span class="preview-chip empty" id="chip-type"><i class="bi bi-tag"></i> Type</span>
-                  <span class="preview-chip empty" id="chip-year"><i class="bi bi-calendar3"></i> Year</span>
-                </div>
-                <div class="preview-bottler" id="preview-bottler-row" style="display:none;">
-                  Bottled by <span id="preview-bottler"></span>
-                </div>
-              </div>
-
-              <div class="preview-hint">
-                <i class="bi bi-lightbulb"></i>
-                <span>This is how your bottle will appear in your collection. Fill in the details to the left to build the preview.</span>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-      </div>{# /form-grid #}
+      </div>{# /form-col #}
     </div>{# /add-bottle-page #}
   </main>
 
