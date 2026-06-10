@@ -15,6 +15,7 @@
 
   Chart.defaults.font.family = 'system-ui, -apple-system, "Segoe UI", sans-serif';
   Chart.defaults.color = '#6c757d';
+  Chart.defaults.animation = false;
 
   {% if insights.type_breakdown %}
   new Chart(document.getElementById('typeChart'), {
