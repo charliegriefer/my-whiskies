@@ -2303,4 +2303,5 @@ trix-editor {
 .insights-chart-wrap {
   position: relative;
   width: 100%;
+  height: 320px;
 }
