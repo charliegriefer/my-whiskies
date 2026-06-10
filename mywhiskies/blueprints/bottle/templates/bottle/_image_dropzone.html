@@ -21,7 +21,13 @@
     <img src="{{ url_for('static', filename='glen-avatar.svg') }}" alt="Glen" width="52" style="flex-shrink:0;">
     <div>
       <div class="glen-intro__text-title">Hi, I'm Glen!</div>
+      {% if current_user.is_pro %}
       <div class="glen-intro__text-body">Upload photos of your bottle and I'll fill in the details for you — name, distillery, ABV, and more.</div>
+      {% else %}
+      {% set scans_left = [config.FREE_TIER_SCAN_LIMIT - current_user.glen_scan_count, 0] | max %}
+      <div class="glen-intro__text-body">Upload photos of your bottle and I'll fill in the details for you — name, distillery, ABV, and more.</div>
+      <div class="glen-intro__text-body" style="margin-top: 0.5em;">You have <strong>{{ scans_left }} free scan{{ '' if scans_left == 1 else 's' }}</strong> remaining. <a href="{{ url_for('payments.upgrade') }}">Upgrade to Pro</a> and let Glen help you catalog your entire collection.</div>
+      {% endif %}
     </div>
     <button type="button" class="glen-intro__dismiss" id="glen-intro-dismiss" title="Minimize">×</button>
   </div>
@@ -283,7 +289,7 @@
     glenPill.style.display  = state === 'minimized' ? 'inline-flex' : 'none';
   }
 
-  setIntroState(localStorage.getItem(GLEN_INTRO_KEY) || 'expanded');
+  setIntroState(!IS_PRO && scansUsed >= SCAN_LIMIT ? 'minimized' : (localStorage.getItem(GLEN_INTRO_KEY) || 'expanded'));
 
   glenIntroDismiss.addEventListener('click', () => setIntroState('minimized'));
   glenPill.addEventListener('click', () => setIntroState('expanded'));

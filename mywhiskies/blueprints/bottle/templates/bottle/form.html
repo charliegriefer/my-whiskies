@@ -267,6 +267,19 @@
 
     <hr />
 
+    {% if not bottle and not current_user.is_pro %}
+      {% set bottles_used = current_user.bottles|length %}
+      {% set bottle_limit = config.FREE_TIER_BOTTLE_LIMIT %}
+      {% set bottles_left = bottle_limit - bottles_used %}
+      {% if bottles_left <= 10 %}
+        <div class="mb-3" style="font-size: 0.85rem; color: var(--text-secondary);">
+          <i class="bi bi-info-circle me-1"></i>
+          You have <strong style="color: var(--text-primary);">{{ bottles_left }} bottle{{ '' if bottles_left == 1 else 's' }}</strong> remaining on the free plan.
+          <a href="{{ url_for('payments.upgrade') }}">Upgrade to Pro</a> for unlimited.
+        </div>
+      {% endif %}
+    {% endif %}
+
     <div class="row">
       <div class="col-lg-8">
         <form method="post" novalidate enctype="multipart/form-data"

@@ -174,10 +174,7 @@ def bottle_add():
     limit = current_app.config["FREE_TIER_BOTTLE_LIMIT"]
     if not current_user.is_pro and len(current_user.bottles) >= limit:
         flash(
-            Markup(
-                f"You've reached the {limit}-bottle limit for free accounts. "
-                f'<a href="{url_for("payments.upgrade")}">Upgrade to Pro</a> for unlimited bottles.'
-            ),
+            f"You've reached the {limit}-bottle limit for free accounts. Upgrade to Pro for unlimited bottles.",
             "warning",
         )
         return redirect(url_for("payments.upgrade"))
