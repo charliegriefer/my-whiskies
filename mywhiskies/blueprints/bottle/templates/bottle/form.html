@@ -56,6 +56,7 @@
         b.appendChild(x);
         badges.appendChild(b);
       });
+      updatePreview();
     }
 
     function renderDropdown(q) {
@@ -135,6 +136,7 @@
         b.appendChild(x);
         badges.appendChild(b);
       });
+      updatePreview();
     }
 
     function renderDropdown(q) {
@@ -245,12 +247,138 @@
         initBarrelPickerWidget();
       });
   });
+
+  // ── Live preview ──────────────────────────────────────────────────────────────
+  function updatePreview() {
+    const nameEl  = document.getElementById('preview-name');
+    const distEl  = document.getElementById('preview-distillery');
+    const chipAbv  = document.getElementById('chip-abv');
+    const chipSize = document.getElementById('chip-size');
+    const chipType = document.getElementById('chip-type');
+    const chipYear = document.getElementById('chip-year');
+    const bottlerRow  = document.getElementById('preview-bottler-row');
+    const bottlerSpan = document.getElementById('preview-bottler');
+    if (!nameEl) return; // preview card not present (shouldn't happen, but guard anyway)
+
+    // Name
+    const nameVal = (document.getElementById('name') || {}).value || '';
+    if (nameVal.trim()) {
+      nameEl.textContent = nameVal.trim();
+      nameEl.classList.remove('empty');
+    } else {
+      nameEl.textContent = 'Bottle name';
+      nameEl.classList.add('empty');
+    }
+
+    // Distillery — read from hidden select
+    const distSelect = document.getElementById('distilleries');
+    const distNames = distSelect
+      ? Array.from(distSelect.options).filter(o => o.selected).map(o => o.text)
+      : [];
+    if (distNames.length) {
+      distEl.textContent = distNames.join(' · ');
+      distEl.classList.remove('empty');
+    } else {
+      distEl.textContent = 'Distillery';
+      distEl.classList.add('empty');
+    }
+
+    // ABV chip
+    const abvVal = ((document.getElementById('abv') || {}).value || '').trim();
+    if (abvVal) {
+      chipAbv.innerHTML = '<i class="bi bi-droplet"></i> ' + parseFloat(abvVal).toFixed(1) + '%';
+      chipAbv.classList.remove('empty');
+    } else {
+      chipAbv.innerHTML = '<i class="bi bi-droplet"></i> ABV';
+      chipAbv.classList.add('empty');
+    }
+
+    // Size chip
+    const sizeVal = ((document.getElementById('size') || {}).value || '').trim();
+    if (sizeVal) {
+      chipSize.innerHTML = '<i class="bi bi-rulers"></i> ' + sizeVal + 'ml';
+      chipSize.classList.remove('empty');
+    } else {
+      chipSize.innerHTML = '<i class="bi bi-rulers"></i> ml';
+      chipSize.classList.add('empty');
+    }
+
+    // Type chip — use option label text, not raw value
+    const typeSelect = document.getElementById('type');
+    const typeText = typeSelect && typeSelect.selectedIndex > 0
+      ? typeSelect.options[typeSelect.selectedIndex].text : '';
+    if (typeText) {
+      chipType.innerHTML = '<i class="bi bi-tag"></i> ' + typeText;
+      chipType.classList.remove('empty');
+    } else {
+      chipType.innerHTML = '<i class="bi bi-tag"></i> Type';
+      chipType.classList.add('empty');
+    }
+
+    // Year chip
+    const barrel  = ((document.getElementById('year_barrelled') || {}).value || '');
+    const bottled = ((document.getElementById('year_bottled')   || {}).value || '');
+    if (barrel && bottled) {
+      const age = parseInt(bottled) - parseInt(barrel);
+      chipYear.innerHTML = '<i class="bi bi-calendar3"></i> ' + age + ' yr · ' + bottled;
+      chipYear.classList.remove('empty');
+    } else if (bottled) {
+      chipYear.innerHTML = '<i class="bi bi-calendar3"></i> ' + bottled;
+      chipYear.classList.remove('empty');
+    } else if (barrel) {
+      chipYear.innerHTML = '<i class="bi bi-calendar3"></i> Est. ' + barrel;
+      chipYear.classList.remove('empty');
+    } else {
+      chipYear.innerHTML = '<i class="bi bi-calendar3"></i> Year';
+      chipYear.classList.add('empty');
+    }
+
+    // Bottler row
+    const bottlerSelect = document.getElementById('bottler_id');
+    const bottlerText = bottlerSelect && bottlerSelect.selectedIndex > 0
+      ? bottlerSelect.options[bottlerSelect.selectedIndex].text : '';
+    if (bottlerText) {
+      bottlerSpan.textContent = bottlerText;
+      bottlerRow.style.display = '';
+    } else {
+      bottlerRow.style.display = 'none';
+    }
+  }
+
+  // Wire up live-preview event listeners
+  ['name', 'size', 'abv'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updatePreview);
+  });
+  ['bottler_id', 'type', 'year_barrelled', 'year_bottled'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', updatePreview);
+  });
+
+  // Update preview image when a file is selected in the dropzone
+  document.addEventListener('change', function(e) {
+    if (e.target.type !== 'file') return;
+    const file = e.target.files && e.target.files[0];
+    const previewImg = document.getElementById('preview-img');
+    const previewPlaceholder = document.getElementById('preview-img-placeholder');
+    if (!previewImg || !previewPlaceholder || !file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      previewImg.src = ev.target.result;
+      previewImg.style.display = 'block';
+      previewPlaceholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Initial render
+  updatePreview();
   </script>
 {% endblock %}
 
 {% block app_content %}
   <main class="flex-shrink-0">
-    <div class="container ps-0">
+    <div class="add-bottle-page">
 
       <div class="row mt-4 align-items-end">
         <div class="col">
@@ -263,128 +391,177 @@
           {% endif %}
         </div>
       </div>
-    </div>
 
-    <hr />
+      <hr />
 
-    {% if not bottle and not current_user.is_pro %}
-      {% set bottles_used = current_user.bottles|length %}
-      {% set bottle_limit = config.FREE_TIER_BOTTLE_LIMIT %}
-      {% set bottles_left = bottle_limit - bottles_used %}
-      {% if bottles_left <= 10 %}
-        <div class="mb-3" style="font-size: 0.85rem; color: var(--text-secondary);">
-          <i class="bi bi-info-circle me-1"></i>
-          You have <strong style="color: var(--text-primary);">{{ bottles_left }} bottle{{ '' if bottles_left == 1 else 's' }}</strong> remaining on the free plan.
-          <a href="{{ url_for('payments.upgrade') }}" style="text-decoration: underline;">Upgrade to Pro</a> for unlimited.
-        </div>
-      {% endif %}
-    {% endif %}
-
-    <div class="row">
-      <div class="col-lg-8">
-        <form method="post" novalidate enctype="multipart/form-data"
-              x-data @trix-file-accept.window.prevent>
-          {% if next_url %}
-            <input type="hidden" name="next" value="{{ next_url }}">
-          {% endif %}
-          {% set popover_personal_note = "<p>Anything entered into this field will only be visible to you when logged in.</p><p>Perhaps it's the location of the bottle (e.g. 'Main Cabinet' or 'Bedroom Closet'), for example. </p><p>Anything that is relevant to you, but wouldn't necessarily be relevant to others, could go here.</p>" %}
-          {% set popover_private_bottle = "If marked as a &quot;Private Bottle&quot;, this bottle will only show in your list when you're logged in.<br /><br />Other users will not be able to see it." %}
-
-          {{ form.csrf_token }}
-
-          <div class="card p-4 mb-4">
-            <p class="detail-section-label mb-3">Images</p>
-            {% include "bottle/_image_dropzone.html" %}
+      {% if not bottle and not current_user.is_pro %}
+        {% set bottles_used = current_user.bottles|length %}
+        {% set bottle_limit = config.FREE_TIER_BOTTLE_LIMIT %}
+        {% set bottles_left = bottle_limit - bottles_used %}
+        {% if bottles_left <= 10 %}
+          <div class="plan-notice">
+            <i class="bi bi-info-circle-fill"></i>
+            You have <strong>{{ bottles_left }} bottle{{ '' if bottles_left == 1 else 's' }}</strong> remaining on the free plan.
+            <a href="{{ url_for('payments.upgrade') }}" style="color:#7a4f00; text-decoration: underline;">Upgrade to Pro</a> for unlimited.
           </div>
+        {% endif %}
+      {% endif %}
 
-          <div class="card p-4 mb-4">
-            <p class="detail-section-label mb-3">Details</p>
-            {{ form_utils.render_field(form.name) }}
-            {{ form_utils.render_field(form.url) }}
+      <div class="form-grid">
 
-            {# Distilleries — with Quick Add trigger #}
-            <div class="mb-3">
-              <div class="d-flex justify-content-between align-items-baseline mb-1">
-                <label class="form-label mb-0" for="distilleries">Distilleries <span class="text-danger">*</span></label>
-                <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
-                        data-bs-toggle="modal" data-bs-target="#quickAddDistilleryModal">
-                  <i class="bi bi-gear me-1"></i>Quick Add Distillery
-                </button>
-              </div>
-              {{ form.distilleries(class="form-control" + (" is-invalid" if form.distilleries.errors else ""))|safe }}
-              {% for error in form.distilleries.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+        {# ── Left column: form cards ──────────────────────────────────────── #}
+        <div class="form-col">
+          <form method="post" novalidate enctype="multipart/form-data"
+                x-data @trix-file-accept.window.prevent>
+            {% if next_url %}
+              <input type="hidden" name="next" value="{{ next_url }}">
+            {% endif %}
+            {% set popover_personal_note = "<p>Anything entered into this field will only be visible to you when logged in.</p><p>Perhaps it's the location of the bottle (e.g. 'Main Cabinet' or 'Bedroom Closet'), for example. </p><p>Anything that is relevant to you, but wouldn't necessarily be relevant to others, could go here.</p>" %}
+            {% set popover_private_bottle = "If marked as a &quot;Private Bottle&quot;, this bottle will only show in your list when you're logged in.<br /><br />Other users will not be able to see it." %}
+
+            {{ form.csrf_token }}
+
+            <div class="card p-4 mb-4">
+              <p class="detail-section-label mb-3">Images</p>
+              {% include "bottle/_image_dropzone.html" %}
             </div>
 
-            {# Barrel Pickers — with Quick Add trigger #}
-            <div class="mb-3">
-              <div class="d-flex justify-content-between align-items-baseline mb-1">
-                <label class="form-label mb-0" for="barrel_pickers">Barrel Picked by</label>
-                <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
-                        data-bs-toggle="modal" data-bs-target="#quickAddBarrelPickerModal">
-                  <i class="bi bi-gear me-1"></i>Quick Add Barrel Picker
-                </button>
-              </div>
-              {{ form.barrel_pickers(class="form-control" + (" is-invalid" if form.barrel_pickers.errors else ""))|safe }}
-              {% for error in form.barrel_pickers.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
-            </div>
+            <div class="card p-4 mb-4">
+              <p class="detail-section-label mb-3">Details</p>
+              {{ form_utils.render_field(form.name) }}
+              {{ form_utils.render_field(form.url) }}
 
-            <div class="row">
-              {# Bottler — with Quick Add trigger #}
-              <div class="col-sm-6">
-                <div class="mb-3">
-                  <div class="d-flex justify-content-between align-items-baseline mb-1">
-                    <label class="form-label mb-0" for="bottler_id">Bottler</label>
-                    <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
-                            data-bs-toggle="modal" data-bs-target="#quickAddBottlerModal">
-                      <i class="bi bi-gear me-1"></i>Quick Add Bottler
-                    </button>
+              {# Distilleries — with Quick Add trigger #}
+              <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-baseline mb-1">
+                  <label class="form-label mb-0" for="distilleries">Distilleries <span class="text-danger">*</span></label>
+                  <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
+                          data-bs-toggle="modal" data-bs-target="#quickAddDistilleryModal">
+                    <i class="bi bi-gear me-1"></i>Quick Add Distillery
+                  </button>
+                </div>
+                {{ form.distilleries(class="form-control" + (" is-invalid" if form.distilleries.errors else ""))|safe }}
+                {% for error in form.distilleries.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+              </div>
+
+              {# Barrel Pickers — with Quick Add trigger #}
+              <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-baseline mb-1">
+                  <label class="form-label mb-0" for="barrel_pickers">Barrel Picked by</label>
+                  <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
+                          data-bs-toggle="modal" data-bs-target="#quickAddBarrelPickerModal">
+                    <i class="bi bi-gear me-1"></i>Quick Add Barrel Picker
+                  </button>
+                </div>
+                {{ form.barrel_pickers(class="form-control" + (" is-invalid" if form.barrel_pickers.errors else ""))|safe }}
+                {% for error in form.barrel_pickers.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+              </div>
+
+              <div class="row">
+                {# Bottler — with Quick Add trigger #}
+                <div class="col-sm-6">
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-baseline mb-1">
+                      <label class="form-label mb-0" for="bottler_id">Bottler</label>
+                      <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none"
+                              data-bs-toggle="modal" data-bs-target="#quickAddBottlerModal">
+                        <i class="bi bi-gear me-1"></i>Quick Add Bottler
+                      </button>
+                    </div>
+                    {{ form.bottler_id(class="form-control" + (" is-invalid" if form.bottler_id.errors else ""))|safe }}
+                    {% for error in form.bottler_id.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
                   </div>
-                  {{ form.bottler_id(class="form-control" + (" is-invalid" if form.bottler_id.errors else ""))|safe }}
-                  {% for error in form.bottler_id.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-sm-6">{{ form_utils.render_field(form.type) }}</div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-3">{{ form_utils.render_field(form.size) }}</div>
+                <div class="col-sm-3">{{ form_utils.render_field(form.abv) }}</div>
+                <div class="col-sm-3">{{ form_utils.render_field(form.year_barrelled) }}</div>
+                <div class="col-sm-3">{{ form_utils.render_field(form.year_bottled) }}</div>
+              </div>
+            </div>
+
+            <div class="card p-4 mb-4">
+              <p class="detail-section-label mb-3">Notes</p>
+              {{ form_utils.render_trix_field(form.description) }}
+              {{ form_utils.render_trix_field(form.personal_note, popover_text=popover_personal_note) }}
+              <div class="row">
+                <div class="col-sm-4">{{ form_utils.render_field(form.stars) }}</div>
+                <div class="col-sm-4">{{ form_utils.render_field(form.cost) }}</div>
+              </div>
+              {{ form_utils.render_trix_field(form.review) }}
+              <div class="d-flex gap-4 mb-1">
+                {{ form_utils.render_checkbox(form.is_single_barrel) }}
+                {{ form_utils.render_checkbox(form.is_private, popover_text=popover_private_bottle) }}
+              </div>
+            </div>
+
+            <div class="card p-4 mb-4">
+              <p class="detail-section-label mb-3">Timeline</p>
+              <div class="row">
+                <div class="col-sm-4">{{ form_utils.render_field(form.date_purchased) }}</div>
+                <div class="col-sm-4">{{ form_utils.render_field(form.date_opened) }}</div>
+                <div class="col-sm-4">{{ form_utils.render_field(form.date_killed) }}</div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3 pb-3 mb-3">
+              {{ form.submit(class="btn btn-primary px-4") }}
+              {{ buttons.cancel_button(current_user, request, next_url=next_url) }}
+            </div>
+          </form>
+        </div>
+
+        {# ── Right column: live preview card ──────────────────────────────── #}
+        <div class="preview-col">
+          <div class="preview-sticky">
+            <div class="preview-card">
+
+              <div class="preview-card-header">
+                <span class="preview-title">Preview</span>
+                <span class="preview-live">
+                  <span class="preview-live-dot"></span>
+                  Live
+                </span>
+              </div>
+
+              <div class="preview-image-area" id="preview-image-area">
+                <img id="preview-img" alt="">
+                <div class="preview-image-placeholder" id="preview-img-placeholder">
+                  <svg width="48" height="60" viewBox="0 0 48 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 4 C8 12 6 18 8 26 C10 34 17 39 22 44 L22 54 L16 54 L16 58 L32 58 L32 54 L26 54 L26 44 C31 39 38 34 40 26 C42 18 40 12 38 4 Z" stroke="#adb5bd" stroke-width="2" fill="none" stroke-linejoin="round"/>
+                  </svg>
+                  <span>Add an image to see a preview</span>
                 </div>
               </div>
-              <div class="col-sm-6">{{ form_utils.render_field(form.type) }}</div>
-            </div>
 
-            <div class="row">
-              <div class="col-sm-3">{{ form_utils.render_field(form.size) }}</div>
-              <div class="col-sm-3">{{ form_utils.render_field(form.abv) }}</div>
-              <div class="col-sm-3">{{ form_utils.render_field(form.year_barrelled) }}</div>
-              <div class="col-sm-3">{{ form_utils.render_field(form.year_bottled) }}</div>
+              <div class="preview-body">
+                <div class="preview-name empty" id="preview-name">Bottle name</div>
+                <div class="preview-distillery empty" id="preview-distillery">Distillery</div>
+                <div class="preview-meta">
+                  <span class="preview-chip empty" id="chip-abv"><i class="bi bi-droplet"></i> ABV</span>
+                  <span class="preview-chip empty" id="chip-size"><i class="bi bi-rulers"></i> ml</span>
+                  <span class="preview-chip empty" id="chip-type"><i class="bi bi-tag"></i> Type</span>
+                  <span class="preview-chip empty" id="chip-year"><i class="bi bi-calendar3"></i> Year</span>
+                </div>
+                <div class="preview-bottler" id="preview-bottler-row" style="display:none;">
+                  Bottled by <span id="preview-bottler"></span>
+                </div>
+              </div>
+
+              <div class="preview-hint">
+                <i class="bi bi-lightbulb"></i>
+                <span>This is how your bottle will appear in your collection. Fill in the details to the left to build the preview.</span>
+              </div>
+
             </div>
           </div>
+        </div>
 
-          <div class="card p-4 mb-4">
-            <p class="detail-section-label mb-3">Notes</p>
-            {{ form_utils.render_trix_field(form.description) }}
-            {{ form_utils.render_trix_field(form.personal_note, popover_text=popover_personal_note) }}
-            <div class="row">
-              <div class="col-sm-4">{{ form_utils.render_field(form.stars) }}</div>
-              <div class="col-sm-4">{{ form_utils.render_field(form.cost) }}</div>
-            </div>
-            {{ form_utils.render_trix_field(form.review) }}
-            <div class="d-flex gap-4 mb-1">
-              {{ form_utils.render_checkbox(form.is_single_barrel) }}
-              {{ form_utils.render_checkbox(form.is_private, popover_text=popover_private_bottle) }}
-            </div>
-          </div>
-
-          <div class="card p-4 mb-4">
-            <p class="detail-section-label mb-3">Timeline</p>
-            <div class="row">
-              <div class="col-sm-4">{{ form_utils.render_field(form.date_purchased) }}</div>
-              <div class="col-sm-4">{{ form_utils.render_field(form.date_opened) }}</div>
-              <div class="col-sm-4">{{ form_utils.render_field(form.date_killed) }}</div>
-            </div>
-          </div>
-
-          <div class="pb-3 mb-3">
-            {{ form.submit(class="btn btn-primary") }}
-            {{ buttons.cancel_button(current_user, request, next_url=next_url) }}
-          </div>
-        </form>
-      </div>
-    </div>
+      </div>{# /form-grid #}
+    </div>{# /add-bottle-page #}
   </main>
 
   {# ── Quick Add Distillery modal ──────────────────────────────────────────────── #}
