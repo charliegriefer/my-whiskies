@@ -275,7 +275,7 @@
         <div class="mb-3" style="font-size: 0.85rem; color: var(--text-secondary);">
           <i class="bi bi-info-circle me-1"></i>
           You have <strong style="color: var(--text-primary);">{{ bottles_left }} bottle{{ '' if bottles_left == 1 else 's' }}</strong> remaining on the free plan.
-          <a href="{{ url_for('payments.upgrade') }}">Upgrade to Pro</a> for unlimited.
+          <a href="{{ url_for('payments.upgrade') }}" style="text-decoration: underline;">Upgrade to Pro</a> for unlimited.
         </div>
       {% endif %}
     {% endif %}

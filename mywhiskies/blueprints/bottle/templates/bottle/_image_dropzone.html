@@ -26,7 +26,7 @@
       {% else %}
       {% set scans_left = [config.FREE_TIER_SCAN_LIMIT - current_user.glen_scan_count, 0] | max %}
       <div class="glen-intro__text-body">Upload photos of your bottle and I'll fill in the details for you — name, distillery, ABV, and more.</div>
-      <div class="glen-intro__text-body" style="margin-top: 0.5em;">You have <strong>{{ scans_left }} free scan{{ '' if scans_left == 1 else 's' }}</strong> remaining. <a href="{{ url_for('payments.upgrade') }}">Upgrade to Pro</a> and let Glen help you catalog your entire collection.</div>
+      <div class="glen-intro__text-body" style="margin-top: 0.5em;">You have <strong>{{ scans_left }} free scan{{ '' if scans_left == 1 else 's' }}</strong> remaining. <a href="{{ url_for('payments.upgrade') }}" style="text-decoration: underline;">Upgrade to Pro</a> and let Glen help you catalog your entire collection.</div>
       {% endif %}
     </div>
     <button type="button" class="glen-intro__dismiss" id="glen-intro-dismiss" title="Minimize">×</button>
@@ -326,7 +326,7 @@
     scanBanner.innerHTML =
       '<span class="glen-banner__icon">✦</span>' +
       '<span class="glen-banner__text">You\'ve used all ' + SCAN_LIMIT + ' free Glen scans. ' +
-      '<a href="' + UPGRADE_URL + '">Upgrade to Pro</a> for unlimited scans.</span>';
+      '<a href="' + UPGRADE_URL + '" style="text-decoration:underline;">Upgrade to Pro</a> for unlimited scans.</span>';
   }
 
   function updateScanButton() {
