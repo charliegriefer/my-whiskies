@@ -133,6 +133,22 @@ def e2e_user_02(app):
     _delete_user_and_owned_data(user)
 
 
+@pytest.fixture(scope="session")
+def e2e_pro_user(app):
+    user = User(
+        username="e2e_pro_user",
+        email="e2e_pro_user@example.com",
+        email_confirmed=True,
+        email_confirm_date=datetime(2024, 1, 1),
+        is_pro=True,
+    )
+    user.set_password(E2E_PASSWORD)
+    db.session.add(user)
+    db.session.commit()
+    yield user
+    _delete_user_and_owned_data(user)
+
+
 # ── Per-test data fixtures ────────────────────────────────────────────────────
 
 
