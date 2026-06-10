@@ -132,7 +132,9 @@
     savePngBtn.addEventListener('click', function () {
       savePngBtn.disabled = true;
       savePngBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Saving…';
+      savePngBtn.style.visibility = 'hidden';
       html2canvas(document.querySelector('main'), { scale: 2, useCORS: true }).then(function (canvas) {
+        savePngBtn.style.visibility = '';
         const pad = 60;
         const out = document.createElement('canvas');
         out.width  = canvas.width  + pad * 2;
