@@ -1,0 +1,246 @@
+{% extends "_base.html" %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+  const navy    = '#1e3a5f';
+  const navyMid = '#2e5b8e';
+  const blue1   = '#3a7bd5';
+  const blue2   = '#5b9bd5';
+  const teal    = '#2a9d8f';
+  const amber   = '#e9c46a';
+  const coral   = '#e76f51';
+  const sage    = '#8ab5a0';
+
+  Chart.defaults.font.family = 'system-ui, -apple-system, "Segoe UI", sans-serif';
+  Chart.defaults.color = '#6c757d';
+
+  {% if insights.type_breakdown %}
+  new Chart(document.getElementById('typeChart'), {
+    type: 'doughnut',
+    data: {
+      labels: {{ insights.type_breakdown | map(attribute='type') | list | tojson }},
+      datasets: [{
+        data: {{ insights.type_breakdown | map(attribute='count') | list | tojson }},
+        backgroundColor: [navy, navyMid, blue1, blue2, teal, amber, coral, sage, '#a8c5da', '#d4a5a5'],
+        borderWidth: 2,
+        borderColor: '#fff',
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'right', labels: { boxWidth: 12, padding: 12, font: { size: 12 } } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              const pct = {{ insights.type_breakdown | tojson }}[ctx.dataIndex].percentage;
+              return ` ${ctx.label}: ${ctx.raw} (${pct}%)`;
+            }
+          }
+        }
+      },
+      cutout: '60%',
+    }
+  });
+  {% endif %}
+
+  {% set abv = insights.abv_distribution %}
+  {% if abv.under_46 + abv.range_46_55 + abv.over_55 > 0 %}
+  new Chart(document.getElementById('abvChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Under 46%', '46 – 55%', 'Over 55%'],
+      datasets: [{
+        label: 'Bottles',
+        data: [{{ abv.under_46 }}, {{ abv.range_46_55 }}, {{ abv.over_55 }}],
+        backgroundColor: [blue2, navyMid, navy],
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#f0f0f0' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+  {% endif %}
+
+  {% if insights.top_distilleries %}
+  new Chart(document.getElementById('distilleryChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ insights.top_distilleries | map(attribute='name') | list | tojson }},
+      datasets: [{
+        label: 'Bottles',
+        data: {{ insights.top_distilleries | map(attribute='count') | list | tojson }},
+        backgroundColor: navy,
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#f0f0f0' } },
+        y: { grid: { display: false }, ticks: { font: { size: 12 } } }
+      }
+    }
+  });
+  {% endif %}
+
+  {% if insights.top_bottlers %}
+  new Chart(document.getElementById('bottlerChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ insights.top_bottlers | map(attribute='name') | list | tojson }},
+      datasets: [{
+        label: 'Bottles',
+        data: {{ insights.top_bottlers | map(attribute='count') | list | tojson }},
+        backgroundColor: teal,
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#f0f0f0' } },
+        y: { grid: { display: false }, ticks: { font: { size: 12 } } }
+      }
+    }
+  });
+  {% endif %}
+</script>
+{% endblock %}
+
+{% block app_content %}
+<main class="flex-shrink-0">
+  <div class="container ps-0 pb-5">
+
+    <div class="row mt-4">
+      <div class="col">
+        <p class="page-header-line">
+          <a class="page-header-context" href="{{ url_for('bottle.list', username=user.username) }}">{{ possessive }} Whiskies</a>
+        </p>
+        <h1 class="mb-0">Collection Insights</h1>
+      </div>
+    </div>
+
+    <hr />
+
+    {% if insights.summary.total == 0 %}
+      <div class="text-center py-5 text-muted">
+        <i class="bi bi-bar-chart" style="font-size: 3rem; opacity: .3;"></i>
+        <p class="mt-3">No bottles in your collection yet. Add some to see your insights.</p>
+        <a href="{{ url_for('bottle.add', username=user.username) }}" class="btn btn-primary">Add Your First Bottle</a>
+      </div>
+    {% else %}
+
+      <!-- Summary stats -->
+      <div class="stats-band mb-4">
+        <div class="stats-band-stat">
+          <i class="bi bi-collection" style="color: var(--accent); font-size: 1rem; margin-bottom: 2px;"></i>
+          <div class="sbs-n">{{ insights.summary.total }}</div>
+          <div class="sbs-l">Total Bottle{{ "s" if insights.summary.total != 1 }}</div>
+        </div>
+        <div class="stats-band-div"></div>
+        <div class="stats-band-stat">
+          <i class="bi bi-check-circle" style="color: var(--accent); font-size: 1rem; margin-bottom: 2px;"></i>
+          <div class="sbs-n">{{ insights.summary.active }}</div>
+          <div class="sbs-l">Active</div>
+        </div>
+        <div class="stats-band-div"></div>
+        <div class="stats-band-stat">
+          <i class="bi bi-trophy" style="color: var(--accent); font-size: 1rem; margin-bottom: 2px;"></i>
+          <div class="sbs-n">{{ insights.summary.killed }}</div>
+          <div class="sbs-l">Killed</div>
+        </div>
+        <div class="stats-band-div"></div>
+        <div class="stats-band-stat">
+          <i class="bi bi-droplet-half" style="color: var(--accent); font-size: 1rem; margin-bottom: 2px;"></i>
+          <div class="sbs-n">{{ insights.summary.avg_abv if insights.summary.avg_abv is not none else "—" }}{% if insights.summary.avg_abv is not none %}<span style="font-size: .5em; font-weight: 600; letter-spacing: 0;">%</span>{% endif %}</div>
+          <div class="sbs-l">Avg ABV</div>
+        </div>
+        <div class="stats-band-div"></div>
+        <div class="stats-band-stat">
+          <i class="bi bi-star" style="color: var(--accent); font-size: 1rem; margin-bottom: 2px;"></i>
+          <div class="sbs-n">{{ insights.summary.single_barrel_count }}</div>
+          <div class="sbs-l">Single Barrel</div>
+        </div>
+      </div>
+
+      <!-- Charts row 1: type breakdown + ABV distribution -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+          <div class="card h-100 p-4">
+            <h6 class="insights-card-title">By Bottle Type</h6>
+            {% if insights.type_breakdown %}
+              <div class="insights-chart-wrap">
+                <canvas id="typeChart"></canvas>
+              </div>
+            {% else %}
+              <p class="text-muted small mt-2">No data yet.</p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card h-100 p-4">
+            <h6 class="insights-card-title">ABV Distribution</h6>
+            {% set abv = insights.abv_distribution %}
+            {% if abv.under_46 + abv.range_46_55 + abv.over_55 > 0 %}
+              <div class="insights-chart-wrap">
+                <canvas id="abvChart"></canvas>
+              </div>
+              {% if abv.unknown > 0 %}
+                <p class="text-muted mt-2" style="font-size: 12px;">{{ abv.unknown }} bottle{{ "s" if abv.unknown != 1 }} without an ABV recorded.</p>
+              {% endif %}
+            {% else %}
+              <p class="text-muted small mt-2">No ABV data recorded yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts row 2: top distilleries + top bottlers -->
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="card h-100 p-4">
+            <h6 class="insights-card-title">Top Distilleries</h6>
+            {% if insights.top_distilleries %}
+              <div class="insights-chart-wrap">
+                <canvas id="distilleryChart"></canvas>
+              </div>
+            {% else %}
+              <p class="text-muted small mt-2">No distillery data yet.</p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card h-100 p-4">
+            <h6 class="insights-card-title">Top Bottlers</h6>
+            {% if insights.top_bottlers %}
+              <div class="insights-chart-wrap">
+                <canvas id="bottlerChart"></canvas>
+              </div>
+            {% else %}
+              <p class="text-muted small mt-2">No bottler data yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+    {% endif %}
+
+  </div>
+</main>
+{% endblock %}
