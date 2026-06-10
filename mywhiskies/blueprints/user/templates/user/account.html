@@ -130,8 +130,66 @@
 
         </div><!-- /left column -->
 
-        <!-- Right column: Preferences + Your Data + Danger Zone -->
+        <!-- Right column: Plan + Preferences + Your Data + Danger Zone -->
         <div class="d-flex flex-column gap-3">
+
+          <!-- Plan card -->
+          <div class="card p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <p class="detail-section-label mb-0">Plan</p>
+              {% if current_user.is_pro %}
+                <span style="display:inline-flex;align-items:center;gap:4px;padding:2px 10px;
+                  border-radius:20px;background:oklch(90% 0.06 50);color:oklch(40% 0.12 50);
+                  font-size:11px;font-weight:700;letter-spacing:0.05em;">PRO</span>
+              {% else %}
+                <span style="display:inline-flex;align-items:center;gap:4px;padding:2px 10px;
+                  border-radius:20px;background:var(--surface-2);color:var(--text-secondary);
+                  font-size:11px;font-weight:700;letter-spacing:0.05em;">FREE</span>
+              {% endif %}
+            </div>
+
+            {% if current_user.is_pro %}
+              <div style="font-size:13px;color:var(--text-secondary);">
+                <div class="mb-1"><i class="bi bi-check2 text-success me-2"></i>Unlimited bottles</div>
+                <div><i class="bi bi-check2 text-success me-2"></i>Unlimited Glen scans</div>
+              </div>
+            {% else %}
+              {% set bottle_count = current_user.bottles|length %}
+              {% set bottle_limit = config.FREE_TIER_BOTTLE_LIMIT %}
+              {% set scan_limit = config.FREE_TIER_SCAN_LIMIT %}
+              {% set scans_used = current_user.glen_scan_count %}
+              {% set bottle_pct = [[((bottle_count / bottle_limit) * 100) | int, 100] | min, 0] | max %}
+
+              <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1" style="font-size:12.5px;">
+                  <span style="color:var(--text-primary);font-weight:600;">Bottles</span>
+                  <span style="color:var(--text-secondary);">{{ bottle_count }} / {{ bottle_limit }}</span>
+                </div>
+                <div style="height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden;">
+                  <div style="height:100%;width:{{ bottle_pct }}%;border-radius:3px;
+                    background:{{ 'oklch(52% 0.18 15)' if bottle_pct >= 100 else 'var(--accent)' }};
+                    transition:width 0.3s;"></div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1" style="font-size:12.5px;">
+                  <span style="color:var(--text-primary);font-weight:600;">Glen scans</span>
+                  <span style="color:var(--text-secondary);">{{ scans_used }} / {{ scan_limit }} used</span>
+                </div>
+                <div style="height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden;">
+                  {% set scan_pct = [[((scans_used / scan_limit) * 100) | int, 100] | min, 0] | max %}
+                  <div style="height:100%;width:{{ scan_pct }}%;border-radius:3px;
+                    background:{{ 'oklch(52% 0.18 15)' if scan_pct >= 100 else 'var(--accent)' }};
+                    transition:width 0.3s;"></div>
+                </div>
+              </div>
+
+              <a href="{{ url_for('payments.upgrade') }}" class="btn btn-primary btn-sm w-100">
+                Upgrade to Pro
+              </a>
+            {% endif %}
+          </div>
 
           <!-- Preferences card -->
           <div class="card p-4">

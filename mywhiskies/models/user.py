@@ -41,6 +41,7 @@ class User(UserMixin, db.Model):
     is_pro: Mapped[bool] = mapped_column(default=False)
     stripe_customer_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     stripe_subscription_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    glen_scan_count: Mapped[int] = mapped_column(default=0)
     is_private: Mapped[bool] = mapped_column(default=False)
     is_deleted: Mapped[bool] = mapped_column(default=False)
     deleted_date: Mapped[Optional[datetime]]

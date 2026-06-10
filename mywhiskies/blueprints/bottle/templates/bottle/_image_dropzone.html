@@ -16,7 +16,7 @@
 
   <div id="dropzone-error" class="alert alert-danger py-2 mb-2 d-none" role="alert"></div>
 
-  {% if current_user.is_pro and not existing_images %}
+  {% if not existing_images %}
   <div id="glen-intro" class="glen-intro" style="display:none;">
     <img src="{{ url_for('static', filename='glen-avatar.svg') }}" alt="Glen" width="52" style="flex-shrink:0;">
     <div>
@@ -67,7 +67,7 @@
   </div>
 </div>
 
-{% if current_user.is_pro and not existing_images %}
+{% if not existing_images %}
 <div id="scan-controls" class="d-none mb-3">
   <div class="d-flex align-items-center gap-3 flex-wrap">
     <button type="button" id="scan-btn" class="btn-glen">
@@ -103,9 +103,13 @@
   const MAX_BYTES  = {{ config.MAX_UPLOAD_MB * 1024 * 1024 }};
   const MAX_MB     = {{ config.MAX_UPLOAD_MB }};
   const MAX_IMGS   = 3;
-  {% if current_user.is_pro and not existing_images %}
-  const SCAN_URL   = '{{ url_for("bottle.scan_label") }}';
-  const CSRF_TOKEN = '{{ csrf_token() }}';
+  {% if not existing_images %}
+  const SCAN_URL      = '{{ url_for("bottle.scan_label") }}';
+  const CSRF_TOKEN    = '{{ csrf_token() }}';
+  const IS_PRO        = {{ 'true' if current_user.is_pro else 'false' }};
+  const SCAN_LIMIT    = {{ config.FREE_TIER_SCAN_LIMIT }};
+  const UPGRADE_URL   = '{{ url_for("payments.upgrade") }}';
+  let   scansUsed     = {{ current_user.glen_scan_count }};
   {% endif %}
 
   const zone     = document.getElementById('dropzone-container');
@@ -266,7 +270,7 @@
     return d;
   }
 
-  {% if current_user.is_pro and not existing_images %}
+  {% if not existing_images %}
   // ── Glen intro callout ────────────────────────────────────────────────────
   const GLEN_INTRO_KEY   = 'glen_intro_state';
   const glenIntro        = document.getElementById('glen-intro');
@@ -309,9 +313,21 @@
     return Object.keys(pending).length === 1 ? 'Photo' : 'Photos';
   }
 
+  function showScanLimitReached() {
+    scanControls.classList.remove('d-none');
+    scanBtn.style.display = 'none';
+    scanBanner.className = 'glen-banner';
+    scanBanner.innerHTML =
+      '<span class="glen-banner__icon">✦</span>' +
+      '<span class="glen-banner__text">You\'ve used all ' + SCAN_LIMIT + ' free Glen scans. ' +
+      '<a href="' + UPGRADE_URL + '">Upgrade to Pro</a> for unlimited scans.</span>';
+  }
+
   function updateScanButton() {
     const count = Object.keys(pending).length;
-    scanControls.classList.toggle('d-none', count === 0);
+    if (count === 0) { scanControls.classList.add('d-none'); return; }
+    if (!IS_PRO && scansUsed >= SCAN_LIMIT) { showScanLimitReached(); return; }
+    scanControls.classList.remove('d-none');
     if (!scanBtn.disabled && !scanBtn.classList.contains('btn-glen--done')) {
       scanBtn.innerHTML = SPARKLE_SVG + ' Ask Glen';
     }
@@ -357,17 +373,20 @@
     files.forEach(f => fd.append('image', f));
 
     fetch(SCAN_URL, { method: 'POST', headers: { 'X-CSRFToken': CSRF_TOKEN }, body: fd })
-      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(r => r.ok ? r.json() : r.json().catch(() => ({})).then(body => Promise.reject({ status: r.status, body })))
       .then(data => {
         setScanOverlays(false);
+        if (!IS_PRO) scansUsed++;
         applyLabelScan(data);
         scanBtn.classList.add('btn-glen--done');
         scanBtn.innerHTML = CHECK_SVG + ' Scanned';
         scanHelper.className = 'd-none';
       })
-      .catch(() => {
+      .catch(err => {
         setScanOverlays(false);
-        if (scanAttempts < MAX_ATTEMPTS) {
+        if (err && err.body && err.body.error === 'scan_limit_reached') {
+          showScanLimitReached();
+        } else if (scanAttempts < MAX_ATTEMPTS) {
           showScanError('Scan failed — try again? (attempt ' + scanAttempts + ' of ' + MAX_ATTEMPTS + ')');
           scanBtn.disabled = false;
           scanBtn.innerHTML = SPARKLE_SVG + ' Ask Glen';
