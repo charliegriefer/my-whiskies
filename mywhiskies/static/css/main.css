@@ -96,6 +96,16 @@ a:focus, a:hover {
   background-color: var(--nav-bg, #fff);
 }
 
+/* On mobile (collapsed navbar) render dropdowns inline so they don't overflow off-screen */
+@media (max-width: 991.98px) {
+  .navbar .dropdown-menu {
+    position: static;
+    box-shadow: none;
+    border: none;
+    padding-left: 0.75rem;
+  }
+}
+
 .dropdown-menu {
   background-color: var(--surface, #fff);
   border: 1px solid var(--border, #dee2e6);
