@@ -355,21 +355,31 @@
     if (el) el.addEventListener('change', updatePreview);
   });
 
-  // Update preview image when a file is selected in the dropzone
-  document.addEventListener('change', function(e) {
-    if (e.target.type !== 'file') return;
-    const file = e.target.files && e.target.files[0];
+  // Update preview image by watching the dropzone for card add/remove
+  (function () {
+    const zone = document.getElementById('dropzone-container');
     const previewImg = document.getElementById('preview-img');
     const previewPlaceholder = document.getElementById('preview-img-placeholder');
-    if (!previewImg || !previewPlaceholder || !file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      previewImg.src = ev.target.result;
-      previewImg.style.display = 'block';
-      previewPlaceholder.style.display = 'none';
-    };
-    reader.readAsDataURL(file);
-  });
+    if (!zone || !previewImg || !previewPlaceholder) return;
+
+    function syncPreviewImage() {
+      const firstImg = zone.querySelector('.dropzone-card img');
+      if (firstImg && firstImg.src && !firstImg.src.endsWith('#')) {
+        previewImg.src = firstImg.src;
+        previewImg.style.display = 'block';
+        previewPlaceholder.style.display = 'none';
+      } else {
+        previewImg.style.display = 'none';
+        previewPlaceholder.style.display = 'flex';
+      }
+    }
+
+    // Seed from any existing images rendered server-side
+    syncPreviewImage();
+
+    // Keep in sync as cards are added or removed
+    new MutationObserver(syncPreviewImage).observe(zone, { childList: true, subtree: true });
+  })();
 
   // Initial render
   updatePreview();

@@ -2270,8 +2270,8 @@ trix-editor {
   align-items: start;
 }
 
-.form-col,
-.preview-col { min-width: 0; }
+.form-col { min-width: 0; }
+.preview-col { min-width: 0; align-self: stretch; }
 
 /* ── Preview card ────────────────────────────────────────────────────────────── */
 .preview-sticky {
