@@ -143,6 +143,11 @@
         ctx.fillStyle = '#f4f6f9';
         ctx.fillRect(0, 0, out.width, out.height);
         ctx.drawImage(canvas, pad, pad);
+        ctx.font = '22px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#aaaaaa';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('https://www.my-whiskies.online', out.width - pad, out.height - pad / 2);
         const link = document.createElement('a');
         link.download = 'my-whiskies-insights.png';
         link.href = out.toDataURL('image/png');
