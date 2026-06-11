@@ -1,5 +1,5 @@
 import stripe
-from flask import current_app, flash, redirect, render_template, request, url_for
+from flask import abort, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from mywhiskies.blueprints.payments import payments_bp
@@ -55,6 +55,19 @@ def checkout():
 def upgrade_success():
     flash("You're now on Pro! Welcome to the good stuff.", "success")
     return redirect(url_for("core.main"))
+
+
+@payments_bp.route("/account/billing", methods=["POST"], endpoint="billing_portal")
+@login_required
+def billing_portal():
+    if not current_user.is_pro or not current_user.stripe_customer_id:
+        abort(403)
+    stripe.api_key = current_app.config["STRIPE_SECRET_KEY"]
+    session = stripe.billing_portal.Session.create(
+        customer=current_user.stripe_customer_id,
+        return_url=url_for("user.account", _external=True),
+    )
+    return redirect(session.url, code=303)
 
 
 @payments_bp.route("/stripe/webhook", methods=["POST"])
