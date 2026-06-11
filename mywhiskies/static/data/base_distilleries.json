@@ -7,7 +7,7 @@
             "url": "https://www.1792distillery.com"
         },
         {
-            "name": "Abelour",
+            "name": "Aberlour",
             "region_1": "Speyside",
             "region_2": "Scotland",
             "url": "https://www.aberlour.com/en-us/"
@@ -17,6 +17,12 @@
             "region_1": "Tempe",
             "region_2": "AZ",
             "url": "https://www.adventstills.com"
+        },
+        {
+            "name": "Amrut Distilleries",
+            "region_1": "Bangalore",
+            "region_2": "India",
+            "url": "https://amrutdistilleries.com"
         },
         {
             "name": "Angel's Envy",
@@ -37,7 +43,7 @@
             "url": "https://www.azdistilling.com"
         },
         {
-            "name": "B.R. Distlling Company",
+            "name": "B.R. Distilling Company",
             "region_1": "Memphis",
             "region_2": "TN",
             "url": "https://www.brdistilling.com"
@@ -49,16 +55,28 @@
             "url": "https://balconesdistilling.com"
         },
         {
-            "name": "Blanton's Bourbon",
-            "region_1": "Frankfort",
+            "name": "Bardstown Bourbon Company",
+            "region_1": "Bardstown",
             "region_2": "KY",
-            "url": "https://www.blantonsbourbon.com"
+            "url": "https://www.bardstownbourbon.com"
+        },
+        {
+            "name": "Benriach Distillery",
+            "region_1": "Speyside",
+            "region_2": "Scotland",
+            "url": "https://www.benriachdistillery.com"
         },
         {
             "name": "Blue Run Spirits",
             "region_1": "Bardstown",
             "region_2": "KY",
             "url": "https://www.bluerunspirits.com"
+        },
+        {
+            "name": "Bowmore",
+            "region_1": "Islay",
+            "region_2": "Scotland",
+            "url": "https://www.bowmore.com"
         },
         {
             "name": "Breuckelen Distilling Company",
@@ -91,10 +109,34 @@
             "url": "https://bunnahabhain.com"
         },
         {
+            "name": "Caol Ila",
+            "region_1": "Islay",
+            "region_2": "Scotland",
+            "url": "https://www.malts.com/en-row/brands/caol-ila"
+        },
+        {
+            "name": "Castle & Key Distillery",
+            "region_1": "Millville",
+            "region_2": "KY",
+            "url": "https://www.castleandkey.com"
+        },
+        {
+            "name": "Catoctin Creek Distilling",
+            "region_1": "Purcellville",
+            "region_2": "VA",
+            "url": "https://www.catoctincreekdistilling.com"
+        },
+        {
             "name": "Chattanooga Whiskey",
             "region_1": "Chattanooga",
             "region_2": "TN",
             "url": "https://chattanoogawhiskey.com"
+        },
+        {
+            "name": "Chichibu Distillery",
+            "region_1": "Chichibu",
+            "region_2": "Japan",
+            "url": "https://www.one-drinks.com/ichiros-malt/"
         },
         {
             "name": "Copper Sky Distillery",
@@ -103,8 +145,20 @@
             "url": "https://www.copperskydistillery.com"
         },
         {
-            "name": "Dahlwhinnie",
+            "name": "Corsair Artisan Distillery",
+            "region_1": "Nashville",
+            "region_2": "TN",
+            "url": "https://corsairdistillery.com"
+        },
+        {
+            "name": "Craigellachie Distillery",
             "region_1": "Speyside",
+            "region_2": "Scotland",
+            "url": "https://www.craigellachie.com"
+        },
+        {
+            "name": "Dalwhinnie",
+            "region_1": "Highland",
             "region_2": "Scotland",
             "url": "https://www.malts.com/en-row/brands/dalwhinnie"
         },
@@ -113,6 +167,18 @@
             "region_1": "Cambridge",
             "region_2": "WI",
             "url": "https://www.dancinggoat.com"
+        },
+        {
+            "name": "Dingle Distillery",
+            "region_1": "Dingle",
+            "region_2": "Ireland",
+            "url": "https://www.dingledistillery.ie"
+        },
+        {
+            "name": "Distillery 291",
+            "region_1": "Colorado Springs",
+            "region_2": "CO",
+            "url": "https://distillery291.com"
         },
         {
             "name": "Dragon's Milk",
@@ -149,6 +215,30 @@
             "region_1": "Lawrenceburg",
             "region_2": "IN",
             "url": "https://www.georgeremus.com"
+        },
+        {
+            "name": "Glen Grant",
+            "region_1": "Speyside",
+            "region_2": "Scotland",
+            "url": "https://www.glengrant.com"
+        },
+        {
+            "name": "Glenfarclas",
+            "region_1": "Speyside",
+            "region_2": "Scotland",
+            "url": "https://www.glenfarclas.com"
+        },
+        {
+            "name": "Glenfiddich",
+            "region_1": "Speyside",
+            "region_2": "Scotland",
+            "url": "https://www.glenfiddich.com"
+        },
+        {
+            "name": "Glenmorangie",
+            "region_1": "Highland",
+            "region_2": "Scotland",
+            "url": "https://www.glenmorangie.com"
         },
         {
             "name": "Hatch Distilling Co.",
@@ -199,6 +289,12 @@
             "url": "https://www.beamdistilling.com/home"
         },
         {
+            "name": "Kavalan Distillery",
+            "region_1": "Yuanshan",
+            "region_2": "Taiwan",
+            "url": "https://www.kavalanwhisky.com"
+        },
+        {
             "name": "Kilchoman Distillery",
             "region_1": "Islay",
             "region_2": "Scotland",
@@ -217,6 +313,12 @@
             "url": "https://www.knobcreek.com"
         },
         {
+            "name": "Koval Distillery",
+            "region_1": "Chicago",
+            "region_2": "IL",
+            "url": "https://koval-distillery.com"
+        },
+        {
             "name": "Lagavulin",
             "region_1": "Islay",
             "region_2": "Scotland",
@@ -233,6 +335,24 @@
             "region_1": "Bardstown",
             "region_2": "KY",
             "url": "https://larcenybourbon.com"
+        },
+        {
+            "name": "Laws Whiskey House",
+            "region_1": "Denver",
+            "region_2": "CO",
+            "url": "https://lawswhiskeyhouse.com"
+        },
+        {
+            "name": "Leopold Bros",
+            "region_1": "Denver",
+            "region_2": "CO",
+            "url": "https://www.leopoldbros.com"
+        },
+        {
+            "name": "Limestone Branch Distillery",
+            "region_1": "Lebanon",
+            "region_2": "KY",
+            "url": "https://limestonebranch.com"
         },
         {
             "name": "Lux Row Distillers",
@@ -265,6 +385,12 @@
             "url": "https://michters.com"
         },
         {
+            "name": "Midleton Distillery",
+            "region_1": "County Cork",
+            "region_2": "Ireland",
+            "url": "https://www.irishdistillers.ie"
+        },
+        {
             "name": "Nashville Barrel Company",
             "region_1": "Nashville",
             "region_2": "TN",
@@ -283,10 +409,22 @@
             "url": "https://www.newriffdistilling.com"
         },
         {
+            "name": "Nikka Whisky",
+            "region_1": "Yoichi",
+            "region_2": "Japan",
+            "url": "https://www.nikka.com/eng/"
+        },
+        {
             "name": "Oban",
             "region_1": "Highland",
             "region_2": "Scotland",
             "url": "https://www.obanwhisky.com"
+        },
+        {
+            "name": "Old Bushmills Distillery",
+            "region_1": "County Antrim",
+            "region_2": "Ireland",
+            "url": "https://www.bushmills.com"
         },
         {
             "name": "Old Elk Distillery",
@@ -301,10 +439,28 @@
             "url": "https://www.oldforester.com"
         },
         {
+            "name": "Old Pepper Distillery",
+            "region_1": "Lexington",
+            "region_2": "KY",
+            "url": "https://www.oldpepperdistillery.com"
+        },
+        {
+            "name": "Paul John Distillery",
+            "region_1": "Goa",
+            "region_2": "India",
+            "url": "https://www.pauljohnwhisky.com"
+        },
+        {
             "name": "Pearse Lyons Distillery",
             "region_1": "Dublin",
             "region_2": "Ireland",
             "url": "https://pearselyonsdistillery.com"
+        },
+        {
+            "name": "Peerless Distilling Co.",
+            "region_1": "Louisville",
+            "region_2": "KY",
+            "url": "https://kentuckypeerless.com"
         },
         {
             "name": "Penelope Bourbon",
@@ -355,10 +511,28 @@
             "url": "https://www.savageandcooke.com"
         },
         {
+            "name": "Smooth Ambler Spirits",
+            "region_1": "Maxwelton",
+            "region_2": "WV",
+            "url": "https://www.smoothambler.com"
+        },
+        {
             "name": "Spirit Works Distillery",
             "region_1": "Sebastopol",
             "region_2": "CA",
             "url": "https://www.spiritworksdistillery.com"
+        },
+        {
+            "name": "Springbank",
+            "region_1": "Campbeltown",
+            "region_2": "Scotland",
+            "url": "https://springbankwhisky.com"
+        },
+        {
+            "name": "St. George Spirits",
+            "region_1": "Alameda",
+            "region_2": "CA",
+            "url": "https://www.stgeorgespirits.com"
         },
         {
             "name": "Starlight Distillery",
@@ -373,12 +547,6 @@
             "url": "https://www.starward.com/us/"
         },
         {
-            "name": "Steel Bending Spirits, LLC",
-            "region_1": "Chelsea",
-            "region_2": "MI",
-            "url": "https://threechordbourbon.com/"
-        },
-        {
             "name": "Steel Toe Distillery",
             "region_1": "Potomac",
             "region_2": "MT",
@@ -389,6 +557,24 @@
             "region_1": "Manor",
             "region_2": "TX",
             "url": "https://stillaustin.com"
+        },
+        {
+            "name": "Stranahan's Colorado Whiskey",
+            "region_1": "Denver",
+            "region_2": "CO",
+            "url": "https://stranahans.com"
+        },
+        {
+            "name": "Suntory Hakushu Distillery",
+            "region_1": "Hokuto",
+            "region_2": "Japan",
+            "url": "https://www.suntory.com/factory/hakushu/"
+        },
+        {
+            "name": "Suntory Yamazaki Distillery",
+            "region_1": "Shimamoto",
+            "region_2": "Japan",
+            "url": "https://www.suntory.com/factory/yamazaki/"
         },
         {
             "name": "Sweet Amber Distilling Co",
@@ -421,10 +607,40 @@
             "url": "https://www.glendronachdistillery.com/en-us/"
         },
         {
+            "name": "The Glenlivet",
+            "region_1": "Speyside",
+            "region_2": "Scotland",
+            "url": "https://www.theglenlivet.com"
+        },
+        {
+            "name": "The Macallan",
+            "region_1": "Speyside",
+            "region_2": "Scotland",
+            "url": "https://www.themacallan.com"
+        },
+        {
+            "name": "Three Chord Bourbon",
+            "region_1": "Nashville",
+            "region_2": "TN",
+            "url": "https://threechordbourbon.com"
+        },
+        {
+            "name": "Tomatin Distillery",
+            "region_1": "Highland",
+            "region_2": "Scotland",
+            "url": "https://www.tomatin.com"
+        },
+        {
             "name": "Traverse City Whiskey Co",
             "region_1": "Traverse City",
             "region_2": "MI",
             "url": "https://www.tcwhiskey.com"
+        },
+        {
+            "name": "Treaty Oak Distilling",
+            "region_1": "Dripping Springs",
+            "region_2": "TX",
+            "url": "https://treatyoakdistilling.com"
         },
         {
             "name": "Tullamore D.E.W. Distillery",
@@ -433,10 +649,28 @@
             "url": "https://www.tullamoredew.com/"
         },
         {
+            "name": "Uncle Nearest Distillery",
+            "region_1": "Shelbyville",
+            "region_2": "TN",
+            "url": "https://unclenearest.com"
+        },
+        {
+            "name": "Waterford Distillery",
+            "region_1": "Waterford",
+            "region_2": "Ireland",
+            "url": "https://waterfordwhisky.com"
+        },
+        {
             "name": "Watershed Distillery",
             "region_1": "Columbus",
             "region_2": "OH",
             "url": "https://www.watersheddistillery.com"
+        },
+        {
+            "name": "Westland Distillery",
+            "region_1": "Seattle",
+            "region_2": "WA",
+            "url": "https://www.westlanddistillery.com"
         },
         {
             "name": "Westward",
@@ -455,6 +689,12 @@
             "region_1": "Shoreham",
             "region_2": "VT",
             "url": "https://whistlepigwhiskey.com"
+        },
+        {
+            "name": "Widow Jane",
+            "region_1": "Brooklyn",
+            "region_2": "NY",
+            "url": "https://www.widowjane.com"
         },
         {
             "name": "Wild Turkey",
