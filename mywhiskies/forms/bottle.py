@@ -152,4 +152,4 @@ class BottleAddForm(FlaskForm):
 
 
 class BottleEditForm(BottleAddForm):
-    submit = SubmitField("Edit Bottle")
+    submit = SubmitField("Save Changes")
