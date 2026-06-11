@@ -44,6 +44,8 @@ def _to_resized_jpg_bytes(file_storage) -> bytes:
         img = img.convert("RGB")
     img.thumbnail((DISPLAY_MAX, DISPLAY_MAX), resample=Image.Resampling.LANCZOS)
     out = io.BytesIO()
+    # exif= is intentionally omitted — convert("RGB") drops EXIF, and omitting it
+    # from save() ensures no metadata leaks into the stored file (#424).
     img.save(out, format="JPEG", quality=JPEG_QUALITY, optimize=True, progressive=True)
     return out.getvalue()
 
@@ -61,6 +63,7 @@ def _to_full_jpg_bytes(file_storage) -> bytes:
     else:
         img = img.convert("RGB")
     out = io.BytesIO()
+    # exif= intentionally omitted — see _to_resized_jpg_bytes (#424).
     img.save(out, format="JPEG", quality=FULL_JPEG_QUALITY, optimize=True)
     return out.getvalue()
 
