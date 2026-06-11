@@ -6,6 +6,7 @@ from mywhiskies.extensions import db
 from mywhiskies.forms.user import ChangeEmailForm, ChangePasswordForm, DeleteAccountForm, PrivacyForm
 from mywhiskies.models import PasskeyCredential, User
 from mywhiskies.services.auth.email import send_email_change_confirmation
+from mywhiskies.services.payments import get_subscription_info
 from mywhiskies.services.user.insights import get_collection_insights
 from mywhiskies.services.user.user import (
     apply_email_change,
@@ -57,6 +58,7 @@ def account():
         change_email_form=ChangeEmailForm(),
         change_password_form=ChangePasswordForm(),
         delete_account_form=DeleteAccountForm(),
+        sub_info=get_subscription_info(current_user),
     )
 
 
