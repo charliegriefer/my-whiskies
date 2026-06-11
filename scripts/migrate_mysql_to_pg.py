@@ -49,6 +49,7 @@ TABLES = [
     "bottle",
     "bottle_image",
     "bottle_distillery",
+    "bottle_barrel_picker",
 ]
 
 
