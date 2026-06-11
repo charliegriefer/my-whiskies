@@ -246,6 +246,23 @@
       });
   });
 
+  // ── Bulk Add Distilleries: refresh widget after HTMX swap ────────────────────
+  document.addEventListener('distilleryBulkAdded', function() {
+    const select = document.getElementById('distilleries');
+    fetch('{{ url_for("distillery.options") }}')
+      .then(r => r.json())
+      .then(items => {
+        select.innerHTML = '';
+        items.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d.id;
+          opt.textContent = d.name;
+          select.appendChild(opt);
+        });
+        initDistilleryWidget();
+      });
+  });
+
   </script>
 {% endblock %}
 
@@ -281,10 +298,14 @@
       {% endif %}
 
       {% if not bottle and not current_user.distilleries %}
-        <div class="plan-notice">
+        <div id="distillery-nudge" class="plan-notice">
           <i class="bi bi-info-circle-fill"></i>
           You don't have any distilleries yet.
-          You can <a href="{{ url_for('distillery.bulk_distillery_add') }}" style="color:#7a4f00; text-decoration: underline;">bulk add distilleries</a>
+          You can <a href="{{ url_for('distillery.bulk_distillery_add') }}"
+                     hx-get="{{ url_for('distillery.bulk_distillery_add') }}"
+                     hx-target="#distillery-nudge"
+                     hx-swap="outerHTML"
+                     style="color:#7a4f00; text-decoration: underline;">bulk add distilleries</a>
           or use the Quick Add button in the Distilleries field below to add one now.
         </div>
       {% endif %}

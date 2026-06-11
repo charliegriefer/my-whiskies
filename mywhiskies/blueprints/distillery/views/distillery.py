@@ -37,13 +37,31 @@ def no_distilleries():
 @distillery_bp.route("/bulk_distillery_add")
 @login_required
 def bulk_distillery_add():
+    is_htmx = bool(request.headers.get("HX-Request"))
+
     if len(current_user.distilleries) > 0:
+        if is_htmx:
+            return (
+                '<div class="plan-notice plan-notice--success">'
+                "<i class='bi bi-check-circle-fill'></i> You already have distilleries added."
+                "</div>"
+            )
         return redirect(url_for("core.main"))
 
-    if not request.referrer:
+    if not request.referrer and not is_htmx:
         return redirect(url_for("core.main"))
 
     bulk_add_distillery(current_user, current_app)
+
+    if is_htmx:
+        resp = make_response(
+            '<div class="plan-notice plan-notice--success">'
+            "<i class='bi bi-check-circle-fill'></i> "
+            "Distilleries added! Pick one from the list below."
+            "</div>"
+        )
+        resp.headers["HX-Trigger"] = "distilleryBulkAdded"
+        return resp
 
     flash("New distilleries have been added to your account.")
     return redirect(url_for("core.main"))

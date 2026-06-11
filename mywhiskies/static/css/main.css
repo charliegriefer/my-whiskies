@@ -2318,6 +2318,9 @@ trix-editor {
 
 .plan-notice i { color: #c9975a; flex-shrink: 0; }
 
+.plan-notice--success { background: #f0faf0; border-color: #a3d9a5; color: #1a5c1a; }
+.plan-notice--success i { color: #2e8b2e; }
+
 @media (max-width: 575px) {
   .add-bottle-page { padding: 0 16px 40px; }
   .add-bottle-page .card { padding: 20px !important; }
