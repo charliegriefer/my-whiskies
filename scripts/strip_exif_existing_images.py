@@ -52,6 +52,7 @@ def process_prefix(s3, prefix: str, quality: int, progressive: bool, dry_run: bo
         for obj in page.get("Contents", []):
             key = obj["Key"]
             if not key.lower().endswith(".jpg"):
+                print(f"  [skipped] {key}")
                 skipped += 1
                 continue
             if dry_run:
