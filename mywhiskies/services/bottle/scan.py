@@ -1,10 +1,12 @@
 import base64
+import io
 import json
 import re
 from typing import Optional
 
 import anthropic
 from flask import current_app
+from PIL import Image
 
 from mywhiskies.models import BottleTypes
 
@@ -35,6 +37,28 @@ if not visible on the label.
 Return only the JSON object, no explanation, no markdown fences.""".format(type_values=_TYPE_VALUES)
 
 
+_MAX_BYTES = 9 * 1024 * 1024  # 9 MB — stay comfortably under Anthropic's 10 MB limit
+
+
+def _shrink_if_needed(data: bytes) -> bytes:
+    if len(data) <= _MAX_BYTES:
+        return data
+    img = Image.open(io.BytesIO(data))
+    if img.mode not in ("RGB", "L"):
+        img = img.convert("RGB")
+    scale = 0.8
+    while True:
+        w = max(1, int(img.width * scale))
+        h = max(1, int(img.height * scale))
+        resized = img.resize((w, h), Image.LANCZOS)
+        buf = io.BytesIO()
+        resized.save(buf, format="JPEG", quality=85)
+        result = buf.getvalue()
+        if len(result) <= _MAX_BYTES or (w <= 200 and h <= 200):
+            return result
+        scale *= 0.8
+
+
 def scan_bottle_label(images: list[tuple[bytes, str]]) -> Optional[dict]:
     """Scan one or more bottle label images and return extracted fields.
 
@@ -48,6 +72,7 @@ def scan_bottle_label(images: list[tuple[bytes, str]]) -> Optional[dict]:
 
     content = []
     for image_data, mime_type in images:
+        image_data = _shrink_if_needed(image_data)
         b64 = base64.standard_b64encode(image_data).decode("utf-8")
         content.append(
             {
