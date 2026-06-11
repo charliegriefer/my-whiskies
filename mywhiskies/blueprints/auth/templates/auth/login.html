@@ -51,7 +51,7 @@
 
       <br>
 
-      <p>New User? Registrations are currently closed. Please check back soon!</p>
+      <p>New User? <a href="{{ url_for('auth.register') }}" style="text-decoration: underline;">Create an account</a></p>
       <p>
         Forgot Your Password?
         <a href="{{ url_for('auth.reset_password_request') }}" style="text-decoration: underline;">Click to Reset It</a>
