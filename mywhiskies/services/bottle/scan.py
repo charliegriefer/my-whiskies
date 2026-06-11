@@ -40,9 +40,9 @@ Return only the JSON object, no explanation, no markdown fences.""".format(type_
 _MAX_BYTES = 9 * 1024 * 1024  # 9 MB — stay comfortably under Anthropic's 10 MB limit
 
 
-def _shrink_if_needed(data: bytes) -> bytes:
+def _shrink_if_needed(data: bytes, mime_type: str) -> tuple[bytes, str]:
     if len(data) <= _MAX_BYTES:
-        return data
+        return data, mime_type
     img = Image.open(io.BytesIO(data))
     if img.mode not in ("RGB", "L"):
         img = img.convert("RGB")
@@ -55,7 +55,7 @@ def _shrink_if_needed(data: bytes) -> bytes:
         resized.save(buf, format="JPEG", quality=85)
         result = buf.getvalue()
         if len(result) <= _MAX_BYTES or (w <= 200 and h <= 200):
-            return result
+            return result, "image/jpeg"
         scale *= 0.8
 
 
@@ -72,7 +72,7 @@ def scan_bottle_label(images: list[tuple[bytes, str]]) -> Optional[dict]:
 
     content = []
     for image_data, mime_type in images:
-        image_data = _shrink_if_needed(image_data)
+        image_data, mime_type = _shrink_if_needed(image_data, mime_type)
         b64 = base64.standard_b64encode(image_data).decode("utf-8")
         content.append(
             {
