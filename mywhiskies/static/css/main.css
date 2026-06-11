@@ -102,7 +102,12 @@ a:focus, a:hover {
     position: static;
     box-shadow: none;
     border: none;
-    padding-left: 0.75rem;
+    background: transparent;
+    padding: 0 0 0.25rem 0.75rem;
+  }
+  .navbar .dropdown-menu .dropdown-item {
+    color: var(--text-primary);
+    padding: 0.4rem 0.5rem;
   }
 }
 
