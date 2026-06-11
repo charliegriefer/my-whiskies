@@ -168,9 +168,6 @@ def bottle(username: str, user_num: int):
 @bottle_bp.route("/bottle/add", methods=["GET", "POST"], endpoint="add")
 @login_required
 def bottle_add():
-    if not current_user.distilleries:
-        return redirect(url_for("distillery.no_distilleries"))
-
     limit = current_app.config["FREE_TIER_BOTTLE_LIMIT"]
     if not current_user.is_pro and len(current_user.bottles) >= limit:
         flash(

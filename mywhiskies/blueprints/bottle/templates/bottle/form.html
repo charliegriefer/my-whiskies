@@ -280,6 +280,15 @@
         {% endif %}
       {% endif %}
 
+      {% if not bottle and not current_user.distilleries %}
+        <div class="plan-notice">
+          <i class="bi bi-info-circle-fill"></i>
+          You don't have any distilleries yet.
+          You can <a href="{{ url_for('distillery.bulk_distillery_add') }}" style="color:#7a4f00; text-decoration: underline;">bulk add distilleries</a>
+          or use the Quick Add button in the Distilleries field below to add one now.
+        </div>
+      {% endif %}
+
       <div class="form-col">
         <form method="post" novalidate enctype="multipart/form-data"
               x-data @trix-file-accept.window.prevent>
