@@ -16,12 +16,12 @@ class DistilleryAddForm(FlaskForm):
     )
     region_1 = StringField(
         "Location 1:",
-        validators=[InputRequired("Location 1 is required."), Length(max=36)],
+        validators=[Optional(), Length(max=36)],
         render_kw={"placeholder": "Location 1"},
     )
     region_2 = StringField(
         "Location 2:",
-        validators=[InputRequired("Location 2 is required."), Length(max=36)],
+        validators=[Optional(), Length(max=36)],
         render_kw={"placeholder": "Location 2"},
     )
     url = URLField(
