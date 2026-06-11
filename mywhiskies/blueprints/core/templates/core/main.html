@@ -26,7 +26,7 @@
           {% if not current_user.is_authenticated %}
             <div class="hm-cta">
               <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Log In</a>
-              <span class="hm-cta-note">Registrations are currently closed as we near our first public release. Check back soon!</span>
+              <a href="{{ url_for('auth.register') }}" class="btn btn-outline-secondary">Create an account</a>
             </div>
           {% endif %}
         </div>
