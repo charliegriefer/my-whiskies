@@ -28,8 +28,7 @@
 
       <hr />
 
-      <div class="row">
-        <div class="col-lg-6">
+      <div class="form-col">
           <form method="post" novalidate x-data @trix-file-accept.window.prevent>
             {{ form.csrf_token }}
 
@@ -45,7 +44,6 @@
               {{ buttons.cancel_button(current_user, request) }}
             </div>
           </form>
-        </div>
       </div>
     </div>
   </main>
