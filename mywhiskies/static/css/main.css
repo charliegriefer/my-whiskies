@@ -96,7 +96,7 @@ a:focus, a:hover {
   background-color: var(--nav-bg, #fff);
 }
 
-/* On mobile (collapsed navbar) render dropdowns inline so they don't overflow off-screen */
+/* On mobile (collapsed navbar) render dropdowns inline, strip the desktop pill */
 @media (max-width: 991.98px) {
   .navbar .dropdown-menu {
     position: static;
@@ -108,6 +108,20 @@ a:focus, a:hover {
   .navbar .dropdown-menu .dropdown-item {
     color: var(--text-primary);
     padding: 0.4rem 0.5rem;
+  }
+  #navbarDropdownUser {
+    padding-left: 0;
+  }
+  #navbarDropdownUser ~ ul,
+  #navbarDropdownUser + ul {
+    margin-top: 0;
+  }
+  .navbar .dropdown:has(#navbarDropdownUser) {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
   }
 }
 
