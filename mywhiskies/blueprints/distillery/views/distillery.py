@@ -55,9 +55,11 @@ def bulk_distillery_add():
 
     if is_htmx:
         resp = make_response(
-            '<div class="plan-notice plan-notice--success">'
+            '<div class="plan-notice plan-notice--success" id="distillery-nudge">'
             "<i class='bi bi-check-circle-fill'></i> "
             "Distilleries added! Pick one from the list below."
+            "<button type='button' class='btn-close ms-auto' style='font-size:.7rem;' "
+            "aria-label='Dismiss' onclick=\"document.getElementById('distillery-nudge').remove()\"></button>"
             "</div>"
         )
         resp.headers["HX-Trigger"] = "distilleryBulkAdded"
