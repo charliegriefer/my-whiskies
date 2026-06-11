@@ -291,7 +291,7 @@ def distillery_options():
 @distillery_bp.route("/distillery/<uuid:distillery_id>/rename", methods=["POST"], endpoint="rename")
 @login_required
 def distillery_rename(distillery_id):
-    distillery = db.one_or_404(db.select(Distillery).filter_by(id=distillery_id))
+    distillery = db.one_or_404(db.select(Distillery).filter_by(id=str(distillery_id)))
     if distillery.user_id != current_user.id:
         abort(403)
     name = (request.json or {}).get("name", "").strip()
