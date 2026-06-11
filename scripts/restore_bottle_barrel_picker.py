@@ -4,6 +4,7 @@ the MySQL -> PostgreSQL migration.
 
 Run with: flask shell < scripts/restore_bottle_barrel_picker.py
 """
+
 from mywhiskies.extensions import db
 
 rows = [
