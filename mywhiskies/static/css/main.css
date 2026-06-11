@@ -96,6 +96,13 @@ a:focus, a:hover {
   background-color: var(--nav-bg, #fff);
 }
 
+/* Prevent iOS Safari from auto-zooming on input focus */
+@media (max-width: 991.98px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
 /* On mobile (collapsed navbar) render dropdowns inline, strip the desktop pill */
 @media (max-width: 991.98px) {
   .navbar .dropdown-menu {
