@@ -37,7 +37,7 @@ class BottlerAddForm(FlaskForm):
 
 
 class BottlerEditForm(BottlerAddForm):
-    submit = SubmitField("Edit Bottler")
+    submit = SubmitField("Save Changes")
 
 
 class BottlerQuickAddForm(FlaskForm):

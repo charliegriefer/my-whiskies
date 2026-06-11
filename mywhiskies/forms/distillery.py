@@ -37,7 +37,7 @@ class DistilleryAddForm(FlaskForm):
 
 
 class DistilleryEditForm(DistilleryAddForm):
-    submit = SubmitField("Edit Distillery")
+    submit = SubmitField("Save Changes")
 
 
 class DistilleryQuickAddForm(FlaskForm):
