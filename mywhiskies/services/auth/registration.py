@@ -14,7 +14,7 @@ def verify_confirmation_token(token: str) -> Optional[User]:
 
 def find_user_by_email(email: str) -> Optional[User]:
     stmt = db.select(User).filter(User.email == email.strip())
-    return db.session.execute(stmt).first()
+    return db.session.execute(stmt).scalar_one_or_none()
 
 
 def register_user(username: str, email: str, password: str) -> User:
