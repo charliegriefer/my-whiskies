@@ -3,7 +3,6 @@ import json
 import zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
-from typing import Optional
 
 import boto3
 from botocore.exceptions import ClientError
@@ -23,11 +22,6 @@ def apply_email_change(user: User, new_email: str) -> None:
     user.email_confirm_date = datetime.now(timezone.utc)
     db.session.commit()
     flash("Your e-mail address has been updated.", "success")
-
-
-def get_user_by_email(email: str) -> Optional[User]:
-    stmt = db.select(User).filter(User.email == email.strip())
-    return db.session.execute(stmt).first()
 
 
 _CSV_FIELDS = [
